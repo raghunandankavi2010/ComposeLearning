@@ -10,16 +10,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -60,7 +59,6 @@ class MainActivity : ComponentActivity() {
                                 elevation = 12.dp
                             )
                         }, content = {
-
                             MainContent()
                         })
                 }
@@ -100,10 +98,19 @@ fun ProfileList(list: List<String>, currentPosition: Int, onClick: (String, Int)
         }
         val toShowList = list.take(4)
         val totalCount = 10
+        val listState = rememberLazyListState()
+        val firstVisibleItemIndex by remember(listState) {
+            derivedStateOf {
+                listState.layoutInfo.visibleItemsInfo.first().index
+            }
+        }
         Row(modifier = Modifier.fillMaxWidth()) {
-            LazyRow(
+            LazyRow( state = listState,
                 horizontalArrangement = Arrangement.spacedBy((-32).dp)
             ) {
+
+                val firstVisibleItem = listState.firstVisibleItemIndex
+                val offSet = listState.firstVisibleItemScrollOffset
                 itemsIndexed(toShowList) { index, item ->
                     val alpha = if (currentPosition != index) {
                         1f
@@ -196,9 +203,27 @@ fun ProfilePicture(alpha: Float, onClick: (String, Int) -> Unit, item: String, i
 }
 
 @Composable
+fun rememberScrollContext(listState: LazyListState): ScrollContext {
+    val scrollContext by remember {
+        derivedStateOf {
+            ScrollContext(
+                firstVisibleItem = listState.firstVisibleItemIndex,
+                offset = listState.firstVisibleItemScrollOffset
+            )
+        }
+    }
+    return scrollContext
+}
+
+@Composable
 fun Greeting(name: String) {
     Text(text = "Hello $name!")
 }
+
+data class ScrollContext(
+    val firstVisibleItem: Int,
+    val offset: Int,
+)
 
 @Preview(showBackground = false)
 @Composable
