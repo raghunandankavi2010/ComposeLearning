@@ -5,10 +5,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
@@ -18,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +26,7 @@ import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -59,7 +59,15 @@ class MainActivity : ComponentActivity() {
                                 elevation = 12.dp
                             )
                         }, content = {
-                            MainContent()
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                TooltipOnLongClickExample {
+
+                                }
+                            }
                         })
                 }
             }
@@ -105,7 +113,8 @@ fun ProfileList(list: List<String>, currentPosition: Int, onClick: (String, Int)
             }
         }
         Row(modifier = Modifier.fillMaxWidth()) {
-            LazyRow( state = listState,
+            LazyRow(
+                state = listState,
                 horizontalArrangement = Arrangement.spacedBy((-32).dp)
             ) {
 
@@ -130,7 +139,7 @@ fun ProfileList(list: List<String>, currentPosition: Int, onClick: (String, Int)
                     }
                 }
             }
-            if(toShowList.size < totalCount) {
+            if (toShowList.size < totalCount) {
                 ShowAddImage()
             }
         }
@@ -139,7 +148,8 @@ fun ProfileList(list: List<String>, currentPosition: Int, onClick: (String, Int)
 
 @Composable
 fun ShowAddImage() {
-    Column( modifier = Modifier.height(200.dp)
+    Column(
+        modifier = Modifier.height(200.dp)
     ) {
         Image(
             painter = painterResource(R.drawable.ic_launcher_background),
@@ -147,9 +157,10 @@ fun ShowAddImage() {
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)                       // clip to the circle shape
-                .clickable {  }
+                .clickable { }
         )
-        Text("Add",
+        Text(
+            "Add",
             textAlign = TextAlign.Center,
             modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
         )
@@ -248,7 +259,7 @@ fun ImageWithCount() {
 
     }
     ComposeLearningTheme {
-        ProfilePictureWithCount( onClick = onClick, "A", 0, 6)
+        ProfilePictureWithCount(onClick = onClick, "A", 0, 6)
     }
 }
 
@@ -271,6 +282,45 @@ fun LogCompositions(tag: String, msg: String) {
         val ref = remember { Ref(0) }
         SideEffect { ref.value++ }
         Log.d(tag, "Compositions: $msg ${ref.value}")
+    }
+}
+
+
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
+fun TooltipOnLongClickExample(onClick: () -> Unit = {}) {
+    // Commonly a Tooltip can be placed in a Box with a sibling
+    // that will be used as the 'anchor' for positioning.
+
+    Box(
+        Modifier
+            .height(300.dp)
+            .width(300.dp)
+            .background(Color.Red),
+        contentAlignment = Alignment.Center
+    ) {
+        val showTooltip = remember { mutableStateOf(false) }
+
+        // Buttons and Surfaces don't support onLongClick out of the box,
+        // so use a simple Box with combinedClickable
+        Box(
+            modifier = Modifier
+                .combinedClickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = rememberRipple(),
+                    onClickLabel = "Button action description",
+                    role = Role.Button,
+                    onClick = onClick,
+                    onLongClick = { showTooltip.value = true },
+                ),
+        ) {
+            Text("Click Me (will show tooltip on long click)")
+        }
+
+        Tooltip(showTooltip) {
+            // Tooltip content goes here.
+            Text("Tooltip Text!!")
+        }
     }
 }
 
