@@ -61,12 +61,10 @@ class MainActivity : ComponentActivity() {
                         }, content = {
                             Column(
                                 modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.Center,
+                                verticalArrangement = Arrangement.Top,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                TooltipOnLongClickExample {
-
-                                }
+                               MainContent()
                             }
                         })
                 }
@@ -112,7 +110,15 @@ fun ProfileList(list: List<String>, currentPosition: Int, onClick: (String, Int)
                 listState.layoutInfo.visibleItemsInfo.first().index
             }
         }
-        Row(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            "TEST",
+            textAlign = TextAlign.Center,
+            modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
+        )
+
+        Row(modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
             LazyRow(
                 state = listState,
                 horizontalArrangement = Arrangement.spacedBy((-32).dp)
@@ -127,7 +133,7 @@ fun ProfileList(list: List<String>, currentPosition: Int, onClick: (String, Int)
                         1f
                     }
                     if (index == 3) {
-                        ProfilePictureWithCount(
+                        ProfilePictureWithImage(
                             onClick,
                             item,
                             index,
@@ -168,6 +174,47 @@ fun ShowAddImage() {
 }
 
 @Composable
+fun ProfilePictureWithImage(
+    onClick: (String, Int) -> Unit,
+    item: String,
+    index: Int,
+    count: Int
+) {
+    LogCompositions("JetpackCompose.app", "Profile Picture")
+    Box(
+        modifier = Modifier
+            .size(40.dp)
+            .clip(CircleShape)
+            .background("#F0F5F9".color, CircleShape)
+            .clickable { onClick(item, index) },
+        contentAlignment = Alignment.Center
+    ) {
+
+        Image(
+            painter = painterResource(R.drawable.ic_launcher_background),
+            contentDescription = "Contact profile picture",
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)                       // clip to the circle shape
+                .border(2.dp, Blue, CircleShape)
+                .clickable { onClick(item, index) }
+
+        )
+
+        Text(
+            "$count",
+            color = Black,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .width(30.dp)
+                .height(30.dp)
+                .wrapContentHeight()
+        )
+    }
+
+}
+
+@Composable
 fun ProfilePictureWithCount(
     onClick: (String, Int) -> Unit,
     item: String,
@@ -200,17 +247,22 @@ fun ProfilePictureWithCount(
 @Composable
 fun ProfilePicture(alpha: Float, onClick: (String, Int) -> Unit, item: String, index: Int) {
     LogCompositions("JetpackCompose.app", "Profile Picture")
-    Image(
-        painter = painterResource(R.drawable.ic_launcher_background),
-        contentDescription = "Contact profile picture",
-        alpha = alpha,
-        modifier = Modifier
-            .size(40.dp)
-            .clip(CircleShape)                       // clip to the circle shape
-            .border(2.dp, Blue, CircleShape)
-            .clickable { onClick(item, index) }
+    Column {
+        Image(
+            painter = painterResource(R.drawable.ic_launcher_background),
+            contentDescription = "Contact profile picture",
+            alpha = alpha,
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)                       // clip to the circle shape
+                .border(2.dp, Blue, CircleShape)
+                .clickable { onClick(item, index) }
 
-    )
+        )
+        Text(text = "Raghunandan kavi",
+            textAlign = TextAlign.Center)
+    }
+
 }
 
 @Composable
