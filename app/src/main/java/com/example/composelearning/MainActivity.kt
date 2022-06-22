@@ -42,7 +42,6 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-
                     Scaffold(
                         topBar = {
                             TopAppBar(
@@ -64,7 +63,9 @@ class MainActivity : ComponentActivity() {
                                 verticalArrangement = Arrangement.Top,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                               MainContent()
+                                //MainContent()
+                                //CustomProgressBar()
+                                MultiColorProgressCanvas()
                             }
                         })
                 }
@@ -91,7 +92,6 @@ class MainActivity : ComponentActivity() {
         }
         ProfileList(list, currentPosition = currentPosition.value, onClick)
     }
-
 }
 
 @Composable
@@ -116,14 +116,14 @@ fun ProfileList(list: List<String>, currentPosition: Int, onClick: (String, Int)
             modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
         )
 
-        Row(modifier = Modifier.fillMaxWidth(),
+        Row(
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             LazyRow(
                 state = listState,
                 horizontalArrangement = Arrangement.spacedBy((-32).dp)
             ) {
-
                 val firstVisibleItem = listState.firstVisibleItemIndex
                 val offSet = listState.firstVisibleItemScrollOffset
                 itemsIndexed(toShowList) { index, item ->
@@ -189,7 +189,6 @@ fun ProfilePictureWithImage(
             .clickable { onClick(item, index) },
         contentAlignment = Alignment.Center
     ) {
-
         Image(
             painter = painterResource(R.drawable.ic_launcher_background),
             contentDescription = "Contact profile picture",
@@ -198,7 +197,6 @@ fun ProfilePictureWithImage(
                 .clip(CircleShape)                       // clip to the circle shape
                 .border(2.dp, Blue, CircleShape)
                 .clickable { onClick(item, index) }
-
         )
 
         Text(
@@ -211,7 +209,6 @@ fun ProfilePictureWithImage(
                 .wrapContentHeight()
         )
     }
-
 }
 
 @Composable
@@ -230,7 +227,6 @@ fun ProfilePictureWithCount(
             .clickable { onClick(item, index) },
         contentAlignment = Alignment.Center
     ) {
-
         Text(
             "$count",
             color = Black,
@@ -241,7 +237,6 @@ fun ProfilePictureWithCount(
                 .wrapContentHeight()
         )
     }
-
 }
 
 @Composable
@@ -257,12 +252,12 @@ fun ProfilePicture(alpha: Float, onClick: (String, Int) -> Unit, item: String, i
                 .clip(CircleShape)                       // clip to the circle shape
                 .border(2.dp, Blue, CircleShape)
                 .clickable { onClick(item, index) }
-
         )
-        Text(text = "Raghunandan kavi",
-            textAlign = TextAlign.Center)
+        Text(
+            text = "Raghunandan kavi",
+            textAlign = TextAlign.Center
+        )
     }
-
 }
 
 @Composable
@@ -300,7 +295,6 @@ fun ProfilePreview() {
             .clip(CircleShape)
             .border(5.dp, Blue, CircleShape)
             .clickable { }
-
     )
 }
 
@@ -308,7 +302,6 @@ fun ProfilePreview() {
 @Composable
 fun ImageWithCount() {
     val onClick: (String, Int) -> Unit = { _: String, _: Int ->
-
     }
     ComposeLearningTheme {
         ProfilePictureWithCount(onClick = onClick, "A", 0, 6)
@@ -337,13 +330,11 @@ fun LogCompositions(tag: String, msg: String) {
     }
 }
 
-
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 fun TooltipOnLongClickExample(onClick: () -> Unit = {}) {
     // Commonly a Tooltip can be placed in a Box with a sibling
     // that will be used as the 'anchor' for positioning.
-
     Box(
         Modifier
             .height(300.dp)
@@ -352,7 +343,6 @@ fun TooltipOnLongClickExample(onClick: () -> Unit = {}) {
         contentAlignment = Alignment.Center
     ) {
         val showTooltip = remember { mutableStateOf(false) }
-
         // Buttons and Surfaces don't support onLongClick out of the box,
         // so use a simple Box with combinedClickable
         Box(
