@@ -1,5 +1,6 @@
 package com.example.composelearning
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
+    @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -65,7 +67,28 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 //MainContent()
                                 //CustomProgressBar()
+                                var progress by remember { mutableStateOf(0f) }
                                 MultiColorProgressCanvas()
+                                CustomImageSlider(
+                                    modifier = Modifier.padding(16.dp),
+                                    value = progress,
+                                    onValueChange = { value, offset ->
+                                        progress = value
+                                    },
+                                    trackHeight = 10.dp,
+                                    colors = MaterialSliderDefaults.materialColors(
+                                        inactiveTrackColor = SliderBrushColor(color = Color(0xFFDBDBDB)),
+                                        activeTrackColor = SliderBrushColor(
+                                            color = Color(0xFF69BA6E)
+                                        )
+                                    )
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.thumb),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(28.dp)
+                                    )
+                                }
                             }
                         })
                 }
