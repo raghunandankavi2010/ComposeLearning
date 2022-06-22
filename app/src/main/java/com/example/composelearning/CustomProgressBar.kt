@@ -127,7 +127,7 @@ fun MultiColorProgressCanvas() {
         val progressGray = 5
         val graySize = (canvasWidth * progressGray) / 100
 
-        val remainingProgress = 100 - (40 + 20 + 15 + 5)
+        val remainingProgress = 100 - (progressGreen + progressYellow + progressRed + progressGray)
         val remainingSize = (canvasWidth * remainingProgress) / 100
 
         val cornerRadius = CornerRadius(2.dp.toPx(), 2.dp.toPx())
