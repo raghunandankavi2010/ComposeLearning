@@ -110,6 +110,7 @@ fun MultiColorProgressCanvas() {
 
     Canvas(
         modifier = Modifier
+            .height(60.dp)
             .fillMaxSize()
             .padding(16.dp)
     ) {
