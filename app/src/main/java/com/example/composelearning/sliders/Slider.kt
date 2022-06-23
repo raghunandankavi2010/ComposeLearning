@@ -353,24 +353,6 @@ private fun SliderImpl(
             } else {
                 ThumbDefaultElevation
             }
-//            Image(
-//                painter = painterResource(R.drawable.thumb),
-//                contentDescription = "Thumb",
-//                modifier = Modifier
-//                    .align(Alignment.Center)
-//                    .size(thumbSize, thumbSize)
-//                    .focusable(interactionSource = interactionSource)
-//                    .indication(
-//                        interactionSource = interactionSource,
-//                        indication = rememberRipple(
-//                            bounded = false,
-//                            radius = ThumbRippleRadius
-//                        )
-//                    ),
-//            )
-            Spacer(
-                Modifier
-                    .size(thumbSize, thumbSize))
             Surface(
                 elevation = if (enabled) elevation else 0.dp,
                 modifier = Modifier
