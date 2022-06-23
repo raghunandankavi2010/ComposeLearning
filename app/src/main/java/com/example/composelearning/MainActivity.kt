@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -31,7 +32,10 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.composelearning.buttons.ButtonWithBorder
+import com.example.composelearning.ui.theme.ActiveTrackColor
 import com.example.composelearning.ui.theme.ComposeLearningTheme
+import com.example.composelearning.ui.theme.InactiveTrackColor
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -69,26 +73,22 @@ class MainActivity : ComponentActivity() {
                                 //CustomProgressBar()
                                 var progress by remember { mutableStateOf(0f) }
                                 MultiColorProgressCanvas()
-                                CustomImageSlider(
-                                    modifier = Modifier.padding(16.dp),
+                                Slider(
+                                    valueRange = 0f..100f,
+                                    modifier = Modifier
+                                        .padding(16.dp),
                                     value = progress,
-                                    onValueChange = { value, offset ->
+                                    onValueChange = { value ->
                                         progress = value
+                                        println(progress.toInt())
                                     },
-                                    trackHeight = 10.dp,
-                                    colors = MaterialSliderDefaults.materialColors(
-                                        inactiveTrackColor = SliderBrushColor(color = Color(0xFFDBDBDB)),
-                                        activeTrackColor = SliderBrushColor(
-                                            color = Color(0xFF69BA6E)
-                                        )
+                                    colors = SliderDefaults.colors(
+                                        activeTrackColor = ActiveTrackColor,
+                                        inactiveTrackColor = InactiveTrackColor
                                     )
-                                ) {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.thumb),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(28.dp)
-                                    )
-                                }
+                                )
+                                ButtonWithBorder(text = "Cancel", onClick = {
+                                })
                             }
                         })
                 }
