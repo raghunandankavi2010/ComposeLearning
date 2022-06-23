@@ -1,42 +1,22 @@
-package com.example.composelearning
+package com.example.composelearning.sliders
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.foundation.*
-import androidx.compose.foundation.interaction.Interaction
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.interaction.DragInteraction
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ContentAlpha
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.contentColorFor
+import androidx.compose.foundation.interaction.Interaction
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.Stable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -45,8 +25,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PointMode
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.compositeOver
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
@@ -56,6 +36,7 @@ import androidx.compose.ui.semantics.setProgress
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
+import com.example.composelearning.R
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
@@ -121,7 +102,6 @@ fun Slider(
         val maxPx = constraints.maxWidth.toFloat()
         val minPx = 0f
         position.setBounds(minPx, maxPx)
-
         val gestureEndAction: (Float) -> Unit = { velocity: Float ->
             if (position.anchorsPx.isNotEmpty()) {
                 val now = position.holder.value
@@ -137,7 +117,6 @@ fun Slider(
                 onValueChangeFinished?.invoke()
             }
         }
-
         val press = if (enabled) {
             Modifier.pointerInput(position, interactionSource, maxPx, isRtl) {
                 detectTapGestures(
@@ -166,7 +145,6 @@ fun Slider(
         } else {
             Modifier
         }
-
         val drag = Modifier.draggable(
             orientation = Orientation.Horizontal,
             reverseDirection = isRtl,
@@ -196,7 +174,6 @@ fun Slider(
  * Object to hold defaults used by [Slider]
  */
 object SliderDefaults {
-
     /**
      * Creates a [SliderColors] that represents the different colors used in parts of the
      * [Slider] in different states.
@@ -288,7 +265,6 @@ object SliderDefaults {
  */
 @Stable
 interface SliderColors {
-
     /**
      * Represents the color used for the sliders's thumb, depending on [enabled].
      *
@@ -339,14 +315,13 @@ private fun SliderImpl(
     }
     Box(modifier.then(DefaultSliderConstraints)) {
         val thumbSize = 32.dp//ThumbRadius * 2
-        val offset = (widthDp - thumbSize) * positionFraction
+        val offset =  (widthDp - thumbSize) * positionFraction
         val center = Modifier.align(Alignment.CenterStart)
-
         val trackStrokeWidth: Float
         val thumbPx: Float
         with(LocalDensity.current) {
             trackStrokeWidth = TrackHeight.toPx()
-            thumbPx = (thumbSize/2).toPx()//ThumbRadius.toPx()
+            thumbPx = (thumbSize / 2).toPx()//ThumbRadius.toPx()
         }
         Track(
             center.fillMaxSize(),
@@ -357,7 +332,7 @@ private fun SliderImpl(
             thumbPx,
             trackStrokeWidth
         )
-        Box(center.padding(start = offset)) {
+        Box(center.padding(start = offset).size(thumbSize)) {
             val interactions = remember { mutableStateListOf<Interaction>() }
 
             LaunchedEffect(interactionSource) {
@@ -372,21 +347,18 @@ private fun SliderImpl(
                     }
                 }
             }
-
             val hasInteraction = interactions.isNotEmpty()
             val elevation = if (hasInteraction) {
                 ThumbPressedElevation
             } else {
                 ThumbDefaultElevation
             }
-
 //            Image(
 //                painter = painterResource(R.drawable.thumb),
 //                contentDescription = "Thumb",
 //                modifier = Modifier
-//                    // Set image size to 40 dp
-//                    .size(40.dp)
-//                    // Clip image to be shaped as a circle
+//                    .align(Alignment.Center)
+//                    .size(thumbSize, thumbSize)
 //                    .focusable(interactionSource = interactionSource)
 //                    .indication(
 //                        interactionSource = interactionSource,
@@ -394,13 +366,15 @@ private fun SliderImpl(
 //                            bounded = false,
 //                            radius = ThumbRippleRadius
 //                        )
-//                    )
+//                    ),
 //            )
-//                Spacer(Modifier.size(thumbSize, thumbSize))
-
+            Spacer(
+                Modifier
+                    .size(thumbSize, thumbSize))
             Surface(
                 elevation = if (enabled) elevation else 0.dp,
                 modifier = Modifier
+                    .size(thumbSize, thumbSize)
                     .focusable(interactionSource = interactionSource)
                     .indication(
                         interactionSource = interactionSource,
@@ -414,7 +388,9 @@ private fun SliderImpl(
                     painter = painterResource(R.drawable.thumb),
                     contentDescription = "Thumb",
                     modifier = Modifier
-                        .size(thumbSize)
+                        .size(thumbSize, thumbSize)
+                        .align(Alignment.Center),
+                    contentScale = ContentScale.FillWidth
                 )
                 Spacer(Modifier.size(thumbSize, thumbSize))
             }
@@ -438,19 +414,19 @@ private fun Track(
     val activeTickColor = colors.tickColor(enabled, active = true)
     Canvas(modifier) {
         val height = size.height
-        val rectY = height/2 - TrackHeight.toPx()/2
+        val rectY = (height / 2) - (TrackHeight.toPx() / 2).toInt()
         val isRtl = layoutDirection == LayoutDirection.Rtl
         val sliderLeft = Offset(thumbPx, center.y)
         val sliderRight = Offset(size.width - thumbPx, center.y)
         val sliderStart = if (isRtl) sliderRight else sliderLeft
         val sliderEnd = if (isRtl) sliderLeft else sliderRight
 
-            drawRoundRect(
-                color =  inactiveTrackColor.value,
-                topLeft = Offset(sliderStart.x/2 , rectY),
-                size = Size(width =  sliderEnd.x , height = TrackHeight.toPx()),
-                cornerRadius = CornerRadius(5.dp.toPx(), 5.dp.toPx()),
-            )
+        drawRoundRect(
+            color = inactiveTrackColor.value,
+            topLeft = Offset(sliderStart.x / 2, rectY),
+            size = Size(width = sliderEnd.x, height = TrackHeight.toPx()),
+            cornerRadius = CornerRadius(5.dp.toPx(), 5.dp.toPx()),
+        )
 //        drawLine(
 //            inactiveTrackColor.value,
 //            sliderStart,
@@ -465,9 +441,9 @@ private fun Track(
 
 
         drawRoundRect(
-            color =  activeTrackColor.value,
-            topLeft = Offset(sliderStart.x/2 , rectY),
-            size = Size(width =sliderValue.x , height = TrackHeight.toPx()),
+            color = activeTrackColor.value,
+            topLeft = Offset(sliderStart.x / 2, rectY),
+            size = Size(width = sliderValue.x, height = TrackHeight.toPx()),
             cornerRadius = CornerRadius(5.dp.toPx(), 5.dp.toPx()),
         )
 //        drawLine(
@@ -552,9 +528,8 @@ private class SliderPosition(
     val scope: CoroutineScope,
     var onValueChange: (Float) -> Unit
 ) {
-
-    internal val startValue: Float = valueRange.start
-    internal val endValue: Float = valueRange.endInclusive
+    val startValue: Float = valueRange.start
+    val endValue: Float = valueRange.endInclusive
 
     init {
         require(steps >= 0) {
@@ -570,13 +545,11 @@ private class SliderPosition(
                 snapTo(scaled)
             }
         }
-
     private val floatPointMistakeCorrection = (valueRange.endInclusive - valueRange.start) / 100
-
     private var endPx = Float.MAX_VALUE
     private var startPx = Float.MIN_VALUE
 
-    internal fun setBounds(min: Float, max: Float) {
+    fun setBounds(min: Float, max: Float) {
         if (startPx == min && endPx == max) return
         val newValue = scale(startPx, endPx, holder.value, min, max)
         startPx = min
@@ -588,22 +561,20 @@ private class SliderPosition(
         snapTo(newValue)
     }
 
-    internal val tickFractions: List<Float> =
+    val tickFractions: List<Float> =
         if (steps == 0) emptyList() else List(steps + 2) { it.toFloat() / (steps + 1) }
-
-    internal var anchorsPx: List<Float> = emptyList()
+    var anchorsPx: List<Float> = emptyList()
         private set
+    val holder = Animatable(scale(startValue, endValue, initial, startPx, endPx))
 
-    internal val holder = Animatable(scale(startValue, endValue, initial, startPx, endPx))
-
-    internal fun snapTo(newValue: Float) {
+    fun snapTo(newValue: Float) {
         scope.launch {
             holder.snapTo(newValue)
             onHolderValueUpdated(holder.value)
         }
     }
 
-    internal val onHolderValueUpdated: (value: Float) -> Unit = {
+    val onHolderValueUpdated: (value: Float) -> Unit = {
         onValueChange(scale(startPx, endPx, it, startValue, endValue))
     }
 }
@@ -621,7 +592,6 @@ private class DefaultSliderColors(
     private val disabledActiveTickColor: Color,
     private val disabledInactiveTickColor: Color
 ) : SliderColors {
-
     @Composable
     override fun thumbColor(enabled: Boolean): State<Color> {
         return rememberUpdatedState(if (enabled) thumbColor else disabledThumbColor)
@@ -685,7 +655,7 @@ private class DefaultSliderColors(
 }
 
 // Internal to be referred to in tests
-internal val ThumbRadius = 10.dp
+//internal val ThumbRadius = 10.dp
 private val ThumbRippleRadius = 30.dp
 private val ThumbDefaultElevation = 1.dp
 private val ThumbPressedElevation = 6.dp
@@ -695,7 +665,7 @@ internal val TrackHeight = 20.dp
 private val SliderHeight = 48.dp
 private val SliderMinWidth = 144.dp // TODO: clarify min width
 private val DefaultSliderConstraints =
-    Modifier.widthIn(min = SliderMinWidth)
+    Modifier
+        .widthIn(min = SliderMinWidth)
         .heightIn(max = SliderHeight)
-
 private val SliderToTickAnimation = TweenSpec<Float>(durationMillis = 100)

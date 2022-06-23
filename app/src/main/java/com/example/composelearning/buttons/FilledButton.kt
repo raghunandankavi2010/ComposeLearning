@@ -1,11 +1,10 @@
 package com.example.composelearning.buttons
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,30 +13,23 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ButtonWithBorder(
+fun FilledButton(
     text: String,
-    backgroundColor : Color = Color(0xFFF0F0F0),
-    borderColor: Color =  Color(0xFF4E617E),
-    textColor: Color =  Color(0xFF4E617E),
+    backgroundColor: Color = Color(0xFF4E617E),
+    textColor: Color = Color(0xFFFFFFFF),
     cornerRadius: Dp = 5.dp,
-    strokeWidth: Dp = 1.dp,
     onClick: () -> Unit
 ) {
-    OutlinedButton(
+    Button(
         modifier = Modifier
             .width(100.dp)
             .height(40.dp),
         onClick = { onClick() },
-        border = BorderStroke(strokeWidth, borderColor),
-        shape = RoundedCornerShape(
-            topStart = cornerRadius,
-            topEnd = cornerRadius,
-            bottomStart = cornerRadius,
-            bottomEnd = cornerRadius
-        ),
-        colors = ButtonDefaults.outlinedButtonColors(
-            backgroundColor = backgroundColor,
-            contentColor = textColor)
+        shape = RoundedCornerShape(cornerRadius),
+        colors = ButtonDefaults.buttonColors(
+            contentColor = textColor,
+            backgroundColor = backgroundColor
+        )
     ) {
         Text(text = text)
     }
