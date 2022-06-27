@@ -7,19 +7,17 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
-import androidx.compose.foundation.interaction.DragInteraction
-import androidx.compose.foundation.interaction.Interaction
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
@@ -33,7 +31,6 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,7 +40,6 @@ import com.example.composelearning.sliders.SliderDefaults
 import com.example.composelearning.textfields.DottedUnderlineTextField
 import com.example.composelearning.textfields.TextFieldDefaults
 import com.example.composelearning.ui.theme.*
-import kotlinx.coroutines.flow.collect
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -101,34 +97,45 @@ class MainActivity : ComponentActivity() {
                                 )
                                 Spacer(modifier = Modifier.padding(16.dp))
                                 ButtonWithBorder(text = "Cancel", onClick = {
-
                                 })
 
                                 Spacer(modifier = Modifier.padding(16.dp))
                                 FilledButton(text = "Checkin", onClick = {
-
                                 })
                                 Spacer(modifier = Modifier.padding(16.dp))
                                 BoxWithImage()
 
                                 Spacer(modifier = Modifier.padding(16.dp))
-                                var text by remember { mutableStateOf("0%") }
-                                DottedUnderlineTextField(
-                                    value = text,
-                                    singleLine = true,
-                                    onValueChange = { newText ->
-                                        text = newText
-                                    },
-                                    trailingIcon = {
-                                        Icon(imageVector = Icons.Default.Edit,"Edit")
-                                    },
-                                    colors = TextFieldDefaults.textFieldColors(
-                                        backgroundColor = GREY094,
-                                        textColor = DEFAULT020,
-                                        focusedIndicatorColor = DEFAULT060,
-                                        unfocusedIndicatorColor = DEFAULT060
-                                    )
+                                val customTextSelectionColors = TextSelectionColors(
+                                    handleColor = DEFAULT060,
+                                    backgroundColor = DEFAULT060.copy(alpha = 0.4f)
                                 )
+                                var text by remember { mutableStateOf("0%") }
+                                CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
+                                    DottedUnderlineTextField(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp),
+                                        value = text,
+                                        singleLine = true,
+                                        onValueChange = { newText ->
+                                            text = newText
+                                        },
+                                        trailingIcon = {
+                                            Icon(painter = painterResource(id = R.drawable.ic_edit),
+                                                contentDescription = "Edit",
+                                                tint = DEFAULT060)
+                                        },
+                                        colors = TextFieldDefaults.textFieldColors(
+                                            backgroundColor = GREY094,
+                                            textColor = DEFAULT020,
+                                            focusedIndicatorColor = DEFAULT060,
+                                            unfocusedIndicatorColor = DEFAULT060,
+                                            leadingIconColor = DEFAULT060,
+                                            cursorColor = DEFAULT060
+                                        )
+                                    )
+                                }
                             }
                         })
                 }
@@ -241,7 +248,7 @@ fun ProfilePictureWithImage(
     onClick: (String, Int) -> Unit,
     item: String,
     index: Int,
-    count: Int
+    count: Int,
 ) {
     LogCompositions("JetpackCompose.app", "Profile Picture")
     Box(
@@ -279,7 +286,7 @@ fun ProfilePictureWithCount(
     onClick: (String, Int) -> Unit,
     item: String,
     index: Int,
-    count: Int
+    count: Int,
 ) {
     LogCompositions("JetpackCompose.app", "Profile Picture")
     Box(

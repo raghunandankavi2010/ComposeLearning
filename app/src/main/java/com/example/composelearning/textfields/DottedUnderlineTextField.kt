@@ -754,7 +754,7 @@ internal fun Modifier.drawIndicatorLine(indicatorBorder: BorderStroke): Modifier
         if (strokeWidthDp == Dp.Hairline) return@drawWithContent
         val strokeWidth = strokeWidthDp.value * density
         val y = size.height - strokeWidth / 2
-        val x = size.width - 15.dp.toPx() - 16.dp.toPx() - 5.dp.toPx()
+        val x = size.width
         drawLine(
             color = Color(0xFF8194B1),
             Offset(0f, y),

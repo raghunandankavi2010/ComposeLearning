@@ -339,8 +339,8 @@ object TextFieldDefaults {
         start: Dp = TextFieldPadding,
         top: Dp = TextFieldPadding,
         end: Dp = TextFieldPadding,
-        bottom: Dp = TextFieldPadding
-    ): PaddingValues = PaddingValues(0.dp, top, end, bottom)
+        bottom: Dp = TextFieldBottomPadding
+    ): PaddingValues = PaddingValues(start, top, end, bottom)
 
     /**
      * Default content padding applied to [OutlinedTextField].

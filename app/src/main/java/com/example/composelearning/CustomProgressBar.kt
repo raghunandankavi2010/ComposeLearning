@@ -110,9 +110,8 @@ fun MultiColorProgressCanvas() {
 
     Canvas(
         modifier = Modifier
-            .height(30.dp)
+            .height(16.dp)
             .fillMaxSize()
-            .padding(16.dp)
     ) {
         //draw shapes here
         // get canvas width in dp
