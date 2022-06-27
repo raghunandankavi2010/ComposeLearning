@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
                         topBar = {
                             TopAppBar(
                                 title = {
-                                    Text(text = "Profile List")
+                                    Text(text = "Compose Ui Smaples")
                                 },
                                 navigationIcon = {
                                     IconButton(onClick = { }) {
