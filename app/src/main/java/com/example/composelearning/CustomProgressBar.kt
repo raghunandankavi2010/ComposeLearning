@@ -1,15 +1,21 @@
 package com.example.composelearning
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 
 // on below line we are creating a function for custom progress bar.
 @Composable
@@ -106,17 +112,41 @@ fun CustomProgressBar() {
 }
 
 @Composable
-fun MultiColorProgressCanvas() {
+fun MultiColorProgressCanvas(modifier: Modifier) {
+    val greenAnimate = remember { Animatable(0f) }
+    val yellowAnimate = remember { Animatable(0f) }
+    val redAnimate = remember { Animatable(0f) }
+    val greyAnimate = remember { Animatable(0f) }
+    val remainingAnimate = remember { Animatable(0f) }
+    
+    val animationDuration = 300
+
+    LaunchedEffect(greyAnimate,yellowAnimate,redAnimate,greenAnimate,redAnimate) {
+        launch {
+            greenAnimate.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(durationMillis = animationDuration, easing = LinearEasing))
+            yellowAnimate.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(durationMillis = animationDuration, easing = LinearEasing))
+            redAnimate.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(durationMillis = animationDuration, easing = LinearEasing))
+            greyAnimate.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(durationMillis = animationDuration, easing = LinearEasing))
+            remainingAnimate.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(durationMillis = animationDuration, easing = LinearEasing))
+        }
+    }
 
     Canvas(
-        modifier = Modifier
-            .height(16.dp)
-            .fillMaxSize()
+        modifier = modifier
     ) {
         //draw shapes here
         // get canvas width in dp
         val canvasWidth = size.width.toDp()
-
         // calculate the progress for each color
         val progressGreen = 40
         val greenSize = (canvasWidth * progressGreen) / 100
@@ -126,19 +156,16 @@ fun MultiColorProgressCanvas() {
         val redSize = (canvasWidth * progressRed) / 100
         val progressGray = 5
         val graySize = (canvasWidth * progressGray) / 100
-
         val remainingProgress = 100 - (progressGreen + progressYellow + progressRed + progressGray)
         val remainingSize = (canvasWidth * remainingProgress) / 100
-
         val cornerRadius = CornerRadius(2.dp.toPx(), 2.dp.toPx())
-
         // draw green progress
         val path = Path().apply {
             addRoundRect(
                 RoundRect(
                     rect = Rect(
                         offset = Offset(0f, 0f),
-                        size = Size(greenSize.toPx(), 8.dp.toPx()),
+                        size = Size(greenSize.toPx() * greenAnimate.value, 8.dp.toPx()),
                     ),
                     topLeft = cornerRadius,
                     bottomLeft = cornerRadius,
@@ -149,40 +176,33 @@ fun MultiColorProgressCanvas() {
             path = path,
             color = Color(0xFF69BA6E)
         )
-//        drawRoundRect(
-//            color = Color(0xFF69BA6E),
-//            cornerRadius = CornerRadius(x = 10f, y = 10f),
-//            size = Size(greenSize.toPx(), 8.dp.toPx())
-//        )
-
         //draw yellow progress with offset =  green progress offset
         drawRect(
-            color =  Color(0xFFFEC93E),
+            color = Color(0xFFFEC93E),
             topLeft = Offset(greenSize.toPx(), 0f),
-            size = Size(yellowSize.toPx(), 8.dp.toPx())
+            size = Size(yellowSize.toPx() * yellowAnimate.value, 8.dp.toPx())
         )
-
         //draw red progress with offset =  yellow progress + green progress
         drawRect(
             color = Color(0xFFED5554),
-            topLeft = Offset(greenSize.toPx() + yellowSize.toPx(), 0f),
-            size = Size(redSize.toPx(), 8.dp.toPx())
+            topLeft = Offset(greenSize.toPx() + yellowSize.toPx() , 0f),
+            size = Size(redSize.toPx()  * redAnimate.value , 8.dp.toPx())
         )
-
         //draw grey progress with offset =  red progress + yellow progress + green progress
         drawRect(
             color = Color(0xFFBDBDBD),
-            topLeft = Offset(greenSize.toPx() + yellowSize.toPx() + redSize.toPx(), 0f),
-            size = Size(graySize.toPx(), 8.dp.toPx())
+            topLeft = Offset(greenSize.toPx() + yellowSize.toPx() + redSize.toPx() ,
+                0f),
+            size = Size(graySize.toPx()* greyAnimate.value , 8.dp.toPx())
         )
-
         // draw remaining
         val progressPath = Path().apply {
             addRoundRect(
                 RoundRect(
                     rect = Rect(
-                        offset = Offset(graySize.toPx() + greenSize.toPx() + yellowSize.toPx() + redSize.toPx(), 0f),
-                        size = Size(remainingSize.toPx(), 8.dp.toPx()),
+                        offset = Offset(graySize.toPx() + greenSize.toPx() + yellowSize.toPx() + redSize.toPx(),
+                            0f),
+                        size = Size(remainingSize.toPx()  * remainingAnimate.value, 8.dp.toPx()),
                     ),
                     topRight = cornerRadius,
                     bottomRight = cornerRadius
