@@ -80,7 +80,9 @@ class MainActivity : ComponentActivity() {
                                 //MainContent()
                                 //CustomProgressBar()
                                 var progress by remember { mutableStateOf(0f) }
-                                MultiColorProgressCanvas()
+                                MultiColorProgressCanvas(modifier = Modifier
+                                    .height(16.dp)
+                                    .fillMaxSize())
                                 Spacer(modifier = Modifier.padding(16.dp))
                                 com.example.composelearning.sliders.Slider(
                                     onValueChangeFinished = {
@@ -143,7 +145,6 @@ class MainActivity : ComponentActivity() {
                                     imageVector = Icons.Default.Add,
                                     modifier = Modifier.size(25.dp),
                                     onClick = {
-
                                     },
                                     borderColor = GRAY040,
                                     iconTintColor = GRAY040,
