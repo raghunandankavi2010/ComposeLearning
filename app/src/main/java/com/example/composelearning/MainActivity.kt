@@ -18,6 +18,7 @@ import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
@@ -36,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.composelearning.buttons.ButtonWithBorder
 import com.example.composelearning.buttons.FilledButton
+import com.example.composelearning.buttons.TintedIconButtonWithBorder
 import com.example.composelearning.sliders.SliderDefaults
 import com.example.composelearning.textfields.DottedUnderlineTextField
 import com.example.composelearning.textfields.TextFieldDefaults
@@ -136,6 +138,18 @@ class MainActivity : ComponentActivity() {
                                         )
                                     )
                                 }
+                                Spacer(modifier = Modifier.padding(16.dp))
+                                TintedIconButtonWithBorder(
+                                    imageVector = Icons.Default.Add,
+                                    modifier = Modifier.size(25.dp),
+                                    onClick = {
+
+                                    },
+                                    borderColor = GRAY040,
+                                    iconTintColor = GRAY040,
+                                    strokeWidth = 2.dp,
+                                    contentDescription = "Add"
+                                )
                             }
                         })
                 }
