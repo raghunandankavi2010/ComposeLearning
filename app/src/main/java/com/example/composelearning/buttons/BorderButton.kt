@@ -2,7 +2,6 @@ package com.example.composelearning.buttons
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedButton
@@ -25,7 +24,6 @@ fun ButtonWithBorder(
 ) {
     OutlinedButton(
         modifier = Modifier
-            .width(100.dp)
             .height(40.dp),
         onClick = { onClick() },
         border = BorderStroke(strokeWidth, borderColor),

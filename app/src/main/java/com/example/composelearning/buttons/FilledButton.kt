@@ -22,7 +22,6 @@ fun FilledButton(
 ) {
     Button(
         modifier = Modifier
-            .width(100.dp)
             .height(40.dp),
         onClick = { onClick() },
         shape = RoundedCornerShape(cornerRadius),

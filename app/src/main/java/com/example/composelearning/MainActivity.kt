@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
@@ -32,15 +33,16 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.composelearning.buttons.ButtonWithBorder
 import com.example.composelearning.buttons.FilledButton
 import com.example.composelearning.sliders.SliderDefaults
-import com.example.composelearning.ui.theme.ActiveTrackColor
-import com.example.composelearning.ui.theme.ComposeLearningTheme
-import com.example.composelearning.ui.theme.InactiveTrackColor
+import com.example.composelearning.textfields.DottedUnderlineTextField
+import com.example.composelearning.textfields.TextFieldDefaults
+import com.example.composelearning.ui.theme.*
 import kotlinx.coroutines.flow.collect
 
 class MainActivity : ComponentActivity() {
@@ -108,6 +110,25 @@ class MainActivity : ComponentActivity() {
                                 })
                                 Spacer(modifier = Modifier.padding(16.dp))
                                 BoxWithImage()
+
+                                Spacer(modifier = Modifier.padding(16.dp))
+                                var text by remember { mutableStateOf("0%") }
+                                DottedUnderlineTextField(
+                                    value = text,
+                                    singleLine = true,
+                                    onValueChange = { newText ->
+                                        text = newText
+                                    },
+                                    trailingIcon = {
+                                        Icon(imageVector = Icons.Default.Edit,"Edit")
+                                    },
+                                    colors = TextFieldDefaults.textFieldColors(
+                                        backgroundColor = GREY094,
+                                        textColor = DEFAULT020,
+                                        focusedIndicatorColor = DEFAULT060,
+                                        unfocusedIndicatorColor = DEFAULT060
+                                    )
+                                )
                             }
                         })
                 }
