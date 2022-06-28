@@ -80,9 +80,14 @@ class MainActivity : ComponentActivity() {
                                 //MainContent()
                                 //CustomProgressBar()
                                 var progress by remember { mutableStateOf(0f) }
-                                MultiColorProgressCanvas(modifier = Modifier
-                                    .height(16.dp)
-                                    .fillMaxSize())
+                                MultiColorProgressCanvas(
+                                    modifier = Modifier
+                                        .height(16.dp)
+                                        .padding(16.dp)
+                                        .fillMaxSize(),
+                                    heightOfProgress = 8.dp,
+                                    cornerRadii = 2.dp
+                                )
                                 Spacer(modifier = Modifier.padding(16.dp))
                                 com.example.composelearning.sliders.Slider(
                                     onValueChangeFinished = {
@@ -106,8 +111,6 @@ class MainActivity : ComponentActivity() {
                                 Spacer(modifier = Modifier.padding(16.dp))
                                 FilledButton(text = "Checkin", onClick = {
                                 })
-                                Spacer(modifier = Modifier.padding(16.dp))
-                                BoxWithImage()
 
                                 Spacer(modifier = Modifier.padding(16.dp))
                                 val customTextSelectionColors = TextSelectionColors(
@@ -390,19 +393,6 @@ fun ImageWithCount() {
     }
     ComposeLearningTheme {
         ProfilePictureWithCount(onClick = onClick, "A", 0, 6)
-    }
-}
-
-@Composable
-fun BoxWithImage() {
-    val painter = painterResource(id = R.drawable.thumb)
-    Column(modifier = Modifier.size(28.dp)) {
-        Image(
-            modifier = Modifier.fillMaxSize(),
-            painter = painter,
-            contentDescription = "Thumb",
-            contentScale = ContentScale.FillBounds
-        )
     }
 }
 
