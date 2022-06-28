@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
@@ -112,13 +113,16 @@ fun CustomProgressBar() {
 }
 
 @Composable
-fun MultiColorProgressCanvas(modifier: Modifier) {
+fun MultiColorProgressCanvas(
+    modifier: Modifier,
+    heightOfProgress: Dp,
+    cornerRadii: Dp
+    ) {
     val greenAnimate = remember { Animatable(0f) }
     val yellowAnimate = remember { Animatable(0f) }
     val redAnimate = remember { Animatable(0f) }
     val greyAnimate = remember { Animatable(0f) }
-    val remainingAnimate = remember { Animatable(0f) }
-    
+
     val animationDuration = 300
 
     LaunchedEffect(greyAnimate,yellowAnimate,redAnimate,greenAnimate,redAnimate) {
@@ -133,9 +137,6 @@ fun MultiColorProgressCanvas(modifier: Modifier) {
                 targetValue = 1f,
                 animationSpec = tween(durationMillis = animationDuration, easing = LinearEasing))
             greyAnimate.animateTo(
-                targetValue = 1f,
-                animationSpec = tween(durationMillis = animationDuration, easing = LinearEasing))
-            remainingAnimate.animateTo(
                 targetValue = 1f,
                 animationSpec = tween(durationMillis = animationDuration, easing = LinearEasing))
         }
@@ -156,9 +157,30 @@ fun MultiColorProgressCanvas(modifier: Modifier) {
         val redSize = (canvasWidth * progressRed) / 100
         val progressGray = 5
         val graySize = (canvasWidth * progressGray) / 100
-        val remainingProgress = 100 - (progressGreen + progressYellow + progressRed + progressGray)
-        val remainingSize = (canvasWidth * remainingProgress) / 100
-        val cornerRadius = CornerRadius(2.dp.toPx(), 2.dp.toPx())
+
+        val cornerRadius = CornerRadius(cornerRadii.toPx(),cornerRadii.toPx())
+
+        // draw the inactive part
+        val progressPath = Path().apply {
+            addRoundRect(
+                RoundRect(
+                    rect = Rect(
+                        offset = Offset(0f, 0f),
+                        size = Size(canvasWidth.toPx(), heightOfProgress.toPx()),
+                    ),
+                    topLeft = cornerRadius,
+                    bottomLeft = cornerRadius,
+                    topRight = cornerRadius,
+                    bottomRight = cornerRadius
+                )
+            )
+        }
+        drawPath(
+            path = progressPath,
+            color = Color(0xFFE0E0E0),
+        )
+
+        // draw the active progress
         // draw green progress
         val path = Path().apply {
             addRoundRect(
@@ -194,24 +216,6 @@ fun MultiColorProgressCanvas(modifier: Modifier) {
             topLeft = Offset(greenSize.toPx() + yellowSize.toPx() + redSize.toPx() ,
                 0f),
             size = Size(graySize.toPx()* greyAnimate.value , 8.dp.toPx())
-        )
-        // draw remaining
-        val progressPath = Path().apply {
-            addRoundRect(
-                RoundRect(
-                    rect = Rect(
-                        offset = Offset(graySize.toPx() + greenSize.toPx() + yellowSize.toPx() + redSize.toPx(),
-                            0f),
-                        size = Size(remainingSize.toPx()  * remainingAnimate.value, 8.dp.toPx()),
-                    ),
-                    topRight = cornerRadius,
-                    bottomRight = cornerRadius
-                )
-            )
-        }
-        drawPath(
-            path = progressPath,
-            color = Color(0xFFE0E0E0),
         )
     }
 }
