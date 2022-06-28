@@ -1,6 +1,7 @@
 package com.example.composelearning
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -129,16 +130,16 @@ fun MultiColorProgressCanvas(
         launch {
             greenAnimate.animateTo(
                 targetValue = 1f,
-                animationSpec = tween(durationMillis = animationDuration, easing = LinearEasing))
+                animationSpec = tween(durationMillis = animationDuration))
             yellowAnimate.animateTo(
                 targetValue = 1f,
-                animationSpec = tween(durationMillis = animationDuration, easing = LinearEasing))
+                animationSpec = tween(durationMillis = animationDuration))
             redAnimate.animateTo(
                 targetValue = 1f,
-                animationSpec = tween(durationMillis = animationDuration, easing = LinearEasing))
+                animationSpec = tween(durationMillis = animationDuration))
             greyAnimate.animateTo(
                 targetValue = 1f,
-                animationSpec = tween(durationMillis = animationDuration, easing = LinearEasing))
+                animationSpec = tween(durationMillis = animationDuration))
         }
     }
 
