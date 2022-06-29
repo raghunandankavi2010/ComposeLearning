@@ -3,7 +3,6 @@ package com.example.composelearning
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
@@ -29,14 +28,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.composelearning.buttons.ButtonWithBorder
 import com.example.composelearning.buttons.FilledButton
 import com.example.composelearning.buttons.TintedIconButtonWithBorder
+import com.example.composelearning.images.OverlappingRow
 import com.example.composelearning.images.SquareProfileImage
 import com.example.composelearning.sliders.SliderDefaults
 import com.example.composelearning.textfields.DottedUnderlineTextField
@@ -156,36 +159,79 @@ class MainActivity : ComponentActivity() {
                                 )
                                 Spacer(modifier = Modifier.padding(16.dp))
                                 SquareProfileImage(
-                                    modifier = Modifier.padding(16.dp).size(20.dp),
+                                    modifier = Modifier
+                                        .padding(16.dp)
+                                        .size(20.dp),
                                     drawable = R.drawable.ic_launcher_background,
                                     radii = 5.dp
                                 )
+                                Spacer(modifier = Modifier.padding(16.dp))
+                                MainContent()
+                                Spacer(modifier = Modifier.padding(16.dp))
+                                OverlappingRow(
+                                    overlapFactor = 0.7f
+                                ) {
+                                    val images = intArrayOf(
+                                        R.drawable.ic_launcher_background,
+                                        R.drawable.ic_launcher_background,
+                                        R.drawable.ic_launcher_background,
+                                        R.drawable.ic_launcher_background,
+                                        R.drawable.ic_launcher_background,
+                                        R.drawable.ic_launcher_background
+                                    )
+                                    for (i in images.indices) {
+                                        Image(
+                                            painter = painterResource(id = images[i]),
+                                            contentDescription = null,
+                                            modifier = Modifier
+                                                .width(30.dp)
+                                                .height(30.dp)
+                                                .border(width = 1.dp, color = Color.White, shape = CircleShape)
+                                                .clip(CircleShape),
+                                            contentScale = ContentScale.Crop
+
+                                        )
+                                    }
+                                    Box(
+                                        contentAlignment = Alignment.Center,
+                                        modifier = Modifier
+                                            .width(30.dp)
+                                            .height(30.dp)
+                                            .border(width = 1.dp, color = Color.Black, shape = CircleShape)
+                                            .clip(CircleShape)
+                                            .background(Color.White),
+
+                                        ) {
+                                        Text(
+                                            text = "10+",
+                                            fontSize = 21.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color.Black,
+                                            textAlign = TextAlign.Center,
+                                            )
+                                    }
+                                }
                             }
                         })
                 }
             }
         }
     }
+}
 
-    @Composable
-    fun MainContent() {
-        val list = listOf(
-            "A", "B", "C", "D", "E", "F", "G", "H", "I",
-            "J", "K", "L", "M", "N", "O", "P", "Q", "R",
-            "S", "T", "U", "W", "X", "Y", "Z"
-        )
-        val currentPosition = remember { mutableStateOf(0) }
-        LogCompositions("JetpackCompose.app", "MyComposable function")
-        val onClick: (String, Int) -> Unit = { alphabet: String, positionClicked: Int ->
-            currentPosition.value = positionClicked
-            Toast.makeText(
-                this@MainActivity.applicationContext,
-                alphabet,
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-        ProfileList(list, currentPosition = currentPosition.value, onClick)
+@Composable
+fun MainContent() {
+    val list = listOf(
+        "A", "B", "C", "D", "E", "F", "G", "H", "I",
+        "J", "K", "L", "M", "N", "O", "P", "Q", "R",
+        "S", "T", "U", "W", "X", "Y", "Z"
+    )
+    val currentPosition = remember { mutableStateOf(0) }
+    LogCompositions("JetpackCompose.app", "MyComposable function")
+    val onClick: (String, Int) -> Unit = { alphabet: String, positionClicked: Int ->
+        currentPosition.value = positionClicked
     }
+    ProfileList(list, currentPosition = currentPosition.value, onClick)
 }
 
 @Composable
@@ -204,11 +250,6 @@ fun ProfileList(list: List<String>, currentPosition: Int, onClick: (String, Int)
                 listState.layoutInfo.visibleItemsInfo.first().index
             }
         }
-        Text(
-            "TEST",
-            textAlign = TextAlign.Center,
-            modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
-        )
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -238,9 +279,6 @@ fun ProfileList(list: List<String>, currentPosition: Int, onClick: (String, Int)
                         Spacer(modifier = Modifier.padding(8.dp))
                     }
                 }
-            }
-            if (toShowList.size < totalCount) {
-                ShowAddImage()
             }
         }
     }
@@ -294,7 +332,7 @@ fun ProfilePictureWithImage(
         )
 
         Text(
-            "$count",
+            "+$count",
             color = Black,
             textAlign = TextAlign.Center,
             modifier = Modifier
@@ -346,10 +384,6 @@ fun ProfilePicture(alpha: Float, onClick: (String, Int) -> Unit, item: String, i
                 .clip(CircleShape)                       // clip to the circle shape
                 .border(2.dp, Blue, CircleShape)
                 .clickable { onClick(item, index) }
-        )
-        Text(
-            text = "Raghunandan kavi",
-            textAlign = TextAlign.Center
         )
     }
 }
