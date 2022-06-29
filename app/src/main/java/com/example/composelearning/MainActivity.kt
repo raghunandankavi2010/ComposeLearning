@@ -236,7 +236,7 @@ fun MainContent() {
 
 @Composable
 fun ProfileList(list: List<String>, currentPosition: Int, onClick: (String, Int) -> Unit) {
-    Column(Modifier.padding(start = 8.dp, top = 20.dp, end = 8.dp)) {
+   // Column(Modifier.padding(start = 8.dp, top = 20.dp, end = 8.dp)) {
         val countProfileImage = if (list.size > 3) {
             list.size - 3
         } else {
@@ -252,7 +252,7 @@ fun ProfileList(list: List<String>, currentPosition: Int, onClick: (String, Int)
         }
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.wrapContentWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
             LazyRow(
@@ -280,7 +280,7 @@ fun ProfileList(list: List<String>, currentPosition: Int, onClick: (String, Int)
                     }
                 }
             }
-        }
+      //  }
     }
 }
 
