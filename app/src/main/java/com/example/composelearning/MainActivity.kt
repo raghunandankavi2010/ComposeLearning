@@ -29,7 +29,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
@@ -38,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.example.composelearning.buttons.ButtonWithBorder
 import com.example.composelearning.buttons.FilledButton
 import com.example.composelearning.buttons.TintedIconButtonWithBorder
+import com.example.composelearning.images.SquareProfileImage
 import com.example.composelearning.sliders.SliderDefaults
 import com.example.composelearning.textfields.DottedUnderlineTextField
 import com.example.composelearning.textfields.TextFieldDefaults
@@ -153,6 +153,12 @@ class MainActivity : ComponentActivity() {
                                     iconTintColor = GRAY040,
                                     strokeWidth = 2.dp,
                                     contentDescription = "Add"
+                                )
+                                Spacer(modifier = Modifier.padding(16.dp))
+                                SquareProfileImage(
+                                    modifier = Modifier.padding(16.dp).size(20.dp),
+                                    drawable = R.drawable.ic_launcher_background,
+                                    radii = 5.dp
                                 )
                             }
                         })
