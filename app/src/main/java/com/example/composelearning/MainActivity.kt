@@ -39,6 +39,8 @@ import androidx.compose.ui.unit.sp
 import com.example.composelearning.buttons.ButtonWithBorder
 import com.example.composelearning.buttons.FilledButton
 import com.example.composelearning.buttons.TintedIconButtonWithBorder
+import com.example.composelearning.customshapes.Polygon
+import com.example.composelearning.customshapes.TicketComposable
 import com.example.composelearning.images.OverlappingRow
 import com.example.composelearning.images.SquareProfileImage
 import com.example.composelearning.sliders.SliderDefaults
@@ -80,8 +82,18 @@ class MainActivity : ComponentActivity() {
                                 verticalArrangement = Arrangement.Top,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                //MainContent()
-                                //CustomProgressBar()
+                                //TicketComposable(modifier = Modifier.width(300.dp)
+                                 //   .height(200.dp))
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_launcher_background),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .width(100.dp)
+                                        .height(100.dp)
+                                        .clip(Polygon(3,0f)),
+                                    contentScale = ContentScale.Crop
+                                )
+                                Spacer(modifier = Modifier.padding(16.dp))
                                 var progress by remember { mutableStateOf(0f) }
                                 MultiColorProgressCanvas(
                                     modifier = Modifier
@@ -186,10 +198,11 @@ class MainActivity : ComponentActivity() {
                                             modifier = Modifier
                                                 .width(30.dp)
                                                 .height(30.dp)
-                                                .border(width = 1.dp, color = Color.White, shape = CircleShape)
+                                                .border(width = 1.dp,
+                                                    color = Color.White,
+                                                    shape = CircleShape)
                                                 .clip(CircleShape),
                                             contentScale = ContentScale.Crop
-
                                         )
                                     }
                                     Box(
@@ -197,10 +210,11 @@ class MainActivity : ComponentActivity() {
                                         modifier = Modifier
                                             .width(30.dp)
                                             .height(30.dp)
-                                            .border(width = 1.dp, color = Color.Black, shape = CircleShape)
+                                            .border(width = 1.dp,
+                                                color = Color.Black,
+                                                shape = CircleShape)
                                             .clip(CircleShape)
                                             .background(Color.White),
-
                                         ) {
                                         Text(
                                             text = "10+",
@@ -208,7 +222,7 @@ class MainActivity : ComponentActivity() {
                                             fontWeight = FontWeight.Bold,
                                             color = Color.Black,
                                             textAlign = TextAlign.Center,
-                                            )
+                                        )
                                     }
                                 }
                             }
@@ -236,51 +250,51 @@ fun MainContent() {
 
 @Composable
 fun ProfileList(list: List<String>, currentPosition: Int, onClick: (String, Int) -> Unit) {
-   // Column(Modifier.padding(start = 8.dp, top = 20.dp, end = 8.dp)) {
-        val countProfileImage = if (list.size > 3) {
-            list.size - 3
-        } else {
-            0
+    // Column(Modifier.padding(start = 8.dp, top = 20.dp, end = 8.dp)) {
+    val countProfileImage = if (list.size > 3) {
+        list.size - 3
+    } else {
+        0
+    }
+    val toShowList = list.take(4)
+    val totalCount = 10
+    val listState = rememberLazyListState()
+    val firstVisibleItemIndex by remember(listState) {
+        derivedStateOf {
+            listState.layoutInfo.visibleItemsInfo.first().index
         }
-        val toShowList = list.take(4)
-        val totalCount = 10
-        val listState = rememberLazyListState()
-        val firstVisibleItemIndex by remember(listState) {
-            derivedStateOf {
-                listState.layoutInfo.visibleItemsInfo.first().index
-            }
-        }
+    }
 
-        Row(
-            modifier = Modifier.wrapContentWidth(),
-            horizontalArrangement = Arrangement.Center
+    Row(
+        modifier = Modifier.wrapContentWidth(),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        LazyRow(
+            state = listState,
+            horizontalArrangement = Arrangement.spacedBy((-32).dp)
         ) {
-            LazyRow(
-                state = listState,
-                horizontalArrangement = Arrangement.spacedBy((-32).dp)
-            ) {
-                val firstVisibleItem = listState.firstVisibleItemIndex
-                val offSet = listState.firstVisibleItemScrollOffset
-                itemsIndexed(toShowList) { index, item ->
-                    val alpha = if (currentPosition != index) {
-                        1f
-                    } else {
-                        1f
-                    }
-                    if (index == 3) {
-                        ProfilePictureWithImage(
-                            onClick,
-                            item,
-                            index,
-                            count = countProfileImage
-                        )
-                    } else {
-                        ProfilePicture(alpha, onClick, item, index)
-                        Spacer(modifier = Modifier.padding(8.dp))
-                    }
+            val firstVisibleItem = listState.firstVisibleItemIndex
+            val offSet = listState.firstVisibleItemScrollOffset
+            itemsIndexed(toShowList) { index, item ->
+                val alpha = if (currentPosition != index) {
+                    1f
+                } else {
+                    1f
+                }
+                if (index == 3) {
+                    ProfilePictureWithImage(
+                        onClick,
+                        item,
+                        index,
+                        count = countProfileImage
+                    )
+                } else {
+                    ProfilePicture(alpha, onClick, item, index)
+                    Spacer(modifier = Modifier.padding(8.dp))
                 }
             }
-      //  }
+        }
+        //  }
     }
 }
 
