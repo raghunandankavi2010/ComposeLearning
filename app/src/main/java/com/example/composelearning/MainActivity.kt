@@ -77,22 +77,23 @@ class MainActivity : ComponentActivity() {
                         }, content = {
                             Column(
                                 modifier = Modifier
-                                    .padding(16.dp)
+                                    .padding(start = 16.dp,end = 16.dp)
                                     .fillMaxSize(),
                                 verticalArrangement = Arrangement.Top,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                //TicketComposable(modifier = Modifier.width(300.dp)
-                                 //   .height(200.dp))
-                                Image(
-                                    painter = painterResource(id = R.drawable.ic_launcher_background),
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .width(100.dp)
-                                        .height(100.dp)
-                                        .clip(Polygon(3,0f)),
-                                    contentScale = ContentScale.Crop
-                                )
+                                Spacer(modifier = Modifier.padding(16.dp))
+                                TicketComposable(modifier = Modifier
+                                    .height(200.dp))
+//                                Image(
+//                                    painter = painterResource(id = R.drawable.ic_launcher_background),
+//                                    contentDescription = null,
+//                                    modifier = Modifier
+//                                        .width(200.dp)
+//                                        .height(200.dp)
+//                                        .clip(Polygon(5,-90f)),
+//                                    contentScale = ContentScale.Crop
+//                                )
                                 Spacer(modifier = Modifier.padding(16.dp))
                                 var progress by remember { mutableStateOf(0f) }
                                 MultiColorProgressCanvas(
