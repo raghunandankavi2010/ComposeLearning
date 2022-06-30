@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.*
@@ -34,6 +35,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composelearning.buttons.ButtonWithBorder
@@ -105,6 +107,8 @@ class MainActivity : ComponentActivity() {
                                     cornerRadii = 2.dp
                                 )
                                 Spacer(modifier = Modifier.padding(16.dp))
+
+
                                 com.example.composelearning.sliders.Slider(
                                     onValueChangeFinished = {
                                         // do something on value change finished
@@ -511,3 +515,38 @@ fun TooltipOnLongClickExample(onClick: () -> Unit = {}) {
 
 val String.color
     get() = Color(android.graphics.Color.parseColor(this))
+
+@Composable
+fun SliderLabel(
+    label: String,
+    minWidth: Dp,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = label,
+        textAlign = TextAlign.Center,
+        color = Color.White,
+        modifier = modifier
+            .background(
+                color = MaterialTheme.colors.primary,
+                shape = RoundedCornerShape(4.dp)
+            )
+            .padding(4.dp)
+            .defaultMinSize(minWidth = minWidth)
+    )
+}
+
+private fun getSliderOffset(
+    value: Float,
+    valueRange: ClosedFloatingPointRange<Float>,
+    boxWidth: Dp,
+    labelWidth: Dp
+): Dp {
+    val coerced = value.coerceIn(valueRange.start, valueRange.endInclusive)
+    val positionFraction = calcFraction(valueRange.start, valueRange.endInclusive, coerced)
+
+    return (boxWidth - labelWidth) * positionFraction
+}
+
+private fun calcFraction(a: Float, b: Float, pos: Float) =
+    (if (b - a == 0f) 0f else (pos - a) / (b - a)).coerceIn(0f,1f)
