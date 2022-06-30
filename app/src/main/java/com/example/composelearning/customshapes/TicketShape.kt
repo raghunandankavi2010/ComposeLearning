@@ -13,6 +13,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -33,7 +35,7 @@ fun drawTicketPath(size: Size, cornerRadius: Float): Path {
                 right = cornerRadius,
                 bottom = cornerRadius
             ),
-            startAngleDegrees = 90f,
+            startAngleDegrees = 90.0f,
             sweepAngleDegrees = -90.0f,
             forceMoveTo = false
         )
@@ -101,17 +103,17 @@ fun TicketComposable(modifier: Modifier) {
             }
             .background(color = Color.Black)
             .drawBehind {
-//                scale(scale = 0.9f) {
-//                    drawPath(
-//                        path = drawTicketPath(size = size, cornerRadius = 10.dp.toPx()),
-//                        color = Color.Red,
-//                        style = Stroke(
-//                            width = 2.dp.toPx(),
-//                            pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f))
-//                        )
-//                    )
-//                }
-                drawLine(Color.Red,
+                scale(scale = 0.9f) {
+                    drawPath(
+                        path = drawTicketPath(size = size, cornerRadius = 25.dp.toPx()),
+                        color = Color.Red,
+                        style = Stroke(
+                            width = 2.dp.toPx(),
+                            pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f))
+                        )
+                    )
+                }
+                drawLine(Color.Green,
                     Offset(10.dp.toPx(), size.height / 2),
                     Offset(size.width  - 10.dp.toPx(), size.height / 2),
                     pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f))
