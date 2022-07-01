@@ -41,11 +41,11 @@ import androidx.compose.ui.unit.sp
 import com.example.composelearning.buttons.ButtonWithBorder
 import com.example.composelearning.buttons.FilledButton
 import com.example.composelearning.buttons.TintedIconButtonWithBorder
-import com.example.composelearning.customshapes.Polygon
 import com.example.composelearning.customshapes.TicketComposable
 import com.example.composelearning.images.OverlappingRow
 import com.example.composelearning.images.SquareProfileImage
 import com.example.composelearning.sliders.SliderDefaults
+import com.example.composelearning.sliders.SliderLabelDemo
 import com.example.composelearning.textfields.DottedUnderlineTextField
 import com.example.composelearning.textfields.TextFieldDefaults
 import com.example.composelearning.ui.theme.*
@@ -76,17 +76,18 @@ class MainActivity : ComponentActivity() {
                                 contentColor = White,
                                 elevation = 12.dp
                             )
-                        }, content = {
-                            Column(
-                                modifier = Modifier
-                                    .padding(start = 16.dp,end = 16.dp)
-                                    .fillMaxSize(),
-                                verticalArrangement = Arrangement.Top,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Spacer(modifier = Modifier.padding(16.dp))
-                                TicketComposable(modifier = Modifier
-                                    .height(200.dp))
+                        }) {
+                        Column(
+                            modifier = Modifier
+                                .padding(start = 16.dp, end = 16.dp)
+                                .fillMaxSize(),
+                            verticalArrangement = Arrangement.Top,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Spacer(modifier = Modifier.padding(16.dp))
+                             SliderLabelDemo()
+//                            TicketComposable(modifier = Modifier
+//                                .height(200.dp))
 //                                Image(
 //                                    painter = painterResource(id = R.drawable.ic_launcher_background),
 //                                    contentDescription = null,
@@ -96,142 +97,142 @@ class MainActivity : ComponentActivity() {
 //                                        .clip(Polygon(5,-90f)),
 //                                    contentScale = ContentScale.Crop
 //                                )
-                                Spacer(modifier = Modifier.padding(16.dp))
-                                var progress by remember { mutableStateOf(0f) }
-                                MultiColorProgressCanvas(
+                            Spacer(modifier = Modifier.padding(16.dp))
+                            var progress by remember { mutableStateOf(0f) }
+                            MultiColorProgressCanvas(
+                                modifier = Modifier
+                                    .height(16.dp)
+                                    .padding(16.dp)
+                                    .fillMaxSize(),
+                                heightOfProgress = 8.dp,
+                                cornerRadii = 2.dp
+                            )
+                            Spacer(modifier = Modifier.padding(16.dp))
+
+
+                            com.example.composelearning.sliders.Slider(
+                                onValueChangeFinished = {
+                                    // do something on value change finished
+                                    println(progress.toInt())
+                                },
+                                valueRange = 0f..100f,
+                                value = progress,
+                                onValueChange = { value ->
+                                    progress = value
+                                },
+                                colors = SliderDefaults.colors(
+                                    activeTrackColor = ActiveTrackColor,
+                                    inactiveTrackColor = InactiveTrackColor
+                                )
+                            )
+                            Spacer(modifier = Modifier.padding(16.dp))
+                            ButtonWithBorder(text = "Cancel", onClick = {
+                            })
+
+                            Spacer(modifier = Modifier.padding(16.dp))
+                            FilledButton(text = "Checkin", onClick = {
+                            })
+
+                            Spacer(modifier = Modifier.padding(16.dp))
+                            val customTextSelectionColors = TextSelectionColors(
+                                handleColor = DEFAULT060,
+                                backgroundColor = DEFAULT060.copy(alpha = 0.4f)
+                            )
+                            var text by remember { mutableStateOf("0%") }
+                            CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
+                                DottedUnderlineTextField(
                                     modifier = Modifier
-                                        .height(16.dp)
-                                        .padding(16.dp)
-                                        .fillMaxSize(),
-                                    heightOfProgress = 8.dp,
-                                    cornerRadii = 2.dp
-                                )
-                                Spacer(modifier = Modifier.padding(16.dp))
-
-
-                                com.example.composelearning.sliders.Slider(
-                                    onValueChangeFinished = {
-                                        // do something on value change finished
-                                        println(progress.toInt())
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    value = text,
+                                    singleLine = true,
+                                    onValueChange = { newText ->
+                                        text = newText
                                     },
-                                    valueRange = 0f..100f,
-                                    value = progress,
-                                    onValueChange = { value ->
-                                        progress = value
+                                    trailingIcon = {
+                                        Icon(painter = painterResource(id = R.drawable.ic_edit),
+                                            contentDescription = "Edit",
+                                            tint = DEFAULT060)
                                     },
-                                    colors = SliderDefaults.colors(
-                                        activeTrackColor = ActiveTrackColor,
-                                        inactiveTrackColor = InactiveTrackColor
+                                    colors = TextFieldDefaults.textFieldColors(
+                                        backgroundColor = GREY094,
+                                        textColor = DEFAULT020,
+                                        focusedIndicatorColor = DEFAULT060,
+                                        unfocusedIndicatorColor = DEFAULT060,
+                                        leadingIconColor = DEFAULT060,
+                                        cursorColor = DEFAULT060
                                     )
                                 )
-                                Spacer(modifier = Modifier.padding(16.dp))
-                                ButtonWithBorder(text = "Cancel", onClick = {
-                                })
-
-                                Spacer(modifier = Modifier.padding(16.dp))
-                                FilledButton(text = "Checkin", onClick = {
-                                })
-
-                                Spacer(modifier = Modifier.padding(16.dp))
-                                val customTextSelectionColors = TextSelectionColors(
-                                    handleColor = DEFAULT060,
-                                    backgroundColor = DEFAULT060.copy(alpha = 0.4f)
+                            }
+                            Spacer(modifier = Modifier.padding(16.dp))
+                            TintedIconButtonWithBorder(
+                                imageVector = Icons.Default.Add,
+                                modifier = Modifier.size(25.dp),
+                                onClick = {
+                                },
+                                borderColor = GRAY040,
+                                iconTintColor = GRAY040,
+                                strokeWidth = 2.dp,
+                                contentDescription = "Add"
+                            )
+                            Spacer(modifier = Modifier.padding(16.dp))
+                            SquareProfileImage(
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .size(20.dp),
+                                drawable = R.drawable.ic_launcher_background,
+                                radii = 5.dp
+                            )
+                            Spacer(modifier = Modifier.padding(16.dp))
+                            MainContent()
+                            Spacer(modifier = Modifier.padding(16.dp))
+                            OverlappingRow(
+                                overlapFactor = 0.7f
+                            ) {
+                                val images = intArrayOf(
+                                    R.drawable.ic_launcher_background,
+                                    R.drawable.ic_launcher_background,
+                                    R.drawable.ic_launcher_background,
+                                    R.drawable.ic_launcher_background,
+                                    R.drawable.ic_launcher_background,
+                                    R.drawable.ic_launcher_background
                                 )
-                                var text by remember { mutableStateOf("0%") }
-                                CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
-                                    DottedUnderlineTextField(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(16.dp),
-                                        value = text,
-                                        singleLine = true,
-                                        onValueChange = { newText ->
-                                            text = newText
-                                        },
-                                        trailingIcon = {
-                                            Icon(painter = painterResource(id = R.drawable.ic_edit),
-                                                contentDescription = "Edit",
-                                                tint = DEFAULT060)
-                                        },
-                                        colors = TextFieldDefaults.textFieldColors(
-                                            backgroundColor = GREY094,
-                                            textColor = DEFAULT020,
-                                            focusedIndicatorColor = DEFAULT060,
-                                            unfocusedIndicatorColor = DEFAULT060,
-                                            leadingIconColor = DEFAULT060,
-                                            cursorColor = DEFAULT060
-                                        )
-                                    )
-                                }
-                                Spacer(modifier = Modifier.padding(16.dp))
-                                TintedIconButtonWithBorder(
-                                    imageVector = Icons.Default.Add,
-                                    modifier = Modifier.size(25.dp),
-                                    onClick = {
-                                    },
-                                    borderColor = GRAY040,
-                                    iconTintColor = GRAY040,
-                                    strokeWidth = 2.dp,
-                                    contentDescription = "Add"
-                                )
-                                Spacer(modifier = Modifier.padding(16.dp))
-                                SquareProfileImage(
-                                    modifier = Modifier
-                                        .padding(16.dp)
-                                        .size(20.dp),
-                                    drawable = R.drawable.ic_launcher_background,
-                                    radii = 5.dp
-                                )
-                                Spacer(modifier = Modifier.padding(16.dp))
-                                MainContent()
-                                Spacer(modifier = Modifier.padding(16.dp))
-                                OverlappingRow(
-                                    overlapFactor = 0.7f
-                                ) {
-                                    val images = intArrayOf(
-                                        R.drawable.ic_launcher_background,
-                                        R.drawable.ic_launcher_background,
-                                        R.drawable.ic_launcher_background,
-                                        R.drawable.ic_launcher_background,
-                                        R.drawable.ic_launcher_background,
-                                        R.drawable.ic_launcher_background
-                                    )
-                                    for (i in images.indices) {
-                                        Image(
-                                            painter = painterResource(id = images[i]),
-                                            contentDescription = null,
-                                            modifier = Modifier
-                                                .width(30.dp)
-                                                .height(30.dp)
-                                                .border(width = 1.dp,
-                                                    color = Color.White,
-                                                    shape = CircleShape)
-                                                .clip(CircleShape),
-                                            contentScale = ContentScale.Crop
-                                        )
-                                    }
-                                    Box(
-                                        contentAlignment = Alignment.Center,
+                                for (i in images.indices) {
+                                    Image(
+                                        painter = painterResource(id = images[i]),
+                                        contentDescription = null,
                                         modifier = Modifier
                                             .width(30.dp)
                                             .height(30.dp)
                                             .border(width = 1.dp,
-                                                color = Color.Black,
+                                                color = Color.White,
                                                 shape = CircleShape)
-                                            .clip(CircleShape)
-                                            .background(Color.White),
-                                        ) {
-                                        Text(
-                                            text = "10+",
-                                            fontSize = 21.sp,
-                                            fontWeight = FontWeight.Bold,
+                                            .clip(CircleShape),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier
+                                        .width(30.dp)
+                                        .height(30.dp)
+                                        .border(width = 1.dp,
                                             color = Color.Black,
-                                            textAlign = TextAlign.Center,
-                                        )
-                                    }
+                                            shape = CircleShape)
+                                        .clip(CircleShape)
+                                        .background(Color.White),
+                                ) {
+                                    Text(
+                                        text = "10+",
+                                        fontSize = 21.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.Black,
+                                        textAlign = TextAlign.Center,
+                                    )
                                 }
                             }
-                        })
+                        }
+                    }
                 }
             }
         }
@@ -520,7 +521,7 @@ val String.color
 fun SliderLabel(
     label: String,
     minWidth: Dp,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Text(
         text = label,
@@ -540,7 +541,7 @@ private fun getSliderOffset(
     value: Float,
     valueRange: ClosedFloatingPointRange<Float>,
     boxWidth: Dp,
-    labelWidth: Dp
+    labelWidth: Dp,
 ): Dp {
     val coerced = value.coerceIn(valueRange.start, valueRange.endInclusive)
     val positionFraction = calcFraction(valueRange.start, valueRange.endInclusive, coerced)
@@ -549,4 +550,4 @@ private fun getSliderOffset(
 }
 
 private fun calcFraction(a: Float, b: Float, pos: Float) =
-    (if (b - a == 0f) 0f else (pos - a) / (b - a)).coerceIn(0f,1f)
+    (if (b - a == 0f) 0f else (pos - a) / (b - a)).coerceIn(0f, 1f)
