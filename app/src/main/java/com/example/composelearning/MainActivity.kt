@@ -45,12 +45,12 @@ import com.example.composelearning.customshapes.TicketComposable
 import com.example.composelearning.images.OverlappingRow
 import com.example.composelearning.images.SquareProfileImage
 import com.example.composelearning.sliders.SliderDefaults
-import com.example.composelearning.sliders.SliderLabelDemo
 import com.example.composelearning.textfields.DottedUnderlineTextField
 import com.example.composelearning.textfields.TextFieldDefaults
 import com.example.composelearning.ui.theme.*
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterialApi::class)
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,10 +84,26 @@ class MainActivity : ComponentActivity() {
                             verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            var progress by remember { mutableStateOf(0f) }
                             Spacer(modifier = Modifier.padding(16.dp))
-                             SliderLabelDemo()
-//                            TicketComposable(modifier = Modifier
-//                                .height(200.dp))
+                            Row {
+                                Text(text = "Test1")
+                                var range by remember { mutableStateOf(-20f..20f) }
+                                Row(
+                                    modifier= Modifier.weight(1f),
+                                ){
+                                    RangeSlider(
+                                        values = range, onValueChange = {
+                                            range = it
+                                        },
+                                        valueRange = -50f..50f
+                                    )
+                                }
+                                Text(text = "Test2")
+                            }
+                            Spacer(modifier = Modifier.padding(16.dp))
+                            TicketComposable(modifier = Modifier
+                                .height(200.dp))
 //                                Image(
 //                                    painter = painterResource(id = R.drawable.ic_launcher_background),
 //                                    contentDescription = null,
@@ -98,7 +114,7 @@ class MainActivity : ComponentActivity() {
 //                                    contentScale = ContentScale.Crop
 //                                )
                             Spacer(modifier = Modifier.padding(16.dp))
-                            var progress by remember { mutableStateOf(0f) }
+
                             MultiColorProgressCanvas(
                                 modifier = Modifier
                                     .height(16.dp)
@@ -220,7 +236,7 @@ class MainActivity : ComponentActivity() {
                                             color = Color.Black,
                                             shape = CircleShape)
                                         .clip(CircleShape)
-                                        .background(Color.White),
+                                        .background(White),
                                 ) {
                                     Text(
                                         text = "10+",
