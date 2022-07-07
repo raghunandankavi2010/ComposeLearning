@@ -5,10 +5,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Slider
 import androidx.compose.material.Text
@@ -61,6 +58,7 @@ fun Speedometer(
     // remember is not used so as to restart the animation from start
     val progressAnimation = Animatable(0f)
     val pointerAnimation = Animatable(startAngleRadians.toFloat())
+
 
     /** restart @LaunchedEffect
      *  when progress changes
@@ -126,10 +124,11 @@ fun Speedometer(
                 drawCircle(mainColor, 20f, centerOffset)
                 // draw pointer
                 val r = w / 4f
-                val x = r * cos(pointerAnimation.value) + w / 2
-                val y = r * sin(pointerAnimation.value) + w / 2
 
-                canvas.drawLine(Offset(w / 2, h / 2), Offset(x, y), paint)
+                val x = r * cos(pointerAnimation.value) + w / 2
+                val y = r * sin(pointerAnimation.value) + h / 2
+
+                canvas.drawLine(Offset(w/2, h/2), Offset(x, y), paint)
             }
         }
     )
