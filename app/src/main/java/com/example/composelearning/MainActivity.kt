@@ -45,6 +45,7 @@ import com.example.composelearning.customshapes.TicketComposable
 import com.example.composelearning.images.OverlappingRow
 import com.example.composelearning.images.SquareProfileImage
 import com.example.composelearning.sliders.SliderDefaults
+import com.example.composelearning.speedometer.SpeedometerScreen
 import com.example.composelearning.textfields.DottedUnderlineTextField
 import com.example.composelearning.textfields.TextFieldDefaults
 import com.example.composelearning.ui.theme.*
@@ -102,8 +103,9 @@ class MainActivity : ComponentActivity() {
                                 Text(text = "Test2")
                             }
                             Spacer(modifier = Modifier.padding(16.dp))
-                            TicketComposable(modifier = Modifier
-                                .height(200.dp))
+                            SpeedometerScreen()
+//                            TicketComposable(modifier = Modifier
+//                                .height(200.dp))
 //                                Image(
 //                                    painter = painterResource(id = R.drawable.ic_launcher_background),
 //                                    contentDescription = null,
