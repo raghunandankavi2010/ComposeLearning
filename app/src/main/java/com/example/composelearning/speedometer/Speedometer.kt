@@ -134,7 +134,7 @@ fun Speedometer(
                 val x = r * cos(pointerAnimation.value) + w / 2
                 val y = r * sin(pointerAnimation.value) + h / 2
 
-                canvas.drawLine(Offset(w/2, h/2), Offset(x, y), paint)
+                drawLine(mainColor,Offset(w/2, h/2), Offset(x, y), 20f, StrokeCap.Round)
             }
         }
     )
