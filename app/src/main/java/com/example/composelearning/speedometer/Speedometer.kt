@@ -56,7 +56,6 @@ fun Speedometer(
     val endProgressInRadians = startAngleRadians + progressInRadians
 
     // remember is not used so as to restart the animation from start
-    val progressValueAnim= Animatable(0f)
     val progressAnimation = Animatable(0f)
     val pointerAnimation = Animatable(startAngleRadians.toFloat())
 
@@ -82,7 +81,6 @@ fun Speedometer(
         }
     }
 
-
     Canvas(
         modifier = Modifier
             .fillMaxWidth()
@@ -102,9 +100,7 @@ fun Speedometer(
                     else -> // Green
                         Color(0xFF388E3C) to Color(0xFFC8E6C9)
                 }
-                val paint = Paint().apply {
-                    color = mainColor
-                }
+
                 val centerArcSize = Size(w / 2f, h / 2f)
                 val centerArcStroke = Stroke(20f, 0f, StrokeCap.Round)
                 drawArc(
@@ -128,6 +124,7 @@ fun Speedometer(
                 )
                 // Drawing the pointer circle
                 drawCircle(mainColor, 20f, centerOffset)
+                println("Values ${pointerAnimation.value}")
                 // draw pointer
                 val r = w / 4f
 
