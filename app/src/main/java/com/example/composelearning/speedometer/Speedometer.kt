@@ -56,6 +56,7 @@ fun Speedometer(
     val endProgressInRadians = startAngleRadians + progressInRadians
 
     // remember is not used so as to restart the animation from start
+    val progressValueAnim= Animatable(0f)
     val progressAnimation = Animatable(0f)
     val pointerAnimation = Animatable(startAngleRadians.toFloat())
 
@@ -67,6 +68,11 @@ fun Speedometer(
         launch {
             pointerAnimation.animateTo(
                 targetValue = endProgressInRadians.toFloat(),
+                animationSpec = tween(durationMillis = 3000, easing = LinearEasing))
+        }
+        launch {
+            progressAnimation.animateTo(
+                targetValue = progress.toFloat(),
                 animationSpec = tween(durationMillis = 3000, easing = LinearEasing))
         }
         launch {
@@ -89,9 +95,9 @@ fun Speedometer(
                 val quarterOffset = Offset(w / 4f, h / 4f)
                 // Drawing Center Arc background
                 val (mainColor, secondaryColor) = when {
-                    progress < 20 -> // Red
+                    progressAnimation.value < 20 -> // Red
                         Color(0xFFD32F2F) to Color(0xFFFFCDD2)
-                    progress < 40 -> // Orange
+                    progressAnimation.value < 40 -> // Orange
                         Color(0xFFF57C00) to Color(0xFFFFE0B2)
                     else -> // Green
                         Color(0xFF388E3C) to Color(0xFFC8E6C9)
