@@ -1,10 +1,7 @@
 package com.example.composelearning.speedometer
 
 import android.annotation.SuppressLint
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.Easing
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -68,12 +65,12 @@ fun Speedometer(
         launch {
             pointerAnimation.animateTo(
                 targetValue = endProgressInRadians.toFloat(),
-                animationSpec = tween(durationMillis = 3000, easing = EaseOutBounce))
+                animationSpec = tween(durationMillis = 3000, easing = LinearEasing))
         }
         launch {
             progressAnimation.animateTo(
                 targetValue = progress.toFloat(),
-                animationSpec = tween(durationMillis = 3000, easing = EaseOutBounce))
+                animationSpec = tween(durationMillis = 3000, easing = LinearEasing))
         }
     }
 
@@ -131,23 +128,4 @@ fun Speedometer(
             }
         }
     )
-}
-
-val EaseOutBounce: Easing = Easing { fraction ->
-    val n1 = 7.5625f
-    val d1 = 2.75f
-    var newFraction = fraction
-
-    return@Easing if (newFraction < 1f / d1) {
-        n1 * newFraction * newFraction
-    } else if (newFraction < 2f / d1) {
-        newFraction -= 1.5f / d1
-        n1 * newFraction * newFraction + 0.75f
-    } else if (newFraction < 2.5f / d1) {
-        newFraction -= 2.25f / d1
-        n1 * newFraction * newFraction + 0.9375f
-    } else {
-        newFraction -= 2.625f / d1
-        n1 * newFraction * newFraction + 0.984375f
-    }
 }
