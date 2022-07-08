@@ -30,7 +30,7 @@ fun SpeedometerScreen() {
     val progress = remember { mutableStateOf(0f) }
     Column(Modifier.padding(16.dp)) {
         Slider(value = targetValue, onValueChangeFinished = {
-        }, onValueChange = { targetValue = it }, valueRange = 0f..100f)
+        }, onValueChange = { targetValue = it }, valueRange = 0f..300f)
 
         Text(text = "${targetValue.toInt()}")
         Button(onClick = {
@@ -50,7 +50,7 @@ fun Speedometer(
     val arcDegrees = 275
     val startArcAngle = 135f
     val startAngleRadians = startArcAngle * (PI / 180f)
-    val progressInRadians = (progress * (arcDegrees) / 100f) * (PI / 180f)
+    val progressInRadians = (progress * (arcDegrees) / 300f) * (PI / 180f)
     val endProgressInRadians = startAngleRadians + progressInRadians
 
     // remember is not used so as to restart the animation from start
@@ -109,7 +109,7 @@ fun Speedometer(
                 drawArc(
                     mainColor,
                     startArcAngle,
-                    progressAnimation.value * (arcDegrees) / 100f,
+                    progressAnimation.value * (arcDegrees) / 300f,
                     false,
                     topLeft = quarterOffset,
                     size = centerArcSize,
