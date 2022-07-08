@@ -86,9 +86,9 @@ fun Speedometer(
                 val quarterOffset = Offset(w / 4f, h / 4f)
                 // Drawing Center Arc background
                 val (mainColor, secondaryColor) = when {
-                    progressAnimation.value < 20 -> // Red
+                    progressAnimation.value < 100 -> // Red
                         Color(0xFFD32F2F) to Color(0xFFFFCDD2)
-                    progressAnimation.value < 40 -> // Orange
+                    progressAnimation.value < 200 -> // Orange
                         Color(0xFFF57C00) to Color(0xFFFFE0B2)
                     else -> // Green
                         Color(0xFF388E3C) to Color(0xFFC8E6C9)
