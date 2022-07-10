@@ -3,6 +3,7 @@ package com.example.composelearning.speedometer
 import android.annotation.SuppressLint
 import android.graphics.Paint
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Easing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -17,17 +18,18 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
+import com.example.composelearning.LogCompositions
 import kotlinx.coroutines.launch
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
-
 
 @SuppressLint("UnrememberedAnimatable")
 @Composable
 fun Speedometer(
     progress: Int,
 ) {
+    LogCompositions("Speedometer", "Running")
     val arcDegrees = 275
     val startArcAngle = 135f
     val startAngleRadians = startArcAngle * (PI / 180f)
@@ -45,12 +47,12 @@ fun Speedometer(
         launch {
             pointerAnimation.animateTo(
                 targetValue = endProgressInRadians.toFloat(),
-                animationSpec = tween(durationMillis = 3000, easing = LinearEasing))
+                animationSpec = tween(durationMillis = 3000, easing = EaseOutBounce))
         }
         launch {
             progressAnimation.animateTo(
                 targetValue = progress.toFloat(),
-                animationSpec = tween(durationMillis = 3000, easing = LinearEasing))
+                animationSpec = tween(durationMillis = 3000, easing = EaseOutBounce))
         }
     }
 
@@ -110,10 +112,10 @@ fun Speedometer(
                 // draw markers
                 while (angleStart <= angleEnd) {
                     markerAngleRadians = angleStart * (PI / 180f)
-                    val x1 = (r - 10f) * cos(markerAngleRadians) + w / 2
-                    val y1 = (r - 10f) * sin(markerAngleRadians) + h / 2
-                    val x2 = (r + 10f) * cos(markerAngleRadians) + w / 2
-                    val y2 = (r + 10f) * sin(markerAngleRadians) + h / 2
+                    val x1 = (r - 20f) * cos(markerAngleRadians) + w / 2
+                    val y1 = (r - 20f) * sin(markerAngleRadians) + h / 2
+                    val x2 = (r + 20f) * cos(markerAngleRadians) + w / 2
+                    val y2 = (r + 20f) * sin(markerAngleRadians) + h / 2
                     val tx = (r + 40f) * cos(markerAngleRadians) + w / 2
                     val ty = (r + 40f) * sin(markerAngleRadians) + h / 2
 
@@ -142,4 +144,23 @@ fun Speedometer(
             }
         }
     )
+}
+
+val EaseOutBounce: Easing = Easing { fraction ->
+    val n1 = 7.5625f
+    val d1 = 2.75f
+    var newFraction = fraction
+
+    return@Easing if (newFraction < 1f / d1) {
+        n1 * newFraction * newFraction
+    } else if (newFraction < 2f / d1) {
+        newFraction -= 1.5f / d1
+        n1 * newFraction * newFraction + 0.75f
+    } else if (newFraction < 2.5f / d1) {
+        newFraction -= 2.25f / d1
+        n1 * newFraction * newFraction + 0.9375f
+    } else {
+        newFraction -= 2.625f / d1
+        n1 * newFraction * newFraction + 0.984375f
+    }
 }
