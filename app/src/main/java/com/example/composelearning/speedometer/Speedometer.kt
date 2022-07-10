@@ -3,17 +3,11 @@ package com.example.composelearning.speedometer
 import android.annotation.SuppressLint
 import android.graphics.Paint
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.Slider
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -23,18 +17,11 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-@Composable
-fun SpeedometerScreen() {
-    Column(Modifier.padding(16.dp)) {
-        Speedometer(50)
-    }
-}
 
 @SuppressLint("UnrememberedAnimatable")
 @Composable
@@ -109,21 +96,20 @@ fun Speedometer(
                 )
                 // Drawing the pointer circle
                 drawCircle(mainColor, 20f, centerOffset)
+
                 // draw pointer
                 val r = w / 4f
                 val x = (r - 30f) * cos(pointerAnimation.value) + w / 2
                 val y = (r - 30f) * sin(pointerAnimation.value) + h / 2
                 println("Times Called")
                 drawLine(mainColor, Offset(w / 2, h / 2), Offset(x, y), 20f, StrokeCap.Round)
-                var markerAngleRadians = 0.0
+                var markerAngleRadians: Double
                 var textValue = 0
                 var angleStart = 135f
                 val angleEnd = 410f
-
                 // draw markers
-                while(angleStart <= angleEnd) {
+                while (angleStart <= angleEnd) {
                     markerAngleRadians = angleStart * (PI / 180f)
-                    //  println(i)
                     val x1 = (r - 10f) * cos(markerAngleRadians) + w / 2
                     val y1 = (r - 10f) * sin(markerAngleRadians) + h / 2
                     val x2 = (r + 10f) * cos(markerAngleRadians) + w / 2

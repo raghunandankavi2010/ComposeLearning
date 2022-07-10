@@ -41,11 +41,10 @@ import androidx.compose.ui.unit.sp
 import com.example.composelearning.buttons.ButtonWithBorder
 import com.example.composelearning.buttons.FilledButton
 import com.example.composelearning.buttons.TintedIconButtonWithBorder
-import com.example.composelearning.customshapes.TicketComposable
 import com.example.composelearning.images.OverlappingRow
 import com.example.composelearning.images.SquareProfileImage
 import com.example.composelearning.sliders.SliderDefaults
-import com.example.composelearning.speedometer.SpeedometerScreen
+import com.example.composelearning.speedometer.Speedometer
 import com.example.composelearning.textfields.DottedUnderlineTextField
 import com.example.composelearning.textfields.TextFieldDefaults
 import com.example.composelearning.ui.theme.*
@@ -85,7 +84,9 @@ class MainActivity : ComponentActivity() {
                             verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            var progress by remember { mutableStateOf(0f) }
+
+                            DragGestureTest()
+                           /* var progress by remember { mutableStateOf(0f) }
                             Spacer(modifier = Modifier.padding(16.dp))
                             Row {
                                 Text(text = "Test1")
@@ -103,18 +104,18 @@ class MainActivity : ComponentActivity() {
                                 Text(text = "Test2")
                             }
                             Spacer(modifier = Modifier.padding(16.dp))
-                            SpeedometerScreen()
-//                            TicketComposable(modifier = Modifier
-//                                .height(200.dp))
-//                                Image(
-//                                    painter = painterResource(id = R.drawable.ic_launcher_background),
-//                                    contentDescription = null,
-//                                    modifier = Modifier
-//                                        .width(200.dp)
-//                                        .height(200.dp)
-//                                        .clip(Polygon(5,-90f)),
-//                                    contentScale = ContentScale.Crop
-//                                )
+                            Speedometer(50)
+                            TicketComposable(modifier = Modifier
+                                .height(200.dp))
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_launcher_background),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .width(200.dp)
+                                        .height(200.dp)
+                                        .clip(Polygon(5,-90f)),
+                                    contentScale = ContentScale.Crop
+                                )
                             Spacer(modifier = Modifier.padding(16.dp))
 
                             MultiColorProgressCanvas(
@@ -248,7 +249,7 @@ class MainActivity : ComponentActivity() {
                                         textAlign = TextAlign.Center,
                                     )
                                 }
-                            }
+                            }*/
                         }
                     }
                 }
