@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Paint
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Easing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.aspectRatio
@@ -48,12 +49,12 @@ fun Speedometer(
         launch {
             pointerAnimation.animateTo(
                 targetValue = endProgressInRadians.toFloat(),
-                animationSpec = tween(durationMillis = 3000, easing = EaseOutBounce))
+                animationSpec = tween(durationMillis = 3000, easing = CustomEaseOutBounce))
         }
         launch {
             progressAnimation.animateTo(
                 targetValue = progress.toFloat(),
-                animationSpec = tween(durationMillis = 3000, easing = EaseOutBounce))
+                animationSpec = tween(durationMillis = 3000, easing = CustomEaseOutBounce))
         }
     }
 
@@ -69,9 +70,9 @@ fun Speedometer(
                 val quarterOffset = Offset(w / 4f, h / 4f)
                 // Drawing Center Arc background
                 val (mainColor, secondaryColor) = when {
-                    progressAnimation.value < 100 -> // Red
+                    progressAnimation.value < 50 -> // Red
                         Color(0xFFD32F2F) to Color(0xFFFFCDD2)
-                    progressAnimation.value < 200 -> // Orange
+                    progressAnimation.value < 80 -> // Orange
                         Color(0xFFF57C00) to Color(0xFFFFE0B2)
                     else -> // Green
                         Color(0xFF388E3C) to Color(0xFFC8E6C9)
@@ -164,3 +165,13 @@ val EaseOutBounce: Easing = Easing { fraction ->
         n1 * newFraction * newFraction + 0.984375f
     }
 }
+
+val CustomEaseOutBounce: Easing = Easing { fraction ->
+    return@Easing if (fraction < 0.61f) {
+        2.77f * fraction * fraction
+    } else {
+        1.250f * fraction * fraction - 2 * fraction + 1.750f
+    }
+
+}
+
