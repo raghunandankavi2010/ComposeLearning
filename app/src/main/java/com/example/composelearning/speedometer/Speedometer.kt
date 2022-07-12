@@ -4,12 +4,13 @@ import android.annotation.SuppressLint
 import android.graphics.Paint
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Easing
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -98,7 +99,6 @@ fun Speedometer(
                 )
                 // Drawing the pointer circle
                 drawCircle(mainColor, 20f, centerOffset)
-
                 // draw pointer
                 val r = w / 4f
                 val x = (r - 30f) * cos(pointerAnimation.value) + w / 2
