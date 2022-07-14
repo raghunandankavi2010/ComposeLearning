@@ -2,15 +2,18 @@ package com.example.composelearning.panel
 
 import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.splineBasedDecay
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.verticalDrag
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -23,15 +26,17 @@ import kotlinx.coroutines.launch
 @Composable
 fun Content(
     boxHeight: Dp,
-    state: DragState = rememberDragState(currentHeight = 100f, maxHeight = boxHeight.value)
+    state: DragState = rememberDragState(currentHeight = 100f, maxHeight = boxHeight.value),
 ) {
     Box(contentAlignment = Alignment.BottomCenter, modifier = Modifier.fillMaxSize()) {
         Surface(
+            elevation = 5.dp,
             color = Color(0xFF34AB52),
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(min = 100.dp,max = boxHeight)
+                .heightIn(min = 100.dp, max = boxHeight - 20.dp)
                 .height(state.currentHeight.dp)
+                .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))
                 .drag(state)
         ) {
         }
@@ -41,7 +46,7 @@ fun Content(
 @Composable
 fun rememberDragState(
     currentHeight: Float = 0f,
-    maxHeight: Float
+    maxHeight: Float,
 ): DragState {
     val state = rememberSaveable(saver = DragStateImpl.Saver) {
         DragStateImpl(currentHeight, maxHeight)
