@@ -59,7 +59,9 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     implementation "androidx.compose.ui:ui-util:$compose_version"
-    implementation("androidx.compose.foundation:foundation:1.2.0-rc02")
+    implementation("androidx.compose.foundation:foundation:1.3.0-alpha01")
+    // https://mvnrepository.com/artifact/androidx.compose.animation/animation
+    implementation group: 'androidx.compose.animation', name: 'animation', version: '1.1.1'
 
 
 }
