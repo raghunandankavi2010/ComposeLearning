@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
@@ -29,8 +28,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.composelearning.panel.BottomPanel
 import com.example.composelearning.speedometer.Speedometer
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
@@ -69,7 +68,8 @@ class MainActivity : ComponentActivity() {
                             verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Speedometer(progress = 100)
+                            BottomPanel()
+                            //Speedometer(progress = 100)
                             //DragGestureTest()
                             /* var progress by remember { mutableStateOf(0f) }
                              Spacer(modifier = Modifier.padding(16.dp))
@@ -464,7 +464,8 @@ fun ImageWithCount() {
 @Composable
 fun DefaultPreview() {
     ComposeLearningTheme {
-        Greeting("Android")
+        BottomPanel()
+       // Greeting("Android")
     }
 }
 
