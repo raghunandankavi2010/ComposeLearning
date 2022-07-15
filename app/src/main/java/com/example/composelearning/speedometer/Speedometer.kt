@@ -78,7 +78,7 @@ fun Speedometer(
                         Color(0xFF388E3C) to Color(0xFFC8E6C9)
                 }
                 val centerArcSize = Size(w / 2f, h / 2f)
-                val centerArcStroke = Stroke(20f, 0f, StrokeCap.Round)
+                val centerArcStroke = Stroke(20f, 0f, StrokeCap.Butt)
                 drawArc(
                     secondaryColor,
                     startArcAngle,
