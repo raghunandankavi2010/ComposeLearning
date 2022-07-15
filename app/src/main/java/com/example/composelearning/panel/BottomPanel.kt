@@ -15,7 +15,9 @@ fun BottomPanel() {
         BoxWithConstraints {
             Speedometer(progress = 100)
             val boxHeight = with(LocalDensity.current) { constraints.maxHeight.toDp() }
+            val boxWidth = with(LocalDensity.current) { constraints.maxWidth.toDp() }
             Content(
+                boxWidth = boxWidth,
                 boxHeight = boxHeight
             )
         }
