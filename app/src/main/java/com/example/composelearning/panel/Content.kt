@@ -2,18 +2,21 @@ package com.example.composelearning.panel
 
 import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.splineBasedDecay
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.verticalDrag
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.Surface
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -25,6 +28,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun Content(
+    boxWidth: Dp,
     boxHeight: Dp,
     state: DragState = rememberDragState(currentHeight = 100f, maxHeight = boxHeight.value),
 ) {
@@ -34,11 +38,31 @@ fun Content(
             color = Color(0xFF34AB52),
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(min = 100.dp, max = boxHeight - 20.dp)
+                .heightIn(min = 100.dp, max = boxHeight -20.dp )
                 .height(state.currentHeight.dp)
                 .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))
                 .drag(state)
         ) {
+           val angle =  if(state.currentHeight >= 100 ) {
+               180 * (state.currentHeight.dp - 120.dp).value / (boxHeight - 120.dp).value
+           } else {
+               0f
+           }
+            Box(modifier = Modifier
+                .size(50.dp)
+                .align(alignment = Alignment.TopCenter)) {
+
+                println("Angle ${angle}")
+                Icon(
+                    Icons.Filled.ArrowDropDown,
+                    tint = Color.Black,
+                    contentDescription = "print",
+                    modifier = Modifier
+                        .align(alignment = Alignment.TopCenter)
+                        .padding(top=16.dp)
+                        .rotate(angle)
+                )
+            }
         }
     }
 }
