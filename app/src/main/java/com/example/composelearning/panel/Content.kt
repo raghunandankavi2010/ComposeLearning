@@ -38,29 +38,26 @@ fun Content(
             color = Color(0xFF34AB52),
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(min = 100.dp, max = boxHeight -20.dp )
+                .heightIn(min = 100.dp, max = boxHeight - 20.dp)
                 .height(state.currentHeight.dp)
                 .clip(RoundedCornerShape(15.dp, 15.dp, 0.dp, 0.dp))
                 .drag(state)
         ) {
-           val angle =  if(state.currentHeight >= 100 ) {
-               180 * (state.currentHeight.dp - 120.dp).value / (boxHeight - 120.dp).value
-           } else {
-               0f
-           }
+            val angle = 180 * (state.currentHeight.dp - 120.dp).value / (boxHeight - 120.dp).value
+            // consider angle between 0 and 180 cause height can vary depending on offset
+            val currAngle = angle.coerceIn(0f, 180f)
+
             Box(modifier = Modifier
                 .size(50.dp)
                 .align(alignment = Alignment.TopCenter)) {
-
-                println("Angle ${angle}")
                 Icon(
                     Icons.Filled.ArrowDropDown,
                     tint = Color.Black,
                     contentDescription = "print",
                     modifier = Modifier
                         .align(alignment = Alignment.TopCenter)
-                        .padding(top=16.dp)
-                        .rotate(angle)
+                        .padding(top = 16.dp)
+                        .rotate(currAngle)
                 )
             }
         }
