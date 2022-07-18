@@ -30,7 +30,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.composelearning.panel.BottomPanel
-import com.example.composelearning.speedometer.Speedometer
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -68,7 +67,9 @@ class MainActivity : ComponentActivity() {
                             verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            BottomPanel()
+                            PagerDemo()
+                            //CustomDropdownMenu()
+                            //BottomPanel()
                             //Speedometer(progress = 100)
                             //DragGestureTest()
                             /* var progress by remember { mutableStateOf(0f) }
