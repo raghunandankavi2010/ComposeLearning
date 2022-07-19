@@ -104,7 +104,7 @@ fun Speedometer(
                 val r = w / 4f
                 val x = (r - 30f) * cos(pointerAnimation.value) + w / 2
                 val y = (r - 30f) * sin(pointerAnimation.value) + h / 2
-                println("Times Called")
+
                 drawLine(mainColor, Offset(w / 2, h / 2), Offset(x, y), 20f, StrokeCap.Round)
                 var markerAngleRadians: Double
                 var textValue = 0

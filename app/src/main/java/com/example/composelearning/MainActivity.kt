@@ -31,7 +31,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.composelearning.pager.PagerDemo
 import com.example.composelearning.panel.BottomPanel
-import com.example.composelearning.speedometer.Speedometer
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -64,17 +63,15 @@ class MainActivity : ComponentActivity() {
                         }) {
                         Column(
                             modifier = Modifier
-                                .padding(start = 16.dp, end = 16.dp)
                                 .fillMaxSize(),
                             verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Spacer(modifier = Modifier.padding(16.dp))
-                            PagerDemo()
+                            PagerDemo(modifier = Modifier)
                             //CustomDropdownMenu()
                             //BottomPanel()
-                            Spacer(modifier = Modifier.padding(16.dp))
-                            Speedometer(progress = 100)
+                            //Speedometer(progress = 100)
                             //DragGestureTest()
                             /* var progress by remember { mutableStateOf(0f) }
                              Spacer(modifier = Modifier.padding(16.dp))
