@@ -29,7 +29,9 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.composelearning.pager.PagerDemo
 import com.example.composelearning.panel.BottomPanel
+import com.example.composelearning.speedometer.Speedometer
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -67,10 +69,12 @@ class MainActivity : ComponentActivity() {
                             verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            Spacer(modifier = Modifier.padding(16.dp))
                             PagerDemo()
                             //CustomDropdownMenu()
                             //BottomPanel()
-                            //Speedometer(progress = 100)
+                            Spacer(modifier = Modifier.padding(16.dp))
+                            Speedometer(progress = 100)
                             //DragGestureTest()
                             /* var progress by remember { mutableStateOf(0f) }
                              Spacer(modifier = Modifier.padding(16.dp))
