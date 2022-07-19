@@ -2,7 +2,9 @@ package com.example.composelearning.pager
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
@@ -22,41 +24,39 @@ import kotlin.math.absoluteValue
 @Composable
 fun PagerDemo(modifier: Modifier = Modifier) {
 
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
-    val totalPadding = (screenWidth/2 - (50.dp))
-
-    val totalNumberOfItem  = 5
-
-    println(totalPadding)
-
     HorizontalPager(
-        count = 10,
-        contentPadding = PaddingValues(horizontal = totalPadding, vertical = 0.dp),
+        count = 30,
+        //https://github.com/google/accompanist/issues/849
+        // Not sure if i can remove this hardcoded value.
+        contentPadding = PaddingValues(horizontal = 160.dp),
+        itemSpacing = 8.dp,
         modifier = modifier
     ) { page ->
-
         Card(
             modifier = Modifier
                 .graphicsLayer {
                     val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
-
                     // Set the item alpha and scale based on the distance from the center
-                    val percentFromCenter = 1.0f - (pageOffset / (totalNumberOfItem/2f))
+                    val percentFromCenter = 1.0f - (pageOffset / (5f / 2f))
                     val itemScale = 0.5f + (percentFromCenter * 0.5f).coerceIn(0f, 1f)
                     val opacity = 0.25f + (percentFromCenter * 0.75f).coerceIn(0f, 1f)
 
                     alpha = opacity
                     scaleY = itemScale
-                    scaleX= itemScale
-
-                }.clip(CircleShape)
+                    scaleX = itemScale
+                }
+                .clip(CircleShape)
+                .size(50.dp)
         ) {
             Image(
                 painter = painterResource(R.drawable.ic_launcher_background),
                 contentDescription = null,
-                modifier = Modifier.size(50.dp)
+                modifier = Modifier
+                    .size(50.dp)
+
             )
         }
     }
 }
+
+
