@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.example.composelearning.customshapes.Polygon
 import com.example.composelearning.customshapes.TicketComposable
 import com.example.composelearning.lists.CircularList
+import com.example.composelearning.lists.CircularListVertical
 import com.example.composelearning.lists.RowItem
 import com.example.composelearning.panel.BottomPanel
 import com.example.composelearning.ui.theme.ComposeLearningTheme
@@ -71,28 +72,28 @@ class MainActivity : ComponentActivity() {
                             verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            TicketComposable(modifier = Modifier
-                                .height(200.dp))
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_launcher_background),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .width(200.dp)
-                                    .height(200.dp)
-                                    .clip(Polygon(5,-90f)),
-                                contentScale = ContentScale.Crop
-                            )
+//                            TicketComposable(modifier = Modifier
+//                                .height(200.dp))
+//                            Image(
+//                                painter = painterResource(id = R.drawable.ic_launcher_background),
+//                                contentDescription = null,
+//                                modifier = Modifier
+//                                    .width(200.dp)
+//                                    .height(200.dp)
+//                                    .clip(Polygon(5,-90f)),
+//                                contentScale = ContentScale.Crop
+//                            )
 
-                            CircularList(
-                                itemWidthDp = 50.dp,
-                                visibleItems = 5,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(50.dp),
+                            CircularListVertical(
+                                visibleItems = 12,
+                                circularFraction = .65f,
+                                modifier = Modifier.fillMaxSize(),
                             ) {
                                 for (i in 0 until 40) {
-                                    RowItem(
+                                    com.example.composelearning.lists.ListItem(
+                                        text = "Item #$i",
                                         color = colors[i % colors.size],
+                                        modifier = Modifier.fillMaxSize()
                                     )
                                 }
                             }
