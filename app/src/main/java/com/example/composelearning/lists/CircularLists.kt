@@ -5,16 +5,17 @@ import androidx.compose.animation.core.FloatSpringSpec
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.splineBasedDecay
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.horizontalDrag
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -25,11 +26,11 @@ import androidx.compose.ui.input.pointer.consumePositionChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.input.pointer.util.VelocityTracker
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.composelearning.ui.theme.ComposeLearningTheme
@@ -322,7 +323,7 @@ data class CircularRowConfig(
 )
 
 class CircularRowStateImpl(
-    currentOffset: Float = 0f
+    currentOffset: Float = 0f,
 ) : CircularRowState {
     private val animatable = Animatable(currentOffset)
     private var itemWidth = 0f
@@ -333,7 +334,7 @@ class CircularRowStateImpl(
         stiffness = Spring.StiffnessLow,
     )
     override val alphaValue: Float
-        get() = (1 - (abs(horizontalOffset) / (config.contentWidth / 2))).coerceIn(0f,1f)
+        get() = (1 - (abs(horizontalOffset) / (config.contentWidth / 2))).coerceIn(0f, 1f)
     override val scaleX: Float
         get() = horizontalOffset
     override val scaleY: Float
@@ -389,14 +390,14 @@ class CircularRowStateImpl(
         val maxOffset = config.contentWidth / 2f
         val x = (horizontalOffset + initialOffset + i * itemWidth)
         val deltaFromCenter = (x - initialOffset)
-        val percentFromCenter = 1.0f - abs(deltaFromCenter )/ maxOffset
+        val percentFromCenter = 1.0f - abs(deltaFromCenter) / maxOffset
+        println("Percentage =$deltaFromCenter ${percentFromCenter}")
 
         return 0.5f + (percentFromCenter * 0.5f)//1f - (1f - 0.65f) * (deltaFromCenter / maxOffset).absoluteValue
     }
 
 
     override fun offsetFor(index: Int): IntOffset {
-
         val x = (horizontalOffset + initialOffset + (index * (itemWidth)))
         val y = 0
         return IntOffset(
@@ -443,21 +444,17 @@ class CircularRowStateImpl(
 fun RowItem(
     color: Color,
 ) {
-
-    Image(
-        painter = painterResource(id = com.example.composelearning.R.drawable.ic_launcher_background),
-        contentDescription = null,
-        modifier = Modifier
-            .size(50.dp)
-            .clip(shape = CircleShape),
-        contentScale = ContentScale.Crop
-    )
-//    Box(
-//        modifier =
-//        Modifier
+    Box(modifier = Modifier
+        .size(50.dp)
+        .clip(shape = CircleShape)
+        .background(color))
+//    Image(
+//        painter = painterResource(id = com.example.composelearning.R.drawable.ic_launcher_background),
+//        contentDescription = null,
+//        modifier = Modifier
 //            .size(50.dp)
-//            .clip(shape = CircleShape)
-//            .background(color = color)
+//            .clip(shape = CircleShape),
+//        contentScale = ContentScale.Crop
 //    )
 }
 
@@ -466,7 +463,6 @@ private fun Modifier.drag(
     state: CircularRowState,
 ) = pointerInput(Unit) {
     val decay = splineBasedDecay<Float>(this)
-    val itemWidthPx = size.width / 5
     coroutineScope {
         while (true) {
             val pointerId = awaitPointerEventScope { awaitFirstDown().id }
@@ -493,6 +489,7 @@ private fun Modifier.drag(
 
 @Composable
 fun CircularList(
+    itemWidthDp: Dp,
     visibleItems: Int,
     modifier: Modifier = Modifier,
     state: CircularRowState = rememberCircularRowState(),
@@ -500,16 +497,16 @@ fun CircularList(
     content: @Composable () -> Unit,
 ) {
     check(visibleItems > 0) { "Visible items must be positive" }
-
+    val itemWidth =  with(LocalDensity.current) { itemWidthDp.toPx() }
     Layout(
         modifier = modifier
             .clipToBounds()
             .drag(state),
         content = content,
     ) { measurables, constraints ->
-        val itemWidth = constraints.maxWidth / visibleItems
+
         val itemConstraints =
-            Constraints.fixed(width = 50.dp.toPx().toInt(), height = constraints.maxHeight)
+            Constraints.fixed(width = itemWidth.roundToInt(), height = constraints.maxHeight)
         val placeables = measurables.map { measurable -> measurable.measure(itemConstraints) }
         state.setup(
             CircularRowConfig(
@@ -526,14 +523,10 @@ fun CircularList(
         ) {
             for (i in state.firstVisibleItem..state.lastVisibleItem) {
                 placeables[i].placeRelativeWithLayer(state.offsetFor(i), layerBlock = {
-                    val centerIndex =  state.firstVisibleItem + (state.lastVisibleItem - state.firstVisibleItem ) / 2
-                   // alpha = state.alpha(i,centerIndex)
-                    println("index = $i")
-                    alpha =  state.alpha(i)
+                    alpha = state.alpha(i)
                     scaleX = state.scale(i)
                     scaleY = state.scale(i)
-
-                } )
+                })
             }
         }
     }
@@ -562,6 +555,7 @@ fun PreviewCircularList5() {
     ComposeLearningTheme {
         Surface {
             CircularList(
+               itemWidthDp =  50.dp,
                 visibleItems = 5,
                 modifier = Modifier
                     .fillMaxWidth()
