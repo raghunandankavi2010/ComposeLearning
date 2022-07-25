@@ -84,11 +84,14 @@ class MainActivity : ComponentActivity() {
                             )
 
                             CircularList(
+                                itemWidthDp = 50.dp,
                                 visibleItems = 5,
-                                modifier = Modifier.fillMaxWidth().height(50.dp),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp),
                             ) {
                                 for (i in 0 until 40) {
-                                    com.example.composelearning.lists.RowItem(
+                                    RowItem(
                                         color = colors[i % colors.size],
                                     )
                                 }
