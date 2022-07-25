@@ -24,12 +24,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.composelearning.pager.PagerDemo
+import com.example.composelearning.customshapes.Polygon
+import com.example.composelearning.customshapes.TicketComposable
+import com.example.composelearning.lists.CircularList
+import com.example.composelearning.lists.RowItem
 import com.example.composelearning.panel.BottomPanel
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
@@ -67,8 +71,30 @@ class MainActivity : ComponentActivity() {
                             verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Spacer(modifier = Modifier.padding(16.dp))
-                            PagerDemo(modifier = Modifier)
+                            TicketComposable(modifier = Modifier
+                                .height(200.dp))
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_launcher_background),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .width(200.dp)
+                                    .height(200.dp)
+                                    .clip(Polygon(5,-90f)),
+                                contentScale = ContentScale.Crop
+                            )
+
+                            CircularList(
+                                visibleItems = 5,
+                                modifier = Modifier.fillMaxWidth().height(50.dp),
+                            ) {
+                                for (i in 0 until 40) {
+                                    com.example.composelearning.lists.RowItem(
+                                        color = colors[i % colors.size],
+                                    )
+                                }
+                            }
+                            //Spacer(modifier = Modifier.padding(16.dp))
+                            //PagerDemo(modifier = Modifier)
                             //CustomDropdownMenu()
                             //BottomPanel()
                             //Speedometer(progress = 100)
@@ -466,7 +492,8 @@ fun ImageWithCount() {
 @Composable
 fun DefaultPreview() {
     ComposeLearningTheme {
-        BottomPanel()
+        RowItem(color = Color.Red)
+        //BottomPanel()
        // Greeting("Android")
     }
 }
@@ -510,3 +537,12 @@ fun TooltipOnLongClickExample(onClick: () -> Unit = {}) {
 val String.color
     get() = Color(android.graphics.Color.parseColor(this))
 
+
+private val colors = listOf(
+    Color.Red,
+    Color.Green,
+    Color.Blue,
+    Color.Magenta,
+    Color.Yellow,
+    Color.Cyan,
+)
