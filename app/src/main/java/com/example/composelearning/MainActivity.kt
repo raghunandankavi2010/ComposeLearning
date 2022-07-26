@@ -24,18 +24,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.composelearning.customshapes.Polygon
-import com.example.composelearning.customshapes.TicketComposable
 import com.example.composelearning.lists.CircularList
 import com.example.composelearning.lists.CircularListVertical
 import com.example.composelearning.lists.RowItem
-import com.example.composelearning.panel.BottomPanel
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -84,16 +80,34 @@ class MainActivity : ComponentActivity() {
 //                                contentScale = ContentScale.Crop
 //                            )
 
+
+                            CircularList(
+                                itemWidthDp =  50.dp,
+                                visibleItems = 5,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp)
+                                    .background(Black),
+                            ) {
+                                for (i in 0 until 40) {
+                                    RowItem(
+                                        color = colors[i % colors.size],
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.padding(16.dp))
+
                             CircularListVertical(
-                                visibleItems = 12,
+                                visibleItems = 5,
                                 circularFraction = .65f,
-                                modifier = Modifier.fillMaxSize(),
+                                modifier = Modifier.fillMaxHeight().width(50.dp).background(Color.Black)
                             ) {
                                 for (i in 0 until 40) {
                                     com.example.composelearning.lists.ListItem(
                                         text = "Item #$i",
                                         color = colors[i % colors.size],
-                                        modifier = Modifier.fillMaxSize()
+                                        modifier = Modifier
                                     )
                                 }
                             }
@@ -496,7 +510,7 @@ fun ImageWithCount() {
 @Composable
 fun DefaultPreview() {
     ComposeLearningTheme {
-        RowItem(color = Color.Red)
+        //RowItem(color = Color.Red)
         //BottomPanel()
        // Greeting("Android")
     }
