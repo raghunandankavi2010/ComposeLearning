@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.consumePositionChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
@@ -59,13 +60,13 @@ interface CircularListState {
     suspend fun stop()
     fun offsetFor(index: Int): IntOffset
     fun alpha(i: Int): Float
+    fun scale(i: Int): Float
     fun setup(config: CircularListConfig)
 }
 
 class CircularListStateImpl(
     currentOffset: Float = 0f,
 ) : CircularListState {
-
     private val animatable = Animatable(currentOffset)
     private var itemHeight = 0f
     private var config = CircularListConfig()
@@ -74,16 +75,12 @@ class CircularListStateImpl(
         dampingRatio = Spring.DampingRatioLowBouncy,
         stiffness = Spring.StiffnessLow,
     )
-
     private val minOffset: Float
         get() = -(config.numItems - 1) * itemHeight
-
     override val verticalOffset: Float
         get() = animatable.value
-
     override val firstVisibleItem: Int
         get() = ((-verticalOffset - initialOffset) / itemHeight).toInt().coerceAtLeast(0)
-
     override val lastVisibleItem: Int
         get() = (((-verticalOffset - initialOffset) / itemHeight).toInt() + config.visibleItems)
             .coerceAtMost(config.numItems - 1)
@@ -102,11 +99,20 @@ class CircularListStateImpl(
         return 1.0f - abs(deltaFromCenter) / maxOffset
     }
 
+    override fun scale(i: Int): Float {
+        val maxOffset = config.contentHeight / 2f
+        val y = (verticalOffset + initialOffset + i * itemHeight)
+        val deltaFromCenter = (y - initialOffset)
+        val percentFromCenter = 1.0f -abs(deltaFromCenter) / maxOffset
+        println("Percentage =$deltaFromCenter ${percentFromCenter}")
+       return .5f + (percentFromCenter * 0.5f)
+    }
+
     override suspend fun decayTo(velocity: Float, value: Float) {
         val constrainedValue = value.coerceIn(minOffset, 0f).absoluteValue
         val remainder = (constrainedValue / itemHeight) - (constrainedValue / itemHeight).toInt()
         val extra = if (remainder <= 0.5f) 0 else 1
-        val target =((constrainedValue / itemHeight).toInt() + extra) * itemHeight
+        val target = ((constrainedValue / itemHeight).toInt() + extra) * itemHeight
         animatable.animateTo(
             targetValue = -target,
             initialVelocity = velocity,
@@ -136,7 +142,7 @@ class CircularListStateImpl(
             0f
         }
         return IntOffset(
-            x = (x * config.circularFraction).roundToInt(),
+            x = 0,// (x * config.circularFraction).roundToInt(),
             y = y.roundToInt()
         )
     }
@@ -196,12 +202,17 @@ fun CircularListVertical(
     check(circularFraction > 0f) { "Circular fraction must be positive" }
 
     Layout(
-        modifier = modifier.clipToBounds().drag(state),
+        modifier = modifier
+            .clipToBounds()
+            .drag(state).graphicsLayer {
+
+            },
         content = content,
     ) { measurables, constraints ->
         val itemHeight = constraints.maxHeight / visibleItems
         val itemConstraints = Constraints.fixed(width = constraints.maxWidth, height = itemHeight)
         val placeables = measurables.map { measurable -> measurable.measure(itemConstraints) }
+
         state.setup(
             CircularListConfig(
                 contentHeight = constraints.maxHeight.toFloat(),
@@ -216,8 +227,12 @@ fun CircularListVertical(
             height = constraints.maxHeight,
         ) {
             for (i in state.firstVisibleItem..state.lastVisibleItem) {
-                placeables[i].placeRelativeWithLayer(state.offsetFor(i),layerBlock = {
+                placeables[i].placeRelativeWithLayer(state.offsetFor(i), layerBlock = {
                     alpha = state.alpha(i)
+                    scaleX = state.scale(i)
+                    scaleY = state.scale(i)
+
+
                 })
             }
         }
@@ -251,9 +266,7 @@ private fun Modifier.drag(
         }
     }
 }
-
 /////////////// Preview
-
 private val colors = listOf(
     Color.Red,
     Color.Green,
@@ -277,7 +290,7 @@ fun PreviewCircularListVertical() {
                     ListItem(
                         text = "Item #$i",
                         color = colors[i % colors.size],
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.size(50.dp)
                     )
                 }
             }
@@ -285,25 +298,22 @@ fun PreviewCircularListVertical() {
     }
 }
 
-
 @Composable
 fun ListItem(
     text: String,
     color: Color,
     modifier: Modifier = Modifier,
 ) {
-    Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
+    Row(modifier = modifier.width(50.dp)) {
         Box(
             modifier = Modifier
                 .size(50.dp)
-                .aspectRatio(1f)
-                .padding(all = 8.dp)
                 .clip(shape = CircleShape)
                 .background(color = color)
         )
-        Text(
-            text = text,
-            style = MaterialTheme.typography.h5,
-        )
+//        Text(modifier = Modifier.wrapContentSize(Alignment.TopStart, false),
+//            text = text,
+//            style = MaterialTheme.typography.h5,
+//        )
     }
 }
