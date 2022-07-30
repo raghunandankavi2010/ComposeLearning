@@ -118,7 +118,7 @@ class CircularRowStateImpl(
     override fun setup(config: CircularRowConfig) {
         this.config = config
         itemWidth = config.contentWidth / config.visibleItems
-        initialOffset = (config.contentWidth) / 2f - (itemWidth / 2f - 25f)
+        initialOffset = (config.contentWidth - config.itemWidth) / 2f
     }
 
     override fun alpha(i: Int): Float {
@@ -135,7 +135,7 @@ class CircularRowStateImpl(
         val x = (horizontalOffset + initialOffset + i * itemWidth)
         val deltaFromCenter = (x - initialOffset)
         val percentFromCenter = 1.0f - abs(deltaFromCenter) / maxOffset
-        println("Percentage =$deltaFromCenter ${percentFromCenter}")
+
 
         return 0.5f + (percentFromCenter * 0.5f)//1f - (1f - 0.65f) * (deltaFromCenter / maxOffset).absoluteValue
     }
@@ -189,7 +189,7 @@ fun RowItem(
     color: Color,
 ) {
     Box(modifier = Modifier
-        .size(50.dp)
+        .size(55.dp)
         .clip(shape = CircleShape)
         .background(color))
 //    Image(
@@ -241,14 +241,13 @@ fun CircularList(
     content: @Composable () -> Unit,
 ) {
     check(visibleItems > 0) { "Visible items must be positive" }
-    val itemWidth =  with(LocalDensity.current) { itemWidthDp.toPx() }
+    val itemWidth = with(LocalDensity.current) { itemWidthDp.toPx() }
     Layout(
         modifier = modifier
             .clipToBounds()
             .drag(state),
         content = content,
     ) { measurables, constraints ->
-
         val itemConstraints =
             Constraints.fixed(width = itemWidth.roundToInt(), height = constraints.maxHeight)
         val placeables = measurables.map { measurable -> measurable.measure(itemConstraints) }
@@ -299,7 +298,7 @@ fun PreviewCircularList5() {
     ComposeLearningTheme {
         Surface {
             CircularList(
-               itemWidthDp =  50.dp,
+                itemWidthDp = 50.dp,
                 visibleItems = 5,
                 modifier = Modifier
                     .fillMaxWidth()

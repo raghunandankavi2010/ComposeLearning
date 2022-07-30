@@ -29,6 +29,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.composelearning.lists.CenterCircle
 import com.example.composelearning.lists.CircularList
 import com.example.composelearning.lists.CircularListVertical
 import com.example.composelearning.lists.RowItem
@@ -79,36 +80,24 @@ class MainActivity : ComponentActivity() {
 //                                    .clip(Polygon(5,-90f)),
 //                                contentScale = ContentScale.Crop
 //                            )
-
-
-                            CircularList(
-                                itemWidthDp =  50.dp,
-                                visibleItems = 5,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(50.dp)
-                                    .background(Black),
-                            ) {
-                                for (i in 0 until 40) {
-                                    RowItem(
-                                        color = colors[i % colors.size],
-                                    )
-                                }
-                            }
-
-                            Spacer(modifier = Modifier.padding(16.dp))
-
-                            CircularListVertical(
-                                visibleItems = 5,
-                                circularFraction = .65f,
-                                modifier = Modifier.fillMaxHeight().width(50.dp).background(Color.Black)
-                            ) {
-                                for (i in 0 until 40) {
-                                    com.example.composelearning.lists.ListItem(
-                                        text = "Item #$i",
-                                        color = colors[i % colors.size],
-                                        modifier = Modifier
-                                    )
+                            Box(modifier = Modifier.align(Alignment.CenterHorizontally).fillMaxWidth().padding(top = 16.dp)) {
+                                CenterCircle(
+                                    modifier = Modifier.align(Alignment.Center),
+                                    fillColor = Color(android.graphics.Color.parseColor("#4DB6AC")),
+                                    strokeWidth = 5.dp
+                                )
+                                CircularList(
+                                    itemWidthDp = 50.dp,
+                                    visibleItems = 5,
+                                    modifier = Modifier.align(Alignment.Center)
+                                        .fillMaxWidth()
+                                        .height(50.dp)
+                                ) {
+                                    for (i in 0 until 40) {
+                                        RowItem(
+                                            color = colors[i % colors.size],
+                                        )
+                                    }
                                 }
                             }
                             //Spacer(modifier = Modifier.padding(16.dp))
@@ -512,7 +501,7 @@ fun DefaultPreview() {
     ComposeLearningTheme {
         //RowItem(color = Color.Red)
         //BottomPanel()
-       // Greeting("Android")
+        // Greeting("Android")
     }
 }
 
@@ -554,8 +543,6 @@ fun TooltipOnLongClickExample(onClick: () -> Unit = {}) {
 
 val String.color
     get() = Color(android.graphics.Color.parseColor(this))
-
-
 private val colors = listOf(
     Color.Red,
     Color.Green,
