@@ -11,14 +11,11 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.verticalDrag
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
@@ -47,6 +44,7 @@ data class CircularListConfig(
     val visibleItems: Int = 0,
     val circularFraction: Float = 1f,
     val overshootItems: Int = 0,
+    val itemHeight: Int = 0
 )
 
 @Stable
@@ -104,7 +102,7 @@ class CircularListStateImpl(
         val y = (verticalOffset + initialOffset + i * itemHeight)
         val deltaFromCenter = (y - initialOffset)
         val percentFromCenter = 1.0f -abs(deltaFromCenter) / maxOffset
-        println("Percentage =$deltaFromCenter ${percentFromCenter}")
+       // println("Percentage =$deltaFromCenter ${percentFromCenter}")
        return .5f + (percentFromCenter * 0.5f)
     }
 
@@ -127,12 +125,13 @@ class CircularListStateImpl(
     override fun setup(config: CircularListConfig) {
         this.config = config
         itemHeight = config.contentHeight / config.visibleItems
-        initialOffset = (config.contentHeight - itemHeight) / 2f
+        initialOffset = (config.contentHeight - config.itemHeight) / 2f
     }
 
     override fun offsetFor(index: Int): IntOffset {
+
         val maxOffset = config.contentHeight / 2f + itemHeight / 2f
-        val y = (verticalOffset + initialOffset + index * itemHeight)
+        val y = (verticalOffset + initialOffset + index * (itemHeight))
         val deltaFromCenter = (y - initialOffset)
         val radius = config.contentHeight / 2f
         val scaledY = deltaFromCenter.absoluteValue * (config.contentHeight / 2f / maxOffset)
@@ -141,6 +140,7 @@ class CircularListStateImpl(
         } else {
             0f
         }
+        println("Offset =$verticalOffset $initialOffset")
         return IntOffset(
             x = 0,// (x * config.circularFraction).roundToInt(),
             y = y.roundToInt()
@@ -220,6 +220,7 @@ fun CircularListVertical(
                 visibleItems = visibleItems,
                 circularFraction = circularFraction,
                 overshootItems = overshootItems,
+                itemHeight = 50.dp.toPx().toInt()
             )
         )
         layout(
@@ -305,11 +306,12 @@ fun ListItem(
     modifier: Modifier = Modifier,
 ) {
     Row(modifier = modifier.width(50.dp)) {
-        Box(
+       Box(
+
             modifier = Modifier
                 .size(50.dp)
                 .clip(shape = CircleShape)
-                .background(color = color)
+                .background(color = color),
         )
 //        Text(modifier = Modifier.wrapContentSize(Alignment.TopStart, false),
 //            text = text,
