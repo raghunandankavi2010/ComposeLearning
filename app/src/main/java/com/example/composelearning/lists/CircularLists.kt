@@ -222,7 +222,7 @@ private fun Modifier.drag(
                     change.consumePositionChange()
                 }
             }
-            val velocity = tracker.calculateVelocity().y
+            val velocity = tracker.calculateVelocity().x
             val targetValue = decay.calculateTargetValue(state.horizontalOffset, velocity)
             launch {
                 state.decayTo(velocity, targetValue)
