@@ -548,6 +548,7 @@ private val colors = listOf(
     Color.Green,
     Color.Blue,
     Color.Magenta,
-    Color.Yellow,
+    Color.Black,
     Color.Cyan,
+    Color.DarkGray
 )
