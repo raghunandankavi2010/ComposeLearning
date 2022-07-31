@@ -2,6 +2,7 @@ package com.example.composelearning
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.widget.Space
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
@@ -29,10 +30,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.composelearning.lists.CenterCircle
-import com.example.composelearning.lists.CircularList
-import com.example.composelearning.lists.CircularListVertical
-import com.example.composelearning.lists.RowItem
+import com.example.composelearning.lists.*
+import com.example.composelearning.pager.PagerDemo
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -80,18 +79,41 @@ class MainActivity : ComponentActivity() {
 //                                    .clip(Polygon(5,-90f)),
 //                                contentScale = ContentScale.Crop
 //                            )
-                            Box(modifier = Modifier.align(Alignment.CenterHorizontally).fillMaxWidth().padding(top = 16.dp)) {
+//
+//                            PodcastSlider(
+//                                modifier = Modifier.align(Alignment.CenterHorizontally)
+//                                    .fillMaxWidth()
+//                                    .width(50.dp)
+//                                    .padding(vertical = 16.dp),
+//                                currentValueLabel = { value ->
+//                                    Text(
+//                                        text = "$value",
+//                                        style = MaterialTheme.typography.h6
+//                                    )
+//                                }
+//                            )
+                            Spacer(modifier = Modifier.padding(16.dp))
+                            BoxWithConstraints(modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .fillMaxWidth()
+                                .padding(top = 16.dp)) {
                                 CenterCircle(
                                     modifier = Modifier.align(Alignment.Center),
                                     fillColor = Color(android.graphics.Color.parseColor("#4DB6AC")),
                                     strokeWidth = 5.dp
                                 )
                                 CircularList(
+                                    maxWidth = maxWidth,
                                     itemWidthDp = 50.dp,
                                     visibleItems = 5,
-                                    modifier = Modifier.align(Alignment.Center)
+                                    currentIndex = {
+                                        println("Current Index =$it")
+                                    },
+                                    modifier = Modifier
+                                        .align(Alignment.Center)
                                         .fillMaxWidth()
-                                        .height(50.dp)
+                                        .height(50.dp),
+
                                 ) {
                                     for (i in 0 until 40) {
                                         RowItem(
@@ -100,8 +122,8 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             }
-                            //Spacer(modifier = Modifier.padding(16.dp))
-                            //PagerDemo(modifier = Modifier)
+                            Spacer(modifier = Modifier.padding(16.dp))
+                            PagerDemo(modifier = Modifier)
                             //CustomDropdownMenu()
                             //BottomPanel()
                             //Speedometer(progress = 100)

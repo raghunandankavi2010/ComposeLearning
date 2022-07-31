@@ -14,8 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -48,6 +47,7 @@ interface CircularRowState {
     val scaleX: Float
     val scaleY: Float
     val alphaValue: Float
+    val currentIndex: Int
 
     suspend fun snapTo(value: Float)
     suspend fun decayTo(velocity: Float, value: Float)
@@ -77,8 +77,12 @@ class CircularRowStateImpl(
         dampingRatio = Spring.DampingRatioLowBouncy,
         stiffness = Spring.StiffnessLow,
     )
+
+    private var cIndex by mutableStateOf(0)
     override val alphaValue: Float
         get() = (1 - (abs(horizontalOffset) / (config.contentWidth / 2))).coerceIn(0f, 1f)
+    override val currentIndex: Int
+        get() = cIndex
     override val scaleX: Float
         get() = horizontalOffset
     override val scaleY: Float
@@ -92,6 +96,7 @@ class CircularRowStateImpl(
     override val lastVisibleItem: Int
         get() = (((-horizontalOffset - initialOffset) / itemWidth).toInt() + config.visibleItems)
             .coerceAtMost(config.numItems - 1)
+
 
     override suspend fun snapTo(value: Float) {
         val minOvershoot = -(config.numItems - 1 + config.overshootItems) * itemWidth
@@ -143,6 +148,9 @@ class CircularRowStateImpl(
 
     override fun offsetFor(index: Int): IntOffset {
         val x = (horizontalOffset + initialOffset + (index * (itemWidth)))
+        if(x == (config.contentWidth - config.itemWidth) / 2f) {
+            cIndex = index
+        }
         val y = 0
         return IntOffset(
             x = x.roundToInt(),
@@ -178,7 +186,7 @@ class CircularRowStateImpl(
         val Saver = Saver<CircularRowStateImpl, List<Any>>(
             save = { listOf(it.horizontalOffset) },
             restore = {
-                CircularRowStateImpl(it[0] as Float)
+                CircularRowStateImpl()
             }
         )
     }
@@ -204,7 +212,7 @@ fun RowItem(
 
 
 private fun Modifier.drag(
-    state: CircularRowState,
+    state: CircularRowState
 ) = pointerInput(Unit) {
     val decay = splineBasedDecay<Float>(this)
     coroutineScope {
@@ -233,12 +241,15 @@ private fun Modifier.drag(
 
 @Composable
 fun CircularList(
+    maxWidth: Dp,
     itemWidthDp: Dp,
     visibleItems: Int,
     modifier: Modifier = Modifier,
     state: CircularRowState = rememberCircularRowState(),
     overshootItems: Int = 3,
-    content: @Composable () -> Unit,
+    currentIndex: (Int) -> Unit,
+    content: @Composable () -> Unit
+
 ) {
     check(visibleItems > 0) { "Visible items must be positive" }
     val itemWidth = with(LocalDensity.current) { itemWidthDp.toPx() }
@@ -257,14 +268,16 @@ fun CircularList(
                 numItems = placeables.size,
                 visibleItems = visibleItems,
                 overshootItems = overshootItems,
-                itemWidth = 50.dp.toPx().toInt()
+                itemWidth = itemWidth.toInt()
             )
         )
+        currentIndex(state.currentIndex)
         layout(
             width = constraints.maxWidth,
             height = constraints.maxHeight,
         ) {
             for (i in state.firstVisibleItem..state.lastVisibleItem) {
+
                 placeables[i].placeRelativeWithLayer(state.offsetFor(i), layerBlock = {
                     alpha = state.alpha(i)
                     scaleX = state.scale(i)
@@ -272,6 +285,7 @@ fun CircularList(
                 })
             }
         }
+
     }
 }
 
@@ -294,16 +308,20 @@ private val colors = listOf(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewCircularList5() {
+fun PreviewCircularList() {
     ComposeLearningTheme {
         Surface {
             CircularList(
+                maxWidth = 300.dp,
                 itemWidthDp = 50.dp,
                 visibleItems = 5,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
                     .background(Color.Black),
+                currentIndex = {
+
+                }
             ) {
                 for (i in 0 until 40) {
                     RowItem(
