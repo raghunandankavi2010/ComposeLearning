@@ -44,9 +44,6 @@ interface CircularRowState {
     val horizontalOffset: Float
     val firstVisibleItem: Int
     val lastVisibleItem: Int
-    val scaleX: Float
-    val scaleY: Float
-    val alphaValue: Float
     val currentIndex: Int
 
     suspend fun snapTo(value: Float)
@@ -79,14 +76,9 @@ class CircularRowStateImpl(
     )
 
     private var cIndex by mutableStateOf(0)
-    override val alphaValue: Float
-        get() = (1 - (abs(horizontalOffset) / (config.contentWidth / 2))).coerceIn(0f, 1f)
+
     override val currentIndex: Int
         get() = cIndex
-    override val scaleX: Float
-        get() = horizontalOffset
-    override val scaleY: Float
-        get() = horizontalOffset
     private val minOffset: Float
         get() = -(config.numItems - 1) * itemWidth
     override val horizontalOffset: Float
