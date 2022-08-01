@@ -176,7 +176,7 @@ class CircularRowStateImpl(
 
     companion object {
         val Saver = Saver<CircularRowStateImpl, List<Any>>(
-            save = { listOf(it.horizontalOffset) },
+            save = { listOf(it.currentIndex,it.horizontalOffset) },
             restore = {
                 CircularRowStateImpl()
             }
@@ -245,6 +245,7 @@ fun CircularList(
 ) {
     check(visibleItems > 0) { "Visible items must be positive" }
     val itemWidth = with(LocalDensity.current) { itemWidthDp.toPx() }
+    currentIndex(state.currentIndex)
     Layout(
         modifier = modifier
             .clipToBounds()
@@ -263,7 +264,6 @@ fun CircularList(
                 itemWidth = itemWidth.toInt()
             )
         )
-        currentIndex(state.currentIndex)
         layout(
             width = constraints.maxWidth,
             height = constraints.maxHeight,
