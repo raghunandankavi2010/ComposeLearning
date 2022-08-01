@@ -64,6 +64,7 @@ data class CircularRowConfig(
 )
 
 class CircularRowStateImpl(
+    currIndex: Int = 0,
     currentOffset: Float = 0f,
 ) : CircularRowState {
     private val animatable = Animatable(currentOffset)
@@ -75,7 +76,7 @@ class CircularRowStateImpl(
         stiffness = Spring.StiffnessLow,
     )
 
-    private var cIndex by mutableStateOf(0)
+    private var cIndex by mutableStateOf(currIndex)
 
     override val currentIndex: Int
         get() = cIndex
@@ -233,7 +234,6 @@ private fun Modifier.drag(
 
 @Composable
 fun CircularList(
-    maxWidth: Dp,
     itemWidthDp: Dp,
     visibleItems: Int,
     modifier: Modifier = Modifier,
@@ -246,6 +246,7 @@ fun CircularList(
     check(visibleItems > 0) { "Visible items must be positive" }
     val itemWidth = with(LocalDensity.current) { itemWidthDp.toPx() }
     currentIndex(state.currentIndex)
+
     Layout(
         modifier = modifier
             .clipToBounds()
@@ -304,7 +305,6 @@ fun PreviewCircularList() {
     ComposeLearningTheme {
         Surface {
             CircularList(
-                maxWidth = 300.dp,
                 itemWidthDp = 50.dp,
                 visibleItems = 5,
                 modifier = Modifier

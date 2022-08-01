@@ -131,7 +131,7 @@ class CircularListStateImpl(
     override fun offsetFor(index: Int): IntOffset {
 
         val maxOffset = config.contentHeight / 2f + itemHeight / 2f
-        val y = (verticalOffset + initialOffset + index * (itemHeight))
+        val y = (verticalOffset + initialOffset + index * itemHeight)
         val deltaFromCenter = (y - initialOffset)
         val radius = config.contentHeight / 2f
         val scaledY = deltaFromCenter.absoluteValue * (config.contentHeight / 2f / maxOffset)
@@ -140,9 +140,8 @@ class CircularListStateImpl(
         } else {
             0f
         }
-        println("Offset =$verticalOffset $initialOffset")
         return IntOffset(
-            x = 0,// (x * config.circularFraction).roundToInt(),
+            x = (x * config.circularFraction).roundToInt(),
             y = y.roundToInt()
         )
     }
@@ -230,8 +229,8 @@ fun CircularListVertical(
             for (i in state.firstVisibleItem..state.lastVisibleItem) {
                 placeables[i].placeRelativeWithLayer(state.offsetFor(i), layerBlock = {
                     alpha = state.alpha(i)
-                    scaleX = state.scale(i)
-                    scaleY = state.scale(i)
+                   // scaleX = state.scale(i)
+                   // scaleY = state.scale(i)
 
 
                 })
