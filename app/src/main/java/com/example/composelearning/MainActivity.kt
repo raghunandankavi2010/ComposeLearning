@@ -68,6 +68,20 @@ class MainActivity : ComponentActivity() {
                             verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+//
+//                            CircularListVertical(
+//                                visibleItems = 5,
+//                                circularFraction = .65f,
+//                                modifier = Modifier.fillMaxSize(),
+//                            ) {
+//                                for (i in 0 until 40) {
+//                                    ListItem(
+//                                        text = "Item #$i",
+//                                        color = colors[i % colors.size],
+//                                        modifier = Modifier.size(50.dp)
+//                                    )
+//                                }
+//                            }
 //                            TicketComposable(modifier = Modifier
 //                                .height(200.dp))
 //                            Image(
@@ -83,7 +97,6 @@ class MainActivity : ComponentActivity() {
 //                            PodcastSlider(
 //                                modifier = Modifier.align(Alignment.CenterHorizontally)
 //                                    .fillMaxWidth()
-//                                    .width(50.dp)
 //                                    .padding(vertical = 16.dp),
 //                                currentValueLabel = { value ->
 //                                    Text(
@@ -103,7 +116,6 @@ class MainActivity : ComponentActivity() {
                                     strokeWidth = 5.dp
                                 )
                                 CircularList(
-                                    maxWidth = maxWidth,
                                     itemWidthDp = 50.dp,
                                     visibleItems = 5,
                                     currentIndex = {
