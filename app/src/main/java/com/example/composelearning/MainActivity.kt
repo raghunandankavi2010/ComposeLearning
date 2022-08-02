@@ -106,6 +106,8 @@ class MainActivity : ComponentActivity() {
 //                                }
 //                            )
                             Spacer(modifier = Modifier.padding(16.dp))
+                            PagerDemo(modifier = Modifier)
+                            Spacer(modifier = Modifier.padding(16.dp))
                             BoxWithConstraints(modifier = Modifier
                                 .align(Alignment.CenterHorizontally)
                                 .fillMaxWidth()
@@ -134,8 +136,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             }
-                            Spacer(modifier = Modifier.padding(16.dp))
-                            PagerDemo(modifier = Modifier)
+
                             //CustomDropdownMenu()
                             //BottomPanel()
                             //Speedometer(progress = 100)
