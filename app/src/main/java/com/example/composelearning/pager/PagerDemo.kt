@@ -3,6 +3,7 @@ package com.example.composelearning.pager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
@@ -36,6 +37,8 @@ fun PagerDemo(modifier: Modifier = Modifier) {
         val pagerState = rememberPagerState()
         val scope = rememberCoroutineScope()
 
+        val isAnimationInProgress by pagerState.interactionSource.collectIsDraggedAsState()
+
         HorizontalPager(
             count = 30,
             contentPadding = PaddingValues(horizontal = contentPadding),
@@ -61,9 +64,11 @@ fun PagerDemo(modifier: Modifier = Modifier) {
                     }
                     .background(color = colors[page % colors.size])
                     .clickable(true) {
-                        scope.launch {
-                            pagerState.animateScrollToPage(page)
-                        }
+                            scope.launch {
+                                delay(300)
+                                pagerState.animateScrollToPage(page)
+                            }
+
                     })
         }
     }
