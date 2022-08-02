@@ -37,8 +37,6 @@ fun PagerDemo(modifier: Modifier = Modifier) {
         val pagerState = rememberPagerState()
         val scope = rememberCoroutineScope()
 
-        val isAnimationInProgress by pagerState.interactionSource.collectIsDraggedAsState()
-
         HorizontalPager(
             count = 30,
             contentPadding = PaddingValues(horizontal = contentPadding),
