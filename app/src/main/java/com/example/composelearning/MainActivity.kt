@@ -30,6 +30,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.composelearning.customshapes.TicketComposable
 import com.example.composelearning.lists.*
 import com.example.composelearning.pager.PagerDemo
 import com.example.composelearning.ui.theme.ComposeLearningTheme
@@ -82,8 +83,8 @@ class MainActivity : ComponentActivity() {
 //                                    )
 //                                }
 //                            }
-//                            TicketComposable(modifier = Modifier
-//                                .height(200.dp))
+                            TicketComposable(modifier = Modifier
+                                .height(200.dp))
 //                            Image(
 //                                painter = painterResource(id = R.drawable.ic_launcher_background),
 //                                contentDescription = null,
