@@ -11,14 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.calculateCurrentOffsetForPage
-import com.google.accompanist.pager.rememberPagerState
+import com.google.accompanist.pager.*
+import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalSnapperApi::class)
 @Composable
 fun PagerDemo(modifier: Modifier = Modifier) {
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
@@ -33,7 +31,11 @@ fun PagerDemo(modifier: Modifier = Modifier) {
             contentPadding = PaddingValues(horizontal = contentPadding),
             modifier = modifier,
             itemSpacing = itemSpacing,
-            state = pagerState
+            state = pagerState,
+            flingBehavior = rememberFlingBehaviorMultiplier(
+                multiplier = 20f,
+                baseFlingBehavior = PagerDefaults.flingBehavior(pagerState)
+            )
         ) { page ->
             Box(
                 modifier = Modifier
