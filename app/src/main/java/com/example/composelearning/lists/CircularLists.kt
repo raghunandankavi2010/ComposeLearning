@@ -6,6 +6,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.splineBasedDecay
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.horizontalDrag
 import androidx.compose.foundation.layout.Box
@@ -20,6 +21,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.consumePositionChange
 import androidx.compose.ui.input.pointer.pointerInput
@@ -187,6 +189,7 @@ class CircularRowStateImpl(
 
 @Composable
 fun RowItem(
+    modifier: Modifier = Modifier,
     color: Color,
 ) {
     Box(modifier = Modifier
@@ -220,7 +223,7 @@ private fun Modifier.drag(
                         state.snapTo(horizontalDragOffset)
                     }
                     tracker.addPosition(change.uptimeMillis, change.position)
-                    change.consumePositionChange()
+                    if (change.positionChange() != Offset.Zero) change.consume()
                 }
             }
             val velocity = tracker.calculateVelocity().x

@@ -132,6 +132,7 @@ class MainActivity : ComponentActivity() {
                                 ) {
                                     for (i in 0 until 40) {
                                         RowItem(
+                                            modifier = Modifier,
                                             color = colors[i % colors.size],
                                         )
                                     }
