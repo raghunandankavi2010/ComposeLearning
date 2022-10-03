@@ -69,6 +69,7 @@ class MainActivity : ComponentActivity() {
                             verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            SingleSelectableItem(getList())
 //
 //                            CircularListVertical(
 //                                visibleItems = 5,
@@ -83,8 +84,8 @@ class MainActivity : ComponentActivity() {
 //                                    )
 //                                }
 //                            }
-                            TicketComposable(modifier = Modifier
-                                .height(200.dp))
+//                            TicketComposable(modifier = Modifier
+//                                .height(200.dp))
 //                            Image(
 //                                painter = painterResource(id = R.drawable.ic_launcher_background),
 //                                contentDescription = null,
