@@ -12,9 +12,9 @@ class Ref(var value: Int)
 // original call site.
 @Composable
 fun LogCompositions(tag: String, msg: String) {
-    if (BuildConfig.DEBUG) {
+   // if (BuildConfig.DEBUG) {
         val ref = remember { Ref(0) }
         SideEffect { ref.value++ }
         Log.d(tag, "Compositions: $msg ${ref.value}")
-    }
+    //}
 }
