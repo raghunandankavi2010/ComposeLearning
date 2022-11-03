@@ -3,6 +3,7 @@ package com.example.composelearning
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Space
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
@@ -30,9 +31,11 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.composelearning.customshapes.DrawCubic
 import com.example.composelearning.customshapes.TicketComposable
 import com.example.composelearning.lists.*
 import com.example.composelearning.pager.PagerDemo
+import com.example.composelearning.textfields.AmountTextField
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -69,7 +72,9 @@ class MainActivity : ComponentActivity() {
                             verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            SingleSelectableItem(getList())
+                            DrawCubic()
+//                            AmountTextField(modifier = Modifier)
+                          //  SingleSelectableItem(getList())
 //
 //                            CircularListVertical(
 //                                visibleItems = 5,
@@ -123,7 +128,7 @@ class MainActivity : ComponentActivity() {
                                     itemWidthDp = 50.dp,
                                     visibleItems = 5,
                                     currentIndex = {
-                                        println("Current Index =$it")
+                                       // Toast.makeText(this@MainActivity,"Current Index $it",Toast.LENGTH_LONG).show()
                                     },
                                     modifier = Modifier
                                         .align(Alignment.Center)

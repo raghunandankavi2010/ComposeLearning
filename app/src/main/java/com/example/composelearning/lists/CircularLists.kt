@@ -46,7 +46,7 @@ interface CircularRowState {
     val horizontalOffset: Float
     val firstVisibleItem: Int
     val lastVisibleItem: Int
-    val currentIndex: Int
+    //val currentIndex: Int
 
     suspend fun snapTo(value: Float)
     suspend fun decayTo(velocity: Float, value: Float)
@@ -55,6 +55,7 @@ interface CircularRowState {
     fun setup(config: CircularRowConfig)
     fun alpha(i: Int): Float
     fun scale(i: Int): Float
+    fun centerItemIndex(): Int
 }
 
 data class CircularRowConfig(
@@ -66,7 +67,7 @@ data class CircularRowConfig(
 )
 
 class CircularRowStateImpl(
-    currIndex: Int = 0,
+   // currIndex: Int = 0,
     currentOffset: Float = 0f,
 ) : CircularRowState {
     private val animatable = Animatable(currentOffset)
@@ -78,10 +79,10 @@ class CircularRowStateImpl(
         stiffness = Spring.StiffnessLow,
     )
 
-    private var cIndex by mutableStateOf(currIndex)
+   // private var cIndex by mutableStateOf(currIndex)
 
-    override val currentIndex: Int
-        get() = cIndex
+//    override val currentIndex: Int
+//        get() = cIndex
     private val minOffset: Float
         get() = -(config.numItems - 1) * itemWidth
     override val horizontalOffset: Float
@@ -140,12 +141,21 @@ class CircularRowStateImpl(
         return 0.5f + (percentFromCenter * 0.5f)//1f - (1f - 0.65f) * (deltaFromCenter / maxOffset).absoluteValue
     }
 
+    override fun centerItemIndex(): Int {
+
+
+        return lastVisibleItem - config.visibleItems
+    }
+
 
     override fun offsetFor(index: Int): IntOffset {
         val x = (horizontalOffset + initialOffset + (index * (itemWidth)))
-        if(x == (config.contentWidth - config.itemWidth) / 2f) {
-            cIndex = index
-        }
+        //config.visibleItems - lastVisibleItem
+        println( "${  lastVisibleItem - firstVisibleItem - config.visibleItems }")
+       // println( "$firstVisibleItem $lastVisibleItem ${Math.abs(x- (config.contentWidth - config.itemWidth) / 2f).toInt()}")
+//        if(x == (config.contentWidth - config.itemWidth) / 2f) {
+//            cIndex = index
+//        }
         val y = 0
         return IntOffset(
             x = x.roundToInt(),
@@ -179,7 +189,7 @@ class CircularRowStateImpl(
 
     companion object {
         val Saver = Saver<CircularRowStateImpl, List<Any>>(
-            save = { listOf(it.currentIndex,it.horizontalOffset) },
+            save = { listOf(it.horizontalOffset) },
             restore = {
                 CircularRowStateImpl()
             }
@@ -248,7 +258,7 @@ fun CircularList(
 ) {
     check(visibleItems > 0) { "Visible items must be positive" }
     val itemWidth = with(LocalDensity.current) { itemWidthDp.toPx() }
-    currentIndex(state.currentIndex)
+    currentIndex(state.centerItemIndex())
 
     Layout(
         modifier = modifier
@@ -259,6 +269,8 @@ fun CircularList(
         val itemConstraints =
             Constraints.fixed(width = itemWidth.roundToInt(), height = constraints.maxHeight)
         val placeables = measurables.map { measurable -> measurable.measure(itemConstraints) }
+
+
         state.setup(
             CircularRowConfig(
                 contentWidth = constraints.maxWidth.toFloat(),
@@ -272,6 +284,7 @@ fun CircularList(
             width = constraints.maxWidth,
             height = constraints.maxHeight,
         ) {
+
             for (i in state.firstVisibleItem..state.lastVisibleItem) {
 
                 placeables[i].placeRelativeWithLayer(state.offsetFor(i), layerBlock = {
