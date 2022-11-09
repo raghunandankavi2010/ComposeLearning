@@ -1,10 +1,8 @@
 package com.example.composelearning.speedometer
 
-import android.annotation.SuppressLint
 import android.graphics.Paint
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Easing
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.aspectRatio
@@ -26,7 +24,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
-@SuppressLint("UnrememberedAnimatable")
+
 @Composable
 fun Speedometer(
     progress: Int,
@@ -63,7 +61,7 @@ fun Speedometer(
             .fillMaxWidth()
             .aspectRatio(1f),
         onDraw = {
-            drawIntoCanvas { canvas ->
+            drawIntoCanvas {
                 val w = drawContext.size.width
                 val h = drawContext.size.height
                 val centerOffset = Offset(w / 2f, h / 2f)
@@ -133,7 +131,6 @@ fun Speedometer(
                         )
                     }
                     textValue += 10
-
                     drawLine(Color.Black,
                         Offset(x1.toFloat(), y1.toFloat()),
                         Offset(x2.toFloat(), y2.toFloat()),
