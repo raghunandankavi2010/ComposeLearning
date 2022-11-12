@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.horizontalDrag
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -22,6 +23,7 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.consumePositionChange
@@ -33,15 +35,24 @@ import androidx.compose.ui.unit.dp
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlin.math.absoluteValue
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
-private val BarWidth = 2.dp
-private val BarHeight = 24.dp
+private val BarWidth = 55.dp
+private val BarHeight = 55.dp
 private const val MinAlpha = .25f
+private val colors = listOf(
+    Color.Red,
+    Color.Green,
+    Color.Blue,
+    Color.Magenta,
+    Color.Yellow,
+    Color.Cyan,
+)
+
 
 @Stable
-interface PodcastSliderState {
+interface CarouselState {
     val currentValue: Float
     val range: ClosedRange<Int>
 
@@ -50,10 +61,10 @@ interface PodcastSliderState {
     suspend fun stop()
 }
 
-class PodcastSliderStateImpl(
+class CarouselStateImpl(
     currentValue: Float,
     override val range: ClosedRange<Int>,
-) : PodcastSliderState {
+) : CarouselState {
 
     private val floatRange = range.start.toFloat()..range.endInclusive.toFloat()
     private val animatable = Animatable(currentValue)
@@ -86,7 +97,7 @@ class PodcastSliderStateImpl(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as PodcastSliderStateImpl
+        other as CarouselStateImpl
 
         if (range != other.range) return false
         if (floatRange != other.floatRange) return false
@@ -105,10 +116,10 @@ class PodcastSliderStateImpl(
     }
 
     companion object {
-        val Saver = Saver<PodcastSliderStateImpl, List<Any>>(
+        val Saver = Saver<CarouselStateImpl, List<Any>>(
             save = { listOf(it.currentValue, it.range.start, it.range.endInclusive) },
             restore = {
-                PodcastSliderStateImpl(
+                CarouselStateImpl(
                     currentValue = it[0] as Float,
                     range = (it[1] as Int)..(it[2] as Int)
                 )
@@ -118,12 +129,12 @@ class PodcastSliderStateImpl(
 }
 
 @Composable
-fun rememberPodcastSliderState(
-    currentValue: Float = 12f,
-    range: ClosedRange<Int> = 5..30,
-): PodcastSliderState {
-    val state = rememberSaveable(saver = PodcastSliderStateImpl.Saver) {
-        PodcastSliderStateImpl(currentValue, range)
+fun rememberCarouselState(
+    currentValue: Float = 0f,
+    range: ClosedRange<Int> = 0..40,
+): CarouselState {
+    val state = rememberSaveable(saver = CarouselStateImpl.Saver) {
+        CarouselStateImpl(currentValue, range)
     }
     LaunchedEffect(key1 = Unit) {
         state.snapTo(state.currentValue.roundToInt().toFloat())
@@ -132,10 +143,10 @@ fun rememberPodcastSliderState(
 }
 
 @Composable
-fun PodcastSlider(
+fun InstagramCarouselState(
     modifier: Modifier = Modifier,
-    state: PodcastSliderState = rememberPodcastSliderState(),
-    numSegments: Int = 12,
+    state: CarouselState = rememberCarouselState(),
+    numSegments: Int = 5,
     barColor: Color = MaterialTheme.colors.onSurface,
     currentValueLabel: @Composable (Int) -> Unit = { value -> Text(value.toString()) },
     indicatorLabel: @Composable (Int) -> Unit = { value -> Text(value.toString()) },
@@ -160,17 +171,27 @@ fun PodcastSlider(
             val end = (state.currentValue + halfSegments).toInt()
                 .coerceAtMost(state.range.endInclusive)
 
+
+
             val maxOffset = constraints.maxWidth / 2f
             for (i in start..end) {
                 val offsetX = (i - state.currentValue) * segmentWidthPx
+                val deltaFromCenter = (offsetX)
+                val percentFromCenter = 1.0f - abs(deltaFromCenter) / maxOffset
                 // indicator at center is at 1f, indicators at edges are at 0.25f
-                val alpha = 1f - (1f - MinAlpha) * (offsetX / maxOffset).absoluteValue
+                val alpha = 0.25f + (percentFromCenter * 0.75f)//1f - (1f - MinAlpha) * (offsetX / maxOffset).absoluteValue
+
+                // scale
+                val deltaFromCenterScale = (offsetX)
+                val percentFromCenterScale = 1.0f - abs(deltaFromCenterScale) / maxOffset
+
+                val scale = 0.5f + (percentFromCenterScale * 0.5f)
+
                 Column(
                     modifier = Modifier
                         .width(segmentWidth)
                         .graphicsLayer(
-                            alpha = alpha,
-                            translationX = offsetX
+                            translationX = offsetX,
                         ),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
@@ -178,7 +199,14 @@ fun PodcastSlider(
                         modifier = Modifier
                             .width(BarWidth)
                             .height(BarHeight)
-                            .background(barColor)
+                            .graphicsLayer(
+                                alpha = alpha,
+                                scaleY = scale,
+                                scaleX = scale
+                            )
+                            .clip(CircleShape)
+                            .background(colors[i % colors.size])
+
                     )
                     indicatorLabel(i)
                 }
@@ -188,7 +216,7 @@ fun PodcastSlider(
 }
 
 private fun Modifier.drag(
-    state: PodcastSliderState,
+    state: CarouselState,
     numSegments: Int,
 ) = pointerInput(Unit) {
     val decay = splineBasedDecay<Float>(this)
@@ -224,7 +252,7 @@ private fun Modifier.drag(
 fun PodcastSliderPreview() {
     ComposeLearningTheme() {
         Surface(modifier = Modifier.fillMaxWidth()) {
-            PodcastSlider(
+            InstagramCarouselState(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 16.dp),

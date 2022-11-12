@@ -72,7 +72,27 @@ class MainActivity : ComponentActivity() {
                             verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            DrawCubic()
+//                           val colors = listOf(
+//                                Color.Red,
+//                                Color.Green,
+//                                Color.Blue,
+//                                Color.Magenta,
+//                                Color.Yellow,
+//                                Color.Cyan,
+//                            )
+//                            CircularList(
+//                                visibleItems = 5,
+//                                modifier = Modifier.fillMaxSize(),
+//                            ) {
+//                                for (i in 0 until 10) {
+//                                    ListItem(
+//                                        text = "Item #$i",
+//                                        color = colors[i % colors.size],
+//                                        modifier = Modifier.size(50.dp)
+//                                    )
+//                                }
+//                            }
+ //                           DrawCubic()
 //                            AmountTextField(modifier = Modifier)
                           //  SingleSelectableItem(getList())
 //
@@ -101,49 +121,49 @@ class MainActivity : ComponentActivity() {
 //                                contentScale = ContentScale.Crop
 //                            )
 //
-//                            PodcastSlider(
-//                                modifier = Modifier.align(Alignment.CenterHorizontally)
-//                                    .fillMaxWidth()
-//                                    .padding(vertical = 16.dp),
-//                                currentValueLabel = { value ->
-//                                    Text(
-//                                        text = "$value",
-//                                        style = MaterialTheme.typography.h6
-//                                    )
-//                                }
-//                            )
-                            Spacer(modifier = Modifier.padding(16.dp))
-                            PagerDemo(modifier = Modifier)
-                            Spacer(modifier = Modifier.padding(16.dp))
-                            BoxWithConstraints(modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .fillMaxWidth()
-                                .padding(top = 16.dp)) {
-                                CenterCircle(
-                                    modifier = Modifier.align(Alignment.Center),
-                                    fillColor = Color(android.graphics.Color.parseColor("#4DB6AC")),
-                                    strokeWidth = 5.dp
-                                )
-                                CircularList(
-                                    itemWidthDp = 50.dp,
-                                    visibleItems = 5,
-                                    currentIndex = {
-                                       // Toast.makeText(this@MainActivity,"Current Index $it",Toast.LENGTH_LONG).show()
-                                    },
-                                    modifier = Modifier
-                                        .align(Alignment.Center)
-                                        .fillMaxWidth()
-                                        .height(50.dp),
-
-                                ) {
-                                    for (i in 0 until 40) {
-                                        RowItem(
-                                            modifier = Modifier,
-                                            color = colors[i % colors.size],
-                                        )
-                                    }
+                            InstagramCarouselState(
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                                    .fillMaxWidth()
+                                    .padding(vertical = 16.dp),
+                                currentValueLabel = { value ->
+                                    Text(
+                                        text = "$value",
+                                        style = MaterialTheme.typography.h6
+                                    )
                                 }
-                            }
+                            )
+//                            Spacer(modifier = Modifier.padding(16.dp))
+//                            PagerDemo(modifier = Modifier)
+//                            Spacer(modifier = Modifier.padding(16.dp))
+//                            BoxWithConstraints(modifier = Modifier
+//                                .align(Alignment.CenterHorizontally)
+//                                .fillMaxWidth()
+//                                .padding(top = 16.dp)) {
+//                                CenterCircle(
+//                                    modifier = Modifier.align(Alignment.Center),
+//                                    fillColor = Color(android.graphics.Color.parseColor("#4DB6AC")),
+//                                    strokeWidth = 5.dp
+//                                )
+//                                CircularList(
+//                                    itemWidthDp = 50.dp,
+//                                    visibleItems = 5,
+//                                    currentIndex = {
+//                                        Toast.makeText(this@MainActivity.applicationContext,"Current Index $it",Toast.LENGTH_LONG).show()
+//                                    },
+//                                    modifier = Modifier
+//                                        .align(Alignment.Center)
+//                                        .fillMaxWidth()
+//                                        .height(50.dp),
+//
+//                                ) {
+//                                    for (i in 0 until 40) {
+//                                        RowItem(
+//                                            modifier = Modifier,
+//                                            color = colors[i % colors.size],
+//                                        )
+//                                    }
+//                                }
+//                            }
 
                             //CustomDropdownMenu()
                             //BottomPanel()
