@@ -121,7 +121,7 @@ class MainActivity : ComponentActivity() {
 //                                contentScale = ContentScale.Crop
 //                            )
 //
-                            InstagramCarouselState(
+                            InstagramCarousel(
                                 modifier = Modifier.align(Alignment.CenterHorizontally)
                                     .fillMaxWidth()
                                     .padding(vertical = 16.dp),
