@@ -1,12 +1,13 @@
 package com.example.composelearning.lists
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FloatSpringSpec
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.splineBasedDecay
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.horizontalDrag
 import androidx.compose.foundation.layout.Box
@@ -23,7 +24,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.consumePositionChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.input.pointer.util.VelocityTracker
@@ -46,7 +46,7 @@ interface CircularRowState {
     val horizontalOffset: Float
     val firstVisibleItem: Int
     val lastVisibleItem: Int
-    //val currentIndex: Int
+    val currentIndex: Int
 
     suspend fun snapTo(value: Float)
     suspend fun decayTo(velocity: Float, value: Float)
@@ -55,7 +55,6 @@ interface CircularRowState {
     fun setup(config: CircularRowConfig)
     fun alpha(i: Int): Float
     fun scale(i: Int): Float
-    fun centerItemIndex(): Int
 }
 
 data class CircularRowConfig(
@@ -67,7 +66,6 @@ data class CircularRowConfig(
 )
 
 class CircularRowStateImpl(
-   // currIndex: Int = 0,
     currentOffset: Float = 0f,
 ) : CircularRowState {
     private val animatable = Animatable(currentOffset)
@@ -79,10 +77,6 @@ class CircularRowStateImpl(
         stiffness = Spring.StiffnessLow,
     )
 
-   // private var cIndex by mutableStateOf(currIndex)
-
-//    override val currentIndex: Int
-//        get() = cIndex
     private val minOffset: Float
         get() = -(config.numItems - 1) * itemWidth
     override val horizontalOffset: Float
@@ -92,12 +86,15 @@ class CircularRowStateImpl(
     override val lastVisibleItem: Int
         get() = (((-horizontalOffset - initialOffset) / itemWidth).toInt() + config.visibleItems)
             .coerceAtMost(config.numItems - 1)
-
+    override val currentIndex: Int
+        get() = animatable.value.toInt()
 
     override suspend fun snapTo(value: Float) {
         val minOvershoot = -(config.numItems - 1 + config.overshootItems) * itemWidth
         val maxOvershoot = config.overshootItems * itemWidth
         animatable.snapTo(value.coerceIn(minOvershoot, maxOvershoot))
+        val index = ((-horizontalOffset - initialOffset ) / itemWidth).toInt().coerceAtLeast(0)
+        Log.d("CircularList","$firstVisibleItem $lastVisibleItem $index")
     }
 
     override suspend fun decayTo(velocity: Float, value: Float) {
@@ -137,25 +134,11 @@ class CircularRowStateImpl(
         val deltaFromCenter = (x - initialOffset)
         val percentFromCenter = 1.0f - abs(deltaFromCenter) / maxOffset
 
-
-        return 0.5f + (percentFromCenter * 0.5f)//1f - (1f - 0.65f) * (deltaFromCenter / maxOffset).absoluteValue
+        return 0.5f + (percentFromCenter * 0.5f)
     }
-
-    override fun centerItemIndex(): Int {
-
-
-        return lastVisibleItem - config.visibleItems
-    }
-
 
     override fun offsetFor(index: Int): IntOffset {
         val x = (horizontalOffset + initialOffset + (index * (itemWidth)))
-        //config.visibleItems - lastVisibleItem
-        println( "${  lastVisibleItem - firstVisibleItem - config.visibleItems }")
-       // println( "$firstVisibleItem $lastVisibleItem ${Math.abs(x- (config.contentWidth - config.itemWidth) / 2f).toInt()}")
-//        if(x == (config.contentWidth - config.itemWidth) / 2f) {
-//            cIndex = index
-//        }
         val y = 0
         return IntOffset(
             x = x.roundToInt(),
@@ -217,8 +200,10 @@ fun RowItem(
 }
 
 
+@SuppressLint("MultipleAwaitPointerEventScopes", "ReturnFromAwaitPointerEventScope")
 private fun Modifier.drag(
-    state: CircularRowState
+    state: CircularRowState,
+    numItems: Int
 ) = pointerInput(Unit) {
     val decay = splineBasedDecay<Float>(this)
     coroutineScope {
@@ -258,12 +243,11 @@ fun CircularList(
 ) {
     check(visibleItems > 0) { "Visible items must be positive" }
     val itemWidth = with(LocalDensity.current) { itemWidthDp.toPx() }
-    currentIndex(state.centerItemIndex())
 
     Layout(
         modifier = modifier
             .clipToBounds()
-            .drag(state),
+            .drag(state,visibleItems),
         content = content,
     ) { measurables, constraints ->
         val itemConstraints =

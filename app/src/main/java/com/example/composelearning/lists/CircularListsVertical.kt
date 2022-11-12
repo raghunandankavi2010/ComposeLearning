@@ -1,6 +1,7 @@
 package com.example.composelearning.lists
 
 
+import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FloatSpringSpec
 import androidx.compose.animation.core.Spring
@@ -87,6 +88,7 @@ class CircularListStateImpl(
         val minOvershoot = -(config.numItems - 1 + config.overshootItems) * itemHeight
         val maxOvershoot = config.overshootItems * itemHeight
         animatable.snapTo(value.coerceIn(minOvershoot, maxOvershoot))
+        Log.d("CircularListVertical","$firstVisibleItem $lastVisibleItem")
     }
 
     override fun alpha(i: Int): Float {
@@ -102,7 +104,6 @@ class CircularListStateImpl(
         val y = (verticalOffset + initialOffset + i * itemHeight)
         val deltaFromCenter = (y - initialOffset)
         val percentFromCenter = 1.0f -abs(deltaFromCenter) / maxOffset
-       // println("Percentage =$deltaFromCenter ${percentFromCenter}")
        return .5f + (percentFromCenter * 0.5f)
     }
 
@@ -300,9 +301,10 @@ fun PreviewCircularListVertical() {
 
 @Composable
 fun ListItem(
-    text: String,
-    color: Color,
     modifier: Modifier = Modifier,
+    text: String = "",
+    color: Color
+
 ) {
     Row(modifier = modifier.width(50.dp)) {
        Box(
