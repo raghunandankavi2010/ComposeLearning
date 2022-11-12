@@ -38,6 +38,10 @@ import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
+/**
+ * Inspired from https://fvilarino.medium.com/recreating-google-podcasts-speed-selector-in-jetpack-compose-7623203a009d
+ */
+
 private val BarWidth = 55.dp
 private val BarHeight = 55.dp
 private const val MinAlpha = .25f
