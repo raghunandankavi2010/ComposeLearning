@@ -126,10 +126,10 @@ class MainActivity : ComponentActivity() {
                                     .fillMaxWidth()
                                     .padding(vertical = 16.dp),
                                 currentValueLabel = { value ->
-                                    Text(
-                                        text = "$value",
-                                        style = MaterialTheme.typography.h6
-                                    )
+//                                    Text(
+//                                        text = "$value",
+//                                        style = MaterialTheme.typography.h6
+//                                    )
                                 }
                             )
 //                            Spacer(modifier = Modifier.padding(16.dp))
