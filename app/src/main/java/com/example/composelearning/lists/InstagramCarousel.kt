@@ -167,7 +167,7 @@ fun InstagramCarousel(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         currentValueLabel(state.currentValue.roundToInt())
-        Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+        //Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
 
         val scope = rememberCoroutineScope()
 
@@ -226,7 +226,7 @@ fun InstagramCarousel(
                             }
 
                     )
-                    indicatorLabel(i)
+                   // indicatorLabel(i)
                 }
             }
         }
