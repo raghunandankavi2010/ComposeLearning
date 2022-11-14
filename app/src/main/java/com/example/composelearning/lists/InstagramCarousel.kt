@@ -2,21 +2,20 @@ package com.example.composelearning.lists
 
 import android.annotation.SuppressLint
 import android.widget.Toast
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FloatSpringSpec
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.splineBasedDecay
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.horizontalDrag
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -45,7 +44,6 @@ import kotlin.math.roundToInt
 /**
  * Inspired from https://fvilarino.medium.com/recreating-google-podcasts-speed-selector-in-jetpack-compose-7623203a009d
  */
-
 private val colors = listOf(
     Color.Red,
     Color.Green,
@@ -54,7 +52,6 @@ private val colors = listOf(
     Color.Yellow,
     Color.Cyan,
 )
-
 
 @Stable
 interface CarouselState {
@@ -71,14 +68,12 @@ class CarouselStateImpl(
     currentValue: Float,
     override val range: ClosedRange<Int>,
 ) : CarouselState {
-
     private val floatRange = range.start.toFloat()..range.endInclusive.toFloat()
     private val animatable = Animatable(currentValue)
     private val decayAnimationSpec = FloatSpringSpec(
         dampingRatio = Spring.DampingRatioLowBouncy,
         stiffness = Spring.StiffnessLow,
     )
-
     override val currentValue: Float
         get() = animatable.value
 
@@ -168,15 +163,21 @@ fun InstagramCarousel(
     ) {
         currentValueLabel(state.currentValue.roundToInt())
         //Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
-
         val scope = rememberCoroutineScope()
 
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth()
                 .drag(state, numSegments),
-            contentAlignment = Alignment.TopCenter,
+            contentAlignment = Alignment.Center,
         ) {
+
+                CenterCircle(
+                    modifier = Modifier.align(Alignment.Center),
+                    fillColor = Color(android.graphics.Color.parseColor("#4DB6AC")),
+                    strokeWidth = 5.dp,
+                )
+
             val segmentWidth = maxWidth / numSegments
             val segmentWidthPx = constraints.maxWidth.toFloat() / numSegments.toFloat()
             val halfSegments = (numSegments + 1) / 2
@@ -184,6 +185,7 @@ fun InstagramCarousel(
                 .coerceAtLeast(state.range.start)
             val end = (state.currentValue + halfSegments).toInt()
                 .coerceAtMost(state.range.endInclusive)
+
 
             val maxOffset = constraints.maxWidth / 2f
             for (i in start..end) {
@@ -200,11 +202,13 @@ fun InstagramCarousel(
                 Column(
                     modifier = Modifier
                         .width(segmentWidth)
+                        .wrapContentHeight(Alignment.CenterVertically)
                         .graphicsLayer(
                             translationX = offsetX,
                         ),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
+
                     Box(
                         modifier = Modifier
                             .width(55.dp)
@@ -224,9 +228,8 @@ fun InstagramCarousel(
                                     .makeText(context, "$i", Toast.LENGTH_SHORT)
                                     .show()
                             }
-
                     )
-                   // indicatorLabel(i)
+                    // indicatorLabel(i)
                 }
             }
         }
@@ -242,7 +245,8 @@ private fun Modifier.drag(
     val segmentWidthPx = size.width / numSegments
     coroutineScope {
         while (true) {
-            val pointerId = awaitPointerEventScope { awaitFirstDown(pass = PointerEventPass.Initial).id }
+            val pointerId =
+                awaitPointerEventScope { awaitFirstDown(pass = PointerEventPass.Initial).id }
             state.stop()
             val tracker = VelocityTracker()
             awaitPointerEventScope {
@@ -264,7 +268,6 @@ private fun Modifier.drag(
         }
     }
 }
-
 
 @Preview(widthDp = 420)
 @Composable
@@ -292,7 +295,6 @@ fun InstagramCarouselPreview() {
                     }
                 }
             )
-
         }
     }
 }
