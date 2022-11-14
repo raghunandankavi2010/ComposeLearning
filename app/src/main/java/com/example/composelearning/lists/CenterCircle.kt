@@ -21,7 +21,6 @@ fun CenterCircle(
     Canvas(
         modifier = modifier
             .size(75.dp)
-            .padding(5.dp)
     ) {
 
         drawArc(
