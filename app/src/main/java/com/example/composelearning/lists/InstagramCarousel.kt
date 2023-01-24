@@ -246,7 +246,9 @@ private fun Modifier.drag(
     coroutineScope {
         while (true) {
             val pointerId =
-                awaitPointerEventScope { awaitFirstDown(pass = PointerEventPass.Initial).id }
+                awaitPointerEventScope {
+                    awaitFirstDown(true).id
+                }
             state.stop()
             val tracker = VelocityTracker()
             awaitPointerEventScope {

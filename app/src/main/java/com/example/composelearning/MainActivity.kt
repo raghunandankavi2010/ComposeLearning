@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
@@ -35,6 +36,10 @@ import com.example.composelearning.customshapes.DrawCubic
 import com.example.composelearning.customshapes.TicketComposable
 import com.example.composelearning.lists.*
 import com.example.composelearning.pager.PagerDemo
+import com.example.composelearning.rows.MaxWidthText
+import com.example.composelearning.sotry.SOTry
+import com.example.composelearning.sotry.Tracks
+import com.example.composelearning.sotry.getTracksLists
 import com.example.composelearning.textfields.AmountTextField
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
@@ -70,8 +75,30 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                                 .fillMaxSize(),
                             verticalArrangement = Arrangement.Top,
-                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+
+                            MaxWidthText()
+
+//                            var currentContext = LocalContext.current
+//                            CircularList(
+//                                itemWidthDp = 50.dp,
+//                                visibleItems = 5,
+//                                modifier = Modifier
+//                                    .fillMaxWidth()
+//                                    .height(50.dp)
+//                                    .background(Color.Black),
+//                                currentIndex = {
+//                                    Toast.makeText(currentContext,"$it",Toast.LENGTH_LONG).show()
+//                                }
+//                            ) {
+//                                for (i in 0 until 40) {
+//                                    RowItem(
+//                                        color = colors[i % colors.size],
+//                                    )
+//                                }
+//                            }
+
+//                            Tracks(tracks = getTracksLists())
 //                           val colors = listOf(
 //                                Color.Red,
 //                                Color.Green,
@@ -121,19 +148,19 @@ class MainActivity : ComponentActivity() {
 //                                contentScale = ContentScale.Crop
 //                            )
 //
-                            InstagramCarousel(
-                                modifier = Modifier.align(Alignment.CenterHorizontally)
-                                    .fillMaxWidth()
-                                    .padding(vertical = 16.dp),
-                                currentValueLabel = { value ->
-//                                    Text(
+//                            InstagramCarousel(
+//                                modifier = Modifier.align(Alignment.CenterHorizontally)
+//                                    .fillMaxWidth()
+//                                    .padding(vertical = 16.dp),
+//                                currentValueLabel = { value ->
+//                                  Text(
 //                                        text = "$value",
 //                                        style = MaterialTheme.typography.h6
 //                                    )
-                                }
-                            )
-//                            Spacer(modifier = Modifier.padding(16.dp))
-//                            PagerDemo(modifier = Modifier)
+//                                }
+//                             )
+                          //Spacer(modifier = Modifier.padding(16.dp))
+                            //PagerDemo(modifier = Modifier)
 //                            Spacer(modifier = Modifier.padding(16.dp))
 //                            BoxWithConstraints(modifier = Modifier
 //                                .align(Alignment.CenterHorizontally)
