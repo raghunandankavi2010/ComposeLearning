@@ -36,6 +36,7 @@ import com.example.composelearning.customshapes.DrawCubic
 import com.example.composelearning.customshapes.TicketComposable
 import com.example.composelearning.lists.*
 import com.example.composelearning.pager.PagerDemo
+import com.example.composelearning.progess.CircleProgressInfinite
 import com.example.composelearning.rows.MaxWidthText
 import com.example.composelearning.sotry.SOTry
 import com.example.composelearning.sotry.Tracks
@@ -77,8 +78,13 @@ class MainActivity : ComponentActivity() {
                             verticalArrangement = Arrangement.Top,
                         ) {
 
-                            MaxWidthText()
+                            // Infinite circular progress animation
+                            CircleProgressInfinite()
 
+                            // Max width of two texts in a row composable
+//                            MaxWidthText()
+
+                            // Circular list
 //                            var currentContext = LocalContext.current
 //                            CircularList(
 //                                itemWidthDp = 50.dp,
