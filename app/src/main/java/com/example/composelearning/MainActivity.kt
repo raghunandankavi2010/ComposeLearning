@@ -32,6 +32,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.composelearning.customshapes.CustomTopArcShapeComposable
 import com.example.composelearning.customshapes.DrawCubic
 import com.example.composelearning.customshapes.TicketComposable
 import com.example.composelearning.lists.*
@@ -78,8 +79,11 @@ class MainActivity : ComponentActivity() {
                             verticalArrangement = Arrangement.Top,
                         ) {
 
+                            // CustomArcShape Composable
+                            CustomTopArcShapeComposable(Modifier.padding(horizontal = 32.dp))
+
                             // Infinite circular progress animation
-                            CircleProgressInfinite()
+//                            CircleProgressInfinite()
 
                             // Max width of two texts in a row composable
 //                            MaxWidthText()
