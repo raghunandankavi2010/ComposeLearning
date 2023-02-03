@@ -2,10 +2,10 @@ package com.example.composelearning.customshapes
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -29,6 +29,7 @@ fun drawTicketPath(size: Size, cornerRadius: Float): Path {
     return Path().apply {
         reset()
         // Top left arc
+
         arcTo(
             rect = Rect(
                 left = -cornerRadius,
@@ -176,4 +177,50 @@ class TicketShape(private val cornerRadius: Float) : Shape {
             path = drawTicketPathVariation(size = size, cornerRadius = cornerRadius)
         )
     }
+}
+
+class CustomTopArcShape(private val radius: Float): Shape {
+    override fun createOutline(
+        size: Size,
+        layoutDirection: LayoutDirection,
+        density: Density
+    ): Outline {
+        return Outline.Generic(
+            path = drawCustomArc(size,radius)
+        )
+    }
+}
+
+/**
+ * Replicating the below
+ * https://stackoverflow.com/questions/75050982/how-to-draw-one-side-curve-of-box-in-jetpack-compose-android#comment132925899_75050982
+ */
+fun drawCustomArc(size: Size, radius: Float): Path {
+    return Path().apply {
+        reset()
+
+        cubicTo(0f,0f,size.width/2 ,size.height/2,size.width,0f)
+
+        lineTo(size.width,size.height)
+        lineTo(0f,size.height)
+        lineTo(0f,0f)
+
+    }
+}
+
+@Composable
+fun CustomTopArcShapeComposable(modifier: Modifier) {
+    Box(
+        modifier = modifier
+            .height(300.dp)
+            .width(400.dp)
+            .graphicsLayer {
+                shadowElevation = 8.dp.toPx()
+                shape = CustomTopArcShape(100.dp.toPx())
+                clip = true
+            }
+            .background(color = Color.Red)
+            .clickable {
+            }
+    )
 }
