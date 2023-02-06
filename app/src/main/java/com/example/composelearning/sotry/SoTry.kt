@@ -1,20 +1,30 @@
 package com.example.composelearning.sotry
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import com.example.composelearning.R
 
 
 @Composable
@@ -25,7 +35,9 @@ fun SOTry() {
         Text(
 
             "John Doe John Doe John Doe",
-            modifier = Modifier.weight(1.0f, fill = true).background(Color.Green)
+            modifier = Modifier
+                .weight(1.0f, fill = true)
+                .background(Color.Green)
         )
         Icon(
             imageVector = Icons.Default.Done,
@@ -102,3 +114,35 @@ fun getTracksLists() : List<Track> {
     return list
 }
 
+@Composable
+fun UI() {
+        ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+            val (image, columnTexts) = createRefs()
+
+            Image(
+                painter = painterResource(R.drawable.ic_launcher_background),
+                contentDescription = "",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(300.dp)
+                    .clickable {  }
+                    .constrainAs(image) {
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(parent.end)
+                    bottom.linkTo(parent.bottom)
+                }
+            )
+
+
+            Column(modifier= Modifier.wrapContentHeight().constrainAs(columnTexts) {
+                end.linkTo(parent.end)
+                start.linkTo(parent.start)
+                bottom.linkTo(parent.bottom, margin = 16.dp,)
+            }) {
+                Text("Text1", modifier = Modifier.wrapContentWidth())
+                Text("Text2", modifier = Modifier.wrapContentWidth())
+
+            }
+    }
+}
