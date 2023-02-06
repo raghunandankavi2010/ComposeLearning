@@ -41,6 +41,7 @@ import com.example.composelearning.progess.CircleProgressInfinite
 import com.example.composelearning.rows.MaxWidthText
 import com.example.composelearning.sotry.SOTry
 import com.example.composelearning.sotry.Tracks
+import com.example.composelearning.sotry.UI
 import com.example.composelearning.sotry.getTracksLists
 import com.example.composelearning.textfields.AmountTextField
 import com.example.composelearning.ui.theme.ComposeLearningTheme
@@ -79,8 +80,10 @@ class MainActivity : ComponentActivity() {
                             verticalArrangement = Arrangement.Top,
                         ) {
 
+                            UI()
+
                             // CustomArcShape Composable
-                            CustomTopArcShapeComposable(Modifier.padding(horizontal = 32.dp))
+                           // CustomTopArcShapeComposable(Modifier.padding(horizontal = 32.dp))
 
                             // Infinite circular progress animation
 //                            CircleProgressInfinite()
