@@ -2,8 +2,6 @@ package com.example.composelearning
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.widget.Space
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.*
@@ -25,25 +23,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
-import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.example.composelearning.customshapes.CustomTopArcShapeComposable
-import com.example.composelearning.customshapes.DrawCubic
-import com.example.composelearning.customshapes.TicketComposable
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.composelearning.lists.*
-import com.example.composelearning.pager.PagerDemo
-import com.example.composelearning.progess.CircleProgressInfinite
-import com.example.composelearning.rows.MaxWidthText
-import com.example.composelearning.sotry.SOTry
-import com.example.composelearning.sotry.Tracks
-import com.example.composelearning.sotry.UI
-import com.example.composelearning.sotry.getTracksLists
-import com.example.composelearning.textfields.AmountTextField
+import com.example.composelearning.sotry.*
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -51,6 +45,7 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             ComposeLearningTheme {
                 // A surface container using the 'background' color from the theme
@@ -58,328 +53,34 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
+                    val mainViewModel: MainViewModel = viewModel()
+
+
                     Scaffold(
                         topBar = {
-                            TopAppBar(
-                                title = {
-                                    Text(text = "Compose Ui Samples")
-                                },
-                                navigationIcon = {
-                                    IconButton(onClick = { }) {
-                                        Icon(Icons.Filled.Menu, "")
-                                    }
-                                },
-                                backgroundColor = Blue,
-                                contentColor = White,
-                                elevation = 12.dp
-                            )
-                        }) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            verticalArrangement = Arrangement.Top,
-                        ) {
-
-                            UI()
-
-                            // CustomArcShape Composable
-                           // CustomTopArcShapeComposable(Modifier.padding(horizontal = 32.dp))
-
-                            // Infinite circular progress animation
-//                            CircleProgressInfinite()
-
-                            // Max width of two texts in a row composable
-//                            MaxWidthText()
-
-                            // Circular list
-//                            var currentContext = LocalContext.current
-//                            CircularList(
-//                                itemWidthDp = 50.dp,
-//                                visibleItems = 5,
-//                                modifier = Modifier
-//                                    .fillMaxWidth()
-//                                    .height(50.dp)
-//                                    .background(Color.Black),
-//                                currentIndex = {
-//                                    Toast.makeText(currentContext,"$it",Toast.LENGTH_LONG).show()
-//                                }
-//                            ) {
-//                                for (i in 0 until 40) {
-//                                    RowItem(
-//                                        color = colors[i % colors.size],
-//                                    )
-//                                }
-//                            }
-
-//                            Tracks(tracks = getTracksLists())
-//                           val colors = listOf(
-//                                Color.Red,
-//                                Color.Green,
-//                                Color.Blue,
-//                                Color.Magenta,
-//                                Color.Yellow,
-//                                Color.Cyan,
-//                            )
-//                            CircularList(
-//                                visibleItems = 5,
-//                                modifier = Modifier.fillMaxSize(),
-//                            ) {
-//                                for (i in 0 until 10) {
-//                                    ListItem(
-//                                        text = "Item #$i",
-//                                        color = colors[i % colors.size],
-//                                        modifier = Modifier.size(50.dp)
-//                                    )
-//                                }
-//                            }
- //                           DrawCubic()
-//                            AmountTextField(modifier = Modifier)
-                          //  SingleSelectableItem(getList())
-//
-//                            CircularListVertical(
-//                                visibleItems = 5,
-//                                circularFraction = .65f,
-//                                modifier = Modifier.fillMaxSize(),
-//                            ) {
-//                                for (i in 0 until 40) {
-//                                    ListItem(
-//                                        text = "Item #$i",
-//                                        color = colors[i % colors.size],
-//                                        modifier = Modifier.size(50.dp)
-//                                    )
-//                                }
-//                            }
-//                            TicketComposable(modifier = Modifier
-//                                .height(200.dp))
-//                            Image(
-//                                painter = painterResource(id = R.drawable.ic_launcher_background),
-//                                contentDescription = null,
-//                                modifier = Modifier
-//                                    .width(200.dp)
-//                                    .height(200.dp)
-//                                    .clip(Polygon(5,-90f)),
-//                                contentScale = ContentScale.Crop
-//                            )
-//
-//                            InstagramCarousel(
-//                                modifier = Modifier.align(Alignment.CenterHorizontally)
-//                                    .fillMaxWidth()
-//                                    .padding(vertical = 16.dp),
-//                                currentValueLabel = { value ->
-//                                  Text(
-//                                        text = "$value",
-//                                        style = MaterialTheme.typography.h6
-//                                    )
-//                                }
-//                             )
-                          //Spacer(modifier = Modifier.padding(16.dp))
-                            //PagerDemo(modifier = Modifier)
-//                            Spacer(modifier = Modifier.padding(16.dp))
-//                            BoxWithConstraints(modifier = Modifier
-//                                .align(Alignment.CenterHorizontally)
-//                                .fillMaxWidth()
-//                                .padding(top = 16.dp)) {
-//                                CenterCircle(
-//                                    modifier = Modifier.align(Alignment.Center),
-//                                    fillColor = Color(android.graphics.Color.parseColor("#4DB6AC")),
-//                                    strokeWidth = 5.dp
-//                                )
-//                                CircularList(
-//                                    itemWidthDp = 50.dp,
-//                                    visibleItems = 5,
-//                                    currentIndex = {
-//                                        Toast.makeText(this@MainActivity.applicationContext,"Current Index $it",Toast.LENGTH_LONG).show()
-//                                    },
-//                                    modifier = Modifier
-//                                        .align(Alignment.Center)
-//                                        .fillMaxWidth()
-//                                        .height(50.dp),
-//
-//                                ) {
-//                                    for (i in 0 until 40) {
-//                                        RowItem(
-//                                            modifier = Modifier,
-//                                            color = colors[i % colors.size],
-//                                        )
+                            DefaultAppBar(mainViewModel = mainViewModel)
+//                            TopAppBar(
+//                                title = {
+//                                    Text(text = "Compose Ui Samples")
+//                                },
+//                                navigationIcon = {
+//                                    IconButton(onClick = { }) {
+//                                        Icon(Icons.Filled.Menu, "")
 //                                    }
-//                                }
-//                            }
-
-                            //CustomDropdownMenu()
-                            //BottomPanel()
-                            //Speedometer(progress = 100)
-                            //DragGestureTest()
-                            /* var progress by remember { mutableStateOf(0f) }
-                             Spacer(modifier = Modifier.padding(16.dp))
-                             Row {
-                                 Text(text = "Test1")
-                                 var range by remember { mutableStateOf(-20f..20f) }
-                                 Row(
-                                     modifier= Modifier.weight(1f),
-                                 ){
-                                     RangeSlider(
-                                         values = range, onValueChange = {
-                                             range = it
-                                         },
-                                         valueRange = -50f..50f
-                                     )
-                                 }
-                                 Text(text = "Test2")
-                             }
-                             Spacer(modifier = Modifier.padding(16.dp))
-                             Speedometer(50)
-                             TicketComposable(modifier = Modifier
-                                 .height(200.dp))
-                                 Image(
-                                     painter = painterResource(id = R.drawable.ic_launcher_background),
-                                     contentDescription = null,
-                                     modifier = Modifier
-                                         .width(200.dp)
-                                         .height(200.dp)
-                                         .clip(Polygon(5,-90f)),
-                                     contentScale = ContentScale.Crop
-                                 )
-                             Spacer(modifier = Modifier.padding(16.dp))
-
-                             MultiColorProgressCanvas(
-                                 modifier = Modifier
-                                     .height(16.dp)
-                                     .padding(16.dp)
-                                     .fillMaxSize(),
-                                 heightOfProgress = 8.dp,
-                                 cornerRadii = 2.dp
-                             )
-                             Spacer(modifier = Modifier.padding(16.dp))
-
-
-                             com.example.composelearning.sliders.Slider(
-                                 onValueChangeFinished = {
-                                     // do something on value change finished
-                                     println(progress.toInt())
-                                 },
-                                 valueRange = 0f..100f,
-                                 value = progress,
-                                 onValueChange = { value ->
-                                     progress = value
-                                 },
-                                 colors = SliderDefaults.colors(
-                                     activeTrackColor = ActiveTrackColor,
-                                     inactiveTrackColor = InactiveTrackColor
-                                 )
-                             )
-                             Spacer(modifier = Modifier.padding(16.dp))
-                             ButtonWithBorder(text = "Cancel", onClick = {
-                             })
-
-                             Spacer(modifier = Modifier.padding(16.dp))
-                             FilledButton(text = "Checkin", onClick = {
-                             })
-
-                             Spacer(modifier = Modifier.padding(16.dp))
-                             val customTextSelectionColors = TextSelectionColors(
-                                 handleColor = DEFAULT060,
-                                 backgroundColor = DEFAULT060.copy(alpha = 0.4f)
-                             )
-                             var text by remember { mutableStateOf("0%") }
-                             CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
-                                 DottedUnderlineTextField(
-                                     modifier = Modifier
-                                         .fillMaxWidth()
-                                         .padding(16.dp),
-                                     value = text,
-                                     singleLine = true,
-                                     onValueChange = { newText ->
-                                         text = newText
-                                     },
-                                     trailingIcon = {
-                                         Icon(painter = painterResource(id = R.drawable.ic_edit),
-                                             contentDescription = "Edit",
-                                             tint = DEFAULT060)
-                                     },
-                                     colors = TextFieldDefaults.textFieldColors(
-                                         backgroundColor = GREY094,
-                                         textColor = DEFAULT020,
-                                         focusedIndicatorColor = DEFAULT060,
-                                         unfocusedIndicatorColor = DEFAULT060,
-                                         leadingIconColor = DEFAULT060,
-                                         cursorColor = DEFAULT060
-                                     )
-                                 )
-                             }
-                             Spacer(modifier = Modifier.padding(16.dp))
-                             TintedIconButtonWithBorder(
-                                 imageVector = Icons.Default.Add,
-                                 modifier = Modifier.size(25.dp),
-                                 onClick = {
-                                 },
-                                 borderColor = GRAY040,
-                                 iconTintColor = GRAY040,
-                                 strokeWidth = 2.dp,
-                                 contentDescription = "Add"
-                             )
-                             Spacer(modifier = Modifier.padding(16.dp))
-                             SquareProfileImage(
-                                 modifier = Modifier
-                                     .padding(16.dp)
-                                     .size(20.dp),
-                                 drawable = R.drawable.ic_launcher_background,
-                                 radii = 5.dp
-                             )
-                             Spacer(modifier = Modifier.padding(16.dp))
-                             MainContent()
-                             Spacer(modifier = Modifier.padding(16.dp))
-                             OverlappingRow(
-                                 overlapFactor = 0.7f
-                             ) {
-                                 val images = intArrayOf(
-                                     R.drawable.ic_launcher_background,
-                                     R.drawable.ic_launcher_background,
-                                     R.drawable.ic_launcher_background,
-                                     R.drawable.ic_launcher_background,
-                                     R.drawable.ic_launcher_background,
-                                     R.drawable.ic_launcher_background
-                                 )
-                                 for (i in images.indices) {
-                                     Image(
-                                         painter = painterResource(id = images[i]),
-                                         contentDescription = null,
-                                         modifier = Modifier
-                                             .width(30.dp)
-                                             .height(30.dp)
-                                             .border(width = 1.dp,
-                                                 color = Color.White,
-                                                 shape = CircleShape)
-                                             .clip(CircleShape),
-                                         contentScale = ContentScale.Crop
-                                     )
-                                 }
-                                 Box(
-                                     contentAlignment = Alignment.Center,
-                                     modifier = Modifier
-                                         .width(30.dp)
-                                         .height(30.dp)
-                                         .border(width = 1.dp,
-                                             color = Color.Black,
-                                             shape = CircleShape)
-                                         .clip(CircleShape)
-                                         .background(White),
-                                 ) {
-                                     Text(
-                                         text = "10+",
-                                         fontSize = 21.sp,
-                                         fontWeight = FontWeight.Bold,
-                                         color = Color.Black,
-                                         textAlign = TextAlign.Center,
-                                     )
-                                 }
-                             }*/
-                        }
+//                                },
+//                                backgroundColor = Blue,
+//                                contentColor = White,
+//                                elevation = 12.dp
+//                            )
+                        }) {
+                        TutorialNavGraph(mainViewModel = mainViewModel)
                     }
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun MainContent() {
@@ -655,3 +356,363 @@ private val colors = listOf(
     Color.Cyan,
     Color.DarkGray
 )
+
+@Composable
+fun DefaultAppBar(
+    mainViewModel: MainViewModel,
+) {
+
+    val shouldShowIcon by mainViewModel.searchWidgetVisibility.collectAsStateWithLifecycle()
+
+    LogCompositions(tag = "AppBar", msg = shouldShowIcon.toString())
+
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+        TopAppBar(
+            backgroundColor = Color.White,
+            title = {
+                Text(text = "Compose UI Sample",
+                    modifier = Modifier
+                        .clickable { }
+                        // margin
+                        .padding(start = 160.dp)
+                )
+            },
+            actions = {
+                if (shouldShowIcon) {
+                    IconButton(
+                        onClick = { },
+                        modifier = Modifier.background(Color.Black),
+                        ) {
+                        Icon(
+                            imageVector = Icons.Filled.Menu,
+                            contentDescription = "Search Icon",
+                            tint = Color.Black,
+                            modifier = Modifier,
+                            )
+                    }
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun TutorialNavGraph(
+    mainViewModel: MainViewModel,
+    modifier: Modifier = Modifier,
+    navController: NavHostController = rememberNavController(),
+    startDestination: String = "FirstScreen",
+) {
+    NavHost(
+        modifier = modifier.statusBarsPadding(),
+        navController = navController,
+        startDestination = startDestination
+    ) {
+        composable(route = "FirstScreen") { navBackEntryStack ->
+            FirstScreen(
+                mainViewModel,
+                navigateToSecondScreen = {
+                    navController.navigate("SecondScreen")
+                },
+
+            )
+        }
+        composable("SecondScreen") { SecondScreen(mainViewModel= MainViewModel()) }
+    }
+
+}
+
+
+//                        Column(
+//                            modifier = Modifier
+//                                .fillMaxSize(),
+//                            verticalArrangement = Arrangement.Top,
+//                        ) {
+//
+//                            AlternateUI()
+// CustomArcShape Composable
+// CustomTopArcShapeComposable(Modifier.padding(horizontal = 32.dp))
+// Infinite circular progress animation
+//                            CircleProgressInfinite()
+// Max width of two texts in a row composable
+//                            MaxWidthText()
+// Circular list
+//                            var currentContext = LocalContext.current
+//                            CircularList(
+//                                itemWidthDp = 50.dp,
+//                                visibleItems = 5,
+//                                modifier = Modifier
+//                                    .fillMaxWidth()
+//                                    .height(50.dp)
+//                                    .background(Color.Black),
+//                                currentIndex = {
+//                                    Toast.makeText(currentContext,"$it",Toast.LENGTH_LONG).show()
+//                                }
+//                            ) {
+//                                for (i in 0 until 40) {
+//                                    RowItem(
+//                                        color = colors[i % colors.size],
+//                                    )
+//                                }
+//                            }
+//                            Tracks(tracks = getTracksLists())
+//                           val colors = listOf(
+//                                Color.Red,
+//                                Color.Green,
+//                                Color.Blue,
+//                                Color.Magenta,
+//                                Color.Yellow,
+//                                Color.Cyan,
+//                            )
+//                            CircularList(
+//                                visibleItems = 5,
+//                                modifier = Modifier.fillMaxSize(),
+//                            ) {
+//                                for (i in 0 until 10) {
+//                                    ListItem(
+//                                        text = "Item #$i",
+//                                        color = colors[i % colors.size],
+//                                        modifier = Modifier.size(50.dp)
+//                                    )
+//                                }
+//                            }
+//                           DrawCubic()
+//                            AmountTextField(modifier = Modifier)
+//  SingleSelectableItem(getList())
+//
+//                            CircularListVertical(
+//                                visibleItems = 5,
+//                                circularFraction = .65f,
+//                                modifier = Modifier.fillMaxSize(),
+//                            ) {
+//                                for (i in 0 until 40) {
+//                                    ListItem(
+//                                        text = "Item #$i",
+//                                        color = colors[i % colors.size],
+//                                        modifier = Modifier.size(50.dp)
+//                                    )
+//                                }
+//                            }
+//                            TicketComposable(modifier = Modifier
+//                                .height(200.dp))
+//                            Image(
+//                                painter = painterResource(id = R.drawable.ic_launcher_background),
+//                                contentDescription = null,
+//                                modifier = Modifier
+//                                    .width(200.dp)
+//                                    .height(200.dp)
+//                                    .clip(Polygon(5,-90f)),
+//                                contentScale = ContentScale.Crop
+//                            )
+//
+//                            InstagramCarousel(
+//                                modifier = Modifier.align(Alignment.CenterHorizontally)
+//                                    .fillMaxWidth()
+//                                    .padding(vertical = 16.dp),
+//                                currentValueLabel = { value ->
+//                                  Text(
+//                                        text = "$value",
+//                                        style = MaterialTheme.typography.h6
+//                                    )
+//                                }
+//                             )
+//Spacer(modifier = Modifier.padding(16.dp))
+//PagerDemo(modifier = Modifier)
+//                            Spacer(modifier = Modifier.padding(16.dp))
+//                            BoxWithConstraints(modifier = Modifier
+//                                .align(Alignment.CenterHorizontally)
+//                                .fillMaxWidth()
+//                                .padding(top = 16.dp)) {
+//                                CenterCircle(
+//                                    modifier = Modifier.align(Alignment.Center),
+//                                    fillColor = Color(android.graphics.Color.parseColor("#4DB6AC")),
+//                                    strokeWidth = 5.dp
+//                                )
+//                                CircularList(
+//                                    itemWidthDp = 50.dp,
+//                                    visibleItems = 5,
+//                                    currentIndex = {
+//                                        Toast.makeText(this@MainActivity.applicationContext,"Current Index $it",Toast.LENGTH_LONG).show()
+//                                    },
+//                                    modifier = Modifier
+//                                        .align(Alignment.Center)
+//                                        .fillMaxWidth()
+//                                        .height(50.dp),
+//
+//                                ) {
+//                                    for (i in 0 until 40) {
+//                                        RowItem(
+//                                            modifier = Modifier,
+//                                            color = colors[i % colors.size],
+//                                        )
+//                                    }
+//                                }
+//                            }
+//CustomDropdownMenu()
+//BottomPanel()
+//Speedometer(progress = 100)
+//DragGestureTest()
+/* var progress by remember { mutableStateOf(0f) }
+ Spacer(modifier = Modifier.padding(16.dp))
+ Row {
+     Text(text = "Test1")
+     var range by remember { mutableStateOf(-20f..20f) }
+     Row(
+         modifier= Modifier.weight(1f),
+     ){
+         RangeSlider(
+             values = range, onValueChange = {
+                 range = it
+             },
+             valueRange = -50f..50f
+         )
+     }
+     Text(text = "Test2")
+ }
+ Spacer(modifier = Modifier.padding(16.dp))
+ Speedometer(50)
+ TicketComposable(modifier = Modifier
+     .height(200.dp))
+     Image(
+         painter = painterResource(id = R.drawable.ic_launcher_background),
+         contentDescription = null,
+         modifier = Modifier
+             .width(200.dp)
+             .height(200.dp)
+             .clip(Polygon(5,-90f)),
+         contentScale = ContentScale.Crop
+     )
+ Spacer(modifier = Modifier.padding(16.dp))
+
+ MultiColorProgressCanvas(
+     modifier = Modifier
+         .height(16.dp)
+         .padding(16.dp)
+         .fillMaxSize(),
+     heightOfProgress = 8.dp,
+     cornerRadii = 2.dp
+ )
+ Spacer(modifier = Modifier.padding(16.dp))
+
+
+ com.example.composelearning.sliders.Slider(
+     onValueChangeFinished = {
+         // do something on value change finished
+         println(progress.toInt())
+     },
+     valueRange = 0f..100f,
+     value = progress,
+     onValueChange = { value ->
+         progress = value
+     },
+     colors = SliderDefaults.colors(
+         activeTrackColor = ActiveTrackColor,
+         inactiveTrackColor = InactiveTrackColor
+     )
+ )
+ Spacer(modifier = Modifier.padding(16.dp))
+ ButtonWithBorder(text = "Cancel", onClick = {
+ })
+
+ Spacer(modifier = Modifier.padding(16.dp))
+ FilledButton(text = "Checkin", onClick = {
+ })
+
+ Spacer(modifier = Modifier.padding(16.dp))
+ val customTextSelectionColors = TextSelectionColors(
+     handleColor = DEFAULT060,
+     backgroundColor = DEFAULT060.copy(alpha = 0.4f)
+ )
+ var text by remember { mutableStateOf("0%") }
+ CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
+     DottedUnderlineTextField(
+         modifier = Modifier
+             .fillMaxWidth()
+             .padding(16.dp),
+         value = text,
+         singleLine = true,
+         onValueChange = { newText ->
+             text = newText
+         },
+         trailingIcon = {
+             Icon(painter = painterResource(id = R.drawable.ic_edit),
+                 contentDescription = "Edit",
+                 tint = DEFAULT060)
+         },
+         colors = TextFieldDefaults.textFieldColors(
+             backgroundColor = GREY094,
+             textColor = DEFAULT020,
+             focusedIndicatorColor = DEFAULT060,
+             unfocusedIndicatorColor = DEFAULT060,
+             leadingIconColor = DEFAULT060,
+             cursorColor = DEFAULT060
+         )
+     )
+ }
+ Spacer(modifier = Modifier.padding(16.dp))
+ TintedIconButtonWithBorder(
+     imageVector = Icons.Default.Add,
+     modifier = Modifier.size(25.dp),
+     onClick = {
+     },
+     borderColor = GRAY040,
+     iconTintColor = GRAY040,
+     strokeWidth = 2.dp,
+     contentDescription = "Add"
+ )
+ Spacer(modifier = Modifier.padding(16.dp))
+ SquareProfileImage(
+     modifier = Modifier
+         .padding(16.dp)
+         .size(20.dp),
+     drawable = R.drawable.ic_launcher_background,
+     radii = 5.dp
+ )
+ Spacer(modifier = Modifier.padding(16.dp))
+ MainContent()
+ Spacer(modifier = Modifier.padding(16.dp))
+ OverlappingRow(
+     overlapFactor = 0.7f
+ ) {
+     val images = intArrayOf(
+         R.drawable.ic_launcher_background,
+         R.drawable.ic_launcher_background,
+         R.drawable.ic_launcher_background,
+         R.drawable.ic_launcher_background,
+         R.drawable.ic_launcher_background,
+         R.drawable.ic_launcher_background
+     )
+     for (i in images.indices) {
+         Image(
+             painter = painterResource(id = images[i]),
+             contentDescription = null,
+             modifier = Modifier
+                 .width(30.dp)
+                 .height(30.dp)
+                 .border(width = 1.dp,
+                     color = Color.White,
+                     shape = CircleShape)
+                 .clip(CircleShape),
+             contentScale = ContentScale.Crop
+         )
+     }
+     Box(
+         contentAlignment = Alignment.Center,
+         modifier = Modifier
+             .width(30.dp)
+             .height(30.dp)
+             .border(width = 1.dp,
+                 color = Color.Black,
+                 shape = CircleShape)
+             .clip(CircleShape)
+             .background(White),
+     ) {
+         Text(
+             text = "10+",
+             fontSize = 21.sp,
+             fontWeight = FontWeight.Bold,
+             color = Color.Black,
+             textAlign = TextAlign.Center,
+         )
+     }
+ }*/

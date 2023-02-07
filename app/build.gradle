@@ -69,6 +69,15 @@ dependencies {
     // https://mvnrepository.com/artifact/androidx.compose.animation/animation
     implementation  'androidx.compose.animation:animation'
     implementation 'com.google.accompanist:accompanist-pager:0.26.0-alpha'
+    // https://mvnrepository.com/artifact/androidx.lifecycle/lifecycle-viewmodel-compose
+    implementation group: 'androidx.lifecycle', name: 'lifecycle-viewmodel-compose', version: '2.5.1'
+    // https://mvnrepository.com/artifact/androidx.navigation/navigation-compose
+    implementation group: 'androidx.navigation', name: 'navigation-compose', version: '2.5.3'
+    // https://mvnrepository.com/artifact/androidx.compose.runtime/runtime
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.0-alpha05")
+
+
+
 
 
 }
