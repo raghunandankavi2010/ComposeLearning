@@ -54,11 +54,12 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     val mainViewModel: MainViewModel = viewModel()
-
+                    val shouldShowIcon by mainViewModel.searchWidgetVisibility.collectAsState()
+                    LogCompositions(tag = "Surface", msg = "${mainViewModel.hashCode()}")
 
                     Scaffold(
                         topBar = {
-                            DefaultAppBar(mainViewModel = mainViewModel)
+                            DefaultAppBar(shouldShowIcon)
 //                            TopAppBar(
 //                                title = {
 //                                    Text(text = "Compose Ui Samples")
@@ -73,7 +74,7 @@ class MainActivity : ComponentActivity() {
 //                                elevation = 12.dp
 //                            )
                         }) {
-                        TutorialNavGraph(mainViewModel = mainViewModel)
+                        TutorialNavGraph(mainViewModel)
                     }
                 }
             }
@@ -359,10 +360,10 @@ private val colors = listOf(
 
 @Composable
 fun DefaultAppBar(
-    mainViewModel: MainViewModel,
+    shouldShowIcon: Boolean,
 ) {
 
-    val shouldShowIcon by mainViewModel.searchWidgetVisibility.collectAsStateWithLifecycle()
+
 
     LogCompositions(tag = "AppBar", msg = shouldShowIcon.toString())
 
@@ -401,23 +402,32 @@ fun TutorialNavGraph(
     mainViewModel: MainViewModel,
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = "FirstScreen",
+    startDestination: String = "FirstScreen"
 ) {
+
     NavHost(
         modifier = modifier.statusBarsPadding(),
         navController = navController,
         startDestination = startDestination
     ) {
-        composable(route = "FirstScreen") { navBackEntryStack ->
-            FirstScreen(
-                mainViewModel,
-                navigateToSecondScreen = {
-                    navController.navigate("SecondScreen")
-                },
 
-            )
+        composable(route = "FirstScreen") { navBackEntryStack ->
+
+            InstagramCarousel()
+//            FirstScreen(
+//                mainViewModel,
+//                navigateToSecondScreen = {
+//                    navController.navigate("SecondScreen")
+//                },
+//
+//            )
         }
-        composable("SecondScreen") { SecondScreen(mainViewModel= MainViewModel()) }
+        composable("SecondScreen") {
+            SecondScreen() {
+                mainViewModel.updateSearchWidgetVisibility(true)
+
+            }
+        }
     }
 
 }

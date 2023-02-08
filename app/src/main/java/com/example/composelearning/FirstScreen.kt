@@ -16,9 +16,7 @@ fun FirstScreen(
     mainViewModel: MainViewModel,
     navigateToSecondScreen:() -> Unit
 ) {
-    mainViewModel.updateSearchWidgetVisibility(true)
-
-
+    LogCompositions(tag = "First Screen", msg = "${mainViewModel.hashCode()}")
     Box(
         modifier = Modifier
             .fillMaxSize()
