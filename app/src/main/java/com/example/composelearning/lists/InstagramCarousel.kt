@@ -171,13 +171,11 @@ fun InstagramCarousel(
                 .drag(state, numSegments),
             contentAlignment = Alignment.Center,
         ) {
-
-                CenterCircle(
-                    modifier = Modifier.align(Alignment.Center),
-                    fillColor = Color(android.graphics.Color.parseColor("#4DB6AC")),
-                    strokeWidth = 5.dp,
-                )
-
+            CenterCircle(
+                modifier = Modifier.align(Alignment.Center),
+                fillColor = Color(android.graphics.Color.parseColor("#4DB6AC")),
+                strokeWidth = 5.dp,
+            )
             val segmentWidth = maxWidth / numSegments
             val segmentWidthPx = constraints.maxWidth.toFloat() / numSegments.toFloat()
             val halfSegments = (numSegments + 1) / 2
@@ -185,8 +183,6 @@ fun InstagramCarousel(
                 .coerceAtLeast(state.range.start)
             val end = (state.currentValue + halfSegments).toInt()
                 .coerceAtMost(state.range.endInclusive)
-
-
             val maxOffset = constraints.maxWidth / 2f
             for (i in start..end) {
                 val offsetX = (i - state.currentValue) * segmentWidthPx
@@ -208,7 +204,6 @@ fun InstagramCarousel(
                         ),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-
                     Box(
                         modifier = Modifier
                             .width(55.dp)
