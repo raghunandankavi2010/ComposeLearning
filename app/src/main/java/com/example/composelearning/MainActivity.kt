@@ -36,6 +36,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.composelearning.customshapes.CustomTopArcShapeComposable
 import com.example.composelearning.lists.*
 import com.example.composelearning.sotry.*
 import com.example.composelearning.ui.theme.ComposeLearningTheme
@@ -412,8 +413,8 @@ fun TutorialNavGraph(
     ) {
 
         composable(route = "FirstScreen") { navBackEntryStack ->
-
-            InstagramCarousel()
+            CustomTopArcShapeComposable(modifier = Modifier.background(Color.White).padding(20.dp))
+           // InstagramCarousel()
 //            FirstScreen(
 //                mainViewModel,
 //                navigateToSecondScreen = {
