@@ -1,30 +1,36 @@
 package com.example.composelearning.customshapes
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
+import androidx.compose.material.SnackbarDefaults.backgroundColor
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.*
 
-
+//border color = #5d6474
+// card color = #333d51
 fun drawTicketPath(size: Size, cornerRadius: Float): Path {
     return Path().apply {
         reset()
@@ -115,9 +121,10 @@ fun TicketComposable(modifier: Modifier) {
                         )
                     )
                 }
-                drawLine(Color.Green,
+                drawLine(
+                    Color.Green,
                     Offset(10.dp.toPx(), size.height / 2),
-                    Offset(size.width  - 10.dp.toPx(), size.height / 2),
+                    Offset(size.width - 10.dp.toPx(), size.height / 2),
                     pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f))
                 )
             }
@@ -179,14 +186,14 @@ class TicketShape(private val cornerRadius: Float) : Shape {
     }
 }
 
-class CustomTopArcShape(private val radius: Float): Shape {
+class CustomTopArcShape(private val radius: Float) : Shape {
     override fun createOutline(
         size: Size,
         layoutDirection: LayoutDirection,
         density: Density
     ): Outline {
         return Outline.Generic(
-            path = drawCustomArc(size,radius)
+            path = drawCustomArc(size, radius)
         )
     }
 }
@@ -199,28 +206,117 @@ fun drawCustomArc(size: Size, radius: Float): Path {
     return Path().apply {
         reset()
 
-        cubicTo(0f,0f,size.width/2 ,size.height/2,size.width,0f)
+        cubicTo(0f, 0f, size.width / 2, size.height / 2, size.width, 0f)
 
-        lineTo(size.width,size.height)
-        lineTo(0f,size.height)
-        lineTo(0f,0f)
+        lineTo(size.width, size.height)
+        lineTo(0f, size.height)
+        lineTo(0f, 0f)
 
     }
 }
 
+//            .graphicsLayer {
+//                shape = CustomCardShape(50.dp.toPx())
+//                clip = true
+//            }
 @Composable
 fun CustomTopArcShapeComposable(modifier: Modifier) {
-    Box(
-        modifier = modifier
-            .height(300.dp)
-            .width(400.dp)
-            .graphicsLayer {
-                shadowElevation = 8.dp.toPx()
-                shape = CustomTopArcShape(100.dp.toPx())
-                clip = true
-            }
-            .background(color = Color.Red)
-            .clickable {
-            }
-    )
+
+    Card(modifier = modifier
+        .height(300.dp)
+        .width(400.dp)
+        .graphicsLayer {
+            this.transformOrigin = TransformOrigin(0f, 0f)
+            this.rotationY = 5f
+        },
+        border = BorderStroke(5.dp,Color(0xff5d6474)),
+        backgroundColor = Color(0xff333d51),shape = RoundedCornerShape(25.dp.dpToPx())
+    ){
+
+    }
+//    Box(
+//        modifier = modifier
+//            .height(300.dp)
+//            .width(400.dp)
+//            .border(width = Dp(10f), Color(0xff5d6474), shape = CustomCardShape(40f))
+//            .background(color = Color(0xff333d51), shape = CustomCardShape(40f))
+//            .clickable {
+//            }
+//    )
 }
+
+
+fun drawCardShape(size: Size, cornerRadius: Float): Path {
+    return Path().apply {
+        reset()
+        // Top left arc
+        arcTo(
+            rect = Rect(
+                left = 0f,
+                top = 0f,
+                right = cornerRadius,
+                bottom = cornerRadius
+            ),
+            startAngleDegrees = 180.0f,
+            sweepAngleDegrees = 90.0f,
+            forceMoveTo = false
+        )
+        lineTo(x = size.width - cornerRadius, y = 0f)
+        // Top right arc
+        arcTo(
+            rect = Rect(
+                left = size.width - cornerRadius,
+                top = 0f,
+                right = size.width,
+                bottom = cornerRadius
+            ),
+            startAngleDegrees = 270.0f,
+            sweepAngleDegrees = 90.0f,
+            forceMoveTo = false
+        )
+        lineTo(x = size.width, y = size.height - cornerRadius)
+        // Bottom right arc
+        arcTo(
+            rect = Rect(
+                left = size.width - cornerRadius,
+                top = size.height - cornerRadius,
+                right = size.width,
+                bottom = size.height
+            ),
+            startAngleDegrees = 0.0f,
+            sweepAngleDegrees = 90.0f,
+            forceMoveTo = false
+        )
+        lineTo(x = cornerRadius, y = size.height)
+        // Bottom left arc
+        arcTo(
+            rect = Rect(
+                left = 0f,
+                top = size.height - cornerRadius,
+                right = cornerRadius,
+                bottom = size.height
+            ),
+            startAngleDegrees = 90.0f,
+            sweepAngleDegrees = 90.0f,
+            forceMoveTo = false
+        )
+        lineTo(x = 0f, y = cornerRadius)
+        close()
+    }
+}
+
+
+class CustomCardShape(private val radius: Float) : Shape {
+    override fun createOutline(
+        size: Size,
+        layoutDirection: LayoutDirection,
+        density: Density
+    ): Outline {
+        return Outline.Generic(
+            path = drawCardShape(size, radius)
+        )
+    }
+}
+
+@Composable
+fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
