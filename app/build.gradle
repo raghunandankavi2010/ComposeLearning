@@ -37,7 +37,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.0"
+        kotlinCompilerExtensionVersion = "1.4.3"
     }
     packagingOptions {
         resources {
@@ -51,6 +51,7 @@ dependencies {
 
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+    implementation 'androidx.core:core-ktx:1.9.0'
     def composeBom = platform('androidx.compose:compose-bom:2022.12.00')
     implementation composeBom
     androidTestImplementation composeBom
@@ -75,7 +76,9 @@ dependencies {
     // https://mvnrepository.com/artifact/androidx.navigation/navigation-compose
     implementation group: 'androidx.navigation', name: 'navigation-compose', version: '2.5.3'
     // https://mvnrepository.com/artifact/androidx.compose.runtime/runtime
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.0-alpha05")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.0-rc01")
+
+    implementation("io.coil-kt:coil-compose:2.2.2")
 
 
 
