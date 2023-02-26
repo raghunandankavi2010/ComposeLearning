@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -23,20 +24,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.composelearning.customshapes.CustomTopArcShapeComposable
+import com.example.composelearning.anim.OffsetAnim
 import com.example.composelearning.lists.*
 import com.example.composelearning.sotry.*
 import com.example.composelearning.ui.theme.ComposeLearningTheme
@@ -413,7 +415,9 @@ fun TutorialNavGraph(
     ) {
 
         composable(route = "FirstScreen") { navBackEntryStack ->
-            CustomTopArcShapeComposable(modifier = Modifier.background(Color.White).padding(20.dp))
+           OffsetAnim()
+
+//            CustomTopArcShapeComposable(modifier = Modifier.background(Color.White).padding(20.dp))
            // InstagramCarousel()
 //            FirstScreen(
 //                mainViewModel,
@@ -432,6 +436,10 @@ fun TutorialNavGraph(
     }
 
 }
+
+
+
+
 
 
 //                        Column(
