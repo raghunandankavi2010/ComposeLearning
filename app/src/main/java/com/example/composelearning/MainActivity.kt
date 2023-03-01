@@ -17,6 +17,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +31,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.input.KeyboardType.Companion.Text
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
@@ -44,8 +46,10 @@ import com.example.composelearning.sotry.*
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalMaterialApi::class)
-    @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+    @OptIn(ExperimentalMaterial3Api::class)
+    @SuppressLint("UnusedMaterialScaffoldPaddingParameter",
+        "UnusedMaterial3ScaffoldPaddingParameter"
+    )
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -54,31 +58,33 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    color = MaterialTheme.colorScheme.background
                 ) {
-                    val mainViewModel: MainViewModel = viewModel()
-                    val shouldShowIcon by mainViewModel.searchWidgetVisibility.collectAsState()
-                    LogCompositions(tag = "Surface", msg = "${mainViewModel.hashCode()}")
 
-                    Scaffold(
-                        topBar = {
-                            DefaultAppBar(shouldShowIcon)
-//                            TopAppBar(
-//                                title = {
-//                                    Text(text = "Compose Ui Samples")
-//                                },
-//                                navigationIcon = {
-//                                    IconButton(onClick = { }) {
-//                                        Icon(Icons.Filled.Menu, "")
-//                                    }
-//                                },
-//                                backgroundColor = Blue,
-//                                contentColor = White,
-//                                elevation = 12.dp
-//                            )
-                        }) {
-                        TutorialNavGraph(mainViewModel)
-                    }
+                    GreetingView()
+//                    val mainViewModel: MainViewModel = viewModel()
+//                    val shouldShowIcon by mainViewModel.searchWidgetVisibility.collectAsState()
+//                    LogCompositions(tag = "Surface", msg = "${mainViewModel.hashCode()}")
+//
+//                    Scaffold(
+//                        topBar = {
+//                            DefaultAppBar(shouldShowIcon)
+////                            TopAppBar(
+////                                title = {
+////                                    Text(text = "Compose Ui Samples")
+////                                },
+////                                navigationIcon = {
+////                                    IconButton(onClick = { }) {
+////                                        Icon(Icons.Filled.Menu, "")
+////                                    }
+////                                },
+////                                backgroundColor = Blue,
+////                                contentColor = White,
+////                                elevation = 12.dp
+////                            )
+//                        }) {
+//                        TutorialNavGraph(mainViewModel)
+//                    }
                 }
             }
         }
@@ -342,10 +348,7 @@ fun TooltipOnLongClickExample(onClick: () -> Unit = {}) {
             Text("Click Me (will show tooltip on long click)")
         }
 
-        Tooltip(showTooltip) {
-            // Tooltip content goes here.
-            Text("Tooltip Text!!")
-        }
+
     }
 }
 
@@ -361,6 +364,7 @@ private val colors = listOf(
     Color.DarkGray
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DefaultAppBar(
     shouldShowIcon: Boolean,
@@ -372,7 +376,6 @@ fun DefaultAppBar(
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         TopAppBar(
-            backgroundColor = Color.White,
             title = {
                 Text(text = "Compose UI Sample",
                     modifier = Modifier

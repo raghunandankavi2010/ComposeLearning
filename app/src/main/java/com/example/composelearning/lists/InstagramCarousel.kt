@@ -13,9 +13,9 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.horizontalDrag
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
@@ -152,7 +152,7 @@ fun InstagramCarousel(
     modifier: Modifier = Modifier,
     state: CarouselState = rememberCarouselState(),
     numSegments: Int = 5,
-    circleColor: Color = MaterialTheme.colors.onSurface,
+    circleColor: Color = MaterialTheme.colorScheme.onSurface,
     currentValueLabel: @Composable (Int) -> Unit = { value -> Text(value.toString()) },
     indicatorLabel: @Composable (Int) -> Unit = { value -> Text(value.toString()) },
 ) {
@@ -280,14 +280,14 @@ fun InstagramCarouselPreview() {
                 currentValueLabel = { value ->
                     Text(
                         text = "${(value / 10)}.${(value % 10)}x",
-                        style = MaterialTheme.typography.h6
+                        style = MaterialTheme.typography.headlineMedium
                     )
                 },
                 indicatorLabel = { value ->
                     if (value % 5 == 0) {
                         Text(
                             text = "${(value / 10)}.${(value % 10)}",
-                            style = MaterialTheme.typography.body2,
+                            style = MaterialTheme.typography.bodyMedium,
                         )
                     }
                 }
