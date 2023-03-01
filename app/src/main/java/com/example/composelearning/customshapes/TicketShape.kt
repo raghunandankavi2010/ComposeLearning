@@ -2,21 +2,17 @@ package com.example.composelearning.customshapes
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.SnackbarDefaults.backgroundColor
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
@@ -230,7 +226,7 @@ fun CustomTopArcShapeComposable(modifier: Modifier) {
             this.rotationY = 5f
         },
         border = BorderStroke(5.dp,Color(0xff5d6474)),
-        backgroundColor = Color(0xff333d51),shape = RoundedCornerShape(25.dp.dpToPx())
+        colors = CardDefaults.cardColors(),shape = RoundedCornerShape(25.dp.dpToPx())
     ){
 
     }

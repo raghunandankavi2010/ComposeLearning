@@ -14,6 +14,9 @@ import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -202,14 +205,14 @@ object SliderDefaults {
      */
     @Composable
     fun colors(
-        thumbColor: Color = MaterialTheme.colors.primary,
-        disabledThumbColor: Color = MaterialTheme.colors.onSurface
-            .copy(alpha = ContentAlpha.disabled)
-            .compositeOver(MaterialTheme.colors.surface),
-        activeTrackColor: Color = MaterialTheme.colors.primary,
+        thumbColor: Color = MaterialTheme.colorScheme.primary,
+        disabledThumbColor: Color = MaterialTheme.colorScheme.onSurface
+            .copy(alpha = 0f)
+            .compositeOver(MaterialTheme.colorScheme.surface),
+        activeTrackColor: Color = MaterialTheme.colorScheme.primary,
         inactiveTrackColor: Color = activeTrackColor.copy(alpha = InactiveTrackAlpha),
         disabledActiveTrackColor: Color =
-            MaterialTheme.colors.onSurface.copy(alpha = DisabledActiveTrackAlpha),
+            MaterialTheme.colorScheme.onSurface.copy(alpha = DisabledActiveTrackAlpha),
         disabledInactiveTrackColor: Color =
             disabledActiveTrackColor.copy(alpha = DisabledInactiveTrackAlpha),
         activeTickColor: Color = contentColorFor(activeTrackColor).copy(alpha = TickAlpha),
@@ -353,7 +356,7 @@ private fun SliderImpl(
                 ThumbDefaultElevation
             }
             Surface(
-                elevation = if (enabled) elevation else 0.dp,
+                tonalElevation = if (enabled) elevation else 0.dp,
                 modifier = Modifier
                     .size(thumbSize, thumbSize)
                     .focusable(interactionSource = interactionSource)

@@ -1,9 +1,10 @@
 package com.example.composelearning.dropdown
 
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 
-@OptIn(ExperimentalMaterialApi::class)
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomDropdownMenu() {
     val options = listOf("Option 1", "Option 2", "Option 3", "Option 4", "Option 5")
@@ -31,9 +32,8 @@ fun CustomDropdownMenu() {
                             selectedOption = option
                             exp = false
                         }
-                    ) {
-                        Text(text = option)
-                    }
+                    , text = { Text(text = option) }
+                    )
                 }
             }
         }

@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -58,7 +58,7 @@ fun ItemView(message: String, selected: Boolean, onClick: (Int) -> Unit, index: 
             .clickable {
                 onClick.invoke(index)
             }
-            .background(if (selected) MaterialTheme.colors.secondary else Color.Transparent)
+            .background(if (selected) MaterialTheme.colorScheme.secondary else Color.Transparent)
             .fillMaxWidth()
             .padding(12.dp)
     )

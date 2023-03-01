@@ -4,9 +4,10 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -90,7 +91,7 @@ fun LaunchButton(
             Button(
                 onClick = { onToggleAnimationState(State.End) },
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.Red,
+                    containerColor = Color.Red,
                     contentColor = Color.White
                 )
             ) {
