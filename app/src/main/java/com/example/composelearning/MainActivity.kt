@@ -41,7 +41,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.composelearning.anim.OffsetAnim
+import com.example.composelearning.animcompose.PulsatingCircle
 import com.example.composelearning.lists.*
+import com.example.composelearning.panel.ScreenWithSidePanel
 import com.example.composelearning.sotry.*
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
@@ -58,11 +60,10 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = Color.White
                 ) {
 
-                    GreetingView()
-//                    val mainViewModel: MainViewModel = viewModel()
+                   val mainViewModel: MainViewModel = viewModel()
 //                    val shouldShowIcon by mainViewModel.searchWidgetVisibility.collectAsState()
 //                    LogCompositions(tag = "Surface", msg = "${mainViewModel.hashCode()}")
 //
@@ -83,7 +84,7 @@ class MainActivity : ComponentActivity() {
 ////                                elevation = 12.dp
 ////                            )
 //                        }) {
-//                        TutorialNavGraph(mainViewModel)
+                        TutorialNavGraph(mainViewModel)
 //                    }
                 }
             }
@@ -418,7 +419,11 @@ fun TutorialNavGraph(
     ) {
 
         composable(route = "FirstScreen") { navBackEntryStack ->
-           OffsetAnim()
+          // OffsetAnim()
+            PulsatingCircle()
+            //ScreenWithSidePanel()
+            //CollpasingToolbar()
+           // NumberBox(0)
 
 //            CustomTopArcShapeComposable(modifier = Modifier.background(Color.White).padding(20.dp))
            // InstagramCarousel()

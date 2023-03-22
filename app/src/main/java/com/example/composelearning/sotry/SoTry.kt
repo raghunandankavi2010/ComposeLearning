@@ -1,9 +1,6 @@
 package com.example.composelearning.sotry
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -20,21 +17,30 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role.Companion.Image
+import androidx.compose.ui.text.*
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toSize
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.example.composelearning.R
 
@@ -192,9 +198,10 @@ fun BottomText(modifier: Modifier) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GreetingView() {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+fun CollpasingToolbar() {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     Scaffold(
+        modifier =  Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             MediumTopAppBar(
                 title = {
@@ -243,3 +250,65 @@ fun GreetingView() {
     )
 }
 
+
+@OptIn(ExperimentalTextApi::class)
+@Composable
+fun NumberBox(
+    number: Int,
+    modifier: Modifier = Modifier.width(300.dp).height(300.dp),
+    color: Color = Color.Unspecified,
+    fontStyle: FontStyle? = null,
+    fontWeight: FontWeight? = null,
+    fontFamily: FontFamily? = null,
+    textDecoration: TextDecoration? = null,
+    textAlign: TextAlign? = null,
+    style: TextStyle = LocalTextStyle.current
+) {
+
+    val mergedStyle = style.merge(
+        TextStyle(
+            color = color,
+            fontSize = 40.sp,
+            fontWeight = fontWeight,
+            textAlign = textAlign,
+            fontFamily = fontFamily,
+            textDecoration = textDecoration,
+            fontStyle = fontStyle,
+            platformStyle = PlatformTextStyle(includeFontPadding = false),
+        )
+    )
+
+    val measurer = rememberTextMeasurer()
+
+    val result = measurer.measure(
+        AnnotatedString( number.toString()),
+        style = mergedStyle,
+        maxLines = 1,
+    )
+
+    Canvas(modifier = modifier, onDraw = {
+        //drawText(measurer, text = size.toString())
+        //drawText(measurer, text = result.size.height.toString())
+            translate(
+                left = center.x - result.size.width / 2,
+                top = center.y - result.size.height / 2
+            ) {
+                drawText(
+                    textLayoutResult = result,
+                    color = Color.Blue,
+                )
+                drawLine(
+                    color = Color.Green,
+                    start = Offset(0f, result.firstBaseline),
+                    end = Offset(size.width, result.firstBaseline),
+                )
+                drawRect(
+                    color = Color.Red,
+                    size = result.size.toSize(),
+                    style = Stroke()
+                )
+            }
+
+
+    })
+}
