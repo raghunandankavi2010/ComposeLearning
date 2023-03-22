@@ -17,7 +17,7 @@ fun PulsatingCircle() {
         initialValue = 0f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 1000),
+            animation = tween(durationMillis = 2000),
             repeatMode = RepeatMode.Reverse
         )
     )
@@ -25,7 +25,7 @@ fun PulsatingCircle() {
     Canvas(modifier = Modifier.fillMaxSize()) {
         drawCircle(
             color = Color.Red.copy(alpha = 0.5f),
-            radius = size.minDimension / 2 * pulseMagnitude,
+            radius = size.minDimension / 2 * pulseMagnitude - 10.dp.toPx(),
             style = Stroke(width = 10.dp.toPx())
         )
     }
