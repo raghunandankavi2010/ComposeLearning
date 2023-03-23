@@ -1,5 +1,6 @@
 package com.example.composelearning.panel
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.splineBasedDecay
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -78,6 +79,7 @@ fun rememberDragState(
     return state
 }
 
+@SuppressLint("ReturnFromAwaitPointerEventScope", "MultipleAwaitPointerEventScopes")
 private fun Modifier.drag(
     state: DragState,
 ) = pointerInput(Unit) {
@@ -89,10 +91,10 @@ private fun Modifier.drag(
             val tracker = androidx.compose.ui.input.pointer.util.VelocityTracker()
             awaitPointerEventScope {
                 verticalDrag(pointerId) { change ->
-                    val horizontalDragOffset =
+                    val verticalDragOffset =
                         state.currentHeight - change.positionChange().y
                     launch {
-                        state.snapTo(horizontalDragOffset)
+                        state.snapTo(verticalDragOffset)
                     }
                     if (change.positionChange() != Offset.Zero) {
                         change.consume()
