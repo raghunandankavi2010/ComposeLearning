@@ -1,27 +1,19 @@
 package com.example.composelearning.animcompose
 
-import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathMeasure
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import kotlin.math.PI
 import kotlin.math.sin
@@ -99,15 +91,18 @@ fun TutorialContent() {
         }
 
         Box(contentAlignment = Alignment.Center) {
-            Canvas(modifier = Modifier.fillMaxWidth().height(400.dp).clickable {
-                if (currentTime>0){
-                    targetValue = 100f
-                    timerStarted = true
-                }else {
-                    currentTime = startDurationInSeconds
-                    timerStarted = true
-                }
-            }) {
+            Canvas(modifier = Modifier
+                .fillMaxWidth()
+                .height(400.dp)
+                .clickable {
+                    if (currentTime > 0) {
+                        targetValue = 100f
+                        timerStarted = true
+                    } else {
+                        currentTime = startDurationInSeconds
+                        timerStarted = true
+                    }
+                }) {
 
                 if (path.isEmpty) {
                     val amplitude = 100f
