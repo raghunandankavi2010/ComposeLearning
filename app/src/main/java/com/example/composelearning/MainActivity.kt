@@ -24,7 +24,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -36,8 +35,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.composelearning.animcompose.AnimSinWaveTry
+import com.example.composelearning.animcompose.TutorialContent
 import com.example.composelearning.lists.*
-import com.example.composelearning.panel.Content
 import com.example.composelearning.sotry.*
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
@@ -413,35 +413,7 @@ fun TutorialNavGraph(
     ) {
 
         composable(route = "FirstScreen") { navBackEntryStack ->
-          // OffsetAnim()
-
-            Column(modifier = Modifier) {
-
-                BoxWithConstraints {
-                    val boxWidth = with(LocalDensity.current) { constraints.maxWidth.toDp() }
-
-                    val boxHeight = with(LocalDensity.current) { constraints.maxHeight.toDp() }
-                    Content(
-                        boxWidth = boxWidth,
-                        boxHeight = boxHeight
-                    )
-                }
-            }
-
-            //PulsatingCircle()
-            //ScreenWithSidePanel()
-            //CollpasingToolbar()
-           // NumberBox(0)
-
-//            CustomTopArcShapeComposable(modifier = Modifier.background(Color.White).padding(20.dp))
-           // InstagramCarousel()
-//            FirstScreen(
-//                mainViewModel,
-//                navigateToSecondScreen = {
-//                    navController.navigate("SecondScreen")
-//                },
-//
-//            )
+            TutorialContent()
         }
         composable("SecondScreen") {
             SecondScreen() {
