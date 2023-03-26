@@ -1,5 +1,7 @@
 package com.example.composelearning.sotry
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,14 +20,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role.Companion.Image
@@ -37,11 +43,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.unit.*
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.example.composelearning.LogCompositions
 import com.example.composelearning.R
 
 
@@ -188,7 +192,10 @@ fun AlternateUI() {
 @Composable
 fun BottomText(modifier: Modifier) {
     Column(
-        modifier = modifier.wrapContentWidth().wrapContentHeight().padding(10.dp),
+        modifier = modifier
+            .wrapContentWidth()
+            .wrapContentHeight()
+            .padding(10.dp),
     ) {
         Text(text = "line1", textAlign = TextAlign.Center)
         Text(text = "line2", textAlign = TextAlign.Center)
@@ -201,7 +208,7 @@ fun BottomText(modifier: Modifier) {
 fun CollpasingToolbar() {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     Scaffold(
-        modifier =  Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             MediumTopAppBar(
                 title = {
@@ -255,7 +262,9 @@ fun CollpasingToolbar() {
 @Composable
 fun NumberBox(
     number: Int,
-    modifier: Modifier = Modifier.width(300.dp).height(300.dp),
+    modifier: Modifier = Modifier
+        .width(300.dp)
+        .height(300.dp),
     color: Color = Color.Unspecified,
     fontStyle: FontStyle? = null,
     fontWeight: FontWeight? = null,
@@ -281,7 +290,7 @@ fun NumberBox(
     val measurer = rememberTextMeasurer()
 
     val result = measurer.measure(
-        AnnotatedString( number.toString()),
+        AnnotatedString(number.toString()),
         style = mergedStyle,
         maxLines = 1,
     )
@@ -289,26 +298,115 @@ fun NumberBox(
     Canvas(modifier = modifier, onDraw = {
         //drawText(measurer, text = size.toString())
         //drawText(measurer, text = result.size.height.toString())
-            translate(
-                left = center.x - result.size.width / 2,
-                top = center.y - result.size.height / 2
-            ) {
-                drawText(
-                    textLayoutResult = result,
-                    color = Color.Blue,
-                )
-                drawLine(
-                    color = Color.Green,
-                    start = Offset(0f, result.firstBaseline),
-                    end = Offset(size.width, result.firstBaseline),
-                )
-                drawRect(
-                    color = Color.Red,
-                    size = result.size.toSize(),
-                    style = Stroke()
-                )
-            }
+        translate(
+            left = center.x - result.size.width / 2,
+            top = center.y - result.size.height / 2
+        ) {
+            drawText(
+                textLayoutResult = result,
+                color = Color.Blue,
+            )
+            drawLine(
+                color = Color.Green,
+                start = Offset(0f, result.firstBaseline),
+                end = Offset(size.width, result.firstBaseline),
+            )
+            drawRect(
+                color = Color.Red,
+                size = result.size.toSize(),
+                style = Stroke()
+            )
+        }
 
 
     })
+}
+
+@Composable
+fun Avatar(avatarSize: Int = 200) {
+
+    val imageBitmapDst = ImageBitmap.imageResource(R.drawable.thumb)
+
+    val imageBitmapSrc = ImageBitmap.imageResource(R.drawable.droid)
+
+
+    Canvas(modifier = Modifier.size(avatarSize.dp)) {
+        val dimension = size.height.coerceAtMost(size.width) / 2f
+        val xPos = (size.width - dimension) / 2f
+        val yPos = (size.height - dimension) / 2f
+
+        drawImage(
+            image = imageBitmapDst,
+        )
+
+        drawImage(
+            image = imageBitmapSrc,
+            dstOffset = IntOffset(xPos.toInt(), yPos.toInt()),
+            dstSize = IntSize(dimension.toInt(), dimension.toInt()),
+            blendMode = BlendMode.SrcIn
+        )
+    }
+}
+
+@Composable
+fun ButtonWithProgress() {
+    Button(modifier = Modifier.size(200.dp, 100.dp),
+        onClick = { }
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            CircularProgressIndicator(color = Color.White)
+            Text("Some action")
+        }
+    }
+}
+
+/**
+ * Credit Source: https://www.jetpackcompose.app/articles/donut-hole-skipping-in-jetpack-compose
+ * Use layout inspector to check recomposition count
+ */
+@Composable
+fun MyComponent() {
+    var counter by remember { mutableStateOf(0) }
+
+    LogCompositions("JetpackCompose.app", "MyComposable function")
+    CustomButton(onClick = { counter++ }) {
+        LogCompositions("JetpackCompose.app", "CustomButton scope")
+        CustomText(
+            text = "Counter: $counter",
+            modifier = Modifier
+                .clickable {
+                    counter++
+                },
+        )
+    }
+}
+
+@Composable
+fun CustomButton(
+    onClick: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    LogCompositions("JetpackCompose.app", "CustomButton function")
+    Button(onClick = onClick, modifier = Modifier.padding(16.dp)) {
+        LogCompositions("JetpackCompose.app", "Button function")
+        content()
+    }
+}
+
+@Composable
+fun CustomText(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
+    LogCompositions("JetpackCompose.app", "CustomText function")
+
+    Text(
+        text = text,
+        modifier = modifier.padding(32.dp),
+        style = TextStyle(
+            fontSize = 20.sp,
+            textDecoration = TextDecoration.Underline,
+            fontFamily = FontFamily.Monospace
+        )
+    )
 }
