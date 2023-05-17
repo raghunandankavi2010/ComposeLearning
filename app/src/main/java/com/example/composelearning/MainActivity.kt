@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -39,7 +40,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.composelearning.lists.*
+import com.example.composelearning.pager.PagerDemo
 import com.example.composelearning.sotry.*
+import com.example.composelearning.textfields.MarqueeText
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -414,7 +417,7 @@ fun TutorialNavGraph(
     ) {
 
         composable(route = "FirstScreen") { navBackEntryStack ->
-            MyComponent()
+            MarqueeText(LoremIpsum().values.first().take(90))
         }
         composable("SecondScreen") {
             SecondScreen() {

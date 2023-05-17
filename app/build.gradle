@@ -49,22 +49,22 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.core:core-ktx:1.10.1'
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
-    implementation 'androidx.core:core-ktx:1.9.0'
-    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.core:core-ktx:1.10.1'
     def composeBom = platform('androidx.compose:compose-bom:2022.12.00')
     implementation composeBom
     androidTestImplementation composeBom
 
-    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.core:core-ktx:1.10.1'
     implementation 'androidx.compose.ui:ui'
     // https://mvnrepository.com/artifact/androidx.compose.material3/material3
     implementation  'androidx.compose.material3:material3'
 
     implementation 'androidx.compose.ui:ui-tooling-preview'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.0'
-    implementation 'androidx.activity:activity-compose:1.6.1'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.1'
+    implementation 'androidx.activity:activity-compose:1.7.1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
@@ -73,18 +73,20 @@ dependencies {
     implementation 'androidx.compose.foundation:foundation'
     // https://mvnrepository.com/artifact/androidx.compose.animation/animation
     implementation  'androidx.compose.animation:animation'
-    implementation 'com.google.accompanist:accompanist-pager:0.26.0-alpha'
     // https://mvnrepository.com/artifact/androidx.lifecycle/lifecycle-viewmodel-compose
-    implementation group: 'androidx.lifecycle', name: 'lifecycle-viewmodel-compose', version: '2.6.0'
+    implementation group: 'androidx.lifecycle', name: 'lifecycle-viewmodel-compose', version: '2.6.1'
     // https://mvnrepository.com/artifact/androidx.navigation/navigation-compose
     implementation group: 'androidx.navigation', name: 'navigation-compose', version: '2.5.3'
     // https://mvnrepository.com/artifact/androidx.compose.runtime/runtime
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
 
     implementation("io.coil-kt:coil-compose:2.2.2")
 
     // https://mvnrepository.com/artifact/androidx.lifecycle/lifecycle-viewmodel-ktx
-    implementation group: 'androidx.lifecycle', name: 'lifecycle-viewmodel-ktx', version: '2.6.0'
+    implementation group: 'androidx.lifecycle', name: 'lifecycle-viewmodel-ktx', version: '2.6.1'
+    // https://mvnrepository.com/artifact/androidx.compose.foundation/foundation
+    implementation 'androidx.compose.foundation:foundation:1.4.3'
+
 
 
 

@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
@@ -18,8 +19,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Blue
@@ -31,6 +35,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -410,3 +415,125 @@ fun CustomText(
         )
     )
 }
+
+@Composable
+fun StandardButton(modifier: Modifier, onClicked: () -> Unit) {
+    OutlinedButton(modifier = modifier
+        .fillMaxWidth()
+        .height(70.dp)
+        .topBorder(6.dp, Color.White, 50.dp)
+        .background(Color.Red),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Blue),
+        shape = RoundedCornerShape(topStart = 0.dp, topEnd = 50.dp, bottomEnd = 50.dp),
+        onClick = onClicked) {
+        Text(text = "Button")
+    }
+}
+
+fun Modifier.topBorder(strokeWidth: Dp, color: Color, cornerRadiusDp: Dp) = composed(
+    factory = {
+        val density = LocalDensity.current
+        val strokeWidthPx = density.run { strokeWidth.toPx() }
+        val cornerRadiusPx = density.run { cornerRadiusDp.toPx() }
+
+        Modifier.drawBehind {
+            val width = size.width
+            val height = size.height
+
+            drawLine(
+                color = color,
+                start = Offset(x = 0f, y = height),
+                end = Offset(x = 0f, y = cornerRadiusPx),
+                strokeWidth = strokeWidthPx
+            )
+
+            drawArc(
+                color = color,
+                startAngle = 180f,
+                sweepAngle = 90f,
+                useCenter = false,
+                topLeft = Offset.Zero,
+                size = Size(cornerRadiusPx * 2, cornerRadiusPx * 2),
+                style = Stroke(width = strokeWidthPx)
+            )
+
+            drawLine(
+                color = color,
+                start = Offset(x = cornerRadiusPx, y = 0f),
+                end = Offset(x = width - cornerRadiusPx, y = 0f),
+                strokeWidth = strokeWidthPx
+            )
+
+            drawArc(
+                color = color,
+                startAngle = 270f,
+                sweepAngle = 90f,
+                useCenter = false,
+                topLeft = Offset(x = width - cornerRadiusPx * 2, y = 0f),
+                size = Size(cornerRadiusPx * 2, cornerRadiusPx * 2),
+                style = Stroke(width = strokeWidthPx)
+            )
+
+            drawLine(
+                color = color,
+                start = Offset(x = width, y = height),
+                end = Offset(x = width, y = cornerRadiusPx),
+                strokeWidth = strokeWidthPx
+            )
+        }
+    }
+)
+
+fun Modifier.bottomBorder(strokeWidth: Dp, color: Color, cornerRadiusDp: Dp) = composed(
+    factory = {
+        val density = LocalDensity.current
+        val strokeWidthPx = density.run { strokeWidth.toPx() }
+        val cornerRadiusPx = density.run { cornerRadiusDp.toPx() }
+
+        Modifier.drawBehind {
+            val width = size.width
+            val height = size.height
+
+            drawLine(
+                color = color,
+                start = Offset(x = 0f, y = 0f),
+                end = Offset(x = 0f, y = height-cornerRadiusPx),
+                strokeWidth = strokeWidthPx
+            )
+
+            drawArc(
+                color = color,
+                startAngle = 90f,
+                sweepAngle = 90f,
+                useCenter = false,
+                topLeft = Offset(x = 0f, y = height - cornerRadiusPx * 2),
+                size = Size(cornerRadiusPx * 2, cornerRadiusPx * 2),
+                style = Stroke(width = strokeWidthPx)
+            )
+
+            drawLine(
+                color = color,
+                start = Offset(x = cornerRadiusPx, y = height),
+                end = Offset(x = width - cornerRadiusPx, y = height),
+                strokeWidth = strokeWidthPx
+            )
+
+            drawArc(
+                color = color,
+                startAngle = 0f,
+                sweepAngle = 90f,
+                useCenter = false,
+                topLeft = Offset(x = width - cornerRadiusPx * 2, y = height - cornerRadiusPx * 2),
+                size = Size(cornerRadiusPx * 2, cornerRadiusPx * 2),
+                style = Stroke(width = strokeWidthPx)
+            )
+
+            drawLine(
+                color = color,
+                start = Offset(x = width, y = 0f),
+                end = Offset(x = width, y = height - cornerRadiusPx),
+                strokeWidth = strokeWidthPx
+            )
+        }
+    }
+)
