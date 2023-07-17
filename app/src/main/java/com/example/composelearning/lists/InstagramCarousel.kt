@@ -43,6 +43,7 @@ import kotlin.math.roundToInt
 
 /**
  * Inspired from https://fvilarino.medium.com/recreating-google-podcasts-speed-selector-in-jetpack-compose-7623203a009d
+ * https://docs.flutter.dev/cookbook/effects/photo-filter-carousel
  */
 private val colors = listOf(
     Color.Red,
@@ -154,7 +155,6 @@ fun InstagramCarousel(
     numSegments: Int = 5,
     circleColor: Color = MaterialTheme.colorScheme.onSurface,
     currentValueLabel: @Composable (Int) -> Unit = { value -> Text(value.toString()) },
-    indicatorLabel: @Composable (Int) -> Unit = { value -> Text(value.toString()) },
 ) {
     val context = LocalContext.current
     Column(
@@ -224,7 +224,6 @@ fun InstagramCarousel(
                                     .show()
                             }
                     )
-                    // indicatorLabel(i)
                 }
             }
         }
@@ -282,14 +281,6 @@ fun InstagramCarouselPreview() {
                         text = "${(value / 10)}.${(value % 10)}x",
                         style = MaterialTheme.typography.headlineMedium
                     )
-                },
-                indicatorLabel = { value ->
-                    if (value % 5 == 0) {
-                        Text(
-                            text = "${(value / 10)}.${(value % 10)}",
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-                    }
                 }
             )
         }
