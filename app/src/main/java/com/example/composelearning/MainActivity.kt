@@ -35,6 +35,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.composelearning.graphics.Chart
 import com.example.composelearning.lists.*
 import com.example.composelearning.sotry.*
 import com.example.composelearning.ui.theme.ComposeLearningTheme
@@ -413,7 +414,8 @@ fun TutorialNavGraph(
         composable(route = "FirstScreen") { navBackEntryStack ->
            // Filters()
             Column() {
-                EquiRow()
+                Chart()
+                //EquiRow()
                 //LazyRowWithColorAnimation()
                 //Speedometer(progress = 100)
 //                InstagramCarousel(
