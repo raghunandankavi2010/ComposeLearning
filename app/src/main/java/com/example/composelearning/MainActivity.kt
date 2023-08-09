@@ -413,9 +413,9 @@ fun TutorialNavGraph(
 
         composable(route = "FirstScreen") { navBackEntryStack ->
            // Filters()
-            Column() {
-                Chart()
-                //EquiRow()
+            Column(Modifier.background(Color.DarkGray)) {
+                //Chart()
+                EquiRow()
                 //LazyRowWithColorAnimation()
                 //Speedometer(progress = 100)
 //                InstagramCarousel(

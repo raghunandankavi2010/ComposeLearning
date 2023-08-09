@@ -51,9 +51,6 @@ dependencies {
 
     implementation 'androidx.core:core-ktx:1.10.1'
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation 'androidx.core:core-ktx:1.10.1'
-    implementation 'androidx.core:core-ktx:1.10.1'
     def composeBom = platform('androidx.compose:compose-bom:2022.12.00')
     implementation composeBom
     androidTestImplementation composeBom
@@ -81,16 +78,12 @@ dependencies {
     // https://mvnrepository.com/artifact/androidx.compose.runtime/runtime
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
 
-    implementation("io.coil-kt:coil-compose:2.3.0")
+    implementation("io.coil-kt:coil-compose:2.4.0")
 
     // https://mvnrepository.com/artifact/androidx.lifecycle/lifecycle-viewmodel-ktx
     implementation group: 'androidx.lifecycle', name: 'lifecycle-viewmodel-ktx', version: '2.6.1'
     // https://mvnrepository.com/artifact/androidx.compose.foundation/foundation
     implementation 'androidx.compose.foundation:foundation:1.4.3'
-
-
-
-
 
 
 

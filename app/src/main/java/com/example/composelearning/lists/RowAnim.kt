@@ -5,7 +5,9 @@ import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -29,18 +31,35 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.imageResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.composelearning.LogCompositions
+import com.example.composelearning.R
 import kotlin.math.roundToInt
 
 
 @Composable
 fun EquiRow() {
     val selectedIndex = remember { mutableStateOf(0) }
+
+
     val colors = listOf(
         Color.Magenta,
         Color.Red,
@@ -50,6 +69,16 @@ fun EquiRow() {
         Color.Black,
         Color.Red
     )
+
+    val imageBitmap = ImageBitmap.imageResource(R.drawable.test)
+    val image = remember {
+        imageBitmap
+    }
+
+    val borderColor = remember {
+        mutableStateOf(Color.Transparent)
+    }
+
 
     val first = remember {
         mutableStateOf(true)
@@ -68,7 +97,7 @@ fun EquiRow() {
         with(LocalDensity.current) { ((index.value * 54.dp.toPx()) + (14.dp.toPx() * index.value) + (27.dp.toPx())) }
     }
 
-    val initialY = with(LocalDensity.current) { 75.dp.toPx() }
+    val initialY = with(LocalDensity.current) { 30.dp.toPx() }
 
     var offsetX by remember { mutableStateOf(initialX) }
     var offsetY by remember { mutableStateOf(initialY) }
@@ -99,16 +128,28 @@ fun EquiRow() {
         modifier = Modifier
             .horizontalScroll(scrollState)
             .fillMaxWidth()
-            .height(150.dp)
+            .height(60.dp)
             .padding(start = 16.dp, end = 16.dp)
             .drawBehind {
-
-                drawCircle(
-                    color = Color.LightGray,
-                    radius = radius,
-                    center =
-                    Offset(animValue, offsetY)
+               val colorFilter = if(selectedIndex.value == 3) {
+                   ColorFilter.tint(Color.Blue)
+                } else {
+                    ColorFilter.tint(Color.Red)
+                }
+                drawImage(
+                    image,
+                    dstOffset = IntOffset(
+                        animValue.roundToInt() - image.width / 2, offsetY.toInt() - image.height / 2
+                    ),
+                    colorFilter = colorFilter
                 )
+
+//                drawCircle(
+//                    color = Color.LightGray,
+//                    radius = radius,
+//                    center =
+//                    Offset(animValue, offsetY)
+//                )
             },
         horizontalArrangement = Arrangement.spacedBy(14.dp)
     ) {
@@ -121,11 +162,22 @@ fun EquiRow() {
         colors.forEachIndexed { index, color ->
 
             LogCompositions(tag = "For Loop", msg = "Running")
+            if(index == 3) {
+                borderColor.value = Color.Red
+            } else {
+                borderColor.value = Color.Blue
+            }
+
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .width(54.dp)
                     .height(54.dp)
+                    .border(
+
+                        BorderStroke(2.dp, borderColor.value),
+                        CircleShape
+                    )
                     .clip(CircleShape)
                     .background(colors[index])
                     .onGloballyPositioned { layoutCoordinates ->
@@ -141,7 +193,18 @@ fun EquiRow() {
                         selectedIndex.value = index
                         println("🔥🔥 POSITION : $offsetX")
                     }
-            )
+            ) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data("https://i.imgur.com/tGbaZCY.jpg")
+                        .crossfade(true)
+                        .build(),
+                    placeholder = painterResource(R.drawable.droid),
+                    contentDescription = "Crop Image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.clip(CircleShape)
+                )
+            }
 
         }
 
