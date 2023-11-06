@@ -28,18 +28,22 @@ fun PagerDemo(modifier: Modifier = Modifier) {
         val contentPadding = (maxWidth - 50.dp) / 2
         val offSet = maxWidth / 5
         val itemSpacing = offSet - 50.dp
-        val pagerState = rememberPagerState()
+        val pagerState = rememberPagerState(pageCount = {
+            10
+        })
 
         val scope = rememberCoroutineScope()
 
-        HorizontalPager(
-            pageCount = 30,
-            contentPadding = PaddingValues(horizontal = contentPadding),
-            modifier = modifier,
-            pageSpacing = itemSpacing,
-            state = pagerState,
-            flingBehavior = PagerDefaults.flingBehavior(state = pagerState, pagerSnapDistance = PagerSnapDistance.atMost(0))
 
+        HorizontalPager(
+            modifier = modifier,
+            state = pagerState,
+            flingBehavior = PagerDefaults.flingBehavior(
+                state = pagerState,
+                pagerSnapDistance = PagerSnapDistance.atMost(0)
+            ),
+            contentPadding = PaddingValues(horizontal = contentPadding),
+            pageSpacing = itemSpacing,
         ) { page ->
             Box(
                 modifier = Modifier

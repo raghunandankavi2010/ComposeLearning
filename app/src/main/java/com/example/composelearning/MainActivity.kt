@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.ripple.rememberRipple
@@ -24,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -35,13 +35,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.composelearning.graphics.Chart
+import com.example.composelearning.customshapes.Polygon
 import com.example.composelearning.lists.*
 import com.example.composelearning.sotry.*
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3Api::class)
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter",
         "UnusedMaterial3ScaffoldPaddingParameter"
     )
@@ -412,10 +411,39 @@ fun TutorialNavGraph(
     ) {
 
         composable(route = "FirstScreen") { navBackEntryStack ->
+            //PagerDemo()
+            Box {
+                                            Image(
+                                painter = painterResource(id = R.drawable.ic_launcher_background),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .width(200.dp)
+                                    .height(200.dp)
+                                    .clip(Polygon(5,-90f)),
+                                contentScale = ContentScale.Crop
+                            )
+            }
+
            // Filters()
-            Column(Modifier.background(Color.DarkGray)) {
+//            val items = remember {
+//                listOf("Man", "Woman")
+//            }
+//
+//            var selectedIndex by remember {
+//                mutableStateOf(0)
+//            }
+//            Column(Modifier.background(Color.Green)) {
+//
+//
+//                com.example.composelearning.buttons.TextSwitch(
+//                    selectedIndex = selectedIndex,
+//                    items = items,
+//                    onSelectionChange = {
+//                        selectedIndex = it
+//                    }
+//                )
                 //Chart()
-                EquiRow()
+               // EquiRow()
                 //LazyRowWithColorAnimation()
                 //Speedometer(progress = 100)
 //                InstagramCarousel(
@@ -428,7 +456,7 @@ fun TutorialNavGraph(
 //                            style = MaterialTheme.typography.bodyMedium
 //                        )
 //                    })
-            }
+ //           }
 
             //MarqueeText(LoremIpsum().values.first().take(90))
         }
