@@ -36,12 +36,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.composelearning.customshapes.Polygon
+import com.example.composelearning.graphics.ImageWithRedDot
 import com.example.composelearning.lists.*
 import com.example.composelearning.sotry.*
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
-    @SuppressLint("UnusedMaterialScaffoldPaddingParameter",
+    @SuppressLint(
+        "UnusedMaterialScaffoldPaddingParameter",
         "UnusedMaterial3ScaffoldPaddingParameter"
     )
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +57,8 @@ class MainActivity : ComponentActivity() {
                     color = Color.White
                 ) {
 
-                   val mainViewModel: MainViewModel = viewModel()
+                    val mainViewModel: MainViewModel = viewModel()
+                    TutorialNavGraph(mainViewModel)
 //                    val shouldShowIcon by mainViewModel.searchWidgetVisibility.collectAsState()
 //                    LogCompositions(tag = "Surface", msg = "${mainViewModel.hashCode()}")
 //
@@ -76,7 +79,7 @@ class MainActivity : ComponentActivity() {
 ////                                elevation = 12.dp
 ////                            )
 //                        }) {
-                        TutorialNavGraph(mainViewModel)
+
 //                    }
                 }
             }
@@ -364,7 +367,6 @@ fun DefaultAppBar(
 ) {
 
 
-
     LogCompositions(tag = "AppBar", msg = shouldShowIcon.toString())
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -382,13 +384,13 @@ fun DefaultAppBar(
                     IconButton(
                         onClick = { },
                         modifier = Modifier.background(Color.Black),
-                        ) {
+                    ) {
                         Icon(
                             imageVector = Icons.Filled.Menu,
                             contentDescription = "Search Icon",
                             tint = Color.Black,
                             modifier = Modifier,
-                            )
+                        )
                     }
                 }
             }
@@ -412,19 +414,21 @@ fun TutorialNavGraph(
 
         composable(route = "FirstScreen") { navBackEntryStack ->
             //PagerDemo()
-            Box {
-                                            Image(
-                                painter = painterResource(id = R.drawable.ic_launcher_background),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .width(200.dp)
-                                    .height(200.dp)
-                                    .clip(Polygon(5,-90f)),
-                                contentScale = ContentScale.Crop
-                            )
-            }
 
-           // Filters()
+            ImageWithRedDot()
+//            Box {
+//                                            Image(
+//                                painter = painterResource(id = R.drawable.ic_launcher_background),
+//                                contentDescription = null,
+//                                modifier = Modifier
+//                                    .width(200.dp)
+//                                    .height(200.dp)
+//                                    .clip(Polygon(5,-90f)),
+//                                contentScale = ContentScale.Crop
+//                            )
+//            }
+
+            // Filters()
 //            val items = remember {
 //                listOf("Man", "Woman")
 //            }
@@ -442,10 +446,10 @@ fun TutorialNavGraph(
 //                        selectedIndex = it
 //                    }
 //                )
-                //Chart()
-               // EquiRow()
-                //LazyRowWithColorAnimation()
-                //Speedometer(progress = 100)
+            //Chart()
+            // EquiRow()
+            //LazyRowWithColorAnimation()
+            //Speedometer(progress = 100)
 //                InstagramCarousel(
 //                    modifier = Modifier.align(Alignment.CenterHorizontally)
 //                        .fillMaxWidth()
@@ -456,7 +460,7 @@ fun TutorialNavGraph(
 //                            style = MaterialTheme.typography.bodyMedium
 //                        )
 //                    })
- //           }
+            //           }
 
             //MarqueeText(LoremIpsum().values.first().take(90))
         }
@@ -469,8 +473,6 @@ fun TutorialNavGraph(
     }
 
 }
-
-
 
 
 //                        Column(
