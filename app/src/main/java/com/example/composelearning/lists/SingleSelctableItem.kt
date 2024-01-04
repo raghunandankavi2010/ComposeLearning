@@ -39,7 +39,7 @@ fun SingleSelectableItem(messages : MutableList<Message>) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
     ){
-        itemsIndexed(messages){ index,message, ->
+        itemsIndexed(messages,key = ::itemKey){ index,message, ->
             ItemView(
                 message = message.message,
                 selected = selectedIndex == index,
@@ -48,6 +48,11 @@ fun SingleSelectableItem(messages : MutableList<Message>) {
             )
         }
     }
+}
+
+
+fun itemKey(index: Int, message: Message): Int {
+    return message.id
 }
 
 @Composable
