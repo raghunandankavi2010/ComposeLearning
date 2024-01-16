@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 @Composable
 fun Content(
@@ -79,12 +80,45 @@ fun rememberDragState(
     return state
 }
 
-@SuppressLint("ReturnFromAwaitPointerEventScope", "MultipleAwaitPointerEventScopes")
+//@SuppressLint("ReturnFromAwaitPointerEventScope", "MultipleAwaitPointerEventScopes")
+//private fun Modifier.drag(
+//    state: DragState,
+//) = pointerInput(Unit) {
+//    val decay = splineBasedDecay<Float>(this)
+//    coroutineScope {
+//        while (true) {
+//            val pointerId = awaitPointerEventScope { awaitFirstDown().id }
+//            state.stop()
+//            val tracker = androidx.compose.ui.input.pointer.util.VelocityTracker()
+//            awaitPointerEventScope {
+//                verticalDrag(pointerId) { change ->
+//                    val verticalDragOffset =
+//                        state.currentHeight - change.positionChange().y
+//                    launch {
+//                        state.snapTo(verticalDragOffset)
+//                    }
+//                    if (change.positionChange() != Offset.Zero) {
+//                        change.consume()
+//                    }
+//                }
+//                val velocity = tracker.calculateVelocity().y
+//                val targetValue = decay.calculateTargetValue(state.currentHeight, -velocity)
+//                launch {
+//                    state.decayTo(velocity, targetValue)
+//                }
+//            }
+//        }
+//    }
+//}
+
+@SuppressLint("MultipleAwaitPointerEventScopes", "ReturnFromAwaitPointerEventScope")
 private fun Modifier.drag(
     state: DragState,
 ) = pointerInput(Unit) {
     val decay = splineBasedDecay<Float>(this)
     coroutineScope {
+        var snapBack = false // Flag to determine whether to snap back after drag stops
+        var snapFwd = false
         while (true) {
             val pointerId = awaitPointerEventScope { awaitFirstDown().id }
             state.stop()
@@ -102,10 +136,29 @@ private fun Modifier.drag(
                 }
                 val velocity = tracker.calculateVelocity().y
                 val targetValue = decay.calculateTargetValue(state.currentHeight, -velocity)
+
+                // Check if the drag is less than half of the screen height
+                if (abs( state.currentHeight) < (state.maxHeight / 2)) {
+                    // Set the snapBack flag when dragging stops
+                    snapBack = true
+                } else if(state.currentHeight > state.maxHeight / 2) {
+                    snapFwd = true
+                }
+
                 launch {
                     state.decayTo(velocity, targetValue)
+
+                    // Snap back to the original position after drag stops and the drag is less than half of the screen height
+                    if (snapBack) {
+                        state.snapTo(100f)
+                        snapBack = false
+                    } else if(snapFwd) {
+                        state.snapTo(state.maxHeight)
+                        snapFwd = false
+                    }
                 }
             }
         }
     }
 }
+
