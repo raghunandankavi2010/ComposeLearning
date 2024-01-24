@@ -66,6 +66,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.composelearning.customshapes.DraggableLineDrawing
+import com.example.composelearning.lists.EquiRow
+import com.example.composelearning.pager.PagerDemo
+import com.example.composelearning.pager.PagerDemo3
 import com.example.composelearning.panel.BottomPanel
 import com.example.composelearning.progess.AnotherProgressBar
 import com.example.composelearning.rows.MaxWidthText
@@ -443,9 +447,13 @@ fun TutorialNavGraph(
     ) {
 
         composable(route = "FirstScreen") { navBackEntryStack ->
-            //PagerDemo()
+            DraggableLineDrawing()
+            //PagerDemo3()
             //MaxWidthText()
-            BottomPanel()
+//            Column(modifier = Modifier.height(80.dp).padding(top = 20.dp)) {
+//                EquiRow()
+//            }
+
             //AnotherProgressBar()
             //ContinuousLineGraph()
             //AnimatedHeartShape()
