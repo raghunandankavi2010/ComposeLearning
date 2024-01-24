@@ -1,7 +1,8 @@
 package com.example.composelearning.pager
 
-
+import com.example.composelearning.R
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -16,7 +17,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.lerp
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
@@ -85,3 +89,57 @@ private val colors = listOf(
     Color.Yellow,
     Color.Cyan,
 )
+
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun PagerDemo3(modifier: Modifier = Modifier) {
+    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+
+        val itemSpacing = 16.dp
+        val pagerState = rememberPagerState(pageCount = {
+            10
+        })
+
+        val scope = rememberCoroutineScope()
+
+        HorizontalPager(
+            modifier = modifier,
+            state = pagerState,
+            flingBehavior = PagerDefaults.flingBehavior(
+                state = pagerState,
+                pagerSnapDistance = PagerSnapDistance.atMost(0)
+            ),
+            contentPadding = PaddingValues(horizontal = 32.dp),
+            pageSpacing = itemSpacing
+        ) { page ->
+            Image(
+                painter = painterResource(id = R.drawable.ic_launcher_background),
+                contentDescription = "",
+                contentScale = ContentScale.FillWidth,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp)
+                    .clickable(
+                        interactionSource = MutableInteractionSource(),
+                        indication = null,
+                        enabled = true,
+                    ) {
+                        scope.launch {
+                            pagerState.animateScrollToPage(page)
+                        }
+                    }.graphicsLayer {
+                        val pageOffSet = (
+                                (pagerState.currentPage - page) + pagerState
+                                    .currentPageOffsetFraction
+                                ).absoluteValue
+                        alpha = lerp(
+                            start = 0.5f,
+                            stop = 1f,
+                            fraction = 1f - pageOffSet.coerceIn(0f, 1f)
+                        )
+                    }
+            )
+        }
+    }
+}

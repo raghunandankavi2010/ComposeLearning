@@ -197,7 +197,7 @@ fun SampleImage(selectedIndex: Int) {
                 .width(42.dp)
                 .height(42.dp)
                 .align(Alignment.BottomCenter),
-            painter = painterResource(id = androidx.core.R.drawable.ic_call_answer),
+            painter = painterResource(id = R.drawable.ic_launcher_background),
             contentDescription = "Image"
         )
 

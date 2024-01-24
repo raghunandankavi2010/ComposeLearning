@@ -22,6 +22,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -30,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
@@ -67,6 +70,9 @@ fun EquiRow() {
         Color.Yellow,
         Color.Magenta,
         Color.Black,
+        Color.Red,
+        Color.Magenta,
+        Color.Black,
         Color.Red
     )
 
@@ -85,7 +91,7 @@ fun EquiRow() {
     }
 
     val index = remember {
-        mutableStateOf(4)
+        mutableIntStateOf(4)
     }
 
     val scrollState = rememberScrollState()
@@ -99,11 +105,11 @@ fun EquiRow() {
 
     val initialY = with(LocalDensity.current) { 30.dp.toPx() }
 
-    var offsetX by remember { mutableStateOf(initialX) }
-    var offsetY by remember { mutableStateOf(initialY) }
+    var offsetX by remember { mutableFloatStateOf(initialX) }
+    var offsetY by remember { mutableFloatStateOf(initialY) }
     val offsetAnim = remember { Animatable(0f) }
 
-    val scrollToPosition by remember { mutableStateOf(initialX) }
+    val scrollToPosition by remember { mutableFloatStateOf(initialX) }
 
     val mapRemem = remember { mutableMapOf<Int, Offset>() }
 
@@ -136,13 +142,22 @@ fun EquiRow() {
                 } else {
                     ColorFilter.tint(Color.Red)
                 }
-                drawImage(
-                    image,
-                    dstOffset = IntOffset(
-                        animValue.roundToInt() - image.width / 2, offsetY.toInt() - image.height / 2
-                    ),
-                    colorFilter = colorFilter
+                drawArc(
+                color = Color.Gray,
+                startAngle = 135f,
+                sweepAngle = 270f,
+                useCenter = false,
+                topLeft = Offset(animValue - 37.dp.toPx()  , offsetY  - 37.dp.toPx() ),
+                size = Size(74.dp.toPx(), 74.dp.toPx())
                 )
+
+//                drawImage(
+//                    image,
+//                    dstOffset = IntOffset(
+//                        animValue.roundToInt() - image.width / 2, offsetY.toInt() - image.height / 2
+//                    ),
+//                    colorFilter = colorFilter
+//                )
 
 //                drawCircle(
 //                    color = Color.LightGray,
@@ -202,7 +217,9 @@ fun EquiRow() {
                     placeholder = painterResource(R.drawable.droid),
                     contentDescription = "Crop Image",
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.clip(CircleShape)
+                    modifier  = Modifier
+                        .clip(CircleShape)
+                        .height(54.dp)
                 )
             }
 
