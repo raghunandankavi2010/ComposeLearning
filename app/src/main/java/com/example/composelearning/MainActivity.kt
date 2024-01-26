@@ -73,6 +73,7 @@ import com.example.composelearning.pager.PagerDemo3
 import com.example.composelearning.panel.BottomPanel
 import com.example.composelearning.progess.AnotherProgressBar
 import com.example.composelearning.rows.MaxWidthText
+import com.example.composelearning.sotry.SOTry
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -447,7 +448,8 @@ fun TutorialNavGraph(
     ) {
 
         composable(route = "FirstScreen") { navBackEntryStack ->
-            DraggableLineDrawing()
+            //DraggableLineDrawing()
+            SOTry()
             //PagerDemo3()
             //MaxWidthText()
 //            Column(modifier = Modifier.height(80.dp).padding(top = 20.dp)) {

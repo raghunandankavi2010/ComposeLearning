@@ -61,7 +61,7 @@ dependencies {
     implementation  'androidx.compose.material3:material3'
 
     implementation 'androidx.compose.ui:ui-tooling-preview'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.6.2'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
     implementation 'androidx.activity:activity-compose:1.8.2'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
@@ -72,18 +72,18 @@ dependencies {
     // https://mvnrepository.com/artifact/androidx.compose.animation/animation
     implementation  'androidx.compose.animation:animation'
     // https://mvnrepository.com/artifact/androidx.lifecycle/lifecycle-viewmodel-compose
-    implementation group: 'androidx.lifecycle', name: 'lifecycle-viewmodel-compose', version: '2.6.2'
+    implementation group: 'androidx.lifecycle', name: 'lifecycle-viewmodel-compose', version: '2.7.0'
     // https://mvnrepository.com/artifact/androidx.navigation/navigation-compose
     implementation group: 'androidx.navigation', name: 'navigation-compose', version: '2.7.6'
     // https://mvnrepository.com/artifact/androidx.compose.runtime/runtime
-    implementation('androidx.lifecycle:lifecycle-runtime-compose:2.6.2')
+    implementation('androidx.lifecycle:lifecycle-runtime-compose:2.7.0')
 
     implementation("io.coil-kt:coil-compose:2.4.0")
 
     // https://mvnrepository.com/artifact/androidx.lifecycle/lifecycle-viewmodel-ktx
-    implementation group: 'androidx.lifecycle', name: 'lifecycle-viewmodel-ktx', version: '2.6.2'
+    implementation group: 'androidx.lifecycle', name: 'lifecycle-viewmodel-ktx', version: '2.7.0'
     // https://mvnrepository.com/artifact/androidx.compose.foundation/foundation
-    implementation 'androidx.compose.foundation:foundation:1.5.4'
+    implementation 'androidx.compose.foundation:foundation:1.6.0'
     // https://mvnrepository.com/artifact/androidx.compose.material3/material3
     implementation group: 'androidx.compose.material3', name: 'material3', version: '1.1.2'
 
