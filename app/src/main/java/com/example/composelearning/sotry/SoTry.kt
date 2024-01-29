@@ -1,13 +1,19 @@
 package com.example.composelearning.sotry
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -620,5 +626,58 @@ fun Modifier.bottomBorder(strokeWidth: Dp, color: Color, cornerRadiusDp: Dp): Mo
             strokeWidth = strokeWidthPx
         )
     }
+}
+
+@Composable
+fun BoxAnim() {
+    var middleBoxVisible by remember { mutableStateOf(true) }
+
+    Column {
+        BoxWithConstraints {
+            val middleBoxWidth = if (middleBoxVisible) maxWidth / 3 else 0.dp
+            val sideBoxWidth = (maxWidth - middleBoxWidth) / 2
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Box(
+                    modifier = Modifier
+                        .width(sideBoxWidth)
+                        .height(100.dp)
+                        .background(Color.Red)
+                )
+
+                AnimatedVisibility(
+                    visible = middleBoxVisible,
+                    enter = slideInHorizontally() + expandHorizontally(),
+                    exit = shrinkHorizontally() + slideOutHorizontally()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .width(middleBoxWidth)
+                            .height(100.dp)
+                            .background(Color.Green)
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .width(sideBoxWidth)
+                        .height(100.dp)
+                        .background(Color.Blue)
+                )
+            }
+        }
+
+        Button(
+            modifier = Modifier
+                .width(200.dp)
+                .height(80.dp),
+            onClick = { middleBoxVisible = !middleBoxVisible }) {
+            Text(text = "Toggle Middle Box")
+        }
+    }
+
 }
 
