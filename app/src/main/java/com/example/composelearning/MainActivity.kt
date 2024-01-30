@@ -1,6 +1,5 @@
 package com.example.composelearning
 
-import ContinuousLineGraph
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,8 +16,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -31,7 +30,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.ripple.rememberRipple
@@ -47,13 +45,15 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -66,15 +66,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.composelearning.customshapes.DraggableLineDrawing
-import com.example.composelearning.lists.EquiRow
-import com.example.composelearning.pager.PagerDemo
-import com.example.composelearning.pager.PagerDemo3
-import com.example.composelearning.panel.BottomPanel
-import com.example.composelearning.progess.AnotherProgressBar
-import com.example.composelearning.rows.MaxWidthText
+import com.example.composelearning.customshapes.OTPTextField
+import com.example.composelearning.pager.PagerIndicatorDemo
 import com.example.composelearning.sotry.BoxAnim
+import com.example.composelearning.sotry.CircleRowWithTextAndImage
 import com.example.composelearning.sotry.SOTry
+import com.example.composelearning.sotry.circleLayout
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -450,7 +447,48 @@ fun TutorialNavGraph(
 
         composable(route = "FirstScreen") { navBackEntryStack ->
             //DraggableLineDrawing()
-            BoxAnim()
+            //BoxAnim()
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "E",
+                    textAlign = TextAlign.Center,
+                    color = Color.Red,
+                    modifier = Modifier
+                        .padding(top = 50.dp)
+                        .defaultMinSize(32.dp)
+                        .background(Color.Black, shape = CircleShape)
+                        .circleLayout()
+
+                )
+                val focusRequester = remember { FocusRequester() }
+                val focusManager = LocalFocusManager.current
+                var text by remember {
+                    mutableStateOf("")
+                }
+
+
+                OTPTextField(
+                    value = text,
+                    length = 4,
+                    onValueChange = {
+                        text = it
+                        if (text.length == 4) {
+                            // Handle the case when the OTP is complete
+                            focusManager.clearFocus(true)
+                        }
+                    }
+                )
+
+                Spacer(modifier = Modifier.padding(16.dp))
+                BoxAnim()
+                Spacer(modifier = Modifier.padding(16.dp))
+                CircleRowWithTextAndImage()
+                Spacer(modifier = Modifier.padding(16.dp))
+                PagerIndicatorDemo()
+
+            }
+
+
             //PagerDemo3()
             //MaxWidthText()
 //            Column(modifier = Modifier.height(80.dp).padding(top = 20.dp)) {

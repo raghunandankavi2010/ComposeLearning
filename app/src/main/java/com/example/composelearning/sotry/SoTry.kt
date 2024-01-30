@@ -7,15 +7,20 @@ import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,6 +33,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -58,6 +64,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -68,7 +75,9 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
@@ -84,6 +93,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
@@ -522,7 +532,7 @@ fun StandardButton(modifier: Modifier, onClicked: () -> Unit) {
 }
 
 @Composable
-fun Modifier.topBorder(strokeWidth: Dp, color: Color, cornerRadiusDp: Dp): Modifier  {
+fun Modifier.topBorder(strokeWidth: Dp, color: Color, cornerRadiusDp: Dp): Modifier {
 
     val density = LocalDensity.current
     val strokeWidthPx = density.run { strokeWidth.toPx() }
@@ -681,3 +691,79 @@ fun BoxAnim() {
 
 }
 
+@Composable
+fun Modifier.circleLayout() =
+    layout { measurable, constraints ->
+        // Measure the composable
+        val placeable = measurable.measure(constraints)
+
+        //get the current max dimension to assign width=height
+        val currentHeight = placeable.height
+        val currentWidth = placeable.width
+        val newDiameter = maxOf(currentHeight, currentWidth)
+
+        //assign the dimension and the center position
+        layout(newDiameter, newDiameter) {
+            // Where the composable gets placed
+            placeable.placeRelative(
+                (newDiameter - currentWidth) / 2,
+                (newDiameter - currentHeight) / 2
+            )
+        }
+    }
+
+
+@Composable
+fun CircleRowWithTextAndImage() {
+
+    Row(
+        modifier = Modifier
+            .height(60.dp)
+            .fillMaxWidth()
+
+            .padding(PaddingValues(horizontal = 8.dp))
+            .border(
+                border = BorderStroke(2.dp, Color.Green),
+                shape = RoundedCornerShape(25.dp)
+            )
+            .clip(RoundedCornerShape(25.dp))
+            .background(Color.Blue),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Spacer(modifier = Modifier.padding(start = 16.dp))
+        Text(
+            text = "E",
+            textAlign = TextAlign.Center,
+            color = Color.Red,
+            modifier = Modifier
+                .defaultMinSize(32.dp)
+                .background(Color.Black, shape = CircleShape)
+                .circleLayout()
+
+        )
+        Spacer(modifier = Modifier.padding(start = 16.dp))
+        Text(
+            text = "Middle Text",
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onPrimary,
+            modifier = Modifier.weight(1f)
+        )
+
+        Image(
+            modifier = Modifier
+                .size(32.dp)
+                .padding(end = 16.dp),
+            painter = painterResource(id = R.drawable.ic_launcher_background),
+            contentDescription = "A call icon for calling"
+        )
+
+
+    }
+}
+
+@Preview
+@Composable
+fun CircleRowWithTextAndImagePreview() {
+    CircleRowWithTextAndImage()
+}

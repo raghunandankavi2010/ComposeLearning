@@ -1,6 +1,7 @@
 package com.example.composelearning.graphics
 
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -31,6 +32,7 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun AnimatedHeartShape() {
     BoxWithConstraints(
