@@ -1,5 +1,6 @@
 package com.example.composelearning.pager
 
+import android.annotation.SuppressLint
 import com.example.composelearning.R
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -13,6 +14,7 @@ import androidx.compose.foundation.pager.PagerSnapDistance
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +39,10 @@ fun PagerDemo(modifier: Modifier = Modifier) {
         })
 
         val scope = rememberCoroutineScope()
+
+        val mutableInteractionSource  = remember {
+            MutableInteractionSource()
+        }
 
 
         HorizontalPager(
@@ -68,7 +74,7 @@ fun PagerDemo(modifier: Modifier = Modifier) {
                     }
                     .background(color = colors[page % colors.size])
                     .clickable(
-                        interactionSource = MutableInteractionSource(),
+                        interactionSource = mutableInteractionSource,
                         indication = null,
                         enabled = true,
                     ) {
@@ -91,6 +97,7 @@ private val colors = listOf(
 )
 
 
+@SuppressLint("UnusedBoxWithConstraintsScope", "UnrememberedMutableInteractionSource")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PagerDemo3(modifier: Modifier = Modifier) {
