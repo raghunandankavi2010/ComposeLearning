@@ -1,9 +1,11 @@
 package com.example.composelearning
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,7 +18,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -45,15 +46,12 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -66,12 +64,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.composelearning.customshapes.OTPTextField
-import com.example.composelearning.pager.PagerIndicatorDemo
-import com.example.composelearning.sotry.BoxAnim
-import com.example.composelearning.sotry.CircleRowWithTextAndImage
-import com.example.composelearning.sotry.SOTry
-import com.example.composelearning.sotry.circleLayout
+import com.example.composelearning.speedometer.Speedometer
+import com.example.composelearning.speedometer.Speedometer2
+import com.example.composelearning.speedometer.SpeedometerScreen
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -449,42 +444,49 @@ fun TutorialNavGraph(
             //DraggableLineDrawing()
             //BoxAnim()
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = "E",
-                    textAlign = TextAlign.Center,
-                    color = Color.Red,
-                    modifier = Modifier
-                        .padding(top = 50.dp)
-                        .defaultMinSize(32.dp)
-                        .background(Color.Black, shape = CircleShape)
-                        .circleLayout()
-
-                )
-                val focusRequester = remember { FocusRequester() }
-                val focusManager = LocalFocusManager.current
-                var text by remember {
-                    mutableStateOf("")
+                val progress = remember {
+                    50
                 }
-
-
-                OTPTextField(
-                    value = text,
-                    length = 4,
-                    onValueChange = {
-                        text = it
-                        if (text.length == 4) {
-                            // Handle the case when the OTP is complete
-                            focusManager.clearFocus(true)
-                        }
-                    }
-                )
-
-                Spacer(modifier = Modifier.padding(16.dp))
-                BoxAnim()
-                Spacer(modifier = Modifier.padding(16.dp))
-                CircleRowWithTextAndImage()
-                Spacer(modifier = Modifier.padding(16.dp))
-                PagerIndicatorDemo()
+                //SpeedometerScreen()
+                Speedometer2(progress)
+                //Speedometer(progress)
+//                Spacer(modifier = Modifier.padding(16.dp))
+//                Text(
+//                    text = "E",
+//                    textAlign = TextAlign.Center,
+//                    color = Color.Red,
+//                    modifier = Modifier
+//                        .padding(top = 50.dp)
+//                        .defaultMinSize(32.dp)
+//                        .background(Color.Black, shape = CircleShape)
+//                        .circleLayout()
+//
+//                )
+//                val focusRequester = remember { FocusRequester() }
+//                val focusManager = LocalFocusManager.current
+//                var text by remember {
+//                    mutableStateOf("")
+//                }
+//
+//
+//                OTPTextField(
+//                    value = text,
+//                    length = 4,
+//                    onValueChange = {
+//                        text = it
+//                        if (text.length == 4) {
+//                            // Handle the case when the OTP is complete
+//                            focusManager.clearFocus(true)
+//                        }
+//                    }
+//                )
+//
+//                Spacer(modifier = Modifier.padding(16.dp))
+//                BoxAnim()
+//                Spacer(modifier = Modifier.padding(16.dp))
+//                CircleRowWithTextAndImage()
+//                Spacer(modifier = Modifier.padding(16.dp))
+//                PagerIndicatorDemo()
 
             }
 
