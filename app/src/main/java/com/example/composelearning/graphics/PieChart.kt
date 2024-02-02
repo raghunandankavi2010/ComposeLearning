@@ -34,6 +34,9 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.input.pointer.pointerInput
@@ -80,7 +83,7 @@ fun PieChartPreview(onClick: ((data: ChartData, index: Int, Offset) -> Unit)? = 
                 .padding(top = 50.dp),
             data = data,
             outerRingPercent = 35,
-            onClick = { data, index, Offset ->
+            onClick = { data, index ->
             },
             offsetChange = offsetChange
         )
@@ -94,7 +97,7 @@ fun PieChart(
     startAngle: Float = 0f,
     outerRingPercent: Int = 35,
     drawText: Boolean = true,
-    onClick: ((data: ChartData, index: Int, Offset) -> Unit)? = null,
+    onClick: ((data: ChartData, index: Int) -> Unit)? = null,
     offsetChange: (Offset) -> Unit
 ) {
 
@@ -204,18 +207,11 @@ fun PieChart(
                                     chartData.isSelected = isTouchInArcSegment
 
                                     if (isTouchInArcSegment) {
-                                        val arcCenterAngle = touchAngle
-                                        val arcCenterOffset = calculateArcCenterOffset(
-                                            size.center.x,
-                                            size.center.y,
-                                            arcCenterAngle.toFloat(),
-                                            innerRadius
-                                        )
                                         onClick?.invoke(
                                             ChartData(
                                                 color = chartData.color,
                                                 data = chartData.data
-                                            ), index, arcCenterOffset
+                                            ), index
                                         )
 
                                     }
@@ -329,19 +325,50 @@ private fun PieChartImpl(
                     center.y
                     + (innerRadius + arcWidth / 2) * sin(angleInRadians)
                     )
-                    //offsetChange(offset)
+                    // Draw the triangle tip
+                    drawTriangleTip(
+                        center = Offset(
+                            center.x + (innerRadius + arcWidth / 2) * cos(angleInRadians),
+                            center.y + (innerRadius + arcWidth / 2) * sin(angleInRadians)
+                        ),
+                        size = 16.dp.toPx(),
+                        color = Color.Black
+                    )
 
-                    val rectSize = Size(200f, 200f)
-                    val cornerRadius = 16f
-                    val textColor = Color.Black
 
-                    // Draw rounded rectangle
+
+                    // Draw rectangle with elevation
                     drawRoundRect(
                         color = Color.Black,
-                        topLeft = Offset(offset.x - 100, offset.y - 100),
-                        size = rectSize,
-                        cornerRadius = CornerRadius(5f)
+                        topLeft = Offset(offset.x - 150, offset.y - 200),
+                        size = Size(300f, 200f),
+                        style = Fill,
+                        cornerRadius = CornerRadius(15f)
+
                     )
+
+                    // Draw the rectangle
+//                    drawRoundRect(
+//                        color = Color.Black,
+//                        topLeft = Offset(offset.x - 100, offset.y - 200),
+//                        size = Size(200f, 200f),
+//                        cornerRadius = CornerRadius(15f),
+//                        style = Fill
+//                    )
+
+
+
+//                    val rectSize = Size(200f, 200f)
+//                    val cornerRadius = 16f
+//                    val textColor = Color.Black
+//
+//                    // Draw rounded rectangle
+//                    drawRoundRect(
+//                        color = Color.Black,
+//                        topLeft = Offset(offset.x - 100, offset.y - 100),
+//                        size = rectSize,
+//                        cornerRadius = CornerRadius(15f)
+//                    )
                     drawText(
                         textLayoutResult = textMeasureResult,
                         color = Color.White,
@@ -349,7 +376,7 @@ private fun PieChartImpl(
                             (-textCenter.x + center.x
                                     + (innerRadius + arcWidth / 2) * cos(angleInRadians)),
                             (-textCenter.y + center.y
-                                    + (innerRadius + arcWidth / 2) * sin(angleInRadians))
+                                    + (innerRadius + arcWidth / 2) * sin(angleInRadians) - 100)
                         )
                     )
                 }
@@ -381,12 +408,15 @@ val Float.degreeToRadian
 val Float.asAngle: Float
     get() = this * 360f / 100f
 
-
-private fun calculateArcCenterOffset(x: Int, y: Int, angle: Float, innerRadius: Float): Offset {
-    val angleInRadians = angle.degreeToRadian
-    val centerX = x + (innerRadius + innerRadius) / 2 * cos(angleInRadians)
-    val centerY = y + (innerRadius + innerRadius) / 2 * sin(angleInRadians)
-    return Offset(centerX, centerY)
+private fun DrawScope.drawTriangleTip(center: Offset, size: Float, color: Color) {
+    val halfSize = size / 2
+    val trianglePath = Path().apply {
+        moveTo(center.x - halfSize, center.y - halfSize) // Move to the top-left corner
+        lineTo(center.x + halfSize, center.y - halfSize) // Draw a line to the top-right corner
+        lineTo(center.x, center.y + halfSize) // Draw a line to the bottom-center
+        close()
+    }
+    drawPath(trianglePath, color)
 }
 
 //@Composable
@@ -411,36 +441,3 @@ private fun calculateArcCenterOffset(x: Int, y: Int, angle: Float, innerRadius: 
 //    }
 //}
 
-
-@Composable
-fun ShowDialog(context: Context, centerOffset: Offset, shouldShow: Boolean, show:(Boolean) -> Unit) {
-    val dialog = remember { mutableStateOf(true) }
-
-    if (shouldShow) {
-        AlertDialog(
-            onDismissRequest = {
-                show(false)
-            },
-            title = {
-                Text("Popup Content")
-            },
-            text = {
-                Text("Your custom popup content goes here.")
-            },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                       // dialog.value = false
-                    }
-                ) {
-                    Text("OK")
-                }
-            },
-            modifier = Modifier
-                .size(100.dp)
-               .offset(centerOffset.x.dp,centerOffset.y.dp)
-
-
-        )
-    }
-}
