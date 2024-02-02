@@ -1,27 +1,19 @@
 package com.example.composelearning.pager
 
 
-import android.widget.Space
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -43,7 +34,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.composelearning.R
-import kotlin.math.absoluteValue
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -54,65 +44,87 @@ fun PagerIndicatorDemo() {
         5
     })
 
-        Box(
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(300.dp)
+    ) {
+        HorizontalPager(
+            state = pagerState,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(300.dp)
+                .height(200.dp)
         ) {
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.fillMaxWidth().height(200.dp)
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.primary)
             ) {
-                Box(
+                // Your pager content here
+                Image(
+                    painter = painterResource(id = R.drawable.ic_launcher_background),
+                    contentDescription = "",
+                    contentScale = ContentScale.FillWidth,
                     modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.primary)
-                ) {
-                    // Your pager content here
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_launcher_background),
-                        contentDescription = "",
-                        contentScale = ContentScale.FillWidth,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(300.dp)
-                    )
-                }
-            }
-            Row(
-                Modifier
-                    .height(50.dp)
-                    .fillMaxWidth()
-                .align(Alignment.BottomCenter),
-            horizontalArrangement = Arrangement.Center
-            ) {
-                repeat(5) { iteration ->
-                    val activePage = pagerState.currentPage == iteration
-                    val color = if (pagerState.currentPage == iteration) Color.Red else Color.Red.copy(alpha = 0.5f)
-                    if(activePage) {
-                        Box(
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .clip(RoundedCornerShape(15.dp))
-                                .background(color)
-                                .height(8.dp)
-                                .width(24.dp)
-
-                        )
-                    } else {
-                        Box(
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .clip(CircleShape)
-                                .background(color)
-                                .size(8.dp)
-
-                        )
-                    }
-                }
+                        .fillMaxWidth()
+                        .height(300.dp)
+                )
             }
         }
+
+        Row(
+            Modifier
+                .height(50.dp)
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            PagerIndicator(
+                pagerState = pagerState,
+                count = 5,
+                activeDotWidth = 16.dp,
+                dotWidth = 8.dp,
+                circleSpacing = 10.dp,
+                activeLineWidth = 16.dp
+            )
+        }
+//        Row(
+//            Modifier
+//                .height(50.dp)
+//                .fillMaxWidth()
+//                .align(Alignment.BottomCenter),
+//            horizontalArrangement = Arrangement.Center
+//        ) {
+//            repeat(5) { iteration ->
+//
+//                val activePage = pagerState.currentPage == iteration
+//                val color =
+//                    if (pagerState.currentPage == iteration) Color.Red else Color.Red.copy(alpha = 0.5f)
+//                if (activePage) {
+//                    Box(
+//                        modifier = Modifier
+//                            .padding(4.dp)
+//                            .clip(RoundedCornerShape(15.dp))
+//                            .background(color)
+//                            .height(8.dp)
+//                            .width(24.dp)
+//
+//                    )
+//                } else {
+//                    Box(
+//                        modifier = Modifier
+//                            .padding(4.dp)
+//                            .clip(CircleShape)
+//                            .background(color)
+//                            .size(8.dp)
+//
+//                    )
+//                }
+//            }
+//        }
     }
+}
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -133,13 +145,14 @@ fun PagerIndicator(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        var x = 0f
+        val totalWidth = count * (activeDotWidthPx + spacing) - spacing
+        var x = (size.width - totalWidth) / 2
         val y = center.y
 
         repeat(count) { i ->
-            val posOffset = pagerState.calculateCurrentOffsetForPage(i)
-            //val posOffset = pagerState.getOffsetFractionForPage(pagerState.currentPage)
-            val dotOffset = posOffset.absoluteValue % 1
+
+            val posOffset = pagerState.pageOffset
+            val dotOffset = posOffset % 1
             val current = posOffset.toInt()
 
             val factor = dotOffset * (activeDotWidthPx - dotWidthPx)
@@ -170,3 +183,8 @@ fun PagerIndicator(
 fun PagerState.calculateCurrentOffsetForPage(page: Int): Float {
     return (currentPage - page) + currentPageOffsetFraction
 }
+
+@OptIn(ExperimentalFoundationApi::class)
+val PagerState.pageOffset: Float
+    get() = this.currentPage + this.currentPageOffsetFraction
+
