@@ -1,11 +1,9 @@
 package com.example.composelearning
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -46,12 +44,16 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.graphics.OffsetEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -64,9 +66,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.composelearning.speedometer.Speedometer
-import com.example.composelearning.speedometer.Speedometer2
-import com.example.composelearning.speedometer.SpeedometerScreen
+import com.example.composelearning.graphics.PieChartPreview
+import com.example.composelearning.graphics.ShowDialog
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -447,8 +448,32 @@ fun TutorialNavGraph(
                 val progress = remember {
                     50
                 }
+
+                var offset by remember {
+                    mutableStateOf(Offset(0f, 0f))
+                }
+
+                var isDialogShow by remember {
+                    mutableStateOf(false)
+                }
+
+                if (isDialogShow) {
+                    ShowDialog(
+                        context = LocalContext.current,
+                        centerOffset = offset,
+                        shouldShow = isDialogShow
+                    ) {
+                        isDialogShow = it
+                    }
+                }
+                PieChartPreview() {
+                    isDialogShow = true
+                    offset = it
+                }
+            }
+        }
                 //SpeedometerScreen()
-                Speedometer2(progress)
+                //Speedometer2(progress)
                 //Speedometer(progress)
 //                Spacer(modifier = Modifier.padding(16.dp))
 //                Text(
@@ -488,7 +513,6 @@ fun TutorialNavGraph(
 //                Spacer(modifier = Modifier.padding(16.dp))
 //                PagerIndicatorDemo()
 
-            }
 
 
             //PagerDemo3()
@@ -548,7 +572,6 @@ fun TutorialNavGraph(
             //           }
 
             //MarqueeText(LoremIpsum().values.first().take(90))
-        }
         composable("SecondScreen") {
             SecondScreen() {
                 mainViewModel.updateSearchWidgetVisibility(true)
