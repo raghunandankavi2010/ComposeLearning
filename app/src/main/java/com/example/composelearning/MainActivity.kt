@@ -68,6 +68,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.composelearning.graphics.PieChartPreview
 import com.example.composelearning.graphics.ShowDialog
+import com.example.composelearning.pager.PagerIndicatorDemo
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -445,6 +446,7 @@ fun TutorialNavGraph(
             //DraggableLineDrawing()
             //BoxAnim()
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                PagerIndicatorDemo()
                 val progress = remember {
                     50
                 }
