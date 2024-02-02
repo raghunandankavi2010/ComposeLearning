@@ -52,7 +52,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
-import androidx.compose.ui.graphics.OffsetEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
@@ -67,7 +66,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.composelearning.graphics.PieChartPreview
-import com.example.composelearning.graphics.ShowDialog
+
 import com.example.composelearning.pager.PagerIndicatorDemo
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
@@ -451,26 +450,7 @@ fun TutorialNavGraph(
                     50
                 }
 
-                var offset by remember {
-                    mutableStateOf(Offset(0f, 0f))
-                }
-
-                var isDialogShow by remember {
-                    mutableStateOf(false)
-                }
-
-                if (isDialogShow) {
-                    ShowDialog(
-                        context = LocalContext.current,
-                        centerOffset = offset,
-                        shouldShow = isDialogShow
-                    ) {
-                        isDialogShow = it
-                    }
-                }
                 PieChartPreview() {
-                    isDialogShow = true
-                    offset = it
                 }
             }
         }
