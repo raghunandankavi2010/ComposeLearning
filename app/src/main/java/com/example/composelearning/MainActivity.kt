@@ -42,17 +42,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -66,8 +66,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.composelearning.graphics.PieChartPreview
-
-import com.example.composelearning.pager.PagerIndicatorDemo
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -445,18 +443,18 @@ fun TutorialNavGraph(
             //DraggableLineDrawing()
             //BoxAnim()
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                PagerIndicatorDemo()
-                val progress = remember {
-                    50
-                }
+//                PagerIndicatorDemo()
+//                val progress = remember {
+//                    50
+//                }
 
-                PieChartPreview() {
-                }
+
+                PieChartPreview()
             }
         }
-                //SpeedometerScreen()
-                //Speedometer2(progress)
-                //Speedometer(progress)
+        //SpeedometerScreen()
+        //Speedometer2(progress)
+        //Speedometer(progress)
 //                Spacer(modifier = Modifier.padding(16.dp))
 //                Text(
 //                    text = "E",
@@ -496,17 +494,16 @@ fun TutorialNavGraph(
 //                PagerIndicatorDemo()
 
 
-
-            //PagerDemo3()
-            //MaxWidthText()
+        //PagerDemo3()
+        //MaxWidthText()
 //            Column(modifier = Modifier.height(80.dp).padding(top = 20.dp)) {
 //                EquiRow()
 //            }
 
-            //AnotherProgressBar()
-            //ContinuousLineGraph()
-            //AnimatedHeartShape()
-            //ImageWithRedDot()
+        //AnotherProgressBar()
+        //ContinuousLineGraph()
+        //AnimatedHeartShape()
+        //ImageWithRedDot()
 //            Box {
 //                                            Image(
 //                                painter = painterResource(id = R.drawable.ic_launcher_background),
@@ -519,7 +516,7 @@ fun TutorialNavGraph(
 //                            )
 //            }
 
-            // Filters()
+        // Filters()
 //            val items = remember {
 //                listOf("Man", "Woman")
 //            }
@@ -537,10 +534,10 @@ fun TutorialNavGraph(
 //                        selectedIndex = it
 //                    }
 //                )
-            //Chart()
-            // EquiRow()
-            //LazyRowWithColorAnimation()
-            //Speedometer(progress = 100)
+        //Chart()
+        // EquiRow()
+        //LazyRowWithColorAnimation()
+        //Speedometer(progress = 100)
 //                InstagramCarousel(
 //                    modifier = Modifier.align(Alignment.CenterHorizontally)
 //                        .fillMaxWidth()
@@ -551,9 +548,9 @@ fun TutorialNavGraph(
 //                            style = MaterialTheme.typography.bodyMedium
 //                        )
 //                    })
-            //           }
+        //           }
 
-            //MarqueeText(LoremIpsum().values.first().take(90))
+        //MarqueeText(LoremIpsum().values.first().take(90))
         composable("SecondScreen") {
             SecondScreen() {
                 mainViewModel.updateSearchWidgetVisibility(true)
