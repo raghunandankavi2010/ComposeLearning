@@ -5,23 +5,15 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,7 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -40,9 +31,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.pointer.pointerInput
@@ -53,11 +42,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.center
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import com.example.composelearning.R
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -68,34 +55,44 @@ import kotlin.math.sqrt
 fun PieChartPreview(
     onClick: ((data: ChartData, index: Int) -> Unit)? = null,
 ) {
+
+    var dismissToolTip by remember  {
+        mutableStateOf(false)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .clickable {
+                dismissToolTip = true
+            }
     ) {
         val data = remember {
             listOf(
-                ChartData(Color.Green, 10f),
-                ChartData(Color.Red, 20f),
-                ChartData(Color.Cyan, 15f),
-                ChartData(Color.Blue, 5f),
-                ChartData(Color.Yellow, 35f),
-                ChartData(Color.Magenta, 15f)
+                ChartData(Color.Green, 10f, "Seeds", "10000"),
+                ChartData(Color.Red, 20f, "Labour","5000"),
+                ChartData(Color.Cyan, 15f,"Fertilizer","6000"),
+                ChartData(Color.Blue, 5f,"Tractor","100"),
+                ChartData(Color.Yellow, 35f, "Weeding","200"),
+                ChartData(Color.Magenta, 15f,"Sowing","400")
             )
         }
 
 
         PieChart(
             modifier = Modifier
-                .padding(top =100.dp)
+                .padding(top = 100.dp)
                 .size(140.dp)
                 .align(Alignment.CenterHorizontally),
             data = data,
             outerRingPercent = 35,
             onClick = { data, index ->
 
-            }
-        )
+            },
+            dimissToolTip = dismissToolTip
+        ) {
+            dismissToolTip = it
+        }
     }
 }
 
@@ -106,7 +103,9 @@ fun PieChart(
     startAngle: Float = 0f,
     outerRingPercent: Int = 35,
     drawText: Boolean = true,
-    onClick: ((data: ChartData, index: Int) -> Unit)? = null
+    onClick: ((data: ChartData, index: Int) -> Unit)? = null,
+    dimissToolTip: Boolean,
+    resetDismiss: (Boolean) -> Unit
 ) {
 
     BoxWithConstraints(
@@ -114,10 +113,7 @@ fun PieChart(
         contentAlignment = Alignment.Center,
     ) {
 
-        val density = LocalDensity.current
-
         val width = constraints.maxWidth.toFloat()
-
 
         // Outer radius of chart. This is edge of stroke width as
         val radius = (width / 2f) * .9f
@@ -155,7 +151,9 @@ fun PieChart(
                     color = it.color,
                     data = it.data,
                     selected = false,
-                    range = range
+                    range = range,
+                    type = it.type,
+                    expense = it.expense
                 )
             }
         }
@@ -172,14 +170,20 @@ fun PieChart(
         }
 
         val textMeasurer = rememberTextMeasurer()
-        val textMeasureResults: List<TextLayoutResult> = remember(chartDataList) {
+        val textMeasureResults: List<Pair<TextLayoutResult,TextLayoutResult>> = remember(chartDataList) {
             chartDataList.map {
-                textMeasurer.measure(
-                    text = "%${it.data.toInt()}",
+                Pair(textMeasurer.measure(
+                    text = it.type,
                     style = TextStyle(
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
-                    )
+                    )),
+                    textMeasurer.measure(
+                        text = it.expense,
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold
+                        ))
                 )
             }
         }
@@ -211,6 +215,7 @@ fun PieChart(
                                 val isTouchInArcSegment = touchAngle in range
                                 if (chartData.isSelected) {
                                     chartData.isSelected = false
+                                    resetDismiss(false)
                                 } else {
                                     chartData.isSelected = isTouchInArcSegment
 
@@ -218,7 +223,9 @@ fun PieChart(
                                         onClick?.invoke(
                                             ChartData(
                                                 color = chartData.color,
-                                                data = chartData.data
+                                                data = chartData.data,
+                                                type = chartData.type,
+                                                expense = chartData.expense
                                             ), index
                                         )
 
@@ -240,7 +247,13 @@ fun PieChart(
             outerRadius = radius,
             outerStrokeWidth = outerStrokeWidthPx,
             innerRadius = innerRadius,
-            drawText = drawText
+            drawText = drawText,
+            rectWidth = 99,
+            rectHeight = 54,
+            rectCornerRadius = 8,
+            triangleWidth= 24,
+            triangleHeight = 8,
+            dimissToolTip = dimissToolTip
         )
 
     }
@@ -251,14 +264,20 @@ fun PieChart(
 private fun PieChartImpl(
     modifier: Modifier = Modifier,
     chartDataList: List<AnimatedChartData>,
-    textMeasureResults: List<TextLayoutResult>,
+    textMeasureResults: List<Pair<TextLayoutResult, TextLayoutResult>>,
     currentSweepAngle: Float,
     chartStartAngle: Float,
     chartEndAngle: Float,
     outerRadius: Float,
     outerStrokeWidth: Float,
     innerRadius: Float,
-    drawText: Boolean
+    drawText: Boolean,
+    rectWidth: Int,
+    rectHeight: Int,
+    rectCornerRadius: Int,
+    triangleWidth: Int,
+    triangleHeight: Int,
+    dimissToolTip: Boolean
 ) {
 
     val pointerVector = ImageVector.vectorResource(id = R.drawable.tip)
@@ -269,11 +288,16 @@ private fun PieChartImpl(
         val width = size.width
         var startAngle = chartStartAngle
 
-        var offsetX: Float = 0f
-        var offsetY: Float = 0f
+        var offsetX = 0f
+        var offsetY = 0f
         var indexSelected = -1
         var angRad = -1f
         var arcW = -1f
+
+        val halfRectWidth = rectWidth/2
+        val halfRectHeight = rectHeight/2
+        val halfTriangleWidth = triangleWidth/2
+        val halfTriangleHeight = triangleHeight/2
 
 
         for (index in 0..chartDataList.lastIndex) {
@@ -283,7 +307,8 @@ private fun PieChartImpl(
             val sweepAngle = range.endInclusive - range.start
             val angleInRadians = (startAngle + sweepAngle / 2).degreeToRadian
             val textMeasureResult = textMeasureResults[index]
-            val textSize = textMeasureResult.size
+            val typeSize = textMeasureResult.first.size
+            val expenseSize = textMeasureResult.second.size
 
             val arcWidth = if (chartData.isSelected) {
                 // Increase arc width for the first arc
@@ -338,10 +363,12 @@ private fun PieChartImpl(
         if (indexSelected != -1) {
             val chartData = chartDataList[indexSelected]
             val textMeasureResult = textMeasureResults[indexSelected]
-            val textSize = textMeasureResult.size
-            val textCenter = textSize.center
+            val typeSize = textMeasureResult.first.size
+            val expenseSize = textMeasureResult.second.size
+            val typeCenter = typeSize.center
+            val expenseCenter = typeSize.center
 
-            if (drawText && currentSweepAngle == chartEndAngle && chartData.isSelected) {
+            if (!dimissToolTip && drawText && currentSweepAngle == chartEndAngle && chartData.isSelected) {
 
 
                 // Draw the tip
@@ -356,25 +383,48 @@ private fun PieChartImpl(
                     }
                 }
 
+//                translate(
+//                    left = offsetX - halfTriangleWidth.dp.toPx(),
+//                    top = offsetY - halfTriangleHeight.dp.toPx()
+//                ) {
+//                    with(pointerTip) {
+//                        draw(
+//                            size = Size(triangleWidth.dp.toPx(), triangleHeight.dp.toPx())
+//                        )
+//                    }
+//                }
+
                 // Draw rectangle with elevation
                 drawRoundRect(
                     color = Color.Black,
-                    topLeft = Offset(offsetX - 49.dp.toPx() , offsetY - 54.dp.toPx() - 4.dp.toPx()),
-                    size = Size(99.dp.toPx(), 54.dp.toPx()),
+                    topLeft = Offset(offsetX - halfRectWidth.dp.toPx() , offsetY - rectHeight.dp.toPx() - halfTriangleHeight.dp.toPx()),
+                    size = Size(rectWidth.dp.toPx(), rectHeight.dp.toPx()),
                     style = Fill,
-                    cornerRadius = CornerRadius(8.dp.toPx())
+                    cornerRadius = CornerRadius(rectCornerRadius.dp.toPx())
 
                 )
 
                 // Draw text centered
                 drawText(
-                    textLayoutResult = textMeasureResult,
+                    textLayoutResult = textMeasureResult.first,
                     color = Color.White,
                     topLeft = Offset(
-                        (-textCenter.x + center.x
+                        (-typeCenter.x + center.x
                                 + (innerRadius + arcW / 2) * cos(angRad)),
-                        (-textCenter.y + center.y
-                                + (innerRadius + arcW / 2) * sin(angRad) - 100 - 8)
+                        (-typeCenter.y + center.y
+                                + (innerRadius + arcW / 2) * sin(angRad) - halfRectHeight.dp.toPx() - halfTriangleHeight.dp.toPx() - typeSize.height/2)
+                    )
+                )
+
+
+                drawText(
+                    textLayoutResult = textMeasureResult.second,
+                    color = Color.White,
+                    topLeft = Offset(
+                        (-expenseCenter.x + center.x
+                                + (innerRadius + arcW / 2) * cos(angRad)) ,
+                        (-expenseSize.height/2 + center.y
+                                + (innerRadius + arcW / 2) * sin(angRad) - halfRectHeight.dp.toPx() - halfTriangleHeight.dp.toPx() + expenseSize.height/2 + 5.dp.toPx())
                     )
                 )
             }
@@ -384,12 +434,14 @@ private fun PieChartImpl(
 
 
 @Immutable
-data class ChartData(val color: Color, val data: Float)
+data class ChartData(val color: Color, val data: Float, val type: String, val expense: String)
 
 @Immutable
 internal class AnimatedChartData(
     val color: Color,
     val data: Float,
+    val type: String,
+    val expense: String,
     selected: Boolean = false,
     val range: ClosedFloatingPointRange<Float>,
     val animatable: Animatable<Float, AnimationVector1D> = Animatable(1f)
