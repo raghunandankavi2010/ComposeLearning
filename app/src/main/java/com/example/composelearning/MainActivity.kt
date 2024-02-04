@@ -448,8 +448,9 @@ fun TutorialNavGraph(
 //                    50
 //                }
 
+                PieChartPreview(){ chartData,index ->
 
-                PieChartPreview()
+                }
             }
         }
         //SpeedometerScreen()

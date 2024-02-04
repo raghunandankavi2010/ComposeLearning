@@ -27,15 +27,12 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
@@ -53,7 +50,7 @@ import kotlin.math.sqrt
 
 @Composable
 fun PieChartPreview(
-    onClick: ((data: ChartData, index: Int) -> Unit)? = null,
+    onClick: (data: ChartData, index: Int) -> Unit
 ) {
 
     var dismissToolTip by remember  {
@@ -86,8 +83,8 @@ fun PieChartPreview(
                 .align(Alignment.CenterHorizontally),
             data = data,
             outerRingPercent = 35,
-            onClick = { data, index ->
-
+            onClick = { chartData, index ->
+              onClick(chartData,index)
             },
             dimissToolTip = dismissToolTip
         ) {
@@ -125,12 +122,11 @@ fun PieChart(
 
         // Start angle of chart. Top center is -90, right center 0,
         // bottom center 90, left center 180
-        val chartStartAngle = startAngle
         val animatableInitialSweepAngle = remember {
-            Animatable(chartStartAngle)
+            Animatable(startAngle)
         }
 
-        val chartEndAngle = 360f + chartStartAngle
+        val chartEndAngle = 360f + startAngle
 
         val sum = data.sumOf {
             it.data.toDouble()
@@ -170,23 +166,27 @@ fun PieChart(
         }
 
         val textMeasurer = rememberTextMeasurer()
-        val textMeasureResults: List<Pair<TextLayoutResult,TextLayoutResult>> = remember(chartDataList) {
-            chartDataList.map {
-                Pair(textMeasurer.measure(
-                    text = it.type,
-                    style = TextStyle(
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )),
-                    textMeasurer.measure(
-                        text = it.expense,
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold
-                        ))
-                )
+        val textMeasureResults: List<Pair<TextLayoutResult, TextLayoutResult>> =
+            remember(chartDataList) {
+                chartDataList.map {
+                    Pair(
+                        textMeasurer.measure(
+                            text = it.type,
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        ),
+                        textMeasurer.measure(
+                            text = it.expense,
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                    )
+                }
             }
-        }
 
         val chartModifier = Modifier
             .fillMaxWidth()
@@ -201,7 +201,7 @@ fun PieChart(
 
                         if (isTouched) {
                             var touchAngle =
-                                (-chartStartAngle + 180f + atan2(
+                                (-startAngle + 180f + atan2(
                                     yPos,
                                     xPos
                                 ) * 180 / Math.PI) % 360f
@@ -242,17 +242,12 @@ fun PieChart(
             chartDataList = chartDataList,
             textMeasureResults = textMeasureResults,
             currentSweepAngle = currentSweepAngle,
-            chartStartAngle = chartStartAngle,
+            chartStartAngle = startAngle,
             chartEndAngle = chartEndAngle,
             outerRadius = radius,
             outerStrokeWidth = outerStrokeWidthPx,
             innerRadius = innerRadius,
             drawText = drawText,
-            rectWidth = 99,
-            rectHeight = 54,
-            rectCornerRadius = 8,
-            triangleWidth= 24,
-            triangleHeight = 8,
             dimissToolTip = dimissToolTip
         )
 
@@ -272,11 +267,11 @@ private fun PieChartImpl(
     outerStrokeWidth: Float,
     innerRadius: Float,
     drawText: Boolean,
-    rectWidth: Int,
-    rectHeight: Int,
-    rectCornerRadius: Int,
-    triangleWidth: Int,
-    triangleHeight: Int,
+    rectWidth: Int = 99,
+    rectHeight: Int = 54,
+    rectCornerRadius: Int = 8,
+    triangleWidth: Int = 24,
+    triangleHeight: Int  = 8,
     dimissToolTip: Boolean
 ) {
 
@@ -306,9 +301,6 @@ private fun PieChartImpl(
             val range = chartData.range
             val sweepAngle = range.endInclusive - range.start
             val angleInRadians = (startAngle + sweepAngle / 2).degreeToRadian
-            val textMeasureResult = textMeasureResults[index]
-            val typeSize = textMeasureResult.first.size
-            val expenseSize = textMeasureResult.second.size
 
             val arcWidth = if (chartData.isSelected) {
                 // Increase arc width for the first arc
@@ -317,7 +309,6 @@ private fun PieChartImpl(
                 // Keep the same arc width for other arcs
                 outerStrokeWidth
             }
-
 
             if (startAngle <= currentSweepAngle) {
 
@@ -370,7 +361,6 @@ private fun PieChartImpl(
 
             if (!dimissToolTip && drawText && currentSweepAngle == chartEndAngle && chartData.isSelected) {
 
-
                 // Draw the tip
                 translate(
                     left = offsetX - halfTriangleWidth.dp.toPx(),
@@ -383,17 +373,6 @@ private fun PieChartImpl(
                     }
                 }
 
-//                translate(
-//                    left = offsetX - halfTriangleWidth.dp.toPx(),
-//                    top = offsetY - halfTriangleHeight.dp.toPx()
-//                ) {
-//                    with(pointerTip) {
-//                        draw(
-//                            size = Size(triangleWidth.dp.toPx(), triangleHeight.dp.toPx())
-//                        )
-//                    }
-//                }
-
                 // Draw rectangle with elevation
                 drawRoundRect(
                     color = Color.Black,
@@ -401,7 +380,6 @@ private fun PieChartImpl(
                     size = Size(rectWidth.dp.toPx(), rectHeight.dp.toPx()),
                     style = Fill,
                     cornerRadius = CornerRadius(rectCornerRadius.dp.toPx())
-
                 )
 
                 // Draw text centered
@@ -415,7 +393,6 @@ private fun PieChartImpl(
                                 + (innerRadius + arcW / 2) * sin(angRad) - halfRectHeight.dp.toPx() - halfTriangleHeight.dp.toPx() - typeSize.height/2)
                     )
                 )
-
 
                 drawText(
                     textLayoutResult = textMeasureResult.second,
@@ -452,27 +429,4 @@ internal class AnimatedChartData(
 val Float.degreeToRadian
     get() = (this * Math.PI / 180f).toFloat()
 
-val Float.asAngle: Float
-    get() = this * 360f / 100f
 
-private fun DrawScope.drawTriangleTip(center: Offset, size: Float, color: Color) {
-    val halfSize = size / 2
-    val trianglePath = Path().apply {
-        moveTo(center.x - halfSize, center.y - halfSize) // Move to the top-left corner
-        lineTo(center.x + halfSize, center.y - halfSize) // Draw a line to the top-right corner
-        lineTo(center.x, center.y + halfSize) // Draw a line to the bottom-center
-        close()
-    }
-    drawPath(trianglePath, color)
-}
-
-
-// Draw the triangle tip
-//                drawTriangleTip(
-//                    center = Offset(
-//                        offsetX,
-//                        offsetY
-//                    ),
-//                    size = 16.dp.toPx(),
-//                    color = Color.Black
-//                )cal
