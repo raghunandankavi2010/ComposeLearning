@@ -373,12 +373,12 @@ private fun PieChartImpl(
 
                 // Draw the tip
                 translate(
-                    left = offsetX - 12.dp.toPx(),
-                    top = offsetY - 4.dp.toPx()
+                    left = offsetX - halfTriangleWidth.dp.toPx(),
+                    top = offsetY - halfTriangleHeight.dp.toPx()
                 ) {
                     with(pointerTip) {
                         draw(
-                            size = Size(24.dp.toPx(), 8.dp.toPx())
+                            size = Size(triangleWidth.dp.toPx(), triangleHeight.dp.toPx())
                         )
                     }
                 }
