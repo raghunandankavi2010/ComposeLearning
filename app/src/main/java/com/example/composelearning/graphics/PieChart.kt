@@ -351,6 +351,8 @@ private fun PieChartImpl(
             }
         }
 
+        // this is to make sure tool tip is drawn after all the arc segments
+        // to prevent overlap
         if (indexSelected != -1) {
             val chartData = chartDataList[indexSelected]
             val textMeasureResult = textMeasureResults[indexSelected]
