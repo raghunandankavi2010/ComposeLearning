@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:app="http://schemas.android.com/apk/res-auto">
+    <font
+        app:font="@font/jio_type_black"
+        app:fontStyle="normal" />
+    <font
+        app:font="@font/jio_type_bold"
+        app:fontStyle="normal" />
+    <font
+        app:font="@font/jio_type_light"
+        app:fontStyle="normal" />
+    <font
+        app:font="@font/jio_type_light_italic"
+        app:fontStyle="italic" />
+    <font
+        app:font="@font/jio_type_medium"
+        app:fontStyle="normal" />
+
+    <font
+        app:font="@font/jio_type_medium_italic"
+        app:fontStyle="normal" />
+</font-family>

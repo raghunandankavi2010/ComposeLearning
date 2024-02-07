@@ -1,6 +1,7 @@
 package com.example.composelearning.graphics
 
 
+import android.graphics.BlurMaskFilter
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.tween
@@ -27,9 +28,11 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.pointer.pointerInput
@@ -53,7 +56,7 @@ fun PieChartPreview(
     onClick: (data: ChartData, index: Int) -> Unit
 ) {
 
-    var dismissToolTip by remember  {
+    var dismissToolTip by remember {
         mutableStateOf(false)
     }
 
@@ -67,11 +70,11 @@ fun PieChartPreview(
         val data = remember {
             listOf(
                 ChartData(Color.Green, 10f, "Seeds", "10000"),
-                ChartData(Color.Red, 20f, "Labour","5000"),
-                ChartData(Color.Cyan, 15f,"Fertilizer","6000"),
-                ChartData(Color.Blue, 5f,"Tractor","100"),
-                ChartData(Color.Yellow, 35f, "Weeding","200"),
-                ChartData(Color.Magenta, 15f,"Sowing","400")
+                ChartData(Color.Red, 20f, "Labour", "5000"),
+                ChartData(Color.Cyan, 15f, "Fertilizer", "6000"),
+                ChartData(Color.Blue, 5f, "Tractor", "100"),
+                ChartData(Color.Yellow, 35f, "Weeding", "200"),
+                ChartData(Color.Magenta, 15f, "Sowing", "400")
             )
         }
 
@@ -84,7 +87,7 @@ fun PieChartPreview(
             data = data,
             outerRingPercent = 35,
             onClick = { chartData, index ->
-              onClick(chartData,index)
+                onClick(chartData, index)
             },
             dimissToolTip = dismissToolTip
         ) {
@@ -271,12 +274,15 @@ private fun PieChartImpl(
     rectHeight: Int = 54,
     rectCornerRadius: Int = 8,
     triangleWidth: Int = 24,
-    triangleHeight: Int  = 8,
+    triangleHeight: Int = 8,
     dimissToolTip: Boolean
 ) {
 
     val pointerVector = ImageVector.vectorResource(id = R.drawable.tip)
     val pointerTip = rememberVectorPainter(image = pointerVector)
+    val paint = Paint()
+    val blurRadius = 4.dp
+    val color = Color.Black
 
     Canvas(modifier = modifier) {
 
@@ -289,10 +295,10 @@ private fun PieChartImpl(
         var angRad = -1f
         var arcW = -1f
 
-        val halfRectWidth = rectWidth/2
-        val halfRectHeight = rectHeight/2
-        val halfTriangleWidth = triangleWidth/2
-        val halfTriangleHeight = triangleHeight/2
+        val halfRectWidth = rectWidth / 2
+        val halfRectHeight = rectHeight / 2
+        val halfTriangleWidth = triangleWidth / 2
+        val halfTriangleHeight = triangleHeight / 2
 
 
         for (index in 0..chartDataList.lastIndex) {
@@ -375,10 +381,13 @@ private fun PieChartImpl(
                     }
                 }
 
-                // Draw rectangle with elevation
+                // Draw rectangle
                 drawRoundRect(
                     color = Color.Black,
-                    topLeft = Offset(offsetX - halfRectWidth.dp.toPx() , offsetY - rectHeight.dp.toPx() - halfTriangleHeight.dp.toPx()),
+                    topLeft = Offset(
+                        offsetX - halfRectWidth.dp.toPx(),
+                        offsetY - rectHeight.dp.toPx() - halfTriangleHeight.dp.toPx()
+                    ),
                     size = Size(rectWidth.dp.toPx(), rectHeight.dp.toPx()),
                     style = Fill,
                     cornerRadius = CornerRadius(rectCornerRadius.dp.toPx())
@@ -392,7 +401,7 @@ private fun PieChartImpl(
                         (-typeCenter.x + center.x
                                 + (innerRadius + arcW / 2) * cos(angRad)),
                         (-typeCenter.y + center.y
-                                + (innerRadius + arcW / 2) * sin(angRad) - halfRectHeight.dp.toPx() - halfTriangleHeight.dp.toPx() - typeSize.height/2)
+                                + (innerRadius + arcW / 2) * sin(angRad) - halfRectHeight.dp.toPx() - halfTriangleHeight.dp.toPx() - typeSize.height / 2)
                     )
                 )
 
@@ -401,9 +410,9 @@ private fun PieChartImpl(
                     color = Color.White,
                     topLeft = Offset(
                         (-expenseCenter.x + center.x
-                                + (innerRadius + arcW / 2) * cos(angRad)) ,
-                        (-expenseSize.height/2 + center.y
-                                + (innerRadius + arcW / 2) * sin(angRad) - halfRectHeight.dp.toPx() - halfTriangleHeight.dp.toPx() + expenseSize.height/2 + 5.dp.toPx())
+                                + (innerRadius + arcW / 2) * cos(angRad)),
+                        (-expenseSize.height / 2 + center.y
+                                + (innerRadius + arcW / 2) * sin(angRad) - halfRectHeight.dp.toPx() - halfTriangleHeight.dp.toPx() + expenseSize.height / 2 + 5.dp.toPx())
                     )
                 )
             }
