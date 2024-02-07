@@ -66,6 +66,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.composelearning.graphics.PieChartPreview
+import com.example.composelearning.lists.GeneralAlertsList
 import com.example.composelearning.lists.SwipetoDismiss
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
@@ -448,10 +449,11 @@ fun TutorialNavGraph(
 //                val progress = remember {
 //                    50
 //                }
-                SwipetoDismiss()
-//                PieChartPreview(){ chartData,index ->
-//
-//                }
+                //GeneralAlertsList()
+                //SwipetoDismiss()
+                PieChartPreview(){ chartData,index ->
+
+                }
             }
         }
         //SpeedometerScreen()

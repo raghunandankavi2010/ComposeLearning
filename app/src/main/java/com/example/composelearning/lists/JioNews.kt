@@ -27,6 +27,7 @@ import com.example.composelearning.ui.theme.ComposeLearningTheme
 fun JioNews() {
     Row(
         modifier = Modifier
+            .padding(top=16.dp)
             .fillMaxWidth()
             .height(148.dp),
         horizontalArrangement = Arrangement.Start,
@@ -99,6 +100,7 @@ fun PreviewImageWithRedDot() {
 @Composable
 fun TextHeaderFooter(modifier: Modifier = Modifier, text: String) {
     Text(
+        maxLines = 1,
         text = text,
         color = Color(0xFF7A7A7A),
         fontSize = 14.sp,
