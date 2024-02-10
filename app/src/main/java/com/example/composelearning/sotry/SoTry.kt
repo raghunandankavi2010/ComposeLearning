@@ -1,6 +1,5 @@
 package com.example.composelearning.sotry
 
-import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.expandHorizontally
@@ -63,7 +62,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -75,9 +73,9 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
@@ -105,6 +103,7 @@ import com.example.composelearning.LogCompositions
 import com.example.composelearning.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 
 @Composable
@@ -761,6 +760,68 @@ fun CircleRowWithTextAndImage() {
 
     }
 }
+
+
+@Composable
+fun OverlappingBoxes(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    Layout(
+        modifier = modifier,
+        content = content,
+    ) { measurables, constraints ->
+        val largeBox = measurables[0]
+        val smallBox = measurables[1]
+        val looseConstraints = constraints.copy(
+            minWidth = 0,
+            minHeight = 0,
+        )
+        val largePlaceable = largeBox.measure(looseConstraints)
+        val smallPlaceable = smallBox.measure(looseConstraints)
+        layout(
+            width = constraints.maxWidth,
+            height = largePlaceable.height + smallPlaceable.height / 2,
+        ) {
+            largePlaceable.placeRelative(
+                x = 0,
+                y = 0,
+            )
+            val percentageFromTop = 0.3f // 30% from the top
+            val yOffset = (largePlaceable.height * percentageFromTop).roundToInt()
+            smallPlaceable.placeRelative(
+                x = - smallPlaceable.width / 2,
+                y = yOffset - smallPlaceable.height / 2
+            )
+        }
+    }
+}
+
+@Composable
+fun BoxOverlap(
+    modifier: Modifier = Modifier,
+) {
+    OverlappingBoxes(modifier = modifier.size(300.dp)) {
+        Box(
+            modifier = Modifier
+                .size(300.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color.Green)
+        ) {
+        }
+
+        Box(
+            modifier = Modifier
+                .size(100.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color.Blue)
+        ) {
+
+        }
+    }
+}
+
+
 
 @Preview
 @Composable
