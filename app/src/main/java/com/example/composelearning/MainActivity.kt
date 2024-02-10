@@ -42,17 +42,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -65,10 +62,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.composelearning.graphics.PieChartPreview
-import com.example.composelearning.lists.GeneralAlertsList
-import com.example.composelearning.lists.LazyRowLikePager
-import com.example.composelearning.lists.SwipetoDismiss
+import com.example.composelearning.sotry.BoxOverlap
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -446,7 +440,8 @@ fun TutorialNavGraph(
             //DraggableLineDrawing()
             //BoxAnim()
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                LazyRowLikePager()
+                BoxOverlap(modifier =  Modifier.padding(top = 50.dp).align(Alignment.CenterHorizontally))
+                //LazyRowLikePager()
 
 //                PagerIndicatorDemo()
 //                val progress = remember {
