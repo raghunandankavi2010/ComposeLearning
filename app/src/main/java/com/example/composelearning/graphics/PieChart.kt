@@ -69,15 +69,14 @@ fun PieChartPreview(
     ) {
         val data = remember {
             listOf(
-                ChartData(Color.Green, 10f, "Seeds", "10000"),
-                ChartData(Color.Red, 20f, "Labour", "5000"),
+                ChartData(Color.Green, 10f, "Seeds", "4000"),
+                ChartData(Color.Red, 20f, "Labour", "10000"),
                 ChartData(Color.Cyan, 15f, "Fertilizer", "6000"),
-                ChartData(Color.Blue, 5f, "Tractor", "100"),
-                ChartData(Color.Yellow, 35f, "Weeding", "200"),
-                ChartData(Color.Magenta, 15f, "Sowing", "400")
+                ChartData(Color.Blue, 5f, "Tractor", "1000"),
+                ChartData(Color.Yellow, 35f, "Weeding", "20000"),
+                ChartData(Color.Magenta, 15f, "Sowing", "6000")
             )
         }
-
 
         PieChart(
             modifier = Modifier
@@ -280,9 +279,6 @@ private fun PieChartImpl(
 
     val pointerVector = ImageVector.vectorResource(id = R.drawable.tip)
     val pointerTip = rememberVectorPainter(image = pointerVector)
-    val paint = Paint()
-    val blurRadius = 4.dp
-    val color = Color.Black
 
     Canvas(modifier = modifier) {
 
@@ -308,7 +304,7 @@ private fun PieChartImpl(
             val sweepAngle = range.endInclusive - range.start
             val angleInRadians = (startAngle + sweepAngle / 2).degreeToRadian
 
-            val arcWidth = if (chartData.isSelected) {
+            val arcWidth = if (chartData.isSelected && !dimissToolTip)  {
                 // Increase arc width for the first arc
                 outerStrokeWidth + 50f // You can adjust the value as needed
             } else {
