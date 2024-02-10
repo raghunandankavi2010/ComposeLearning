@@ -67,6 +67,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.composelearning.graphics.PieChartPreview
 import com.example.composelearning.lists.GeneralAlertsList
+import com.example.composelearning.lists.LazyRowLikePager
 import com.example.composelearning.lists.SwipetoDismiss
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
@@ -445,15 +446,17 @@ fun TutorialNavGraph(
             //DraggableLineDrawing()
             //BoxAnim()
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                LazyRowLikePager()
+
 //                PagerIndicatorDemo()
 //                val progress = remember {
 //                    50
 //                }
                 //GeneralAlertsList()
                 //SwipetoDismiss()
-                PieChartPreview(){ chartData,index ->
-
-                }
+//                PieChartPreview(){ chartData,index ->
+//
+//                }
             }
         }
         //SpeedometerScreen()
