@@ -43,8 +43,9 @@ fun NumberPicker(modifier: Modifier = Modifier) {
         val contentPadding = (maxWidth - 50.dp) / 2
         val offSet = maxWidth / 5
         val itemSpacing = offSet - 50.dp
+        val list =  (0..200).toList()
         val pagerState = rememberPagerState(pageCount = {
-            100
+            list.size
         })
 
         val context = LocalContext.current
@@ -52,7 +53,7 @@ fun NumberPicker(modifier: Modifier = Modifier) {
         LaunchedEffect(pagerState) {
             // Collect from the a snapshotFlow reading the currentPage
             snapshotFlow { pagerState.settledPage }.collect { page ->
-                Toast.makeText(context,"$page",Toast.LENGTH_SHORT).show()
+                Toast.makeText(context,"${list[page]}",Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -103,7 +104,7 @@ fun NumberPicker(modifier: Modifier = Modifier) {
                         }
                     }) {
                 Text(
-                    text = "$page",
+                    text = "${list[page]}",
                     color = Color.Black,
                     modifier = Modifier
                         .size(50.dp)
