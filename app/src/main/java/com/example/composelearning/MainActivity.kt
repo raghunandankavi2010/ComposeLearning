@@ -62,8 +62,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.composelearning.lists.NumberPicker
-import com.example.composelearning.sotry.BoxOverlap
+import com.example.composelearning.lists.Test2
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -441,7 +440,9 @@ fun TutorialNavGraph(
             //DraggableLineDrawing()
             //BoxAnim()
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            NumberPicker(Modifier.padding(top = 50.dp))
+
+                Test2()
+            //NumberPicker(Modifier.padding(top = 50.dp))
                // BoxOverlap(modifier =  Modifier.padding(top = 50.dp).align(Alignment.CenterHorizontally))
                 //LazyRowLikePager()
 
