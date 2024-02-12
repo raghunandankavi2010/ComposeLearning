@@ -75,17 +75,17 @@ dependencies {
     // https://mvnrepository.com/artifact/androidx.lifecycle/lifecycle-viewmodel-compose
     implementation group: 'androidx.lifecycle', name: 'lifecycle-viewmodel-compose', version: '2.7.0'
     // https://mvnrepository.com/artifact/androidx.navigation/navigation-compose
-    implementation group: 'androidx.navigation', name: 'navigation-compose', version: '2.7.6'
+    implementation group: 'androidx.navigation', name: 'navigation-compose', version: '2.7.7'
     // https://mvnrepository.com/artifact/androidx.compose.runtime/runtime
     implementation('androidx.lifecycle:lifecycle-runtime-compose:2.7.0')
 
-    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("io.coil-kt:coil-compose:2.5.0")
 
     // https://mvnrepository.com/artifact/androidx.lifecycle/lifecycle-viewmodel-ktx
     implementation group: 'androidx.lifecycle', name: 'lifecycle-viewmodel-ktx', version: '2.7.0'
     // https://mvnrepository.com/artifact/androidx.compose.foundation/foundation
-    implementation 'androidx.compose.foundation:foundation:1.6.0'
+    implementation 'androidx.compose.foundation:foundation:1.6.1'
     // https://mvnrepository.com/artifact/androidx.compose.material3/material3
-    implementation group: 'androidx.compose.material3', name: 'material3', version: '1.1.2'
+    implementation group: 'androidx.compose.material3', name: 'material3', version: '1.2.0'
 
 }
