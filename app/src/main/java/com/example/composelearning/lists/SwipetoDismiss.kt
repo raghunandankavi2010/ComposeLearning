@@ -17,16 +17,13 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
-import androidx.compose.material3.DismissDirection
-import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SwipeToDismiss
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDismissState
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.rememberUpdatedState
@@ -35,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -66,19 +62,18 @@ private fun TutorialContent(viewModel: MyViewModel) {
 
                 val currentItem by rememberUpdatedState(user)
 
-                val dismissState = rememberDismissState(
+                val dismissState = rememberSwipeToDismissBoxState(
                     confirmValueChange = { dismissValue ->
                         when (dismissValue) {
-                            DismissValue.DismissedToEnd -> {
+
+                            SwipeToDismissBoxValue.StartToEnd -> {
                                 viewModel.removeItem(currentItem)
                                 true
                             }
-
-                            DismissValue.DismissedToStart -> {
+                            SwipeToDismissBoxValue.EndToStart ->{
                                 viewModel.removeItem(currentItem)
                                 true
                             }
-
                             else -> {
                                 false
                             }
@@ -88,7 +83,7 @@ private fun TutorialContent(viewModel: MyViewModel) {
                 SwipeToDismiss(
                     state = dismissState,
                     modifier = Modifier.padding(vertical = 4.dp),
-                    directions = setOf(DismissDirection.StartToEnd, DismissDirection.EndToStart),
+                    directions = setOf(SwipeToDismissBoxValue.StartToEnd, SwipeToDismissBoxValue.EndToStart),
 
                     background = {
 
@@ -97,21 +92,27 @@ private fun TutorialContent(viewModel: MyViewModel) {
                         val color by animateColorAsState(
 
                             when (dismissState.targetValue) {
-                                DismissValue.Default -> Color.LightGray
-                                DismissValue.DismissedToEnd -> Color.Green
-                                DismissValue.DismissedToStart -> Color.Red
+                                SwipeToDismissBoxValue.Settled -> Color.LightGray
+                                SwipeToDismissBoxValue.StartToEnd  -> Color.Green
+                                SwipeToDismissBoxValue.EndToStart -> Color.Red
                             }, label = ""
                         )
                         val alignment = when (direction) {
-                            DismissDirection.StartToEnd -> Alignment.CenterStart
-                            DismissDirection.EndToStart -> Alignment.CenterEnd
+                            SwipeToDismissBoxValue.StartToEnd  -> Alignment.CenterStart
+                            SwipeToDismissBoxValue.EndToStart -> Alignment.CenterEnd
+                            else -> {
+                                Alignment.CenterStart
+                            }
                         }
                         val icon = when (direction) {
-                            DismissDirection.StartToEnd -> Icons.Default.Done
-                            DismissDirection.EndToStart -> Icons.Default.Delete
+                            SwipeToDismissBoxValue.StartToEnd  -> Icons.Default.Done
+                            SwipeToDismissBoxValue.EndToStart -> Icons.Default.Delete
+                            else -> {
+                                Icons.Default.Done
+                            }
                         }
                         val scale by animateFloatAsState(
-                            if (dismissState.targetValue == DismissValue.Default) 0.75f else 1f,
+                            if (dismissState.targetValue == SwipeToDismissBoxValue.Settled) 0.75f else 1f,
                             label = ""
                         )
 
