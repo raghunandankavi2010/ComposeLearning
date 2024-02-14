@@ -26,9 +26,10 @@ import androidx.compose.ui.unit.dp
 import com.example.composelearning.R
 
 @Composable
-fun ThermometerCanvas(modifier: Modifier = Modifier, progress: Int = 50) {
-    val totalProgress = 161 - 32 - 20
-    val actualProgress = progress  * (totalProgress) / 100 - (6*2)
+fun ThermometerCanvas(modifier: Modifier = Modifier, progress: Int = 100) {
+    // totalProgess = 161 is the height - dia of circle - padding
+    val totalProgress = 161 - 40 - 12
+    val actualProgress = progress  * (totalProgress) / 100 - (6*2) // padding is twice
     val vector = ImageVector.vectorResource(id = R.drawable.thermometer)
     val painter = rememberVectorPainter(image = vector)
 
@@ -42,7 +43,7 @@ fun ThermometerCanvas(modifier: Modifier = Modifier, progress: Int = 50) {
     LaunchedEffect(animVal) {
         animVal.animateTo(
             targetValue = 1f,
-            animationSpec = tween(durationMillis = 10000, easing = LinearEasing)
+            animationSpec = tween(durationMillis = 5000, easing = LinearEasing)
         )
     }
 
@@ -86,15 +87,28 @@ fun ThermometerCanvas(modifier: Modifier = Modifier, progress: Int = 50) {
             // Drawing the line above the circle to indicate the meter
             drawLine(
                 color = Color(0xFF25AB21),
-                start = Offset(25.dp.toPx(), 161.dp.toPx() - 26.dp.toPx()),
+                start = Offset(25.dp.toPx(), totalProgress.dp.toPx() + 5.dp.toPx()), // 5dp is to make sure rounded cap overlaps with circle
                 end = Offset(
                     25.dp.toPx(),
-                    totalProgress.dp.toPx() - (actualProgress.dp.toPx() * animVal.value)
+                    totalProgress.dp.toPx()  - ((actualProgress.dp.toPx()) * animVal.value)
                 ),
                 strokeWidth = 15.dp.toPx(),
                 StrokeCap.Round
 
             )
+
+            // Reference line for visualizing progress  outside thermometer
+//            drawLine(
+//                color = Color(0xFF25AB21),
+//                start = Offset(25.dp.toPx() - 50.dp.toPx(), totalProgress.dp.toPx() + 5.dp.toPx()), // 5dp is to make sure rounded cap overlaps with circle
+//                end = Offset(
+//                    25.dp.toPx() - 50.dp.toPx(),
+//                    totalProgress.dp.toPx()  - ((actualProgress.dp.toPx()) * animVal.value)
+//                ),
+//                strokeWidth = 15.dp.toPx(),
+//                StrokeCap.Round
+//
+//            )
         }
     }
 }
