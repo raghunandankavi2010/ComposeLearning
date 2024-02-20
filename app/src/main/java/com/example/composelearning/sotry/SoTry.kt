@@ -99,6 +99,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.core.text.toSpannable
 import com.example.composelearning.LogCompositions
 import com.example.composelearning.R
 import kotlinx.coroutines.delay
@@ -790,7 +791,7 @@ fun OverlappingBoxes(
             val percentageFromTop = 0.3f // 30% from the top
             val yOffset = (largePlaceable.height * percentageFromTop).roundToInt()
             smallPlaceable.placeRelative(
-                x = - smallPlaceable.width / 2,
+                x = -smallPlaceable.width / 2,
                 y = yOffset - smallPlaceable.height / 2
             )
         }
@@ -822,9 +823,82 @@ fun BoxOverlap(
 }
 
 
-
 @Preview
 @Composable
 fun CircleRowWithTextAndImagePreview() {
     CircleRowWithTextAndImage()
+}
+
+@Composable
+fun BoxAnim2() {
+    var middleBoxVisible by remember { mutableStateOf(true) }
+
+    var middleBoxText by remember { mutableStateOf("Hello, World! Raghunandan") } // Initial text
+
+    val textStyle = LocalTextStyle.current
+
+    val textMeasurer = rememberTextMeasurer()
+    val textMeasured = remember(textStyle, textMeasurer) {
+        textMeasurer.measure(
+            text = middleBoxText,
+            style = textStyle.copy(textAlign = TextAlign.Center)
+        ).size.width
+    }
+
+    val newWidth = with(LocalDensity.current) { textMeasured.toDp() + 8.dp }
+
+    Column {
+        BoxWithConstraints {
+
+            val middleBoxWidth = if (middleBoxVisible) newWidth else 0.dp
+            val sideBoxWidth = ((maxWidth) - middleBoxWidth) / 2
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Box(
+                    modifier = Modifier
+                        .width(sideBoxWidth)
+                        .height(100.dp)
+                        .background(Color.Red)
+                )
+
+                AnimatedVisibility(
+                    visible = middleBoxVisible,
+                    enter =  expandHorizontally(),
+                    exit = shrinkHorizontally()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .wrapContentWidth()
+                            .height(100.dp)
+                            .background(Color.Green)
+                    ) {
+                        Text(
+                            maxLines =  1,
+                            text = middleBoxText,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .width(sideBoxWidth)
+                        .height(100.dp)
+                        .background(Color.Blue)
+                )
+            }
+        }
+
+        Button(
+            modifier = Modifier
+                .width(200.dp)
+                .height(80.dp),
+            onClick = { middleBoxVisible = !middleBoxVisible }) {
+            Text(text = "Toggle Middle Box")
+        }
+    }
+
 }

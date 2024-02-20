@@ -63,6 +63,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.composelearning.graphics.ThermometerCanvas
+import com.example.composelearning.lists.GeneralAlertsList
+import com.example.composelearning.sotry.BoxAnim2
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -440,13 +442,14 @@ fun TutorialNavGraph(
             //DraggableLineDrawing()
             //BoxAnim()
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-
-                ThermometerCanvas(
-                    modifier = Modifier
-                        .size(300.dp)
-                        .background(Color.Black)
-                        .align(Alignment.CenterHorizontally)
-                )
+                BoxAnim2()
+                //GeneralAlertsList()
+//                ThermometerCanvas(
+//                    modifier = Modifier
+//                        .size(300.dp)
+//                        .background(Color.Black)
+//                        .align(Alignment.CenterHorizontally)
+//                )
                 //NumberPicker(Modifier.padding(top = 50.dp))
                 // BoxOverlap(modifier =  Modifier.padding(top = 50.dp).align(Alignment.CenterHorizontally))
                 //LazyRowLikePager()
