@@ -34,6 +34,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.res.ResourcesCompat
@@ -50,7 +52,7 @@ fun getAlertsData(): MutableList<AlertsData> {
         list.add(
             AlertsData(
                 "9:00pm,12/08/2024",
-                "Fertilizer Land",
+                "Fertilizer Land. Keeping cotton field weed free for initial 60 days is very important. To avoid weed infestation,  spray the field with Pendimethalin 38.7% CS @  ml/liter of water. Spray the solution on entire field. Keeping cotton field weed free for initial 60 days is very important. To avoid weed infestation,  spray the field with Pendimethalin 38.7% CS @  ml/liter of water. Spray the solution on entire field",
                 "Keeping cotton field weed free for initial 60 days is very important. To avoid weed infestation,  spray the field with Pendimethalin 38.7% CS @  ml/liter of water. Spray the solution on entire field. Keeping cotton field weed free for initial 60 days is very important. To avoid weed infestation,  spray the field with Pendimethalin 38.7% CS @  ml/liter of water. Spray the solution on entire field",
                 it
             )
@@ -59,6 +61,7 @@ fun getAlertsData(): MutableList<AlertsData> {
     return list
 }
 
+@Preview
 @Composable
 fun GeneralAlertsList() {
     val list = getAlertsData()
@@ -155,7 +158,9 @@ fun GeneralAlerts(alertsData: AlertsData, expand: SnapshotStateMap<Int, Boolean>
                 modifier = Modifier
                     .padding(top = 8.dp, start = 16.dp, end = 16.dp)
                     .fillMaxWidth()
-                    .height(20.dp),
+                    .wrapContentHeight(),
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 2,
                 color = Color.Black,
                 style = TextStyle(fontSize = 16.sp, fontFamily = fontFamilyBold),
                 text = alertsData.type

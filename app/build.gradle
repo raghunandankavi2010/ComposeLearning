@@ -87,5 +87,6 @@ dependencies {
     implementation 'androidx.compose.foundation:foundation:1.6.1'
     // https://mvnrepository.com/artifact/androidx.compose.material3/material3
     implementation group: 'androidx.compose.material3', name: 'material3', version: '1.2.0'
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
 
 }
