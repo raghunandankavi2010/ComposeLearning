@@ -823,14 +823,14 @@ fun BoxOverlap(
 }
 
 
-@Preview
+@Preview()
 @Composable
 fun CircleRowWithTextAndImagePreview() {
     CircleRowWithTextAndImage()
 }
 
 @Composable
-fun BoxAnim2() {
+fun BoxAnim2(clicked :(Boolean) -> Unit) {
     var middleBoxVisible by remember { mutableStateOf(true) }
 
     var middleBoxText by remember { mutableStateOf("Hello, World! Raghunandan") } // Initial text
@@ -848,7 +848,9 @@ fun BoxAnim2() {
     val newWidth = with(LocalDensity.current) { textMeasured.toDp() + 8.dp }
 
     Column {
-        BoxWithConstraints {
+        BoxWithConstraints(modifier = Modifier.clickable {
+            clicked(true)
+        }) {
 
             val middleBoxWidth = if (middleBoxVisible) newWidth else 0.dp
             val sideBoxWidth = ((maxWidth) - middleBoxWidth) / 2

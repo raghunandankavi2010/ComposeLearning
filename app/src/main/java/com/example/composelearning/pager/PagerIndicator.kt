@@ -46,14 +46,13 @@ fun PagerIndicatorDemo() {
 
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(300.dp)
+            .fillMaxSize()
+
     ) {
         HorizontalPager(
             state = pagerState,
             modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
+                .fillMaxSize()
         ) {
             Box(
                 modifier = Modifier
@@ -66,11 +65,13 @@ fun PagerIndicatorDemo() {
                     contentDescription = "",
                     contentScale = ContentScale.FillWidth,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(300.dp)
+                        .fillMaxSize()
+//                        .fillMaxWidth()
+//                        .height(300.dp)
                 )
             }
         }
+
 
         Row(
             Modifier
@@ -88,6 +89,7 @@ fun PagerIndicatorDemo() {
                 activeLineWidth = 16.dp
             )
         }
+
 //        Row(
 //            Modifier
 //                .height(50.dp)

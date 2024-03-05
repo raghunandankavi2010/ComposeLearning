@@ -84,9 +84,11 @@ dependencies {
     // https://mvnrepository.com/artifact/androidx.lifecycle/lifecycle-viewmodel-ktx
     implementation group: 'androidx.lifecycle', name: 'lifecycle-viewmodel-ktx', version: '2.7.0'
     // https://mvnrepository.com/artifact/androidx.compose.foundation/foundation
-    implementation 'androidx.compose.foundation:foundation:1.6.1'
+    implementation 'androidx.compose.foundation:foundation:1.6.2'
     // https://mvnrepository.com/artifact/androidx.compose.material3/material3
     implementation group: 'androidx.compose.material3', name: 'material3', version: '1.2.0'
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+
+    implementation "androidx.graphics:graphics-shapes:1.0.0-alpha05"
 
 }
