@@ -49,9 +49,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -65,7 +68,19 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.composelearning.buttons.ButtonWithBorder
+import com.example.composelearning.customshapes.OTPTextField
+import com.example.composelearning.customshapes.ShapeTry
+import com.example.composelearning.graphics.PieChartPreview
+import com.example.composelearning.graphics.ThermometerCanvas
+import com.example.composelearning.lists.LazyRowLikePager
+import com.example.composelearning.pager.Pager2
+import com.example.composelearning.pager.PagerDemo3
+import com.example.composelearning.pager.PagerIndicatorDemo
 import com.example.composelearning.sotry.BoxAnim2
+import com.example.composelearning.sotry.CircleRowWithTextAndImage
+import com.example.composelearning.speedometer.Speedometer
+import com.example.composelearning.speedometer.Speedometer2
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -455,13 +470,69 @@ fun TutorialNavGraph(
         startDestination = startDestination
     ) {
 
+
         composable(route = "FirstScreen") { navBackEntryStack ->
             //DraggableLineDrawing()
             //BoxAnim()
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                BoxAnim2() {
-                    navController.navigate("SecondScreen")
-                }
+
+//                ThermometerCanvas(
+//                    modifier = Modifier
+//                        .size(300.dp)
+//                        .background(Color.Black)
+//                        .align(Alignment.CenterHorizontally)
+//                )
+
+                PagerIndicatorDemo()
+
+//                ButtonWithBorder(
+//                    textColor = Color.Red,
+//                    text = "Get Stareted",
+//                    modifier = Modifier.height(40.dp).width(200.dp),
+//                    backgroundColor = Color(0xFFBB86FC),
+//
+//                    ) {
+//
+//                }
+                //ShapeTry()
+                // Speedometer(100)
+                //  LazyRowLikePager()
+                //navController.popBackStack("A",inclusive = true) in c
+                //PagerIndicatorDemo()
+                //CircleRowWithTextAndImage()
+
+//                val focusRequester = remember { FocusRequester() }
+//                val focusManager = LocalFocusManager.current
+//                var text by remember {
+//                    mutableStateOf("")
+//                }
+//
+//                OTPTextField(
+//                    value = text,
+//                    length = 4,
+//                    onValueChange = {
+//                        text = it
+//                        if (text.length == 4) {
+//                            // Handle the case when the OTP is complete
+//                            focusManager.clearFocus(true)
+//                        }
+//                    }
+//                )
+//
+                // PagerDemo3()
+//                ThermometerCanvas(
+//                    modifier = Modifier
+//                        .size(300.dp)
+//                        .background(Color.Black)
+//                        .align(Alignment.CenterHorizontally)
+//                )
+//                PieChartPreview() { data, index ->
+//
+//                }
+//                PagerIndicatorDemo()
+//                BoxAnim2() {
+//                    navController.navigate("SecondScreen")
+//                }
                 //GeneralAlertsList()
 //                ThermometerCanvas(
 //                    modifier = Modifier

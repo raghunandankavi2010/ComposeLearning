@@ -9,12 +9,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+@Preview(widthDp = 200, heightDp = 50)
+@Composable
+fun PreViewButton() {
+    ButtonWithBorder("Get Started") {
+
+    }
+}
 @Composable
 fun ButtonWithBorder(
     text: String,
+    modifier: Modifier = Modifier,
     backgroundColor : Color = Color(0xFFF0F0F0),
     borderColor: Color =  Color(0xFF4E617E),
     textColor: Color =  Color(0xFF4E617E),
@@ -23,8 +32,7 @@ fun ButtonWithBorder(
     onClick: () -> Unit
 ) {
     OutlinedButton(
-        modifier = Modifier
-            .height(40.dp),
+        modifier = modifier,
         onClick = { onClick() },
         border = BorderStroke(strokeWidth, borderColor),
         shape = RoundedCornerShape(
