@@ -474,7 +474,11 @@ fun TutorialNavGraph(
         composable(route = "FirstScreen") { navBackEntryStack ->
             //DraggableLineDrawing()
             //BoxAnim()
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.background(Color.Red)
+            ) {
+                //Pager2()
 
 //                ThermometerCanvas(
 //                    modifier = Modifier
@@ -483,7 +487,7 @@ fun TutorialNavGraph(
 //                        .align(Alignment.CenterHorizontally)
 //                )
 
-                PagerIndicatorDemo()
+                //PagerIndicatorDemo()
 
 //                ButtonWithBorder(
 //                    textColor = Color.Red,
@@ -496,7 +500,7 @@ fun TutorialNavGraph(
 //                }
                 //ShapeTry()
                 // Speedometer(100)
-                //  LazyRowLikePager()
+                //LazyRowLikePager()
                 //navController.popBackStack("A",inclusive = true) in c
                 //PagerIndicatorDemo()
                 //CircleRowWithTextAndImage()
@@ -519,7 +523,7 @@ fun TutorialNavGraph(
 //                    }
 //                )
 //
-                // PagerDemo3()
+                PagerDemo3()
 //                ThermometerCanvas(
 //                    modifier = Modifier
 //                        .size(300.dp)

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.PagerSnapDistance
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
@@ -109,7 +110,6 @@ fun PagerDemo3(modifier: Modifier = Modifier) {
         })
 
         val scope = rememberCoroutineScope()
-
         HorizontalPager(
             modifier = modifier,
             state = pagerState,
@@ -120,6 +120,17 @@ fun PagerDemo3(modifier: Modifier = Modifier) {
             contentPadding = PaddingValues(horizontal = 32.dp),
             pageSpacing = itemSpacing
         ) { page ->
+            val pageOffSet = (
+                    (pagerState.currentPage - page) + pagerState
+                        .currentPageOffsetFraction
+                    ).absoluteValue
+            // Calculate alpha based on page offset
+            val alpha = lerp(start = 0.5f, stop = 1f, fraction = 1f - pageOffSet.coerceIn(0f, 1f))
+
+            // Calculate scaleX and scaleY based on page offset
+            val scale = lerp(start = 0.75f, stop = 1f, fraction = 1f - pageOffSet.coerceIn(0f, 1f))
+
+
             Image(
                 painter = painterResource(id = R.drawable.ic_launcher_background),
                 contentDescription = "",
@@ -136,17 +147,11 @@ fun PagerDemo3(modifier: Modifier = Modifier) {
                             pagerState.animateScrollToPage(page)
                         }
                     }.graphicsLayer {
-                        val pageOffSet = (
-                                (pagerState.currentPage - page) + pagerState
-                                    .currentPageOffsetFraction
-                                ).absoluteValue
-                        alpha = lerp(
-                            start = 0.5f,
-                            stop = 1f,
-                            fraction = 1f - pageOffSet.coerceIn(0f, 1f)
-                        )
+                        this.alpha = alpha
+                        this.scaleY = scale
                     }
             )
         }
     }
 }
+
