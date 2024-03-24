@@ -12,6 +12,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -49,6 +51,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -79,6 +82,9 @@ import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.PlatformTextStyle
@@ -105,13 +111,15 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
+
+val ButtonShape = RoundedCornerShape(250.dp)
+
 @Preview
 @Composable
 fun ButtonSandbox() {
     Button(
         enabled = false,
-        modifier = Modifier.fillMaxWidth()
-            .height(58.dp),
+        modifier = Modifier.fillMaxWidth(),
         onClick = {},
         colors = ButtonDefaults.buttonColors(
             disabledContainerColor = MaterialTheme.colorScheme.primary,
@@ -120,8 +128,47 @@ fun ButtonSandbox() {
     ) {
         CircularProgressIndicator(
             color = MaterialTheme.colorScheme.onPrimary,
-            trackColor = MaterialTheme.colorScheme.onPrimary, // just to make it completely visible in preview
+            trackColor = MaterialTheme.colorScheme.onPrimary,
         )
+    }
+}
+
+@Composable
+fun CustomRoundedButton(
+    modifier: Modifier = Modifier,
+    borderColor: Color? = null,
+    backgroundColor: Color = MaterialTheme.colorScheme.primary,
+    elevation: Dp = 0.dp,
+    content: @Composable () -> Unit,
+    onClick: () -> Unit
+) {
+    val newModifier = if (borderColor != null) {
+        modifier.border(1.dp, borderColor, shape = ButtonShape)
+    } else {
+        modifier
+    }
+
+    val finalModifier = newModifier.height(48.dp)
+
+    Surface(
+        modifier = finalModifier
+            .semantics { role = Role.Button }
+            .clip(ButtonShape)
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }) {
+                onClick()
+            },
+        color = backgroundColor,
+        shadowElevation = elevation
+    ) {
+        Row(
+            Modifier,
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            content()
+        }
     }
 }
 

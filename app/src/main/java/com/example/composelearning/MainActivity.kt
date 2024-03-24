@@ -14,6 +14,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,9 +33,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -65,6 +68,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.composelearning.sotry.ButtonSandbox
+import com.example.composelearning.sotry.CustomButton
+import com.example.composelearning.sotry.CustomRoundedButton
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -459,10 +464,19 @@ fun TutorialNavGraph(
             //DraggableLineDrawing()
             //BoxAnim()
             Column(
+                modifier = Modifier.padding(top = 20.dp).background(Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.background(Color.White)
             ) {
                 ButtonSandbox()
+                CustomRoundedButton(modifier = Modifier.width(200.dp).padding(top = 20.dp), content = {
+                    CircularProgressIndicator(
+                        modifier = Modifier.wrapContentHeight(),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        trackColor = MaterialTheme.colorScheme.onPrimary, // just to make it completely visible in preview
+                    )
+                }) {
+
+                }
                 //Pager2()
 
 //                ThermometerCanvas(
