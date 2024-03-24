@@ -81,7 +81,7 @@ fun OTPTextField(
                         Box(
                             Modifier
                                 .align(Alignment.BottomCenter)
-                                .padding(horizontal = 6.dp)
+                                .padding(horizontal = 8.dp)
                                 .height(2.dp)
                                 .fillMaxWidth()
                                 .background(color)
