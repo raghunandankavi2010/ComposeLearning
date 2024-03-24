@@ -99,13 +99,31 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.core.text.toSpannable
 import com.example.composelearning.LogCompositions
 import com.example.composelearning.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
+@Preview
+@Composable
+fun ButtonSandbox() {
+    Button(
+        enabled = false,
+        modifier = Modifier.fillMaxWidth()
+            .height(58.dp),
+        onClick = {},
+        colors = ButtonDefaults.buttonColors(
+            disabledContainerColor = MaterialTheme.colorScheme.primary,
+            disabledContentColor = MaterialTheme.colorScheme.onPrimary
+        )
+    ) {
+        CircularProgressIndicator(
+            color = MaterialTheme.colorScheme.onPrimary,
+            trackColor = MaterialTheme.colorScheme.onPrimary, // just to make it completely visible in preview
+        )
+    }
+}
 
 @Composable
 fun SOTry() {
