@@ -67,6 +67,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.composelearning.images.CropImage
 import com.example.composelearning.sotry.ButtonSandbox
 import com.example.composelearning.sotry.CustomButton
 import com.example.composelearning.sotry.CustomRoundedButton
@@ -467,16 +468,17 @@ fun TutorialNavGraph(
                 modifier = Modifier.padding(top = 20.dp).background(Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                ButtonSandbox()
-                CustomRoundedButton(modifier = Modifier.width(200.dp).padding(top = 20.dp), content = {
-                    CircularProgressIndicator(
-                        modifier = Modifier.wrapContentHeight(),
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        trackColor = MaterialTheme.colorScheme.onPrimary, // just to make it completely visible in preview
-                    )
-                }) {
-
-                }
+                CropImage()
+//                ButtonSandbox()
+//                CustomRoundedButton(modifier = Modifier.width(200.dp).padding(top = 20.dp), content = {
+//                    CircularProgressIndicator(
+//                        modifier = Modifier.wrapContentHeight(),
+//                        color = MaterialTheme.colorScheme.onPrimary,
+//                        trackColor = MaterialTheme.colorScheme.onPrimary, // just to make it completely visible in preview
+//                    )
+//                }) {
+//
+//                }
                 //Pager2()
 
 //                ThermometerCanvas(
