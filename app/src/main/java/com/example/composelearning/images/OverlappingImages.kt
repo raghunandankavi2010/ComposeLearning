@@ -1,20 +1,15 @@
 package com.example.composelearning.images
 
-import android.content.res.Configuration
 import androidx.annotation.FloatRange
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -28,7 +23,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import com.example.composelearning.R
 import com.example.composelearning.customshapes.dpToPx
 import com.example.composelearning.ui.theme.ComposeLearningTheme
@@ -64,7 +58,10 @@ fun OverlappingRow(
 }
 
 @Composable
-fun CropImage() {
+fun CropImage(
+    icon: Int,
+    onClick: () -> Unit
+) {
     Box(
         modifier = Modifier.wrapContentSize()
     ) {
@@ -85,8 +82,7 @@ fun CropImage() {
             contentDescription = "image description",
             contentScale = ContentScale.Crop
         )
-
-        val offSetX = imageSize.dpToPx() - 24.dp.dpToPx()
+        val offSetX = 66.dp.dpToPx() - 24.dp.dpToPx()
 
         Image(modifier = Modifier
             .graphicsLayer {
@@ -97,9 +93,14 @@ fun CropImage() {
             .border(
                 width = 2.dp,
                 color = Color.White,
-                shape = CircleShape),
-            painter = painterResource(R.drawable.ic_remove),
-            contentDescription = stringResource(id = R.string.remove))
+                shape = CircleShape
+            )
+            .clickable {
+               onClick()
+            },
+            painter = painterResource(icon),
+            contentDescription = stringResource(id = R.string.remove)
+        )
     }
 }
 
@@ -108,7 +109,9 @@ fun CropImage() {
 private fun BannerPreview() {
     ComposeLearningTheme {
         Surface {
-            CropImage()
+            CropImage(icon = R.drawable.ic_select) {
+
+            }
         }
     }
 }
