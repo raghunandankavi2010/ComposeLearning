@@ -1,5 +1,6 @@
 package com.example.composelearning.images
 
+import android.content.res.Configuration
 import androidx.annotation.FloatRange
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import com.example.composelearning.R
 import com.example.composelearning.customshapes.dpToPx
+import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 /**
  *  Credits to https://proandroiddev.com/custom-layouts-with-jetpack-compose-bc1bdf10f5fd
@@ -56,53 +59,56 @@ fun OverlappingRow(
 ) {
     val measurePolicy = overlappingRowMeasurePolicy(overlapFactor)
     Layout(
-        measurePolicy = measurePolicy,
-        content = content,
-        modifier = modifier
+        measurePolicy = measurePolicy, content = content, modifier = modifier
     )
 }
 
-@Preview(showBackground = true, widthDp = 66, heightDp = 66, backgroundColor = 0xFFFFFF)
 @Composable
 fun CropImage() {
-    BoxWithConstraints(
-        modifier = Modifier
-            .width(66.dp)
-            .height(66.00014.dp)
+    Box(
+        modifier = Modifier.wrapContentSize()
     ) {
-        val maxWidthParent = constraints.maxWidth
-        Box(
+        val imageSize = 66.dp
+        Image(
             modifier = Modifier
-                .width(maxWidth)
-                .height(maxHeight)
+                .size(imageSize)
+                .background(
+                    color = Color(0xFFF5F5F5),
+                    shape = RoundedCornerShape(size = 16.dp)
+                )
                 .border(
                     width = 2.dp,
                     color = Color(0xFF03753C),
                     shape = RoundedCornerShape(size = 16.dp)
-                )
-                .background(color = Color(0xFFF5F5F5), shape = RoundedCornerShape(size = 16.dp))
+                ),
+            painter = painterResource(id = R.drawable.tomato),
+            contentDescription = "image description",
+            contentScale = ContentScale.Crop
         )
-        {
-            Image(
-               modifier =  Modifier.size(66.dp),
-                painter = painterResource(id = R.drawable.tomato),
-                contentDescription = "image description",
-                contentScale = ContentScale.Crop
-            )
-        }
 
-        val offSetX = maxWidthParent - 24.dp.dpToPx()
+        val offSetX = imageSize.dpToPx() - 24.dp.dpToPx()
 
-        Image(
-            modifier = Modifier
-                .graphicsLayer {
-                    translationX = offSetX
-                }
-                .size(24.dp)
-                .clip(CircleShape)
-                .border(2.dp, Color.White,CircleShape),
+        Image(modifier = Modifier
+            .graphicsLayer {
+                translationX = offSetX
+            }
+            .size(24.dp)
+            .clip(CircleShape)
+            .border(
+                width = 2.dp,
+                color = Color.White,
+                shape = CircleShape),
             painter = painterResource(R.drawable.ic_remove),
-            contentDescription = stringResource(id = R.string.remove)
-        )
+            contentDescription = stringResource(id = R.string.remove))
+    }
+}
+
+@Preview(showBackground = true, widthDp = 100, heightDp = 100, backgroundColor = 0xFFFFFF)
+@Composable
+private fun BannerPreview() {
+    ComposeLearningTheme {
+        Surface {
+            CropImage()
+        }
     }
 }
