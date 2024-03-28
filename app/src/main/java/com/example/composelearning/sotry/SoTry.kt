@@ -112,6 +112,14 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 
+enum class ButtonTypes {
+    EXTRA_SMALL,
+    SMALL,
+    MEDIUM,
+    LARGE,
+    EXTRA_LARGE
+}
+
 val ButtonShape = RoundedCornerShape(250.dp)
 
 @Preview
@@ -130,6 +138,70 @@ fun ButtonSandbox() {
             color = MaterialTheme.colorScheme.onPrimary,
             trackColor = MaterialTheme.colorScheme.onPrimary,
         )
+    }
+}
+
+
+@Composable
+fun JKButton2(
+    modifier: Modifier = Modifier,
+    borderColor: Color? = null,
+    backgroundColor: Color = MaterialTheme.colorScheme.primary,
+    elevation: Dp = 0.dp,
+    buttonTypes: ButtonTypes = ButtonTypes.MEDIUM,
+    content: @Composable () -> Unit,
+    onClick: () -> Unit
+) {
+    val newModifier = if (borderColor != null) {
+        modifier.border(1.dp, borderColor, shape = ButtonShape)
+    } else {
+        modifier
+    }
+
+    val (finalModifier, paddingValues) = when (buttonTypes) {
+
+        ButtonTypes.EXTRA_SMALL -> {
+            newModifier.height(24.dp) to PaddingValues(vertical = 4.dp, horizontal = 12.dp)
+        }
+
+        ButtonTypes.SMALL -> {
+            newModifier.height(32.dp) to PaddingValues(vertical = 4.dp, horizontal = 12.dp)
+        }
+
+        ButtonTypes.MEDIUM -> {
+            newModifier.height(40.dp) to PaddingValues(vertical = 8.dp, horizontal = 16.dp)
+
+        }
+
+        ButtonTypes.LARGE -> {
+            newModifier.height(48.dp) to PaddingValues(vertical = 12.dp, horizontal = 24.dp)
+        }
+
+        ButtonTypes.EXTRA_LARGE -> {
+            newModifier.height(64.dp) to PaddingValues(vertical = 16.dp, horizontal = 32.dp)
+        }
+    }
+
+    Surface(
+        modifier = finalModifier
+            .semantics { role = Role.Button }
+            .clip(ButtonShape)
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }) {
+                onClick()
+            },
+        color = backgroundColor,
+        shadowElevation = elevation
+    ) {
+        Row(
+            Modifier
+                .padding(paddingValues),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            content()
+        }
     }
 }
 
