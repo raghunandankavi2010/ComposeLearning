@@ -2,6 +2,7 @@ package com.example.composelearning
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -52,6 +53,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -463,8 +465,9 @@ fun TutorialNavGraph(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
+                val context= LocalContext.current
                 CropImage(icon = R.drawable.ic_remove) {
-
+                    Toast.makeText(context,"Icon Clicked",Toast.LENGTH_SHORT).show()
                 }
 //                ButtonSandbox()
 //                CustomRoundedButton(modifier = Modifier.width(200.dp).padding(top = 20.dp), content = {
