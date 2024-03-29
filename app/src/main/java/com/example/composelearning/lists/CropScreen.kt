@@ -174,7 +174,7 @@ fun CropScreen() {
                         selected = selected,
                         cropImage = item.cropImage,
                         onClick = { selected, cropId ->
-                            if (!selectedIds.value.contains(cropId) && selectedIds.value.size > 9) {
+                            if (!selectedIds.value.contains(cropId) && selectedIds.value.size + list.size > 9) {
                                 selectedIds.value.minus(cropId)
                                 Toast.makeText(
                                     context,
