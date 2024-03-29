@@ -59,13 +59,42 @@ fun OverlappingRow(
 
 @Composable
 fun CropImage(
-    icon: Int,
-    onClick: () -> Unit
+    selectedItemCount: Int = 0,
+    isRemoveIconShow: Boolean = false,
+    cropId: Int,
+    selected: Boolean,
+    cropImage: Int,
+    onClick: (Boolean,Int) -> Unit,
+    onRemove: (Int) -> Unit
 ) {
     Box(
-        modifier = Modifier.wrapContentSize()
+        modifier = Modifier
+            .wrapContentSize()
     ) {
         val imageSize = 66.dp
+        val modifier = if (selected || isRemoveIconShow) {
+            Modifier.border(
+                width = 2.dp,
+                color = Color(0xFF03753C),
+                shape = RoundedCornerShape(size = 16.dp)
+
+            )
+        } else {
+            Modifier.border(
+                width = 2.dp,
+                color = Color.Transparent,
+                shape = RoundedCornerShape(size = 16.dp)
+            )
+        }
+
+        val iconModifier = if(isRemoveIconShow) {
+            Modifier
+                .clickable {
+                    onRemove(cropId)
+            }
+        } else {
+            Modifier
+        }
         Image(
             modifier = Modifier
                 .size(imageSize)
@@ -73,34 +102,49 @@ fun CropImage(
                     color = Color(0xFFF5F5F5),
                     shape = RoundedCornerShape(size = 16.dp)
                 )
-                .border(
-                    width = 2.dp,
-                    color = Color(0xFF03753C),
-                    shape = RoundedCornerShape(size = 16.dp)
-                ),
-            painter = painterResource(id = R.drawable.tomato),
+                .clip(RoundedCornerShape(size = 16.dp)) //
+                .then(modifier)
+                .clickable {
+                    onClick(!selected, cropId)
+                },
+            painter = painterResource(id = cropImage),
             contentDescription = "image description",
             contentScale = ContentScale.Crop
         )
         val offSetX = 66.dp.dpToPx() - 24.dp.dpToPx()
 
-        Image(modifier = Modifier
-            .graphicsLayer {
-                translationX = offSetX
-            }
-            .size(24.dp)
-            .clip(CircleShape)
-            .border(
-                width = 2.dp,
-                color = Color.White,
-                shape = CircleShape
+        if(isRemoveIconShow) {
+            Image(modifier = Modifier
+                .graphicsLayer {
+                    translationX = offSetX
+                }
+                .size(24.dp)
+                .clip(CircleShape)
+                .border(
+                    width = 2.dp,
+                    color = Color.White,
+                    shape = CircleShape
+                ).then(iconModifier),
+                painter =  painterResource(R.drawable.ic_remove),
+                contentDescription = stringResource(id = R.string.remove)
             )
-            .clickable {
-               onClick()
-            },
-            painter = painterResource(icon),
-            contentDescription = stringResource(id = R.string.remove)
-        )
+        }
+        else if(selected) {
+            Image(modifier = Modifier
+                .graphicsLayer {
+                    translationX = offSetX
+                }
+                .size(24.dp)
+                .clip(CircleShape)
+                .border(
+                    width = 2.dp,
+                    color = Color.White,
+                    shape = CircleShape
+                ),
+                painter =  painterResource(R.drawable.ic_select),
+                contentDescription = stringResource(id = R.string.selected)
+            )
+        }
     }
 }
 
@@ -109,9 +153,9 @@ fun CropImage(
 private fun BannerPreview() {
     ComposeLearningTheme {
         Surface {
-            CropImage(icon = R.drawable.ic_select) {
-
-            }
+//            CropImage(cropImage = R.drawable.tomato, icon = R.drawable.ic_select, {
+//
+//            }, index, selectedIndex == index)
         }
     }
 }

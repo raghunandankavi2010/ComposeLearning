@@ -67,6 +67,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.composelearning.images.CropImage
+import com.example.composelearning.lists.CropScreen
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -466,9 +467,7 @@ fun TutorialNavGraph(
             ) {
 
                 val context= LocalContext.current
-                CropImage(icon = R.drawable.ic_remove) {
-                    Toast.makeText(context,"Icon Clicked",Toast.LENGTH_SHORT).show()
-                }
+                CropScreen()
 //                ButtonSandbox()
 //                CustomRoundedButton(modifier = Modifier.width(200.dp).padding(top = 20.dp), content = {
 //                    CircularProgressIndicator(
