@@ -59,7 +59,6 @@ fun OverlappingRow(
 
 @Composable
 fun CropImage(
-    selectedItemCount: Int = 0,
     isRemoveIconShow: Boolean = false,
     cropId: Int,
     selected: Boolean,

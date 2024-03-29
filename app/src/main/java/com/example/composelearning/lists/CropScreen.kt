@@ -46,20 +46,21 @@ fun CropScreen() {
             ))
         Spacer(modifier = Modifier.padding(top = 24.dp))
 
-        val list = getDrawablesList()
+        val list by remember { mutableStateOf(getDrawablesList()) }
+
         val mSelectedIds = remember { mutableStateOf(emptySet<Int>()) }
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 66.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            itemsIndexed(list) {  index,item ->
-                val selected = mSelectedIds.value.contains(item.cropId)
+            items(list.size,key = { it }) { index ->
+                val selected = mSelectedIds.value.contains(list[index].cropId)
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     CropImage(
                         isRemoveIconShow = true,
-                        cropId = item.cropId,
+                        cropId = list[index].cropId,
                         selected = selected,
-                        cropImage = item.cropImage,
+                        cropImage = list[index].cropImage,
                         onClick =  { selected, cropId ->
                             mSelectedIds.value = if(selected) {
                                 mSelectedIds.value.plus(cropId)
@@ -107,7 +108,7 @@ fun CropScreen() {
 
         Spacer(modifier = Modifier.padding(top = 32.dp))
 
-        val cropList = getCropList()
+        val cropList by remember { mutableStateOf(getCropList()) }
 
         val selectedIds = remember { mutableStateOf(emptySet<Int>()) }
 
@@ -115,11 +116,10 @@ fun CropScreen() {
             columns = GridCells.Adaptive(minSize = 66.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            itemsIndexed(cropList) {index,item ->
+            itemsIndexed(cropList) {_,item ->
                 val selected = selectedIds.value.contains(item.cropId) // N
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     CropImage(
-                        selectedItemCount = selectedIds.value.size,
                         isRemoveIconShow = false,
                         cropId = item.cropId,
                         selected = selected,
@@ -139,7 +139,7 @@ fun CropScreen() {
                                     selectedIds.value.minus(cropId)
                                 }
                             }
-                        }, onRemove = {  cropId ->
+                        }, onRemove = { cropId ->
 
                         })
                     Spacer(modifier = Modifier.padding(4.dp))
