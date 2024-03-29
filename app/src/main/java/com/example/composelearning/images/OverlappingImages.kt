@@ -59,12 +59,13 @@ fun OverlappingRow(
 
 @Composable
 fun CropImage(
+    currentIndex: Int = -1,
     isRemoveIconShow: Boolean = false,
     cropId: Int,
     selected: Boolean,
     cropImage: Int,
-    onClick: (Boolean,Int) -> Unit,
-    onRemove: (Int) -> Unit
+    onClick: ((Boolean,Int) -> Unit)? = null,
+    onRemove: ((Int, Int) -> Unit)? = null
 ) {
     Box(
         modifier = Modifier
@@ -89,7 +90,8 @@ fun CropImage(
         val iconModifier = if(isRemoveIconShow) {
             Modifier
                 .clickable {
-                    onRemove(cropId)
+                    if(onRemove != null && currentIndex != -1)
+                    onRemove(cropId, currentIndex)
             }
         } else {
             Modifier
@@ -104,6 +106,7 @@ fun CropImage(
                 .clip(RoundedCornerShape(size = 16.dp)) //
                 .then(modifier)
                 .clickable {
+                    if(onClick != null)
                     onClick(!selected, cropId)
                 },
             painter = painterResource(id = cropImage),
