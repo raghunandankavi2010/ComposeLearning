@@ -1,17 +1,23 @@
 package com.example.composelearning.lists
 
 import android.widget.Toast
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -30,71 +36,113 @@ import com.example.composelearning.images.CropImage
 
 
 data class CropHolder(val cropImage: Int, val actionIcon: Int, val cropId: Int)
+
 @Composable
 fun CropScreen() {
-    val context= LocalContext.current
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp)) {
-        Text("My Crops", style = TextStyle(
-            fontSize = 32.sp,
-            lineHeight = 32.sp,
-            fontFamily = FontFamily(Font(R.font.jio_type_black)),
-            fontWeight = FontWeight(900),
-            color = Color(0xFF141414),
+    val context = LocalContext.current
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
 
-            ))
-        Spacer(modifier = Modifier.padding(top = 24.dp))
+        val list = remember { mutableStateListOf<CropHolder>() }
+        LaunchedEffect(Unit) {
+            repeat(3) {
+                val cropHolder = CropHolder(R.drawable.tomato, R.drawable.ic_remove, it)
+                list.add(cropHolder)
+            }
+        }
 
-        val list by remember { mutableStateOf(getDrawablesList()) }
+        val (modifier, textModifier) = if (list.isEmpty()) {
+            Modifier.height(0.dp) to Modifier.padding(top = 48.dp).wrapContentHeight().fillMaxWidth()
+        } else {
+            Modifier.wrapContentHeight() to  Modifier.size(0.dp)
+        }
+        Text(
+            modifier = Modifier
+                .animateContentSize()
+                .then(modifier),
+            text = "My Crops", style = TextStyle(
+                fontSize = 32.sp,
+                lineHeight = 32.sp,
+                fontFamily = FontFamily(Font(R.font.jio_type_black)),
+                fontWeight = FontWeight(900),
+                color = Color(0xFF141414),
+            )
+        )
+        Spacer(
+            modifier = Modifier
+                .animateContentSize()
+                .then(modifier)
+                .padding(top = 24.dp)
+        )
 
         val mSelectedIds = remember { mutableStateOf(emptySet<Int>()) }
         LazyVerticalGrid(
+            modifier = Modifier
+                .animateContentSize()
+                .then(modifier),
             columns = GridCells.Adaptive(minSize = 66.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            items(list.size,key = { it }) { index ->
-                val selected = mSelectedIds.value.contains(list[index].cropId)
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            itemsIndexed(list) { index, item ->
+                val selected = mSelectedIds.value.contains(item.cropId)
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     CropImage(
+                        currentIndex = index,
                         isRemoveIconShow = true,
-                        cropId = list[index].cropId,
+                        cropId = item.cropId,
                         selected = selected,
-                        cropImage = list[index].cropImage,
-                        onClick =  { selected, cropId ->
-                            mSelectedIds.value = if(selected) {
-                                mSelectedIds.value.plus(cropId)
-                            } else {
-                                mSelectedIds.value.minus(cropId)
+                        cropImage = item.cropImage,
+                        onClick = null,
+                        onRemove = { cropId, index ->
+                            if (list.isNotEmpty()) {
+                                Toast.makeText(
+                                    context,
+                                    "Item Deleted at $index",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                list.removeAt(index)
                             }
-                        }, onRemove = { cropId ->
-                            mSelectedIds.value = mSelectedIds.value.minus(cropId)
-
                         })
                     Spacer(modifier = Modifier.padding(4.dp))
-                    Text(text = "Tomato",style = TextStyle(
-                        fontSize = 12.sp,
-                        lineHeight = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.jio_type_black)),
-                        fontWeight = FontWeight(700),
-                        color = Color(0xFF03753C),
-                        textAlign = TextAlign.Center,
-                    )
-                    )
-                    Spacer(modifier = Modifier.padding(4.dp))
-                    Text(text = "Tomato",style = TextStyle(
-                        fontSize = 12.sp,
-                        lineHeight = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.jio_type_black)),
-                        fontWeight = FontWeight(700),
-                        color = Color(0xFF03753C),
-                        textAlign = TextAlign.Center,
-                    )
+                    Text(
+                        text = "Tomato", style = TextStyle(
+                            fontSize = 12.sp,
+                            lineHeight = 16.sp,
+                            fontFamily = FontFamily(Font(R.font.jio_type_black)),
+                            fontWeight = FontWeight(700),
+                            color = Color(0xFF03753C),
+                            textAlign = TextAlign.Center,
+                        )
                     )
                 }
             }
         }
-        Spacer(modifier = Modifier.padding(top = 24.dp))
+
+
+        Text(
+            modifier = textModifier
+                .animateContentSize(),
+            text = "Select your crop.",
+            style = TextStyle(
+                fontSize = 32.sp,
+                lineHeight = 32.sp,
+                fontFamily = FontFamily(Font(R.font.jio_type_black)),
+                fontWeight = FontWeight(900),
+                color = Color(0xFF141414),
+                textAlign = TextAlign.Start
+                )
+        )
+
+        val topPadding = if (list.isEmpty()) {
+            16.dp
+        } else {
+            24.dp
+        }
+        Spacer(modifier = Modifier.padding(top = topPadding))
         Text(
             text = "Select up to 10 crops you are interested in.",
             style = TextStyle(
@@ -103,7 +151,7 @@ fun CropScreen() {
                 fontFamily = FontFamily(Font(R.font.jio_type_black)),
                 fontWeight = FontWeight(500),
                 color = Color(0xA6000000),
-                )
+            )
         )
 
         Spacer(modifier = Modifier.padding(top = 32.dp))
@@ -115,8 +163,9 @@ fun CropScreen() {
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 66.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-            itemsIndexed(cropList) {_,item ->
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            itemsIndexed(cropList) { _, item ->
                 val selected = selectedIds.value.contains(item.cropId) // N
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     CropImage(
@@ -124,8 +173,8 @@ fun CropScreen() {
                         cropId = item.cropId,
                         selected = selected,
                         cropImage = item.cropImage,
-                        onClick =  { selected, cropId ->
-                            if(!selectedIds.value.contains(cropId) && selectedIds.value.size > 9) {
+                        onClick = { selected, cropId ->
+                            if (!selectedIds.value.contains(cropId) && selectedIds.value.size > 9) {
                                 selectedIds.value.minus(cropId)
                                 Toast.makeText(
                                     context,
@@ -139,18 +188,18 @@ fun CropScreen() {
                                     selectedIds.value.minus(cropId)
                                 }
                             }
-                        }, onRemove = { cropId ->
-
-                        })
-                    Spacer(modifier = Modifier.padding(4.dp))
-                    Text(text = "Tomato",style = TextStyle(
-                        fontSize = 12.sp,
-                        lineHeight = 16.sp,
-                        fontFamily = FontFamily(Font(R.font.jio_type_black)),
-                        fontWeight = FontWeight(700),
-                        color = Color(0xFF03753C),
-                        textAlign = TextAlign.Center,
+                        }, onRemove = null
                     )
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Text(
+                        text = "Tomato", style = TextStyle(
+                            fontSize = 12.sp,
+                            lineHeight = 16.sp,
+                            fontFamily = FontFamily(Font(R.font.jio_type_black)),
+                            fontWeight = FontWeight(700),
+                            color = Color(0xFF03753C),
+                            textAlign = TextAlign.Center,
+                        )
                     )
                 }
             }
@@ -159,10 +208,10 @@ fun CropScreen() {
 }
 
 
-fun getDrawablesList(): List<CropHolder> {
+fun getDrawablesList(): MutableList<CropHolder> {
     val list = mutableListOf<CropHolder>()
     repeat(3) {
-        val cropHolder = CropHolder(R.drawable.tomato, R.drawable.ic_remove,it)
+        val cropHolder = CropHolder(R.drawable.tomato, R.drawable.ic_remove, it)
         list.add(cropHolder)
     }
     return list
