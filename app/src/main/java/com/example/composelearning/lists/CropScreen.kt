@@ -1,6 +1,5 @@
 package com.example.composelearning.lists
 
-import android.widget.Button
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
@@ -15,19 +14,16 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,14 +41,19 @@ import androidx.compose.ui.unit.sp
 import com.example.composelearning.R
 import com.example.composelearning.images.CropImage
 import androidx.compose.material3.Button
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.MutableState
+import com.example.composelearning.images.ImageWithAction
 
 
 data class CropHolder(val cropImage: Int, val actionIcon: Int, val cropId: Int)
 
-@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF, widthDp = 300)
 @Composable
-fun CropScreen() {
+fun CropScreen(cropList: List<CropHolder>,
+               selectedIds: MutableState<Set<Int>>,
+               onClick: ((Boolean, Int) -> Unit)? = null,
+               onRemove: ((Int, Int) -> Unit)? = null
+
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -103,9 +104,10 @@ fun CropScreen() {
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             itemsIndexed(list) { index, item ->
+
                 val selected = mSelectedIds.value.contains(item.cropId)
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    CropImage(
+                    ImageWithAction(
                         currentIndex = index,
                         isRemoveIconShow = true,
                         cropId = item.cropId,
@@ -176,43 +178,28 @@ fun CropScreen() {
                 .weight(1f)
         ) {
 
-            val cropList by remember { mutableStateOf(getCropList()) }
 
-            val selectedIds = remember { mutableStateOf(emptySet<Int>()) }
 
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(minSize = 66.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                itemsIndexed(cropList) { _, item ->
-                    val selected = selectedIds.value.contains(item.cropId) // N
+
+                itemsIndexed(cropList, key = { index, _ -> cropList[index].cropId }) { index, item ->
+
+                    val selected = selectedIds.value.contains(item.cropId)
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         CropImage(
                             isRemoveIconShow = false,
                             cropId = item.cropId,
                             selected = selected,
                             cropImage = item.cropImage,
-                            onClick = { selected, cropId ->
-                                if (!selectedIds.value.contains(cropId) && selectedIds.value.size + list.size > 9) {
-                                    selectedIds.value.minus(cropId)
-                                    Toast.makeText(
-                                        context,
-                                        "Cannot select more than 10 crops",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                } else {
-                                    selectedIds.value = if (selected) {
-                                        selectedIds.value.plus(cropId)
-                                    } else {
-                                        selectedIds.value.minus(cropId)
-                                    }
-                                }
-                            }, onRemove = null
+                            onClick = onClick, onRemove = onRemove
                         )
                         Spacer(modifier = Modifier.padding(4.dp))
                         Text(
-                            text = "Tomato", style = TextStyle(
+                            text = "Crop $index", style = TextStyle(
                                 fontSize = 12.sp,
                                 lineHeight = 16.sp,
                                 fontFamily = FontFamily(Font(R.font.jio_type_black)),
@@ -249,7 +236,6 @@ fun CropScreen() {
                         fontFamily = FontFamily(Font(R.font.jio_type_medium)),
                         fontWeight = FontWeight(700),
                         color = Color(0xFFFFFFFF),
-
                         )
                 )
             }
@@ -261,9 +247,12 @@ fun CropScreen() {
 
 fun getCropList(): List<CropHolder> {
     val list = mutableListOf<CropHolder>()
-    repeat(20) {
+    repeat(8) {
         val cropHolder = CropHolder(R.drawable.tomato, R.drawable.ic_select, it)
         list.add(cropHolder)
     }
     return list
 }
+
+// Data class to hold crop item and its selection state
+data class CropItemState(val cropId: Int, var selected: Boolean)
