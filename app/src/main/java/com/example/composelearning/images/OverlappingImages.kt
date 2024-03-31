@@ -6,21 +6,34 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.clipPath
+import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.MeasurePolicy
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.composelearning.R
@@ -64,7 +77,7 @@ fun CropImage(
     cropId: Int,
     selected: Boolean,
     cropImage: Int,
-    onClick: ((Boolean,Int) -> Unit)? = null,
+    onClick: ((Boolean, Int) -> Unit)? = null,
     onRemove: ((Int, Int) -> Unit)? = null
 ) {
     Box(
@@ -87,12 +100,12 @@ fun CropImage(
             )
         }
 
-        val iconModifier = if(isRemoveIconShow) {
+        val iconModifier = if (isRemoveIconShow) {
             Modifier
                 .clickable {
-                    if(onRemove != null && currentIndex != -1)
-                    onRemove(cropId, currentIndex)
-            }
+                    if (onRemove != null && currentIndex != -1)
+                        onRemove(cropId, currentIndex)
+                }
         } else {
             Modifier
         }
@@ -106,36 +119,32 @@ fun CropImage(
                 .clip(RoundedCornerShape(size = 16.dp)) //
                 .then(modifier)
                 .clickable {
-                    if(onClick != null)
-                    onClick(!selected, cropId)
+                    if (onClick != null)
+                        onClick(!selected, cropId)
                 },
             painter = painterResource(id = cropImage),
             contentDescription = "image description",
             contentScale = ContentScale.Crop
         )
-        val offSetX = 66.dp.dpToPx() - 24.dp.dpToPx()
+      //  val offSetX = 66.dp.dpToPx() - 24.dp.dpToPx()
 
-        if(isRemoveIconShow) {
+        if (isRemoveIconShow) {
             Image(modifier = Modifier
-                .graphicsLayer {
-                    translationX = offSetX
-                }
+                .align(Alignment.TopEnd)
                 .size(24.dp)
                 .clip(CircleShape)
                 .border(
                     width = 2.dp,
                     color = Color.White,
                     shape = CircleShape
-                ).then(iconModifier),
-                painter =  painterResource(R.drawable.ic_remove),
+                )
+                .then(iconModifier),
+                painter = painterResource(R.drawable.ic_remove),
                 contentDescription = stringResource(id = R.string.remove)
             )
-        }
-        else if(selected) {
+        } else if (selected) {
             Image(modifier = Modifier
-                .graphicsLayer {
-                    translationX = offSetX
-                }
+                .align(Alignment.TopEnd)
                 .size(24.dp)
                 .clip(CircleShape)
                 .border(
@@ -143,7 +152,7 @@ fun CropImage(
                     color = Color.White,
                     shape = CircleShape
                 ),
-                painter =  painterResource(R.drawable.ic_select),
+                painter = painterResource(R.drawable.ic_select),
                 contentDescription = stringResource(id = R.string.selected)
             )
         }
@@ -161,3 +170,4 @@ private fun BannerPreview() {
         }
     }
 }
+
