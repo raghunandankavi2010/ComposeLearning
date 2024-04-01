@@ -247,7 +247,7 @@ fun CropScreen(cropList: List<CropHolder>,
 
 fun getCropList(): List<CropHolder> {
     val list = mutableListOf<CropHolder>()
-    repeat(8) {
+    repeat(36) {
         val cropHolder = CropHolder(R.drawable.tomato, R.drawable.ic_select, it)
         list.add(cropHolder)
     }
