@@ -213,19 +213,13 @@ fun ImageWithAction(
     // When the user taps on the Canvas, you can
     // check if the tap offset is in one of the
     // tracked Rects.
-    val vectorImageBounds = Rect(
-        66.dp.dpToPx() - 24.dp.dpToPx(),
-        0.dp.dpToPx(),
-        66.dp.dpToPx(),
-        24.dp.dpToPx()
-    )
+    val vectorImageBounds = rememberImageBounds()
 
     val borderModifier = if (selectUnselect.value || isRemoveIconShow) {
         Modifier.border(
             width = 2.dp,
             color = Color(0xFF03753C),
             shape = RoundedCornerShape(size = 16.dp)
-
         )
     } else {
         Modifier
@@ -286,10 +280,25 @@ fun ImageWithAction(
             .indication(
                 interactionSource,
                 rememberRipple(color = Color(0xFF00796B))
-            ) // Add indication modifier here
+            )
     )
 }
 
+
+@Composable
+fun rememberImageBounds(): Rect {
+    val offset = 24.dp.dpToPx()
+    val imageSize = 66.dp.dpToPx()
+    val topOffset = 0.dp.dpToPx()
+    return remember {
+        Rect(
+            left = imageSize - offset,
+            top = topOffset,
+            right = imageSize,
+            bottom = offset
+        )
+    }
+}
 
 
 
