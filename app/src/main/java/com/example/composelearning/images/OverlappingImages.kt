@@ -194,13 +194,13 @@ fun ImageWithAction(
     cropId: Int,
     selected: Boolean = false,
     cropImage: Int,
-    onClick: ((Boolean, Int, Int) -> Unit)? = null,
+    onClick: ((Boolean, Int) -> Unit)? = null,
     onRemove: ((Int, Int) -> Unit)? = null
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
     val vector = if (isRemoveIconShow) {
-        ImageVector.vectorResource(id = R.drawable.ic_remove_border,)
+        ImageVector.vectorResource(id = R.drawable.ic_remove_border)
     } else {
         ImageVector.vectorResource(id = R.drawable.ic_select_border)
     }
@@ -208,6 +208,7 @@ fun ImageWithAction(
 
     val context = LocalContext.current
 
+    val selectUnselect = remember { mutableStateOf(false) }
 
     // When the user taps on the Canvas, you can
     // check if the tap offset is in one of the
@@ -219,7 +220,7 @@ fun ImageWithAction(
         24.dp.dpToPx()
     )
 
-    val borderModifier = if (selected || isRemoveIconShow) {
+    val borderModifier = if (selectUnselect.value || isRemoveIconShow) {
         Modifier.border(
             width = 2.dp,
             color = Color(0xFF03753C),
@@ -241,7 +242,7 @@ fun ImageWithAction(
                 // draw the content
                 drawContent()
                 // draw the action icon over the content
-                if (isRemoveIconShow || selected) {
+                if (isRemoveIconShow || selectUnselect.value) {
                     translate(left = size.width - 24.dp.toPx(), top = 0.dp.toPx()) {
                         with(painter) {
                             draw(
@@ -273,10 +274,11 @@ fun ImageWithAction(
                             if (onRemove != null && currentIndex != -1)
                                 onRemove(cropId, currentIndex)
                         } else if (onClick != null) { // crop clicked
+                            selectUnselect.value = !selectUnselect.value
                             Toast
-                                .makeText(context, "$selected", Toast.LENGTH_SHORT)
+                                .makeText(context, "${selectUnselect.value}", Toast.LENGTH_SHORT)
                                 .show()
-                            onClick(!selected, cropId, currentIndex)
+                            onClick(selectUnselect.value, cropId)
                         }
                     }
                 )
