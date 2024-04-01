@@ -190,7 +190,7 @@ fun CropScreen(cropList: List<CropHolder>,
 
                     val selected = selectedIds.value.contains(item.cropId)
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        CropImage(
+                        ImageWithAction(
                             isRemoveIconShow = false,
                             cropId = item.cropId,
                             selected = selected,
