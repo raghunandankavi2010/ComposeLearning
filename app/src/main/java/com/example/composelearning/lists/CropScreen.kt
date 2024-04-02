@@ -48,10 +48,12 @@ import com.example.composelearning.images.ImageWithAction
 data class CropHolder(val cropImage: Int, val actionIcon: Int, val cropId: Int)
 
 @Composable
-fun CropScreen(cropList: List<CropHolder>,
-               selectedIds: MutableState<Set<Int>>,
-               onClick: ((Boolean, Int) -> Unit)? = null,
-               onRemove: ((Int, Int) -> Unit)? = null
+fun CropScreen(
+    list: List<CropHolder>,
+    cropList: List<CropHolder>,
+    selectedIds: MutableState<Set<Int>>,
+    onClick: ((Boolean, Int) -> Unit)? = null,
+    onRemove: ((Int, Int) -> Unit)? = null
 
 ) {
     Column(
@@ -60,14 +62,7 @@ fun CropScreen(cropList: List<CropHolder>,
             .fillMaxHeight()
             .padding(16.dp)
     ) {
-        val context = LocalContext.current
-        val list = remember { mutableStateListOf<CropHolder>() }
-        LaunchedEffect(Unit) {
-            repeat(3) {
-                val cropHolder = CropHolder(R.drawable.tomato, R.drawable.ic_remove, it)
-                list.add(cropHolder)
-            }
-        }
+
 
         val (modifier, textModifier) = if (list.isEmpty()) {
             Modifier.height(0.dp) to Modifier
@@ -114,16 +109,8 @@ fun CropScreen(cropList: List<CropHolder>,
                         selected = selected,
                         cropImage = item.cropImage,
                         onClick = null,
-                        onRemove = { cropId, index ->
-                            if (list.isNotEmpty()) {
-                                Toast.makeText(
-                                    context,
-                                    "Item Deleted at $index",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                list.removeAt(index)
-                            }
-                        })
+                        onRemove = onRemove
+                    )
                     Spacer(modifier = Modifier.padding(4.dp))
                     Text(
                         text = "Tomato", style = TextStyle(
@@ -179,14 +166,15 @@ fun CropScreen(cropList: List<CropHolder>,
         ) {
 
 
-
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(minSize = 66.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
 
-                itemsIndexed(cropList, key = { index, _ -> cropList[index].cropId }) { index, item ->
+                itemsIndexed(
+                    cropList,
+                    key = { index, _ -> cropList[index].cropId }) { index, item ->
 
                     val selected = selectedIds.value.contains(item.cropId)
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -195,7 +183,8 @@ fun CropScreen(cropList: List<CropHolder>,
                             cropId = item.cropId,
                             selected = selected,
                             cropImage = item.cropImage,
-                            onClick = onClick, onRemove = onRemove
+                            onClick = onClick,
+                            onRemove = null
                         )
                         Spacer(modifier = Modifier.padding(4.dp))
                         Text(
@@ -227,7 +216,6 @@ fun CropScreen(cropList: List<CropHolder>,
                 onClick = {
 
                 }) {
-
                 Text(
                     text = "Save",
                     style = TextStyle(
@@ -236,7 +224,7 @@ fun CropScreen(cropList: List<CropHolder>,
                         fontFamily = FontFamily(Font(R.font.jio_type_medium)),
                         fontWeight = FontWeight(700),
                         color = Color(0xFFFFFFFF),
-                        )
+                    )
                 )
             }
 
