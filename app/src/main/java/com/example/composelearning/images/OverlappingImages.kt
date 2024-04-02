@@ -215,7 +215,7 @@ fun ImageWithAction(
     // tracked Rects.
     val vectorImageBounds = rememberImageBounds()
 
-    val borderModifier = if (selectUnselect.value || isRemoveIconShow) {
+    val borderModifier = if (selected|| isRemoveIconShow) {
         Modifier.border(
             width = 2.dp,
             color = Color(0xFF03753C),
@@ -236,7 +236,7 @@ fun ImageWithAction(
                 // draw the content
                 drawContent()
                 // draw the action icon over the content
-                if (isRemoveIconShow || selectUnselect.value) {
+                if (isRemoveIconShow || selected) {
                     translate(left = size.width - 24.dp.toPx(), top = 0.dp.toPx()) {
                         with(painter) {
                             draw(
@@ -267,11 +267,8 @@ fun ImageWithAction(
                                 .show()
                             if (onRemove != null && currentIndex != -1)
                                 onRemove(cropId, currentIndex)
-                        } else if (onClick != null) { // crop clicked
+                        } else if (onClick != null ) { // crop clicked
                             selectUnselect.value = !selectUnselect.value
-                            Toast
-                                .makeText(context, "${selectUnselect.value}", Toast.LENGTH_SHORT)
-                                .show()
                             onClick(selectUnselect.value, cropId)
                         }
                     }
