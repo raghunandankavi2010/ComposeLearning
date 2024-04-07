@@ -24,7 +24,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -65,6 +65,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -78,7 +79,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.layout.positionInParent
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
@@ -967,7 +970,7 @@ fun CircleRowWithTextAndImagePreview() {
 }
 
 @Composable
-fun BoxAnim2(clicked :(Boolean) -> Unit) {
+fun BoxAnim2(clicked: (Boolean) -> Unit) {
     var middleBoxVisible by remember { mutableStateOf(true) }
 
     var middleBoxText by remember { mutableStateOf("Hello, World! Raghunandan") } // Initial text
@@ -1005,7 +1008,7 @@ fun BoxAnim2(clicked :(Boolean) -> Unit) {
 
                 AnimatedVisibility(
                     visible = middleBoxVisible,
-                    enter =  expandHorizontally(),
+                    enter = expandHorizontally(),
                     exit = shrinkHorizontally()
                 ) {
                     Box(
@@ -1015,7 +1018,7 @@ fun BoxAnim2(clicked :(Boolean) -> Unit) {
                             .background(Color.Green)
                     ) {
                         Text(
-                            maxLines =  1,
+                            maxLines = 1,
                             text = middleBoxText,
                             modifier = Modifier.padding(8.dp)
                         )
@@ -1041,3 +1044,58 @@ fun BoxAnim2(clicked :(Boolean) -> Unit) {
     }
 
 }
+
+@Composable
+fun SOBlur() {
+
+    var parent: Offset by remember { mutableStateOf(Offset.Zero) }
+    var positionText by remember { mutableStateOf("") }
+    var blur by remember { mutableStateOf(0.dp) }
+
+    Box(
+        Modifier
+            .fillMaxSize()
+    ) {
+        Column(modifier = Modifier.fillMaxSize().blur(blur).clickable {
+            if (blur > 0.dp) {
+                blur = 0.dp
+            } else {
+                blur = 4.dp
+            }
+        }) {
+
+
+            Text(text = "Hi")
+            Text(text = "Hi")
+            Text(text = "Hi")
+            Text(text = "Hi")
+            Text(text = "Bye", modifier = Modifier.onGloballyPositioned {
+                parent = Offset(
+                    it.positionInParent().x,
+                    it.positionInParent().y
+                )
+                positionText =
+                    "positionInParent: $parent"
+            })
+            Text(text = "Hi")
+            Text(text = "Hi")
+            Text(text = "Hi")
+            Text(text = "Hi")
+
+            Text(text = positionText)
+        }
+            Box(Modifier.offset(x = parent.x.pxToDp(), y = parent.y.pxToDp())) {
+                Text(
+                    modifier = Modifier,
+                    text = "Byeeeeeee",
+                    color = Color.Green
+                )
+
+            }
+    }
+}
+
+@Composable
+fun Float.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
+
+
