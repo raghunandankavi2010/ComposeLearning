@@ -21,20 +21,20 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 
 @Composable
-fun DummyList(viewModel: ListViewModel,updateItem: (DummyItem) -> Unit) {
+fun DummyList(viewModel: ListViewModel, updateItem: (DummyItem) -> Unit) {
     val dummyItems = viewModel.getDummyItems().collectAsLazyPagingItems()
 
     Column {
         LazyColumn {
             items(dummyItems.itemCount) { index ->
-                val dummyItem  = dummyItems[index]
-                if(dummyItem != null)
-                Text(dummyItem.content, modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .clickable {
-                      updateItem(dummyItem)
-                    })
+                val dummyItem = dummyItems[index]
+                if (dummyItem != null)
+                    Text(dummyItem.content, modifier = Modifier
+                        .fillMaxWidth()
+                        .height(80.dp)
+                        .clickable {
+                            updateItem(dummyItem)
+                        })
             }
         }
     }
@@ -60,11 +60,12 @@ class ListViewModel : ViewModel() {
         }
         modificationEvents.value = emptyList()
         val newResult: Flow<PagingData<DummyItem>> =
-            getDummyUseCase.invoke().cachedIn(viewModelScope).combine(modificationEvents) { pagingData, modifications ->
-                modifications.fold(pagingData) { acc, event ->
-                    applyEvents(acc, event)
+            getDummyUseCase.invoke().cachedIn(viewModelScope)
+                .combine(modificationEvents) { pagingData, modifications ->
+                    modifications.fold(pagingData) { acc, event ->
+                        applyEvents(acc, event)
+                    }
                 }
-            }
         currentPestAndDiseaseRiskList = newResult
         return newResult
     }
@@ -73,7 +74,10 @@ class ListViewModel : ViewModel() {
         modificationEvents.value += uiActions
     }
 
-    private fun applyEvents(paging: PagingData<DummyItem>, uiActions: UIActions): PagingData<DummyItem> {
+    private fun applyEvents(
+        paging: PagingData<DummyItem>,
+        uiActions: UIActions
+    ): PagingData<DummyItem> {
         return when (uiActions) {
             is UIActions.Update -> {
                 paging
@@ -89,7 +93,7 @@ class ListViewModel : ViewModel() {
 class GetDummyUseCase {
     operator fun invoke(): Flow<PagingData<DummyItem>> {
         return flow {
-           emit( PagingData.from(createDummyItems()))
+            emit(PagingData.from(createDummyItems()))
         }
     }
 
