@@ -2,6 +2,7 @@ package com.example.composelearning
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -43,6 +44,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -52,6 +54,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -64,7 +67,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.composelearning.sotry.SOBlur
+import com.example.composelearning.lists.CropHolder
+import com.example.composelearning.lists.CropScreen
+import com.example.composelearning.lists.DummyList
+import com.example.composelearning.lists.ListViewModel
+import com.example.composelearning.lists.UIActions
+import com.example.composelearning.lists.getCropList
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -465,7 +473,11 @@ fun TutorialNavGraph(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
-                SOBlur()
+                val listViewModel: ListViewModel = viewModel()
+
+                DummyList(listViewModel) {
+                    listViewModel.updateItems(UIActions.Update(it))
+                }
 
 //                val context = LocalContext.current
 //                val list = remember { mutableStateListOf<CropHolder>() }
