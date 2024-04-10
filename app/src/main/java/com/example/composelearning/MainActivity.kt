@@ -73,6 +73,7 @@ import com.example.composelearning.lists.DummyList
 import com.example.composelearning.lists.ListViewModel
 import com.example.composelearning.lists.UIActions
 import com.example.composelearning.lists.getCropList
+import com.example.composelearning.speedometer.Speedometer
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
