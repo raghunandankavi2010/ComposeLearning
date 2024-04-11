@@ -465,7 +465,7 @@ fun TutorialNavGraph(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
-                Speedometer3(75)
+                Speedometer3(0)
                 //ProgressMeter()
                 //GeneralAlertsList()
 
