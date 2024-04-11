@@ -12,6 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
@@ -22,9 +23,17 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.res.ResourcesCompat
 import com.example.composelearning.LogCompositions
 import com.example.composelearning.R
 import kotlinx.coroutines.launch
@@ -198,6 +207,14 @@ fun Speedometer3(
         Animatable(startAngleRadians.toFloat())
     }
 
+    val context = LocalContext.current
+
+    val fontFamily = remember {
+        FontFamily(
+            typeface = ResourcesCompat.getFont(context, R.font.jio_type_medium)!!
+        )
+    }
+
     LaunchedEffect(progress) {
         launch {
             pointerAnimation.animateTo(
@@ -213,6 +230,8 @@ fun Speedometer3(
 
     val vector = ImageVector.vectorResource(id = R.drawable.pointer_black)
     val painter = rememberVectorPainter(image = vector)
+
+    val textMeasurer = rememberTextMeasurer()
 
     Canvas(
         modifier = Modifier
@@ -305,14 +324,32 @@ fun Speedometer3(
                 // draw markers
                 while (angleStart <= angleEnd) {
                     markerAngleRadians = angleStart * (PI / 180f)
-                    val x1 = (r + 40f) * cos(markerAngleRadians) + w / 2
-                    val y1 = (r  + 40f) * sin(markerAngleRadians) + h / 2
-                    val x2 = (r + 60f) * cos(markerAngleRadians) + w / 2
-                    val y2 = (r + 60f) * sin(markerAngleRadians) + h / 2
-                    val tx = (r + 80f) * cos(markerAngleRadians) + w / 2
-                    val ty = (r + 80f) * sin(markerAngleRadians) + h / 2
+                    val x1 = (r + 60f) * cos(markerAngleRadians) + w / 2
+                    val y1 = (r  + 60f) * sin(markerAngleRadians) + h / 2
+                    val x2 = (r + 80f) * cos(markerAngleRadians) + w / 2
+                    val y2 = (r + 80f) * sin(markerAngleRadians) + h / 2
+                    val tx = (r + 100f) * cos(markerAngleRadians) + w / 2
+                    val ty = (r + 100f) * sin(markerAngleRadians) + h / 2
 
-                    //rotate(progressAnimation.value * (arcDegrees) / 100f , pivot = Offset(centerOffset.x,centerOffset.y)) {
+
+                   val rotationAngle = if(textValue == 0 || textValue == 180 || textValue == 90) {
+                         0f
+                    } else {
+                        -45f
+                   }
+
+//                    rotate(rotationAngle , pivot = Offset(tx.toFloat(),ty.toFloat())) {
+//                        //translate(left = tx.toFloat() / 2, top = ty.toFloat() / 2) {
+//                            drawText(
+//                                textMeasurer,
+//                                text = "$textValue",
+//                                topLeft = Offset(tx.toFloat()  , ty.toFloat()),
+//                                style = TextStyle(fontSize = 16.sp, fontFamily = fontFamily)
+//                            )
+//                        }
+//                   // }
+
+                    //rotate(rotationAngle , pivot = Offset(tx.toFloat(),ty.toFloat())) {
                         drawContext.canvas.nativeCanvas.apply {
                             drawText(
                                 "$textValue",
@@ -325,13 +362,13 @@ fun Speedometer3(
                                 }
                             )
                         }
-                  //  }
+                  // }
                     textValue += 45
-//                    drawLine(Color.Black,
-//                        Offset(x1.toFloat(), y1.toFloat()),
-//                        Offset(x2.toFloat(), y2.toFloat()),
-//                        5f,
-//                        StrokeCap.Square)
+                    drawLine(Color.Black,
+                        Offset(x1.toFloat(), y1.toFloat()),
+                        Offset(x2.toFloat(), y2.toFloat()),
+                        5f,
+                        StrokeCap.Square)
 
                     angleStart += 45
                 }
@@ -340,6 +377,12 @@ fun Speedometer3(
     )
 }
 
+@Composable
+fun measureTextWidth(text: String, style: TextStyle): Dp {
+    val textMeasurer = rememberTextMeasurer()
+    val widthInPixels = textMeasurer.measure(text, style).size.width
+    return with(LocalDensity.current) { widthInPixels.toDp() }
+}
 
 
 
