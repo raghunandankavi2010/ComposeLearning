@@ -12,8 +12,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
@@ -29,8 +31,10 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import com.example.composelearning.LogCompositions
 import com.example.composelearning.R
+import com.example.composelearning.graphics.addRoundedPolarBox
 import kotlinx.coroutines.launch
 import kotlin.math.PI
+import kotlin.math.asin
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -221,7 +225,9 @@ fun Speedometer3(
             )
         }
     }
-
+    val innerRadius = 120.dp
+    val outerRadius = innerRadius * 1.25f
+    val cornerRadius = (outerRadius - innerRadius) / 3
 
     val vector = ImageVector.vectorResource(id = R.drawable.pointer_black)
     val painter = rememberVectorPainter(image = vector)
@@ -248,16 +254,26 @@ fun Speedometer3(
                     style = Stroke(80f, 0f, StrokeCap.Round)
                 )
 
-
-                drawArc(
-                    Color.Red,
-                    startArcAngle,
-                    25 * (arcDegrees) / 100f,
-                    false,
-                    topLeft = quarterOffset,
-                    size = centerArcSize,
-                    style = Stroke(80f, 0f, StrokeCap.Round)
+                val path = Path()
+                path.addRoundedPolarBox(
+                    center = centerOffset,
+                    startAngleDegrees = startArcAngle,
+                    sweepAngleDegrees = 25 * (arcDegrees)/ 100f,
+                    innerRadius = innerRadius.toPx(),
+                    outerRadius = outerRadius.toPx(),
+                    cornerRadius = cornerRadius.toPx(),
                 )
+
+                drawPath(path, Color.Red)
+//                drawArc(
+//                    Color.Red,
+//                    startArcAngle,
+//                    25 * (arcDegrees) / 100f,
+//                    false,
+//                    topLeft = quarterOffset,
+//                    size = centerArcSize,
+//                    style = Stroke(80f, 0f, StrokeCap.Round)
+//                )
 
 
                 drawArc(
@@ -371,6 +387,7 @@ fun Speedometer3(
         }
     )
 }
+
 
 
 

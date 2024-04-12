@@ -64,6 +64,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.composelearning.graphics.Example
 import com.example.composelearning.speedometer.Speedometer3
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
@@ -465,7 +466,8 @@ fun TutorialNavGraph(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
-                Speedometer3(0)
+                Example()
+                Speedometer3(75)
                 //ProgressMeter()
                 //GeneralAlertsList()
 
