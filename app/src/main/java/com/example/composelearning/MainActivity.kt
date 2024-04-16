@@ -55,16 +55,22 @@ import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.composelearning.graphics.Example
+import com.example.composelearning.graphics.PieChartPreview
+import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
@@ -466,8 +472,81 @@ fun TutorialNavGraph(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
-                Example()
-                Speedometer3(75)
+                //Speedometer3(modifier= Modifier.fillMaxWidth(),55)
+
+                Column {
+                    Row(
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Legend(Color(0xFFE30513), "Danger", alpha = true)
+
+                        Legend(Color(0xFFF7AB20), "Stress", alpha = false)
+
+                        Legend(Color(0xFF25AB21), "Optimum", alpha = true)
+                    }
+                    Speedometer3(modifier = Modifier.padding(top = 25.dp), 50)
+
+                    Row(
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(top = 16.dp)
+                            .height(32.dp)
+                    ) {
+
+                        Text(
+                            modifier = Modifier,
+                            text = "68.1",
+                            style = TextStyle(
+                                fontSize = 32.sp,
+                                lineHeight = 32.sp,
+                                fontFamily = FontFamily(Font(R.font.jio_type_black)),
+                                fontWeight = FontWeight(900),
+                                color = Color(0xFF141414),
+
+                                )
+                        )
+                        Box(modifier = Modifier
+                            .align(Alignment.Bottom)
+                            .width(18.dp)
+                            .height(24.dp)
+                            .padding(start = 2.dp, end = 1.dp)) {
+                            Text(
+                                modifier = Modifier.padding(top = 3.dp),
+                                text = "%",
+                                style = TextStyle(
+                                    fontSize = 18.sp,
+                                    lineHeight = 24.sp,
+                                    fontFamily = FontFamily(Font(R.font.jio_type_light)),
+                                    fontWeight = FontWeight(700),
+                                    color = Color(0xFF141414),
+                                    textAlign = TextAlign.Center
+                                )
+                            )
+                        }
+                    }
+
+                    Text(
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .align(Alignment.CenterHorizontally),
+                        text = "Soil moisture (vwc%)",
+                        style = TextStyle(
+                            fontSize = 14.sp,
+                            lineHeight = 20.sp,
+                            fontFamily = FontFamily(Font(R.font.jio_type_medium)),
+                            fontWeight = FontWeight(500),
+                            color = Color(0xA6000000),
+
+                            textAlign = TextAlign.Center,
+                        )
+                    )
+                    PieChartPreview() { data, index ->
+
+                    }
+
+                }
+
                 //ProgressMeter()
                 //GeneralAlertsList()
 
@@ -1004,3 +1083,79 @@ fun TutorialNavGraph(
          )
      }
  }*/
+
+@Preview( showBackground = true)
+@Composable
+fun Telegu() {
+
+    Text(
+        modifier = Modifier,
+        text = "స్ప్రే చేశారా?",
+        style = TextStyle(
+            fontSize = 32.sp,
+            lineHeight = 32.sp,
+            fontFamily = FontFamily(Font(R.font.jio_type_black)),
+            fontWeight = FontWeight(900),
+            color = Color(0xFF141414),
+
+            )
+    )
+}
+@Preview(widthDp = 360, showBackground = true)
+@Composable
+fun PreviewScreen() {
+
+    Column {
+        Row(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Legend(Color(0xFFE30513), "Danger", alpha = true)
+
+            Legend(Color(0xFFF7AB20), "Stress", alpha = false)
+
+            Legend(Color(0xFF25AB21), "Optimum", alpha = true)
+        }
+        Speedometer3(modifier = Modifier.padding(top = 25.dp), 50)
+
+        Row(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 16.dp)
+                .height(32.dp)
+        ) {
+
+            Text(
+                modifier = Modifier,
+                text = "68.1",
+                style = TextStyle(
+                    fontSize = 32.sp,
+                    lineHeight = 32.sp,
+                    fontFamily = FontFamily(Font(R.font.jio_type_black)),
+                    fontWeight = FontWeight(900),
+                    color = Color(0xFF141414),
+
+                    )
+            )
+            Box(modifier = Modifier
+                .align(Alignment.Bottom)
+                .width(18.dp)
+                .height(24.dp)
+                .padding(start = 2.dp, end = 1.dp)) {
+                Text(
+                    modifier = Modifier.padding(top = 3.dp),
+                    text = "%",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        lineHeight = 24.sp,
+                        fontFamily = FontFamily(Font(R.font.jio_type_light)),
+                        fontWeight = FontWeight(700),
+                        color = Color(0xFF141414),
+                        textAlign = TextAlign.Center
+                    )
+                )
+            }
+        }
+    }
+
+}
