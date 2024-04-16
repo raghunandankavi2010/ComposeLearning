@@ -26,19 +26,29 @@ fun DummyList(viewModel: ListViewModel, updateItem: (DummyItem) -> Unit) {
 
     Column {
         LazyColumn {
-            items(dummyItems.itemCount) { index ->
-                val dummyItem = dummyItems[index]
-                if (dummyItem != null)
-                    Text(dummyItem.content, modifier = Modifier
-                        .fillMaxWidth()
-                        .height(80.dp)
-                        .clickable {
-                            updateItem(dummyItem)
-                        })
+            items(count = dummyItems.itemCount,key = { index -> dummyItems[index]?.id ?: 0 }) {
+                 index ->
+                    val dummyItem = dummyItems[index]
+                    if (dummyItem != null) {
+                        Text(dummyItem.content, modifier = Modifier
+                            .fillMaxWidth()
+                            .height(80.dp)
+                            .clickable {
+                                updateItem(dummyItem)
+                            })
+                        Text(dummyItem.content, modifier = Modifier
+                            .fillMaxWidth()
+                            .height(80.dp)
+                            .clickable {
+                                updateItem(dummyItem)
+                            })
+
+                    }
+                }
             }
         }
     }
-}
+
 
 data class DummyItem(val id: Int, val content: String)
 

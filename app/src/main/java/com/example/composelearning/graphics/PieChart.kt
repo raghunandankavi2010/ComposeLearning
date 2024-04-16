@@ -69,19 +69,21 @@ fun PieChartPreview(
     ) {
         val data = remember {
             listOf(
-                ChartData(Color.Green, 10f, "Seeds", "4000"),
-                ChartData(Color.Red, 20f, "Labour", "10000"),
-                ChartData(Color.Cyan, 15f, "Fertilizer", "6000"),
-                ChartData(Color.Blue, 5f, "Tractor", "1000"),
-                ChartData(Color.Yellow, 35f, "Weeding", "20000"),
-                ChartData(Color.Magenta, 15f, "Sowing", "6000")
+                ChartData(Color.Green, 9f),
+                ChartData(Color.Red, 15f),
+                ChartData(Color.Cyan, 35f),
+                ChartData(Color.Blue, 6f),
+                ChartData(Color.Yellow, 4f),
+                ChartData(Color.Magenta, 5f),
+                        ChartData(Color.Gray, 1f),
+            ChartData(Color.LightGray, 35f)
             )
         }
 
         PieChart(
             modifier = Modifier
                 .padding(top = 100.dp)
-                .size(140.dp)
+                .size(300.dp)
                 .align(Alignment.CenterHorizontally),
             data = data,
             outerRingPercent = 35,
@@ -135,26 +137,61 @@ fun PieChart(
         }.toFloat()
 
         val coEfficient = 360f / sum
+
+// Calculate the total sum of data points less than 8.
+        val smallDataSum = data.filter { it.data < 8 }.sumOf { it.data.toDouble() }.toFloat()
+
+// Calculate the remaining sum for large data points (8 or more).
+        val largeDataSum = sum - smallDataSum
+
+// Distribute the remaining angle equally among small data points.
+        val smallDataAngle = 20f * data.count { it.data < 8 }
+        val smallDataCoefficient = smallDataAngle / smallDataSum
+
         var currentAngle = 0f
         val currentSweepAngle = animatableInitialSweepAngle.value
 
         val chartDataList = remember(data) {
             data.map {
-
                 val chartData = it.data
-                val range = currentAngle..currentAngle + chartData * coEfficient
-                currentAngle += chartData * coEfficient
+                val range = if (chartData < 8) {
+                    currentAngle..currentAngle + 20f
+                } else {
+                    currentAngle..currentAngle + chartData * coEfficient
+                }
+                currentAngle += if (chartData < 8) {
+                    chartData * smallDataCoefficient
+                } else {
+                    chartData * coEfficient
+                }
 
                 AnimatedChartData(
                     color = it.color,
                     data = it.data,
                     selected = false,
-                    range = range,
-                    type = it.type,
-                    expense = it.expense
+                    range = range
                 )
             }
         }
+
+//        var currentAngle = 0f
+//        val currentSweepAngle = animatableInitialSweepAngle.value
+//
+//        val chartDataList = remember(data) {
+//            data.map {
+//
+//                val chartData = it.data
+//                val range = currentAngle..currentAngle + chartData * coEfficient
+//                currentAngle += chartData * coEfficient
+//
+//                AnimatedChartData(
+//                    color = it.color,
+//                    data = it.data,
+//                    selected = false,
+//                    range = range
+//                )
+//            }
+//        }
 
 
         LaunchedEffect(key1 = animatableInitialSweepAngle) {
@@ -168,24 +205,15 @@ fun PieChart(
         }
 
         val textMeasurer = rememberTextMeasurer()
-        val textMeasureResults: List<Pair<TextLayoutResult, TextLayoutResult>> =
+        val textMeasureResults: List<TextLayoutResult> =
             remember(chartDataList) {
                 chartDataList.map {
-                    Pair(
                         textMeasurer.measure(
-                            text = it.type,
+                            text = "${it.data.toInt()}%",
                             style = TextStyle(
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold
                             )
-                        ),
-                        textMeasurer.measure(
-                            text = it.expense,
-                            style = TextStyle(
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
                     )
                 }
             }
@@ -193,51 +221,49 @@ fun PieChart(
         val chartModifier = Modifier
             .fillMaxWidth()
             .aspectRatio(1f)
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onTap = { position: Offset ->
-                        val xPos = size.center.x - position.x
-                        val yPos = size.center.y - position.y
-                        val length = sqrt(xPos * xPos + yPos * yPos)
-                        val isTouched = length in innerRadius..radius
-
-                        if (isTouched) {
-                            var touchAngle =
-                                (-startAngle + 180f + atan2(
-                                    yPos,
-                                    xPos
-                                ) * 180 / Math.PI) % 360f
-
-                            if (touchAngle < 0) {
-                                touchAngle += 360f
-                            }
-
-                            chartDataList.forEachIndexed { index, chartData ->
-                                val range = chartData.range
-                                val isTouchInArcSegment = touchAngle in range
-                                if (chartData.isSelected) {
-                                    chartData.isSelected = false
-                                    resetDismiss(false)
-                                } else {
-                                    chartData.isSelected = isTouchInArcSegment
-
-                                    if (isTouchInArcSegment) {
-                                        onClick?.invoke(
-                                            ChartData(
-                                                color = chartData.color,
-                                                data = chartData.data,
-                                                type = chartData.type,
-                                                expense = chartData.expense
-                                            ), index
-                                        )
-
-                                    }
-                                }
-                            }
-                        }
-                    }
-                )
-            }
+//            .pointerInput(Unit) {
+//                detectTapGestures(
+//                    onTap = { position: Offset ->
+//                        val xPos = size.center.x - position.x
+//                        val yPos = size.center.y - position.y
+//                        val length = sqrt(xPos * xPos + yPos * yPos)
+//                        val isTouched = length in innerRadius..radius
+//
+//                        if (isTouched) {
+//                            var touchAngle =
+//                                (-startAngle + 180f + atan2(
+//                                    yPos,
+//                                    xPos
+//                                ) * 180 / Math.PI) % 360f
+//
+//                            if (touchAngle < 0) {
+//                                touchAngle += 360f
+//                            }
+//
+//                            chartDataList.forEachIndexed { index, chartData ->
+//                                val range = chartData.range
+//                                val isTouchInArcSegment = touchAngle in range
+//                                if (chartData.isSelected) {
+//                                    chartData.isSelected = false
+//                                    resetDismiss(false)
+//                                } else {
+//                                    chartData.isSelected = isTouchInArcSegment
+//
+//                                    if (isTouchInArcSegment) {
+//                                        onClick?.invoke(
+//                                            ChartData(
+//                                                color = chartData.color,
+//                                                data = chartData.data
+//                                            ), index
+//                                        )
+//
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                )
+//            }
 
         PieChartImpl(
             modifier = chartModifier,
@@ -261,7 +287,7 @@ fun PieChart(
 private fun PieChartImpl(
     modifier: Modifier = Modifier,
     chartDataList: List<AnimatedChartData>,
-    textMeasureResults: List<Pair<TextLayoutResult, TextLayoutResult>>,
+    textMeasureResults: List<TextLayoutResult>,
     currentSweepAngle: Float,
     chartStartAngle: Float,
     chartEndAngle: Float,
@@ -304,13 +330,21 @@ private fun PieChartImpl(
             val sweepAngle = range.endInclusive - range.start
             val angleInRadians = (startAngle + sweepAngle / 2).degreeToRadian
 
-            val arcWidth = if (chartData.isSelected && !dimissToolTip)  {
+            val textMeasureResult = textMeasureResults[index]
+            val textSize = textMeasureResult.size
+
+            val currentStrokeWidth = outerStrokeWidth
+
+            val arcWidth = outerStrokeWidth
+
+
+            /*if (chartData.isSelected && !dimissToolTip)  {
                 // Increase arc width for the first arc
                 outerStrokeWidth + 50f // You can adjust the value as needed
             } else {
                 // Keep the same arc width for other arcs
                 outerStrokeWidth
-            }
+            }*/
 
             if (startAngle <= currentSweepAngle) {
 
@@ -324,6 +358,7 @@ private fun PieChartImpl(
                     fraction
                 )
 
+                //val alphaValue  = if (chartData.isSelected) 1f  else 0.5f
                 drawArc(
                     color = animatedColor,
                     startAngle = startAngle,
@@ -341,12 +376,18 @@ private fun PieChartImpl(
                     ),
                     style = Stroke(arcWidth)
                 )
-                if (drawText && currentSweepAngle == chartEndAngle && chartData.isSelected) {
-                    indexSelected = index
-                    offsetX = center.x + (innerRadius + arcWidth / 2) * cos(angleInRadians)
-                    offsetY = center.y + (innerRadius + arcWidth / 2) * sin(angleInRadians)
-                    angRad = angleInRadians
-                    arcW = arcWidth
+                if (drawText && currentSweepAngle == chartEndAngle) {
+                    val textCenter = textSize.center
+                        drawText(
+                            textLayoutResult = textMeasureResult,
+                            color = Color.Black,
+                            topLeft = Offset(
+                                -textCenter.x + center.x
+                                        + (innerRadius + currentStrokeWidth / 2) * cos(angleInRadians),
+                                -textCenter.y + center.y
+                                        + (innerRadius + currentStrokeWidth / 2) * sin(angleInRadians)
+                            )
+                        )
                 }
 
                 startAngle += sweepAngle
@@ -355,77 +396,75 @@ private fun PieChartImpl(
 
         // this is to make sure tool tip is drawn after all the arc segments
         // to prevent overlap
-        if (indexSelected != -1) {
-            val chartData = chartDataList[indexSelected]
-            val textMeasureResult = textMeasureResults[indexSelected]
-            val typeSize = textMeasureResult.first.size
-            val expenseSize = textMeasureResult.second.size
-            val typeCenter = typeSize.center
-            val expenseCenter = typeSize.center
-
-            if (!dimissToolTip && drawText && currentSweepAngle == chartEndAngle && chartData.isSelected) {
-
-                // Draw the tip
-                translate(
-                    left = offsetX - halfTriangleWidth.dp.toPx(),
-                    top = offsetY - halfTriangleHeight.dp.toPx()
-                ) {
-                    with(pointerTip) {
-                        draw(
-                            size = Size(triangleWidth.dp.toPx(), triangleHeight.dp.toPx())
-                        )
-                    }
-                }
-
-                // Draw rectangle
-                drawRoundRect(
-                    color = Color.Black,
-                    topLeft = Offset(
-                        offsetX - halfRectWidth.dp.toPx(),
-                        offsetY - rectHeight.dp.toPx() - halfTriangleHeight.dp.toPx()
-                    ),
-                    size = Size(rectWidth.dp.toPx(), rectHeight.dp.toPx()),
-                    style = Fill,
-                    cornerRadius = CornerRadius(rectCornerRadius.dp.toPx())
-                )
-
-                // Draw text centered
-                drawText(
-                    textLayoutResult = textMeasureResult.first,
-                    color = Color.White,
-                    topLeft = Offset(
-                        (-typeCenter.x + center.x
-                                + (innerRadius + arcW / 2) * cos(angRad)),
-                        (-typeCenter.y + center.y
-                                + (innerRadius + arcW / 2) * sin(angRad) - halfRectHeight.dp.toPx() - halfTriangleHeight.dp.toPx() - typeSize.height / 2)
-                    )
-                )
-
-                drawText(
-                    textLayoutResult = textMeasureResult.second,
-                    color = Color.White,
-                    topLeft = Offset(
-                        (-expenseCenter.x + center.x
-                                + (innerRadius + arcW / 2) * cos(angRad)),
-                        (-expenseSize.height / 2 + center.y
-                                + (innerRadius + arcW / 2) * sin(angRad) - halfRectHeight.dp.toPx() - halfTriangleHeight.dp.toPx() + expenseSize.height / 2 + 5.dp.toPx())
-                    )
-                )
-            }
-        }
+//        if (indexSelected != -1) {
+//            val chartData = chartDataList[indexSelected]
+//            val textMeasureResult = textMeasureResults[indexSelected]
+//            val typeSize = textMeasureResult.first.size
+//            val expenseSize = textMeasureResult.second.size
+//            val typeCenter = typeSize.center
+//            val expenseCenter = typeSize.center
+//
+//            if (!dimissToolTip && drawText && currentSweepAngle == chartEndAngle && chartData.isSelected) {
+//
+//                // Draw the tip
+//                translate(
+//                    left = offsetX - halfTriangleWidth.dp.toPx(),
+//                    top = offsetY - halfTriangleHeight.dp.toPx()
+//                ) {
+//                    with(pointerTip) {
+//                        draw(
+//                            size = Size(triangleWidth.dp.toPx(), triangleHeight.dp.toPx())
+//                        )
+//                    }
+//                }
+//
+//                // Draw rectangle
+//                drawRoundRect(
+//                    color = Color.Black,
+//                    topLeft = Offset(
+//                        offsetX - halfRectWidth.dp.toPx(),
+//                        offsetY - rectHeight.dp.toPx() - halfTriangleHeight.dp.toPx()
+//                    ),
+//                    size = Size(rectWidth.dp.toPx(), rectHeight.dp.toPx()),
+//                    style = Fill,
+//                    cornerRadius = CornerRadius(rectCornerRadius.dp.toPx())
+//                )
+//
+//                // Draw text centered
+//                drawText(
+//                    textLayoutResult = textMeasureResult.first,
+//                    color = Color.White,
+//                    topLeft = Offset(
+//                        (-typeCenter.x + center.x
+//                                + (innerRadius + arcW / 2) * cos(angRad)),
+//                        (-typeCenter.y + center.y
+//                                + (innerRadius + arcW / 2) * sin(angRad) - halfRectHeight.dp.toPx() - halfTriangleHeight.dp.toPx() - typeSize.height / 2)
+//                    )
+//                )
+//
+//                drawText(
+//                    textLayoutResult = textMeasureResult.second,
+//                    color = Color.White,
+//                    topLeft = Offset(
+//                        (-expenseCenter.x + center.x
+//                                + (innerRadius + arcW / 2) * cos(angRad)),
+//                        (-expenseSize.height / 2 + center.y
+//                                + (innerRadius + arcW / 2) * sin(angRad) - halfRectHeight.dp.toPx() - halfTriangleHeight.dp.toPx() + expenseSize.height / 2 + 5.dp.toPx())
+//                    )
+//                )
+//            }
+//        }
     }
 }
 
 
 @Immutable
-data class ChartData(val color: Color, val data: Float, val type: String, val expense: String)
+data class ChartData(val color: Color, val data: Float)
 
 @Immutable
 internal class AnimatedChartData(
     val color: Color,
     val data: Float,
-    val type: String,
-    val expense: String,
     selected: Boolean = false,
     val range: ClosedFloatingPointRange<Float>,
     val animatable: Animatable<Float, AnimationVector1D> = Animatable(1f)
