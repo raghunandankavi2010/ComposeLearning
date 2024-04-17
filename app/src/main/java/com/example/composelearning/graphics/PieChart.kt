@@ -76,7 +76,7 @@ fun PieChartPreview(
                 ChartData(Color.Yellow, 4f),
                 ChartData(Color.Magenta, 5f),
                         ChartData(Color.Gray, 1f),
-            ChartData(Color.LightGray, 35f)
+            ChartData(Color.LightGray, 25f)
             )
         }
 
@@ -132,21 +132,23 @@ fun PieChart(
 
         val chartEndAngle = 360f + startAngle
 
-        val sum = data.sumOf {
-            it.data.toDouble()
-        }.toFloat()
-
-        val coEfficient = 360f / sum
+        val sum = data.sumOf { it.data.toDouble() }.toFloat()
 
 // Calculate the total sum of data points less than 8.
         val smallDataSum = data.filter { it.data < 8 }.sumOf { it.data.toDouble() }.toFloat()
 
 // Calculate the remaining sum for large data points (8 or more).
         val largeDataSum = sum - smallDataSum
+        val coEfficient = 360f / largeDataSum
+
+        val smallDataCount = data.count { it.data < 8 }.toFloat()
 
 // Distribute the remaining angle equally among small data points.
-        val smallDataAngle = 20f * data.count { it.data < 8 }
-        val smallDataCoefficient = smallDataAngle / smallDataSum
+        val smallDataAngle = (data.count { it.data < 8 }) * 30f
+        val smallDataCoefficient = smallDataAngle / smallDataCount
+
+
+        val coEfficientLarge = (360f - smallDataAngle) / largeDataSum
 
         var currentAngle = 0f
         val currentSweepAngle = animatableInitialSweepAngle.value
@@ -155,14 +157,14 @@ fun PieChart(
             data.map {
                 val chartData = it.data
                 val range = if (chartData < 8) {
-                    currentAngle..currentAngle + 20f
+                    currentAngle..currentAngle + 30
                 } else {
-                    currentAngle..currentAngle + chartData * coEfficient
+                    currentAngle..currentAngle + chartData * coEfficientLarge
                 }
                 currentAngle += if (chartData < 8) {
-                    chartData * smallDataCoefficient
+                    chartData * (30/chartData)
                 } else {
-                    chartData * coEfficient
+                    chartData * coEfficientLarge
                 }
 
                 AnimatedChartData(
@@ -173,6 +175,7 @@ fun PieChart(
                 )
             }
         }
+
 
 //        var currentAngle = 0f
 //        val currentSweepAngle = animatableInitialSweepAngle.value
