@@ -75,8 +75,8 @@ fun PieChartPreview(
                 ChartData(Color.Blue, 6f),
                 ChartData(Color.Yellow, 4f),
                 ChartData(Color.Magenta, 5f),
-                        ChartData(Color.Gray, 1f),
-            ChartData(Color.LightGray, 25f)
+                ChartData(Color.Gray, 1f),
+                ChartData(Color.LightGray, 25f)
             )
         }
 
@@ -162,7 +162,7 @@ fun PieChart(
                     currentAngle..currentAngle + chartData * coEfficientLarge
                 }
                 currentAngle += if (chartData < 8) {
-                    chartData * (30/chartData)
+                    chartData * (30 / chartData)
                 } else {
                     chartData * coEfficientLarge
                 }
@@ -211,12 +211,12 @@ fun PieChart(
         val textMeasureResults: List<TextLayoutResult> =
             remember(chartDataList) {
                 chartDataList.map {
-                        textMeasurer.measure(
-                            text = "${it.data.toInt()}%",
-                            style = TextStyle(
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold
-                            )
+                    textMeasurer.measure(
+                        text = "${it.data.toInt()}%",
+                        style = TextStyle(
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                     )
                 }
             }
@@ -381,16 +381,16 @@ private fun PieChartImpl(
                 )
                 if (drawText && currentSweepAngle == chartEndAngle) {
                     val textCenter = textSize.center
-                        drawText(
-                            textLayoutResult = textMeasureResult,
-                            color = Color.Black,
-                            topLeft = Offset(
-                                -textCenter.x + center.x
-                                        + (innerRadius + currentStrokeWidth / 2) * cos(angleInRadians),
-                                -textCenter.y + center.y
-                                        + (innerRadius + currentStrokeWidth / 2) * sin(angleInRadians)
-                            )
+                    drawText(
+                        textLayoutResult = textMeasureResult,
+                        color = Color.Black,
+                        topLeft = Offset(
+                            -textCenter.x + center.x
+                                    + (innerRadius + currentStrokeWidth / 2) * cos(angleInRadians),
+                            -textCenter.y + center.y
+                                    + (innerRadius + currentStrokeWidth / 2) * sin(angleInRadians)
                         )
+                    )
                 }
 
                 startAngle += sweepAngle
