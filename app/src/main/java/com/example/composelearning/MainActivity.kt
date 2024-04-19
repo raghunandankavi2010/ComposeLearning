@@ -554,7 +554,7 @@ fun TutorialNavGraph(
                         modifier = Modifier
                             .padding(start = 16.dp, end = 16.dp,top = 50.dp)
                             .height(70.dp)
-                            .fillMaxWidth(),25, -10, 35
+                            .fillMaxWidth(),-40, -60, 10
                     )
 
                 }
