@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -70,9 +71,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.composelearning.graphics.PieChartPreview
+import com.example.composelearning.graphics.TemperatureChart
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
 import com.example.composelearning.ui.theme.ComposeLearningTheme
+import kotlin.math.abs
 
 class MainActivity : ComponentActivity() {
     @SuppressLint(
@@ -506,11 +509,13 @@ fun TutorialNavGraph(
 
                                 )
                         )
-                        Box(modifier = Modifier
-                            .align(Alignment.Bottom)
-                            .width(18.dp)
-                            .height(24.dp)
-                            .padding(start = 2.dp, end = 1.dp)) {
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.Bottom)
+                                .width(18.dp)
+                                .height(24.dp)
+                                .padding(start = 2.dp, end = 1.dp)
+                        ) {
                             Text(
                                 modifier = Modifier.padding(top = 3.dp),
                                 text = "%",
@@ -541,9 +546,16 @@ fun TutorialNavGraph(
                             textAlign = TextAlign.Center,
                         )
                     )
-                    PieChartPreview() { data, index ->
+//                    PieChartPreview() { data, index ->
+//
+//                    }
 
-                    }
+                    TemperatureChart(
+                        modifier = Modifier
+                            .padding(start = 16.dp, end = 16.dp,top = 50.dp)
+                            .height(70.dp)
+                            .fillMaxWidth(),25, -10, 35
+                    )
 
                 }
 
@@ -1084,7 +1096,7 @@ fun TutorialNavGraph(
      }
  }*/
 
-@Preview( showBackground = true)
+@Preview(showBackground = true)
 @Composable
 fun Telegu() {
 
@@ -1101,6 +1113,7 @@ fun Telegu() {
             )
     )
 }
+
 @Preview(widthDp = 360, showBackground = true)
 @Composable
 fun PreviewScreen() {
@@ -1137,11 +1150,13 @@ fun PreviewScreen() {
 
                     )
             )
-            Box(modifier = Modifier
-                .align(Alignment.Bottom)
-                .width(18.dp)
-                .height(24.dp)
-                .padding(start = 2.dp, end = 1.dp)) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.Bottom)
+                    .width(18.dp)
+                    .height(24.dp)
+                    .padding(start = 2.dp, end = 1.dp)
+            ) {
                 Text(
                     modifier = Modifier.padding(top = 3.dp),
                     text = "%",
