@@ -67,14 +67,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.composelearning.graphics.PieChartPreview
 import com.example.composelearning.graphics.TemperatureChart
+import com.example.composelearning.graphics.TemperatureChart2
+import com.example.composelearning.graphics.TemperatureChart3
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
 import com.example.composelearning.ui.theme.ComposeLearningTheme
+import com.example.composelearning.ui.theme.DetailsScreen
+import com.example.composelearning.ui.theme.HomeScreen
+import com.example.composelearning.ui.theme.Screen
+import com.example.composelearning.ui.theme.ThirdScreen
 import kotlin.math.abs
 
 class MainActivity : ComponentActivity() {
@@ -93,8 +101,10 @@ class MainActivity : ComponentActivity() {
                     color = Color.White
                 ) {
 
-
+                    //JetpackComposeNavigationApp()
                     val mainViewModel: MainViewModel = viewModel()
+
+
                     TutorialNavGraph(mainViewModel)
 //                    val shouldShowIcon by mainViewModel.searchWidgetVisibility.collectAsState()
 //                    LogCompositions(tag = "Surface", msg = "${mainViewModel.hashCode()}")
@@ -436,6 +446,37 @@ fun DefaultAppBar(
 }
 
 @Composable
+fun JetpackComposeNavigationApp() {
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = Screen.Home.route) {
+        composable(route = Screen.Home.route) {
+            HomeScreen {name ->
+                navController.navigate(Screen.Details.createRoute(name))
+            }
+        }
+        composable(
+            route = Screen.Details.route,
+            arguments = listOf(navArgument("name") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val name = backStackEntry.arguments?.getString("name") ?: ""
+            DetailsScreen(name = name, { navController.popBackStack() } ,{
+                navController.navigate(Screen.ThirdScreen.route)
+            })
+        }
+
+        composable(
+            route = Screen.ThirdScreen.route
+        ) { backStackEntry ->
+
+            ThirdScreen {
+                navController.popBackStack()
+            }
+        }
+    }
+}
+
+@Composable
 fun TutorialNavGraph(
     mainViewModel: MainViewModel,
     modifier: Modifier = Modifier,
@@ -550,13 +591,19 @@ fun TutorialNavGraph(
 //
 //                    }
 
-                    TemperatureChart(
+                    TemperatureChart3(
                         modifier = Modifier
-                            .padding(start = 16.dp, end = 16.dp,top = 50.dp)
+                            .padding(start = 16.dp, end = 16.dp, top = 50.dp)
                             .height(70.dp)
-                            .fillMaxWidth(),-40, -60, 10
+                            .fillMaxWidth(), -40, -60, 10
                     )
 
+                    TemperatureChart(
+                        modifier = Modifier
+                            .padding(start = 16.dp, end = 16.dp, top = 50.dp)
+                            .height(70.dp)
+                            .fillMaxWidth(), 20, 0, 40
+                    )
                 }
 
                 //ProgressMeter()

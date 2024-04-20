@@ -621,6 +621,7 @@ fun Path.addRoundedEndBox(
     val innerAngleShift = asin(cornerRadius / innerRadiusShift) * 180 / PI
     val outerRadiusShift = outerRadius - cornerRadius.toDouble()
     val outerAngleShift = asin(cornerRadius / outerRadiusShift) * 180 / PI
+    // start inner arc no rounded  it left bottom arc
     arcTo(
         rect = Rect(
             center = Offset(
@@ -633,12 +634,14 @@ fun Path.addRoundedEndBox(
         sweepAngleDegrees = ( 90).toFloat(),
         forceMoveTo = true,
     )
+    // arc from start to sweep minus the arc part ie start to sweep angle arc
     arcTo(
         rect = Rect(center = center, radius = innerRadius),
         startAngleDegrees = (startAngleDegrees ).toFloat(),
         sweepAngleDegrees = (sweepAngleDegrees - 2 * innerAngleShift).toFloat(),
         forceMoveTo = false,
     )
+    // arc of inner circle which is at the end of arc ie left bottom arc
     arcTo(
         rect = Rect(
             center = Offset(
@@ -651,6 +654,7 @@ fun Path.addRoundedEndBox(
         sweepAngleDegrees = (innerAngleShift - 90).toFloat(),
         forceMoveTo = false,
     )
+    // out arc with rounded arc ie right bottom arc
     arcTo(
         rect = Rect(
             center = Offset(
@@ -663,6 +667,7 @@ fun Path.addRoundedEndBox(
         sweepAngleDegrees = -(outerAngleShift + 90).toFloat(),
         forceMoveTo = false,
     )
+    // left top arc
     arcTo(
         rect = Rect(center = center, radius = outerRadius),
         startAngleDegrees = (endAngleDegrees - innerAngleShift ).toFloat(),
