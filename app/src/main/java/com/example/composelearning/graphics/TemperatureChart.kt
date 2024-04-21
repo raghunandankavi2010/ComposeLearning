@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.Font
@@ -53,7 +54,7 @@ fun Modifier.dragIndicatorModifier2(
                 // No action needed on drag start
             },
             onDrag = { change, dragAmount ->
-                val canvasWidth = size.width
+                val canvasWidth = size.width - 8.dp.toPx().toInt()
                 val dragRatio = dragAmount.x / canvasWidth.coerceAtLeast(1.toDp().toPx().toInt())
 
                 val positionChange = (maxTemp - minTemp) * dragRatio
@@ -79,12 +80,24 @@ fun Modifier.dragIndicatorModifier2(
     }
 }
 
+fun getHalfOfRange(min: Float, max: Float): Float {
+    // Calculate the range (difference between max and min)
+    val range = max - min
+
+    // Divide the range by 2 to find the half point
+    val half = range / 2.0f
+
+    // Add the half point to the minimum value to get the middle point
+    return min + half
+}
+
 @Composable
 fun TemperatureChart3(
     modifier: Modifier = Modifier,
     temp: Int,
     minTemp: Int, // Adjusted minTemp considering offset
     maxTemp: Int, // Adjusted maxTemp considering offset
+    textMeasurer: TextMeasurer = rememberTextMeasurer()
 ) {
     val context = LocalContext.current
     val tickInterval = (maxTemp.toFloat() - minTemp.toFloat()) / (5.0f - 1.0f)
@@ -94,7 +107,6 @@ fun TemperatureChart3(
     val vector = ImageVector.vectorResource(id = R.drawable.indicator)
     val painter = rememberVectorPainter(image = vector)
 
-    val textMeasurer = rememberTextMeasurer()
     val state = remember { mutableFloatStateOf((temp).toFloat()) } // Track indicator position with offset
 
     Canvas(
@@ -110,7 +122,7 @@ fun TemperatureChart3(
             )
     ) {
 
-        val tickSpacing = (this.size.width) / (numTicks - 1)
+        val tickSpacing = (this.size.width - 16.dp.toPx()) / (numTicks - 1)
 
         val cornerRadius = CornerRadius(8.dp.toPx())
 
@@ -120,10 +132,10 @@ fun TemperatureChart3(
             cornerRadius = cornerRadius
         )
 
-        val adjustedLeft = (state.floatValue - minTemp.toFloat()) / (maxTemp.toFloat() - minTemp.toFloat()) * this.size.width
+        val adjustedLeft = (state.floatValue - minTemp.toFloat()) / (maxTemp.toFloat() - minTemp.toFloat()) * (this.size.width  - cornerRadius.x * 2 )
 
         translate(
-            left =   adjustedLeft - 5.dp.toPx() ,
+            left =   adjustedLeft - 5.dp.toPx() + 8.dp.toPx() ,
             top = -3.dp.toPx()
         ) {
             with(painter) {
@@ -135,19 +147,7 @@ fun TemperatureChart3(
 
         // Loop through each tick position based on spacing
         for (i in 0 until numTicks) {
-            val xPosition = when (i) {
-                0 -> {
-                    i * tickSpacing + cornerRadius.x
-                }
-
-                numTicks - 1 -> {
-                    i * tickSpacing - cornerRadius.x
-                }
-
-                else -> {
-                    i * tickSpacing
-                }
-            }
+            val xPosition = i * tickSpacing
             val text = (minTemp + i * tickInterval).toInt().toString()
 
             // Measure text width for accurate centering
@@ -164,21 +164,24 @@ fun TemperatureChart3(
                 )
             )
 
-            drawLine(
-                color = Color(0xA6000000),
-                start = Offset(x = xPosition, y = 54.dp.toPx()),
-                end = Offset(x = xPosition, y = 64.dp.toPx()),
-                strokeWidth = 2.dp.toPx()
-            )
+            translate(left = 8.dp.toPx() ) {
+                drawLine(
+                    color = Color(0xA6000000),
+                    start = Offset(x = xPosition, y = 54.dp.toPx()),
+                    end = Offset(x = xPosition, y = 64.dp.toPx()),
+                    strokeWidth = 2.dp.toPx()
+                )
 
-            val textSize = textMeasureResult.size
+                val textSize = textMeasureResult.size
 
-            drawText(
-                textLayoutResult = textMeasureResult,
-                color = Color(0xA6000000),
-                topLeft = Offset(
-                    xPosition - (textSize.width )/  2, 66.dp.toPx())
-            )
+                drawText(
+                    textLayoutResult = textMeasureResult,
+                    color = Color(0xA6000000),
+                    topLeft = Offset(
+                        xPosition - (textSize.width) / 2, 66.dp.toPx()
+                    )
+                )
+            }
         }
     }
 }
@@ -260,18 +263,21 @@ fun TemperatureChart2(
             )
     ) {
 
-        val tickSpacing = (this.size.width) / (numTicks - 1)
+        val tickSpacing = (this.size.width - 16.dp.toPx()) / (numTicks - 1)
+
+        val cornerRadius = CornerRadius(8.dp.toPx())
+
 
         drawRoundRect(
             Color(0xFF169B4A),
             size = Size(this.size.width, 50.dp.toPx()),
-            cornerRadius = CornerRadius(8.dp.toPx())
+            cornerRadius = cornerRadius
         )
 
-        val left = (state.floatValue - minTemp.toFloat()) / (maxTemp.toFloat() - minTemp.toFloat()) * this.size.width
+        val adjustedLeft = (state.floatValue - minTemp.toFloat()) / (maxTemp.toFloat() - minTemp.toFloat()) * (this.size.width  - cornerRadius.x * 2 )
 
         translate(
-            left = left - 5.dp.toPx(),
+            left = adjustedLeft - 5.dp.toPx() + 8.dp.toPx(),
             top = -3.dp.toPx()
         ) {
             with(painter) {
@@ -283,19 +289,7 @@ fun TemperatureChart2(
 
         // Loop through each tick position based on spacing
         for (i in 0 until numTicks) {
-            val xPosition = when (i) {
-                0 -> {
-                    i * tickSpacing + 20
-                }
-
-                numTicks - 1 -> {
-                    i * tickSpacing - 20
-                }
-
-                else -> {
-                    i * tickSpacing
-                }
-            }
+            val xPosition =  i * tickSpacing
             val text = (minTemp + i * tickInterval).toInt().toString()
 
             // Measure text width for accurate centering
@@ -335,8 +329,8 @@ fun TemperatureChart2(
 fun TemperatureChart(
     modifier: Modifier = Modifier,
     temp: Int,
-    minTemp: Int = 0,
-    maxTemp: Int = 60
+    minTemp: Int,
+    maxTemp: Int
 ) {
     val tickInterval = (maxTemp.toFloat() - minTemp.toFloat()) / (5.0f - 1.0f) // Use float for accurate calculation
 
@@ -347,24 +341,27 @@ fun TemperatureChart(
 
     val textMeasurer = rememberTextMeasurer()
 
+    val state = remember { mutableFloatStateOf(temp.toFloat()) } // Track indicator position
+
+
     Canvas(
         modifier = modifier
     ) {
 
-        val tickSpacing = (this.size.width) / (numTicks - 1)
+        val tickSpacing = (this.size.width - 16.dp.toPx()) / (numTicks - 1)
+
+        val cornerRadius = CornerRadius(8.dp.toPx())
 
         drawRoundRect(
             Color(0xFF169B4A),
             size = Size(this.size.width, 50.dp.toPx()),
-            cornerRadius = CornerRadius(8.dp.toPx())
+            cornerRadius = cornerRadius
         )
 
-        val tempRatio =
-            (temp.toFloat() - minTemp.toFloat()) / (maxTemp.toFloat() - minTemp.toFloat())
-        val left = tempRatio * this.size.width
+        val adjustedLeft = (state.floatValue - minTemp.toFloat()) / (maxTemp.toFloat() - minTemp.toFloat()) * (this.size.width  - cornerRadius.x * 2 )
 
         translate(
-            left = left - 5.dp.toPx(),
+            left = adjustedLeft - 5.dp.toPx() + 8.dp.toPx(),
             top = -3.dp.toPx()
         ) {
             with(painter) {
@@ -376,19 +373,7 @@ fun TemperatureChart(
 
         // Loop through each tick position based on spacing
         for (i in 0 until numTicks) {
-            val xPosition = when (i) {
-                0 -> {
-                    i * tickSpacing + 20
-                }
-
-                numTicks - 1 -> {
-                    i * tickSpacing - 20
-                }
-
-                else -> {
-                    i * tickSpacing
-                }
-            }
+            val xPosition = i * tickSpacing
             val text = (minTemp + i * tickInterval).toInt().toString()
 
             // Measure text width for accurate centering
@@ -405,21 +390,24 @@ fun TemperatureChart(
                 )
             )
 
-            drawLine(
-                color = Color(0xA6000000),
-                start = Offset(x = xPosition, y = 54.dp.toPx()),
-                end = Offset(x = xPosition, y = 64.dp.toPx()),
-                strokeWidth = 2.dp.toPx()
-            )
-
-            val textSize = textMeasureResult.size
-
-            drawText(
-                textLayoutResult = textMeasureResult,
-                color = Color(0xA6000000),
-                topLeft = Offset(
-                    xPosition - (textSize.width )/  2, 66.dp.toPx())
+            translate(left = 8.dp.toPx() ) {
+                drawLine(
+                    color = Color(0xA6000000),
+                    start = Offset(x = xPosition, y = 54.dp.toPx()),
+                    end = Offset(x = xPosition, y = 64.dp.toPx()),
+                    strokeWidth = 2.dp.toPx()
                 )
+
+                val textSize = textMeasureResult.size
+
+                drawText(
+                    textLayoutResult = textMeasureResult,
+                    color = Color(0xA6000000),
+                    topLeft = Offset(
+                        xPosition - (textSize.width) / 2, 66.dp.toPx()
+                    )
+                )
+            }
         }
     }
 }
