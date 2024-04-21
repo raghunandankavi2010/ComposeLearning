@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -203,7 +204,7 @@ fun SpeedometerTry(
 
     BoxWithConstraints(modifier = Modifier
         .padding(top = 25.dp)
-        .fillMaxWidth()
+        .width(300.dp)
         .height(130.dp)) {
 
         LogCompositions("Speedometer", "Running")
@@ -350,7 +351,6 @@ fun Speedometer3(
 ) {
 
     BoxWithConstraints(modifier = Modifier
-        .padding(top = 25.dp)
         .fillMaxWidth()
         .height(130.dp)) {
 
@@ -617,8 +617,10 @@ fun Path.addRoundedEndBox(
 ) {
     val endAngleDegrees = startAngleDegrees + sweepAngleDegrees.toDouble()
     val innerRadiusShift = innerRadius + cornerRadius.toDouble()
+    // the length of the arc at inner radius arc
     val innerAngleShift = asin(cornerRadius / innerRadiusShift) * 180 / PI
     val outerRadiusShift = outerRadius - cornerRadius.toDouble()
+    // the length of the arc at outer radius arc
     val outerAngleShift = asin(cornerRadius / outerRadiusShift) * 180 / PI
     // start inner arc no rounded  it left bottom arc
     arcTo(
@@ -630,7 +632,7 @@ fun Path.addRoundedEndBox(
             radius = 0.1f,
         ),
         startAngleDegrees = startAngleDegrees ,
-        sweepAngleDegrees = ( 90).toFloat(),
+        sweepAngleDegrees = (90).toFloat(),
         forceMoveTo = true,
     )
     // arc from start to sweep minus the arc part ie start to sweep angle arc
