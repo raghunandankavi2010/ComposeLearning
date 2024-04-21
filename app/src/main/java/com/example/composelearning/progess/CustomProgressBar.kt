@@ -127,7 +127,7 @@ fun MultiColorProgressCanvas(
     val animationDuration = 300
 
     LaunchedEffect(greyAnimate, yellowAnimate, redAnimate, greenAnimate, redAnimate) {
-        launch {
+       // launch {
             greenAnimate.animateTo(
                 targetValue = 1f,
                 animationSpec = tween(durationMillis = animationDuration)
@@ -144,7 +144,6 @@ fun MultiColorProgressCanvas(
                 targetValue = 1f,
                 animationSpec = tween(durationMillis = animationDuration)
             )
-        }
     }
 
     Canvas(

@@ -76,6 +76,7 @@ import com.example.composelearning.graphics.PieChartPreview
 import com.example.composelearning.graphics.TemperatureChart
 import com.example.composelearning.graphics.TemperatureChart2
 import com.example.composelearning.graphics.TemperatureChart3
+import com.example.composelearning.progess.MultiColorProgressCanvas
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
 import com.example.composelearning.ui.theme.ComposeLearningTheme
@@ -516,6 +517,15 @@ fun TutorialNavGraph(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
+                MultiColorProgressCanvas(
+                    modifier = Modifier
+                        .height(16.dp)
+                        .padding(16.dp)
+                        .fillMaxSize(),
+                    heightOfProgress = 8.dp,
+                    cornerRadii = 2.dp
+                )
+                Spacer(modifier = Modifier.padding(top =30.dp))
                 //Speedometer3(modifier= Modifier.fillMaxWidth(),55)
 
                 Column {
@@ -595,14 +605,15 @@ fun TutorialNavGraph(
                         modifier = Modifier
                             .padding(start = 16.dp, end = 16.dp, top = 50.dp)
                             .height(78.dp)
-                            .fillMaxWidth(), -60, -60, 10
+                            .fillMaxWidth(), -25, -60, 10
                     )
 
                     TemperatureChart(
                         modifier = Modifier
+                            .width(200.dp)
                             .padding(start = 16.dp, end = 16.dp, top = 50.dp)
                             .height(78.dp)
-                            .fillMaxWidth(), -25, -60, 10
+                            .fillMaxWidth(), 60, 0, 60
                     )
                 }
 

@@ -366,13 +366,12 @@ fun Speedometer3(
         }
 
         LaunchedEffect(progress) {
-
-            launch {
+            //launch {
                 progressAnimation.animateTo(
                     targetValue = progress.toFloat(),
                     animationSpec = tween(durationMillis = 3000, easing = CustomEaseOutBounce)
                 )
-            }
+            //}
         }
         val innerRadius = 60.dp.dpToPx()
         val outerRadius = 114.dp.dpToPx()
