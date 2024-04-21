@@ -594,15 +594,15 @@ fun TutorialNavGraph(
                     TemperatureChart3(
                         modifier = Modifier
                             .padding(start = 16.dp, end = 16.dp, top = 50.dp)
-                            .height(70.dp)
-                            .fillMaxWidth(), -40, -60, 10
+                            .height(78.dp)
+                            .fillMaxWidth(), -60, -60, 10
                     )
 
                     TemperatureChart(
                         modifier = Modifier
                             .padding(start = 16.dp, end = 16.dp, top = 50.dp)
-                            .height(70.dp)
-                            .fillMaxWidth(), 20, 0, 40
+                            .height(78.dp)
+                            .fillMaxWidth(), -25, -60, 10
                     )
                 }
 
