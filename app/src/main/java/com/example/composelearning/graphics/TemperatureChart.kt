@@ -234,6 +234,7 @@ fun Modifier.dragIndicatorModifier(
 fun TemperatureChart2(
     modifier: Modifier = Modifier,
     temp: Int,
+    radius: Int = 8,
     minTemp: Int = 0,
     maxTemp: Int = 60
 ) {
@@ -265,7 +266,7 @@ fun TemperatureChart2(
 
         val tickSpacing = (this.size.width - 16.dp.toPx()) / (numTicks - 1)
 
-        val cornerRadius = CornerRadius(8.dp.toPx())
+        val cornerRadius = CornerRadius((radius.dp.toPx()))
 
 
         drawRoundRect(
@@ -277,7 +278,7 @@ fun TemperatureChart2(
         val adjustedLeft = (state.floatValue - minTemp.toFloat()) / (maxTemp.toFloat() - minTemp.toFloat()) * (this.size.width  - cornerRadius.x * 2 )
 
         translate(
-            left = adjustedLeft - 5.dp.toPx() + 8.dp.toPx(),
+            left = adjustedLeft - 5.dp.toPx() + radius.dp.toPx(),
             top = -3.dp.toPx()
         ) {
             with(painter) {

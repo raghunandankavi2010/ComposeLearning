@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
@@ -46,6 +47,7 @@ import androidx.compose.ui.unit.center
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composelearning.R
+import com.example.composelearning.customshapes.dpToPx
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -81,14 +83,12 @@ fun PieChartPreview(
         }
 
         PieChart(
-            modifier = Modifier
-                .padding(top = 100.dp)
-                .size(300.dp)
+            modifier = Modifier.height(300.dp).fillMaxWidth()
                 .align(Alignment.CenterHorizontally),
             data = data,
             outerRingPercent = 35,
             onClick = { chartData, index ->
-                onClick(chartData, index)
+               // onClick(chartData, index)
             },
             dimissToolTip = dismissToolTip
         ) {
@@ -110,19 +110,26 @@ fun PieChart(
 ) {
 
     BoxWithConstraints(
-        modifier = modifier,
+        modifier = modifier.clickable(enabled = false) {
+
+        },
         contentAlignment = Alignment.Center,
     ) {
 
         val width = constraints.maxWidth.toFloat()
 
         // Outer radius of chart. This is edge of stroke width as
-        val radius = (width / 2f) * .9f
-        val outerStrokeWidthPx =
-            (radius * outerRingPercent / 100f).coerceIn(0f, radius)
+        val innerRadius = 60.dp.dpToPx()
+        val outerRadius = 114.dp.dpToPx()
+        //val radius = (width / 2f) * .9f
+
+        val outerStrokeWidthPx = outerRadius - innerRadius
+          //  maxOf((outerRadius * outerRingPercent / 100f), 44f).coerceIn(0f, outerRadius)
+        //val outerStrokeWidthPx = 44.dp.dpToPx()
+         //   (outerRadius * outerRingPercent / 100f).coerceIn(0f, radius)
 
         // Inner radius of chart. Semi transparent inner ring
-        val innerRadius = (radius - outerStrokeWidthPx).coerceIn(0f, radius)
+       // val innerRadius = (radius - outerStrokeWidthPx).coerceIn(0f, radius)
 
         // Start angle of chart. Top center is -90, right center 0,
         // bottom center 90, left center 180
@@ -275,7 +282,7 @@ fun PieChart(
             currentSweepAngle = currentSweepAngle,
             chartStartAngle = startAngle,
             chartEndAngle = chartEndAngle,
-            outerRadius = radius,
+            outerRadius = outerRadius,
             outerStrokeWidth = outerStrokeWidthPx,
             innerRadius = innerRadius,
             drawText = drawText,

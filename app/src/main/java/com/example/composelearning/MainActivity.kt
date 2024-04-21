@@ -2,6 +2,7 @@ package com.example.composelearning
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -72,9 +73,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.composelearning.graphics.PieChart
 import com.example.composelearning.graphics.PieChartPreview
 import com.example.composelearning.graphics.TemperatureChart
-import com.example.composelearning.graphics.TemperatureChart2
 import com.example.composelearning.graphics.TemperatureChart3
 import com.example.composelearning.progess.MultiColorProgressCanvas
 import com.example.composelearning.speedometer.Legend
@@ -84,7 +85,6 @@ import com.example.composelearning.ui.theme.DetailsScreen
 import com.example.composelearning.ui.theme.HomeScreen
 import com.example.composelearning.ui.theme.Screen
 import com.example.composelearning.ui.theme.ThirdScreen
-import kotlin.math.abs
 
 class MainActivity : ComponentActivity() {
     @SuppressLint(
@@ -525,10 +525,15 @@ fun TutorialNavGraph(
                     heightOfProgress = 8.dp,
                     cornerRadii = 2.dp
                 )
-                Spacer(modifier = Modifier.padding(top =30.dp))
-                //Speedometer3(modifier= Modifier.fillMaxWidth(),55)
 
-                Column {
+                Spacer(modifier = Modifier.padding(top =30.dp))
+
+                Column(modifier = Modifier
+                    .height(150.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .align(Alignment.CenterHorizontally)
+                ) {
                     Row(
                         modifier = Modifier.align(Alignment.CenterHorizontally),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -539,7 +544,8 @@ fun TutorialNavGraph(
 
                         Legend(Color(0xFF25AB21), "Optimum", alpha = true)
                     }
-                    Speedometer3(modifier = Modifier.padding(top = 25.dp), 50)
+
+                    Speedometer3(modifier = Modifier.padding(top = 16.dp), 50)
 
                     Row(
                         modifier = Modifier
@@ -597,24 +603,31 @@ fun TutorialNavGraph(
                             textAlign = TextAlign.Center,
                         )
                     )
-//                    PieChartPreview() { data, index ->
-//
-//                    }
 
-                    TemperatureChart3(
-                        modifier = Modifier
-                            .padding(start = 16.dp, end = 16.dp, top = 50.dp)
-                            .height(78.dp)
-                            .fillMaxWidth(), -25, -60, 10
-                    )
+                }
 
-                    TemperatureChart(
-                        modifier = Modifier
-                            .width(200.dp)
-                            .padding(start = 16.dp, end = 16.dp, top = 50.dp)
-                            .height(78.dp)
-                            .fillMaxWidth(), 60, 0, 60
-                    )
+                Spacer(modifier = Modifier.padding(top = 16.dp))
+
+                TemperatureChart3(
+                    modifier = Modifier
+                        .padding(start = 16.dp, end = 16.dp)
+                        .height(78.dp)
+                        .fillMaxWidth(), -25, -60, 10
+                )
+
+                Spacer(modifier = Modifier.padding(top = 16.dp))
+
+                TemperatureChart(
+                    modifier = Modifier
+                        .width(200.dp)
+                        .padding(start = 16.dp, end = 16.dp)
+                        .height(78.dp)
+                        .fillMaxWidth(), 60, 0, 60
+                )
+
+                Spacer(modifier = Modifier.padding(top = 16.dp))
+
+                PieChartPreview { _, _ ->
                 }
 
                 //ProgressMeter()
