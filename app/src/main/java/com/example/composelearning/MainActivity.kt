@@ -450,7 +450,7 @@ fun JetpackComposeNavigationApp() {
 
     NavHost(navController = navController, startDestination = Screen.Home.route) {
         composable(route = Screen.Home.route) {
-            HomeScreen {name ->
+            HomeScreen { name ->
                 navController.navigate(Screen.Details.createRoute(name))
             }
         }
@@ -459,7 +459,7 @@ fun JetpackComposeNavigationApp() {
             arguments = listOf(navArgument("name") { type = NavType.StringType })
         ) { backStackEntry ->
             val name = backStackEntry.arguments?.getString("name") ?: ""
-            DetailsScreen(name = name, { navController.popBackStack() } ,{
+            DetailsScreen(name = name, { navController.popBackStack() }, {
                 navController.navigate(Screen.ThirdScreen.route)
             })
         }
@@ -524,13 +524,14 @@ fun TutorialNavGraph(
                     cornerRadii = 2.dp
                 )
 
-                Spacer(modifier = Modifier.padding(top =30.dp))
+                Spacer(modifier = Modifier.padding(top = 30.dp))
 
-                Column(modifier = Modifier
-                    .height(150.dp)
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .align(Alignment.CenterHorizontally)
+                Column(
+                    modifier = Modifier
+                        .height(150.dp)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .align(Alignment.CenterHorizontally)
                 ) {
                     Row(
                         modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -538,12 +539,21 @@ fun TutorialNavGraph(
                     ) {
                         Legend(Color(0xFFE30513), "Danger", alpha = true)
 
-                        Legend(Color(0xFFF7AB20), "Stress", alpha = false)
+                        Legend(Color(0xFFF7AB20), "Stress", alpha = true)
 
                         Legend(Color(0xFF25AB21), "Optimum", alpha = true)
+
+                        Legend(Color(0xFF2253DA), "Excess", alpha = false)
                     }
 
-                    Speedometer3(modifier = Modifier.padding(top = 16.dp), 50)
+                    Speedometer3(
+                        modifier = Modifier.padding(top = 16.dp),
+                        25,
+                        10,
+                        10,
+                        55,
+                        50
+                    )
 
                     Row(
                         modifier = Modifier
@@ -624,14 +634,14 @@ fun TutorialNavGraph(
                 )
 
                 Spacer(modifier = Modifier.padding(top = 16.dp))
+//
+//                Box(modifier = Modifier) {
+//
+//                    PieChartPreview { _, _ ->
+//                    }
+//                }
 
-                Box(modifier = Modifier) {
-
-                    PieChartPreview { _, _ ->
-                    }
-
-
-                }
+                CreateAlertDialog()
 
                 //ProgressMeter()
                 //GeneralAlertsList()
@@ -1205,7 +1215,14 @@ fun PreviewScreen() {
 
             Legend(Color(0xFF2253DA), "అదనపు", alpha = true)
         }
-        Speedometer3(modifier = Modifier.padding(top = 25.dp), 50)
+        Speedometer3(
+            modifier = Modifier.padding(top = 16.dp),
+            25,
+            10,
+            10,
+            55,
+            50
+        )
 
         Row(
             modifier = Modifier
