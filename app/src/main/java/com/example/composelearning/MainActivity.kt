@@ -2,7 +2,6 @@ package com.example.composelearning
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -73,7 +72,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.composelearning.graphics.PieChart
 import com.example.composelearning.graphics.PieChartPreview
 import com.example.composelearning.graphics.TemperatureChart
 import com.example.composelearning.graphics.TemperatureChart3
@@ -627,7 +625,12 @@ fun TutorialNavGraph(
 
                 Spacer(modifier = Modifier.padding(top = 16.dp))
 
-                PieChartPreview { _, _ ->
+                Box(modifier = Modifier) {
+
+                    PieChartPreview { _, _ ->
+                    }
+
+
                 }
 
                 //ProgressMeter()
@@ -1185,20 +1188,22 @@ fun Telegu() {
     )
 }
 
-@Preview(widthDp = 360, showBackground = true)
+@Preview(widthDp = 300, showBackground = true)
 @Composable
 fun PreviewScreen() {
 
     Column {
         Row(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Legend(Color(0xFFE30513), "Danger", alpha = true)
+            Legend(Color(0xFFE30513), "ప్రమాదం", alpha = true)
 
-            Legend(Color(0xFFF7AB20), "Stress", alpha = false)
+            Legend(Color(0xFFF7AB20), "ఒత్తిడి", alpha = false)
 
-            Legend(Color(0xFF25AB21), "Optimum", alpha = true)
+            Legend(Color(0xFF25AB21), "వాంఛనీయ", alpha = true)
+
+            Legend(Color(0xFF2253DA), "అదనపు", alpha = true)
         }
         Speedometer3(modifier = Modifier.padding(top = 25.dp), 50)
 

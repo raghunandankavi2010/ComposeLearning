@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -31,11 +30,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
-
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composelearning.R
-import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.round

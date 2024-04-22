@@ -1,21 +1,18 @@
 package com.example.composelearning.graphics
 
 
-import android.graphics.BlurMaskFilter
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,33 +22,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.center
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composelearning.R
 import com.example.composelearning.customshapes.dpToPx
-import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
-import kotlin.math.sqrt
 
 @Composable
 fun PieChartPreview(
@@ -71,19 +63,25 @@ fun PieChartPreview(
     ) {
         val data = remember {
             listOf(
-                ChartData(Color.Green, 9f),
-                ChartData(Color.Red, 15f),
-                ChartData(Color.Cyan, 35f),
-                ChartData(Color.Blue, 6f),
-                ChartData(Color.Yellow, 4f),
-                ChartData(Color.Magenta, 5f),
-                ChartData(Color.Gray, 1f),
-                ChartData(Color.LightGray, 25f)
+                ChartData(Color(0xFF0F7737), 3f),
+                ChartData(Color(0xFFF7AB20), 27f),
+                ChartData(Color(0xFF2253DA), 1f),
+                ChartData(Color(0xFFBBCEF5), 6f),
+                ChartData(Color(0xFFB72ABB), 7f),
+                ChartData(Color(0xFFF5A8B8), 26f),
+                ChartData(Color(0xFF8C652C), 30f),
+//                ChartData(Color.LightGray, 25f),
+//                ChartData(Color.Green, 18f),
+//              ChartData(Color.Red, 15f),
+//              ChartData(Color.Cyan, 35f),
+
             )
         }
 
         PieChart(
-            modifier = Modifier.height(300.dp).fillMaxWidth()
+            modifier = Modifier
+                .height(300.dp)
+                .fillMaxWidth()
                 .align(Alignment.CenterHorizontally),
             data = data,
             outerRingPercent = 35,
@@ -118,12 +116,16 @@ fun PieChart(
 
         val width = constraints.maxWidth.toFloat()
 
+        val innerRadius = 74.dp.dpToPx()
+        val outerRadius = 128.dp.dpToPx()
+        val outerStrokeWidthPx = outerRadius - innerRadius
+
         // Outer radius of chart. This is edge of stroke width as
-        val innerRadius = 60.dp.dpToPx()
-        val outerRadius = 114.dp.dpToPx()
+        //val innerRadius = 74.dp.dpToPx()
+        //val outerRadius = 118.dp.dpToPx()
         //val radius = (width / 2f) * .9f
 
-        val outerStrokeWidthPx = outerRadius - innerRadius
+        //val outerStrokeWidthPx = 44.dp.dpToPx()//outerRadius - innerRadius
           //  maxOf((outerRadius * outerRingPercent / 100f), 44f).coerceIn(0f, outerRadius)
         //val outerStrokeWidthPx = 44.dp.dpToPx()
          //   (outerRadius * outerRingPercent / 100f).coerceIn(0f, radius)
@@ -142,16 +144,16 @@ fun PieChart(
         val sum = data.sumOf { it.data.toDouble() }.toFloat()
 
 // Calculate the total sum of data points less than 8.
-        val smallDataSum = data.filter { it.data < 8 }.sumOf { it.data.toDouble() }.toFloat()
+        val smallDataSum = data.filter { it.data <= 6 }.sumOf { it.data.toDouble() }.toFloat()
 
 // Calculate the remaining sum for large data points (8 or more).
         val largeDataSum = sum - smallDataSum
         val coEfficient = 360f / largeDataSum
 
-        val smallDataCount = data.count { it.data < 8 }.toFloat()
+        val smallDataCount = data.count { it.data <= 6 }.toFloat()
 
 // Distribute the remaining angle equally among small data points.
-        val smallDataAngle = (data.count { it.data < 8 }) * 30f
+        val smallDataAngle = (data.count { it.data <= 6 }) * 20f
         val smallDataCoefficient = smallDataAngle / smallDataCount
 
 
@@ -163,13 +165,13 @@ fun PieChart(
         val chartDataList = remember(data) {
             data.map {
                 val chartData = it.data
-                val range = if (chartData < 8) {
-                    currentAngle..currentAngle + 30
+                val range = if (chartData <= 6) {
+                    currentAngle..currentAngle + 20
                 } else {
                     currentAngle..currentAngle + chartData * coEfficientLarge
                 }
-                currentAngle += if (chartData < 8) {
-                    chartData * (30 / chartData)
+                currentAngle += if (chartData <= 6) {
+                    chartData * (20 / chartData)
                 } else {
                     chartData * coEfficientLarge
                 }
@@ -221,10 +223,15 @@ fun PieChart(
                     textMeasurer.measure(
                         text = "${it.data.toInt()}%",
                         style = TextStyle(
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold
+                                fontSize = 11.sp,
+                                lineHeight = 16.5.sp,
+                                fontFamily = FontFamily(Font(R.font.jio_type_medium)),
+                                fontWeight = FontWeight(500),
+                                color = Color(0xFF141414),
+
+                                )
                         )
-                    )
+
                 }
             }
 
@@ -288,6 +295,36 @@ fun PieChart(
             drawText = drawText,
             dimissToolTip = dimissToolTip
         )
+
+Column(modifier = Modifier.align(Alignment.Center),
+    horizontalAlignment = Alignment.CenterHorizontally){
+
+    Text(
+        text = "Total expense",
+// en/Desktop/Body/XXS
+        style = TextStyle(
+            fontSize = 12.sp,
+            lineHeight = 16.sp,
+            fontFamily = FontFamily(Font(R.font.jio_type_medium)),
+            fontWeight = FontWeight(500),
+            color = Color(0xA6000000),
+            textAlign = TextAlign.Center,
+            )
+    )
+
+    Text(
+        modifier = Modifier,
+        text = "₹2500000",
+        style = TextStyle(
+            fontSize = 24.sp,
+            lineHeight = 28.sp,
+            fontFamily = FontFamily(Font(R.font.jio_type_black)),
+            fontWeight = FontWeight(900),
+            color = Color(0xFF0D0D0E),
+            textAlign = TextAlign.Center,
+        )
+    )
+}
 
     }
 }
@@ -390,7 +427,7 @@ private fun PieChartImpl(
                     val textCenter = textSize.center
                     drawText(
                         textLayoutResult = textMeasureResult,
-                        color = Color.Black,
+                        color = Color(0xFF141414),
                         topLeft = Offset(
                             -textCenter.x + center.x
                                     + (innerRadius + currentStrokeWidth / 2) * cos(angleInRadians),
