@@ -348,7 +348,7 @@ fun SpeedometerTry(
 fun Speedometer3(
     modifier: Modifier = Modifier,
     redProgress: Int,
-    greenProgess: Int,
+    greenProgress: Int,
     yellowProgress: Int,
     blueProgress: Int,
     progress: Int,
@@ -401,21 +401,21 @@ fun Speedometer3(
                 addRoundedPolarBox(
                     center = Offset(constraints.maxWidth / 2f, constraints.maxHeight.toFloat()),
                     startAngleDegrees = start,
-                    sweepAngleDegrees = 25 * (arcDegrees) / 100f,
+                    sweepAngleDegrees = redProgress * (arcDegrees) / 100f,
                     innerRadius = innerRadius,
                     outerRadius = outerRadius,
                     cornerRadius = cornerRadius,
                 )
             }
         }
-        start += 25 * (arcDegrees) / 100f
+        start += redProgress * (arcDegrees) / 100f
 
         val yellow = remember {
             Path().apply {
                 addRoundedPolarBoxAllSides(
                     center = Offset(constraints.maxWidth / 2f, constraints.maxHeight.toFloat()),
                     startAngleDegrees = start,
-                    sweepAngleDegrees = 10 * (arcDegrees) / 100f,
+                    sweepAngleDegrees = yellowProgress * (arcDegrees) / 100f,
                     innerRadius = innerRadius,
                     outerRadius = outerRadius,
                     cornerRadius = 0.1f
@@ -423,14 +423,14 @@ fun Speedometer3(
             }
         }
 
-        start += 10f * (arcDegrees) / 100f
+        start += yellowProgress * (arcDegrees) / 100f
 
         val green = remember {
             Path().apply {
                 addRoundedPolarBoxAllSides(
                     center = Offset(constraints.maxWidth / 2f, constraints.maxHeight.toFloat()),
                     startAngleDegrees = start,
-                    sweepAngleDegrees = 10 * (arcDegrees) / 100f,
+                    sweepAngleDegrees = greenProgress * (arcDegrees) / 100f,
                     innerRadius = innerRadius,
                     outerRadius = outerRadius,
                     cornerRadius = 0.1f
@@ -438,7 +438,7 @@ fun Speedometer3(
             }
         }
 
-        start += 10f * (arcDegrees) / 100f
+        start += greenProgress * (arcDegrees) / 100f
         println("$start")
 
         val blue = remember {
@@ -446,18 +446,15 @@ fun Speedometer3(
                 addRoundedEndBox(
                     center = Offset(constraints.maxWidth / 2f, constraints.maxHeight.toFloat()),
                     startAngleDegrees = start,
-                    sweepAngleDegrees = (100 - 45) * (arcDegrees) / 100f,
+                    sweepAngleDegrees = blueProgress * (arcDegrees) / 100f,
                     innerRadius = innerRadius,
                     outerRadius = outerRadius,
                     cornerRadius = cornerRadius
                 )
             }
         }
-
-
         val vector = ImageVector.vectorResource(id = R.drawable.pointer_black)
         val painter = rememberVectorPainter(image = vector)
-
         Canvas(
             modifier = Modifier
                 .aspectRatio(1f),
@@ -468,15 +465,10 @@ fun Speedometer3(
                     val centerOffset =
                         Offset(constraints.maxWidth / 2f, constraints.maxHeight.toFloat())
 
-                    //drawPath(drawEntireArc, Color.Gray)
                     drawPath(redPath, Color(0xFFE30513))
                     drawPath(yellow, Color(0xFFF7AB20))
                     drawPath(green,Color(0xFF25AB21))
                     drawPath(blue,Color(0xFF2253DA))
-
-                    // Just for reference to see the center of the canvas
-                    //drawCircle(Color.Green, center = centerOffset, radius = 20f)
-
 
                     rotate(
                         progressAnimation.value * (arcDegrees) / 100f,
