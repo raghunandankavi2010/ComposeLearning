@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -72,10 +71,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.composelearning.graphics.PieChartPreview
-import com.example.composelearning.graphics.TemperatureChart
-import com.example.composelearning.graphics.TemperatureChart3
-import com.example.composelearning.progess.MultiColorProgressCanvas
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
 import com.example.composelearning.ui.theme.ComposeLearningTheme
@@ -510,138 +505,139 @@ fun TutorialNavGraph(
             //BoxAnim()
             Column(
                 modifier = Modifier
-                    .padding(top = 20.dp)
                     .background(Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
-                MultiColorProgressCanvas(
-                    modifier = Modifier
-                        .height(16.dp)
-                        .padding(16.dp)
-                        .fillMaxSize(),
-                    heightOfProgress = 8.dp,
-                    cornerRadii = 2.dp
-                )
+                PercentageBaseLayout()
 
-                Spacer(modifier = Modifier.padding(top = 30.dp))
-
-                Column(
-                    modifier = Modifier
-                        .height(150.dp)
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .align(Alignment.CenterHorizontally)
-                ) {
-                    Row(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        Legend(Color(0xFFE30513), "Danger", alpha = true)
-
-                        Legend(Color(0xFFF7AB20), "Stress", alpha = true)
-
-                        Legend(Color(0xFF25AB21), "Optimum", alpha = true)
-
-                        Legend(Color(0xFF2253DA), "Excess", alpha = false)
-                    }
-
-                    Speedometer3(
-                        modifier = Modifier.padding(top = 16.dp),
-                        25,
-                        10,
-                        10,
-                        55,
-                        50
-                    )
-
-                    Row(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(top = 16.dp)
-                            .height(32.dp)
-                    ) {
-
-                        Text(
-                            modifier = Modifier,
-                            text = "68.1",
-                            style = TextStyle(
-                                fontSize = 32.sp,
-                                lineHeight = 32.sp,
-                                fontFamily = FontFamily(Font(R.font.jio_type_black)),
-                                fontWeight = FontWeight(900),
-                                color = Color(0xFF141414),
-
-                                )
-                        )
-                        Box(
-                            modifier = Modifier
-                                .align(Alignment.Bottom)
-                                .width(18.dp)
-                                .height(24.dp)
-                                .padding(start = 2.dp, end = 1.dp)
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(top = 3.dp),
-                                text = "%",
-                                style = TextStyle(
-                                    fontSize = 18.sp,
-                                    lineHeight = 24.sp,
-                                    fontFamily = FontFamily(Font(R.font.jio_type_light)),
-                                    fontWeight = FontWeight(700),
-                                    color = Color(0xFF141414),
-                                    textAlign = TextAlign.Center
-                                )
-                            )
-                        }
-                    }
-
-                    Text(
-                        modifier = Modifier
-                            .padding(top = 4.dp)
-                            .align(Alignment.CenterHorizontally),
-                        text = "Soil moisture (vwc%)",
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            lineHeight = 20.sp,
-                            fontFamily = FontFamily(Font(R.font.jio_type_medium)),
-                            fontWeight = FontWeight(500),
-                            color = Color(0xA6000000),
-
-                            textAlign = TextAlign.Center,
-                        )
-                    )
-
-                }
-
-                Spacer(modifier = Modifier.padding(top = 16.dp))
-
-                TemperatureChart3(
-                    modifier = Modifier
-                        .padding(start = 16.dp, end = 16.dp)
-                        .height(78.dp)
-                        .fillMaxWidth(), -25, -60, 10
-                )
-
-                Spacer(modifier = Modifier.padding(top = 16.dp))
-
-                TemperatureChart(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .padding(start = 16.dp, end = 16.dp)
-                        .height(78.dp)
-                        .fillMaxWidth(), 60, 0, 60
-                )
-
-                Spacer(modifier = Modifier.padding(top = 16.dp))
+//                MultiColorProgressCanvas(
+//                    modifier = Modifier
+//                        .height(16.dp)
+//                        .padding(16.dp)
+//                        .fillMaxSize(),
+//                    heightOfProgress = 8.dp,
+//                    cornerRadii = 2.dp
+//                )
+//
+//                Spacer(modifier = Modifier.padding(top = 30.dp))
+//
+//                Column(
+//                    modifier = Modifier
+//                        .height(150.dp)
+//                        .fillMaxWidth()
+//                        .padding(horizontal = 16.dp)
+//                        .align(Alignment.CenterHorizontally)
+//                ) {
+//                    Row(
+//                        modifier = Modifier.align(Alignment.CenterHorizontally),
+//                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+//                    ) {
+//                        Legend(Color(0xFFE30513), "Danger", alpha = true)
+//
+//                        Legend(Color(0xFFF7AB20), "Stress", alpha = true)
+//
+//                        Legend(Color(0xFF25AB21), "Optimum", alpha = true)
+//
+//                        Legend(Color(0xFF2253DA), "Excess", alpha = false)
+//                    }
+//
+//                    Speedometer3(
+//                        modifier = Modifier.padding(top = 16.dp),
+//                        25,
+//                        10,
+//                        10,
+//                        55,
+//                        50
+//                    )
+//
+//                    Row(
+//                        modifier = Modifier
+//                            .align(Alignment.CenterHorizontally)
+//                            .padding(top = 16.dp)
+//                            .height(32.dp)
+//                    ) {
+//
+//                        Text(
+//                            modifier = Modifier,
+//                            text = "68.1",
+//                            style = TextStyle(
+//                                fontSize = 32.sp,
+//                                lineHeight = 32.sp,
+//                                fontFamily = FontFamily(Font(R.font.jio_type_black)),
+//                                fontWeight = FontWeight(900),
+//                                color = Color(0xFF141414),
+//
+//                                )
+//                        )
+//                        Box(
+//                            modifier = Modifier
+//                                .align(Alignment.Bottom)
+//                                .width(18.dp)
+//                                .height(24.dp)
+//                                .padding(start = 2.dp, end = 1.dp)
+//                        ) {
+//                            Text(
+//                                modifier = Modifier.padding(top = 3.dp),
+//                                text = "%",
+//                                style = TextStyle(
+//                                    fontSize = 18.sp,
+//                                    lineHeight = 24.sp,
+//                                    fontFamily = FontFamily(Font(R.font.jio_type_light)),
+//                                    fontWeight = FontWeight(700),
+//                                    color = Color(0xFF141414),
+//                                    textAlign = TextAlign.Center
+//                                )
+//                            )
+//                        }
+//                    }
+//
+//                    Text(
+//                        modifier = Modifier
+//                            .padding(top = 4.dp)
+//                            .align(Alignment.CenterHorizontally),
+//                        text = "Soil moisture (vwc%)",
+//                        style = TextStyle(
+//                            fontSize = 14.sp,
+//                            lineHeight = 20.sp,
+//                            fontFamily = FontFamily(Font(R.font.jio_type_medium)),
+//                            fontWeight = FontWeight(500),
+//                            color = Color(0xA6000000),
+//
+//                            textAlign = TextAlign.Center,
+//                        )
+//                    )
+//
+//                }
+//
+//                Spacer(modifier = Modifier.padding(top = 16.dp))
+//
+//                TemperatureChart3(
+//                    modifier = Modifier
+//                        .padding(start = 16.dp, end = 16.dp)
+//                        .height(78.dp)
+//                        .fillMaxWidth(), 20, -15, 60
+//                )
+//
+//                Spacer(modifier = Modifier.padding(top = 16.dp))
+//
+//                TemperatureChart(
+//                    modifier = Modifier
+//                        .padding(start = 16.dp, end = 16.dp)
+//                        .height(78.dp)
+//                        .fillMaxWidth(), 30, 0, 60
+//                )
+//
+//                Spacer(modifier = Modifier.padding(top = 16.dp))
 //
 //                Box(modifier = Modifier) {
 //
 //                    PieChartPreview { _, _ ->
 //                    }
 //                }
-
-                CreateAlertDialog()
+//
+//                CreateAlertDialog()
+                //ParentComposable()
 
                 //ProgressMeter()
                 //GeneralAlertsList()
