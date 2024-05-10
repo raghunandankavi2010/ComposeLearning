@@ -46,6 +46,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.example.composelearning.calendar.CalendarScreen
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -71,6 +72,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.composelearning.calendar.CalendarViewModel
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
 import com.example.composelearning.ui.theme.ComposeLearningTheme
@@ -508,6 +510,11 @@ fun TutorialNavGraph(
                     .background(Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+
+                val calendarViewModel: CalendarViewModel = viewModel()
+                CalendarScreen(onBackPressed = {
+                    navController.popBackStack()
+                }, mainViewModel = calendarViewModel)
 
                 PercentageBaseLayout()
 
