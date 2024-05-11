@@ -19,6 +19,7 @@ package com.example.composelearning.calendar
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -63,7 +64,7 @@ import java.time.YearMonth
 
 @Composable
 internal fun DayOfWeekHeading(day: String) {
-    //WeekContainer {
+    WeekContainer {
     Text(
         modifier = Modifier
             .width(48.dp)
@@ -81,7 +82,7 @@ internal fun DayOfWeekHeading(day: String) {
             textAlign = TextAlign.Center,
         )
     )
-    // }
+     }
 }
 
 
@@ -178,7 +179,11 @@ internal fun Day(
             dayStatusProperty = selected
         },
         selected = selected,
-        onClick = { onDayClicked(day) },
+        onClick = {
+            if (day <= LocalDate.now()) {
+                onDayClicked(day)
+            }
+        },
         onClickLabel = "select"
     ) {
 
@@ -192,12 +197,15 @@ internal fun Day(
         if (
             (day.month == calendarState.selectedStartDate?.month
                     && day.dayOfMonth == calendarState.selectedStartDate?.dayOfMonth)
-                    || (day.month == calendarState.selectedEndDate?.month
-                    && day.dayOfMonth == calendarState.selectedEndDate?.dayOfMonth)) {
-            Box(modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape)
-                .background(Color(0xFF03753C))) {
+            || (day.month == calendarState.selectedEndDate?.month
+                    && day.dayOfMonth == calendarState.selectedEndDate?.dayOfMonth)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(Color(0xFF03753C))
+            ) {
                 Text(
                     modifier = Modifier
                         .fillMaxSize()
@@ -215,7 +223,6 @@ internal fun Day(
                 )
             }
         } else {
-
             Text(
                 modifier = Modifier
                     .fillMaxSize()
