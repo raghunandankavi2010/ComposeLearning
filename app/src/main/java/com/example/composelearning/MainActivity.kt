@@ -46,6 +46,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.example.composelearning.calendar.CalendarScreen
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,17 +56,30 @@ import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.composelearning.sotry.SOBlur
+import androidx.navigation.navArgument
+import com.example.composelearning.calendar.CalendarViewModel
+import com.example.composelearning.speedometer.Legend
+import com.example.composelearning.speedometer.Speedometer3
 import com.example.composelearning.ui.theme.ComposeLearningTheme
+import com.example.composelearning.ui.theme.DetailsScreen
+import com.example.composelearning.ui.theme.HomeScreen
+import com.example.composelearning.ui.theme.Screen
+import com.example.composelearning.ui.theme.ThirdScreen
 
 class MainActivity : ComponentActivity() {
     @SuppressLint(
@@ -83,8 +97,10 @@ class MainActivity : ComponentActivity() {
                     color = Color.White
                 ) {
 
-
+                    //JetpackComposeNavigationApp()
                     val mainViewModel: MainViewModel = viewModel()
+
+
                     TutorialNavGraph(mainViewModel)
 //                    val shouldShowIcon by mainViewModel.searchWidgetVisibility.collectAsState()
 //                    LogCompositions(tag = "Surface", msg = "${mainViewModel.hashCode()}")
@@ -426,6 +442,37 @@ fun DefaultAppBar(
 }
 
 @Composable
+fun JetpackComposeNavigationApp() {
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = Screen.Home.route) {
+        composable(route = Screen.Home.route) {
+            HomeScreen { name ->
+                navController.navigate(Screen.Details.createRoute(name))
+            }
+        }
+        composable(
+            route = Screen.Details.route,
+            arguments = listOf(navArgument("name") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val name = backStackEntry.arguments?.getString("name") ?: ""
+            DetailsScreen(name = name, { navController.popBackStack() }, {
+                navController.navigate(Screen.ThirdScreen.route)
+            })
+        }
+
+        composable(
+            route = Screen.ThirdScreen.route
+        ) { backStackEntry ->
+
+            ThirdScreen {
+                navController.popBackStack()
+            }
+        }
+    }
+}
+
+@Composable
 fun TutorialNavGraph(
     mainViewModel: MainViewModel,
     modifier: Modifier = Modifier,
@@ -460,12 +507,153 @@ fun TutorialNavGraph(
             //BoxAnim()
             Column(
                 modifier = Modifier
-                    .padding(top = 20.dp)
                     .background(Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
-                SOBlur()
+                val calendarViewModel: CalendarViewModel = viewModel()
+                CalendarScreen(onBackPressed = {
+                    navController.popBackStack()
+                }, mainViewModel = calendarViewModel)
+
+                PercentageBaseLayout()
+
+//                MultiColorProgressCanvas(
+//                    modifier = Modifier
+//                        .height(16.dp)
+//                        .padding(16.dp)
+//                        .fillMaxSize(),
+//                    heightOfProgress = 8.dp,
+//                    cornerRadii = 2.dp
+//                )
+//
+//                Spacer(modifier = Modifier.padding(top = 30.dp))
+//
+//                Column(
+//                    modifier = Modifier
+//                        .height(150.dp)
+//                        .fillMaxWidth()
+//                        .padding(horizontal = 16.dp)
+//                        .align(Alignment.CenterHorizontally)
+//                ) {
+//                    Row(
+//                        modifier = Modifier.align(Alignment.CenterHorizontally),
+//                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+//                    ) {
+//                        Legend(Color(0xFFE30513), "Danger", alpha = true)
+//
+//                        Legend(Color(0xFFF7AB20), "Stress", alpha = true)
+//
+//                        Legend(Color(0xFF25AB21), "Optimum", alpha = true)
+//
+//                        Legend(Color(0xFF2253DA), "Excess", alpha = false)
+//                    }
+//
+//                    Speedometer3(
+//                        modifier = Modifier.padding(top = 16.dp),
+//                        25,
+//                        10,
+//                        10,
+//                        55,
+//                        50
+//                    )
+//
+//                    Row(
+//                        modifier = Modifier
+//                            .align(Alignment.CenterHorizontally)
+//                            .padding(top = 16.dp)
+//                            .height(32.dp)
+//                    ) {
+//
+//                        Text(
+//                            modifier = Modifier,
+//                            text = "68.1",
+//                            style = TextStyle(
+//                                fontSize = 32.sp,
+//                                lineHeight = 32.sp,
+//                                fontFamily = FontFamily(Font(R.font.jio_type_black)),
+//                                fontWeight = FontWeight(900),
+//                                color = Color(0xFF141414),
+//
+//                                )
+//                        )
+//                        Box(
+//                            modifier = Modifier
+//                                .align(Alignment.Bottom)
+//                                .width(18.dp)
+//                                .height(24.dp)
+//                                .padding(start = 2.dp, end = 1.dp)
+//                        ) {
+//                            Text(
+//                                modifier = Modifier.padding(top = 3.dp),
+//                                text = "%",
+//                                style = TextStyle(
+//                                    fontSize = 18.sp,
+//                                    lineHeight = 24.sp,
+//                                    fontFamily = FontFamily(Font(R.font.jio_type_light)),
+//                                    fontWeight = FontWeight(700),
+//                                    color = Color(0xFF141414),
+//                                    textAlign = TextAlign.Center
+//                                )
+//                            )
+//                        }
+//                    }
+//
+//                    Text(
+//                        modifier = Modifier
+//                            .padding(top = 4.dp)
+//                            .align(Alignment.CenterHorizontally),
+//                        text = "Soil moisture (vwc%)",
+//                        style = TextStyle(
+//                            fontSize = 14.sp,
+//                            lineHeight = 20.sp,
+//                            fontFamily = FontFamily(Font(R.font.jio_type_medium)),
+//                            fontWeight = FontWeight(500),
+//                            color = Color(0xA6000000),
+//
+//                            textAlign = TextAlign.Center,
+//                        )
+//                    )
+//
+//                }
+//
+//                Spacer(modifier = Modifier.padding(top = 16.dp))
+//
+//                TemperatureChart3(
+//                    modifier = Modifier
+//                        .padding(start = 16.dp, end = 16.dp)
+//                        .height(78.dp)
+//                        .fillMaxWidth(), 20, -15, 60
+//                )
+//
+//                Spacer(modifier = Modifier.padding(top = 16.dp))
+//
+//                TemperatureChart(
+//                    modifier = Modifier
+//                        .padding(start = 16.dp, end = 16.dp)
+//                        .height(78.dp)
+//                        .fillMaxWidth(), 30, 0, 60
+//                )
+//
+//                Spacer(modifier = Modifier.padding(top = 16.dp))
+//
+//                Box(modifier = Modifier) {
+//
+//                    PieChartPreview { _, _ ->
+//                    }
+//                }
+//
+//                CreateAlertDialog()
+                //ParentComposable()
+
+                //ProgressMeter()
+                //GeneralAlertsList()
+
+//                val listViewModel: ListViewModel = viewModel()
+//
+//                DummyList(listViewModel) {
+//                    listViewModel.updateItems(UIActions.Update(it))
+//                }
 
 //                val context = LocalContext.current
 //                val list = remember { mutableStateListOf<CropHolder>() }
@@ -994,3 +1182,91 @@ fun TutorialNavGraph(
          )
      }
  }*/
+
+@Preview(showBackground = true)
+@Composable
+fun Telegu() {
+
+    Text(
+        modifier = Modifier,
+        text = "స్ప్రే చేశారా?",
+        style = TextStyle(
+            fontSize = 32.sp,
+            lineHeight = 32.sp,
+            fontFamily = FontFamily(Font(R.font.jio_type_black)),
+            fontWeight = FontWeight(900),
+            color = Color(0xFF141414),
+
+            )
+    )
+}
+
+@Preview(widthDp = 300, showBackground = true)
+@Composable
+fun PreviewScreen() {
+
+    Column {
+        Row(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Legend(Color(0xFFE30513), "ప్రమాదం", alpha = true)
+
+            Legend(Color(0xFFF7AB20), "ఒత్తిడి", alpha = false)
+
+            Legend(Color(0xFF25AB21), "వాంఛనీయ", alpha = true)
+
+            Legend(Color(0xFF2253DA), "అదనపు", alpha = true)
+        }
+        Speedometer3(
+            modifier = Modifier.padding(top = 16.dp),
+            25,
+            10,
+            10,
+            55,
+            50
+        )
+
+        Row(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 16.dp)
+                .height(32.dp)
+        ) {
+
+            Text(
+                modifier = Modifier,
+                text = "68.1",
+                style = TextStyle(
+                    fontSize = 32.sp,
+                    lineHeight = 32.sp,
+                    fontFamily = FontFamily(Font(R.font.jio_type_black)),
+                    fontWeight = FontWeight(900),
+                    color = Color(0xFF141414),
+
+                    )
+            )
+            Box(
+                modifier = Modifier
+                    .align(Alignment.Bottom)
+                    .width(18.dp)
+                    .height(24.dp)
+                    .padding(start = 2.dp, end = 1.dp)
+            ) {
+                Text(
+                    modifier = Modifier.padding(top = 3.dp),
+                    text = "%",
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        lineHeight = 24.sp,
+                        fontFamily = FontFamily(Font(R.font.jio_type_light)),
+                        fontWeight = FontWeight(700),
+                        color = Color(0xFF141414),
+                        textAlign = TextAlign.Center
+                    )
+                )
+            }
+        }
+    }
+
+}
