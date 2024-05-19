@@ -1,5 +1,6 @@
 package com.example.composelearning.pager
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.tween
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -77,7 +79,7 @@ fun CropBar(onCropClicked: (Int) -> Unit) {
             selectedTabIndex = selectedIndex,
             backgroundColor = Color(0xFF03753C),
             indicator = indicator,
-            minItemWidth = 100.dp,
+            minItemWidth = 58.dp,
             edgePadding = 0.dp,
             divider = {
             },
@@ -88,7 +90,7 @@ fun CropBar(onCropClicked: (Int) -> Unit) {
                 Tab(
                     modifier = Modifier
                         .height(58.dp)
-                        .width(74.dp)
+                        .width(42.dp)
                         .zIndex(2f),
                     selected = selectedIndex == index,
                     onClick = {
@@ -103,40 +105,40 @@ fun CropBar(onCropClicked: (Int) -> Unit) {
             }
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+//        Spacer(modifier = Modifier.height(20.dp))
 
-        MyScrollableTabRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(58.dp),
-            selectedTabIndex = selectedIndex,
-            backgroundColor = Color(0xFF03753C),
-            indicator = indicator,
-            minItemWidth = 0.dp,
-            edgePadding = 0.dp,
-            divider = {
-            },
-
-            ) {
-            pages.forEachIndexed { index, title ->
-
-                Tab(
-                    modifier = Modifier
-                        .height(58.dp)
-                        .width(74.dp)
-                        .zIndex(2f),
-                    selected = selectedIndex == index,
-                    onClick = {
-                        selectedIndex = index
-                        onCropClicked(index)
-                    },
-                    interactionSource = NoRippleInteractionSource()
-                ) {
-
-                    SampleImage(selectedIndex)
-                }
-            }
-        }
+//        MyScrollableTabRow(
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .height(58.dp),
+//            selectedTabIndex = selectedIndex,
+//            backgroundColor = Color(0xFF03753C),
+//            indicator = indicator,
+//            minItemWidth = 42.dp,
+//            edgePadding = 16.dp,
+//            divider = {
+//            },
+//
+//            ) {
+//            pages.forEachIndexed { index, title ->
+//
+//                Tab(
+//                    modifier = Modifier
+//                        .height(58.dp)
+//                        .width(42.dp)
+//                        .zIndex(2f),
+//                    selected = selectedIndex == index,
+//                    onClick = {
+//                        selectedIndex = index
+//                        onCropClicked(index)
+//                    },
+//                    interactionSource = NoRippleInteractionSource()
+//                ) {
+//
+//                    SampleImage(selectedIndex)
+//                }
+//            }
+//        }
     }
 }
 
@@ -171,7 +173,6 @@ private fun CustomIndicator(tabPositions: List<TabPosition>, selectedIndex: Int,
     }
     Box(
         Modifier
-            .padding(top = 8.dp)
             .offset(x = indicatorStart)
             .wrapContentSize(align = Alignment.BottomStart)
             .width(indicatorEnd - indicatorStart)
@@ -185,6 +186,7 @@ private fun CustomIndicator(tabPositions: List<TabPosition>, selectedIndex: Int,
     )
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun SampleImage(selectedIndex: Int) {
 
@@ -193,9 +195,9 @@ fun SampleImage(selectedIndex: Int) {
     ) {
         Image(
             modifier = Modifier
-                .padding(top = 8.dp)
                 .width(42.dp)
                 .height(42.dp)
+                .clip(CircleShape)
                 .align(Alignment.BottomCenter),
             painter = painterResource(id = R.drawable.ic_launcher_background),
             contentDescription = "Image"
