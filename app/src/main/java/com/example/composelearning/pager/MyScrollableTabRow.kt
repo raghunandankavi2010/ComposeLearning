@@ -324,7 +324,7 @@ private class ScrollableTabData(
     }
 }
 
-private val ScrollableTabRowMinimumTabWidth = 60.dp
+private val ScrollableTabRowMinimumTabWidth = 42.dp
 
 /**
  * [AnimationSpec] used when scrolling to a tab that is not fully visible.
