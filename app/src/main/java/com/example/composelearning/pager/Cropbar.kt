@@ -54,7 +54,7 @@ private fun Test() {
 }
 
 @Composable
-fun CropBar(onCropClicked: (Int) -> Unit) {
+fun CropBar(modifier: Modifier = Modifier,onCropClicked: (Int) -> Unit) {
     Column {
 
         Spacer(modifier = Modifier.height(20.dp))
