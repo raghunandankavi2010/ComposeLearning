@@ -1,4 +1,4 @@
-
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     ext {
@@ -12,6 +12,27 @@ plugins {
     id 'org.jetbrains.kotlin.android' version '1.9.22' apply false
 
 
+}
+
+subprojects {
+    tasks.withType(KotlinCompile).configureEach {
+        kotlinOptions {
+            if (project.findProperty("composeCompilerReports") == "true") {
+                freeCompilerArgs += [
+                        "-P",
+                        "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
+                                project.buildDir.absolutePath + "/compose_compiler"
+                ]
+            }
+            if (project.findProperty("composeCompilerMetrics") == "true") {
+                freeCompilerArgs += [
+                        "-P",
+                        "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
+                                project.buildDir.absolutePath + "/compose_compiler"
+                ]
+            }
+        }
+    }
 }
 
 
