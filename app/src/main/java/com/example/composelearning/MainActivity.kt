@@ -47,14 +47,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -471,6 +475,7 @@ fun JetpackComposeNavigationApp() {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TutorialNavGraph(
     mainViewModel: MainViewModel,
@@ -506,13 +511,29 @@ fun TutorialNavGraph(
             //BoxAnim()
             Column(
                 modifier = Modifier
+                    .semantics {
+                        testTagsAsResourceId = true // typically at the root ui element
+                    }
                     .background(Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
-                CropBar() {
-
+                CropBar(
+                    modifier = Modifier.testTag(
+                        "loginButton"
+                    )
+                ) {
                 }
+            }
+        }
+
+        //MarqueeText(LoremIpsum().values.first().take(90))
+        composable("SecondScreen") {
+            SecondScreen(shouldRedirect)
+        }
+    }
+
+}
 
 //                val calendarViewModel: CalendarViewModel = viewModel()
 //                CalendarScreen(onBackPressed = {
@@ -647,10 +668,10 @@ fun TutorialNavGraph(
 //                }
 //
 //                CreateAlertDialog()
-                //ParentComposable()
+//ParentComposable()
 
-                //ProgressMeter()
-                //GeneralAlertsList()
+//ProgressMeter()
+//GeneralAlertsList()
 
 //                val listViewModel: ListViewModel = viewModel()
 //
@@ -704,7 +725,7 @@ fun TutorialNavGraph(
 //                }) {
 //
 //                }
-                //Pager2()
+//Pager2()
 
 //                ThermometerCanvas(
 //                    modifier = Modifier
@@ -713,7 +734,7 @@ fun TutorialNavGraph(
 //                        .align(Alignment.CenterHorizontally)
 //                )
 
-                //PagerIndicatorDemo()
+//PagerIndicatorDemo()
 
 //                ButtonWithBorder(
 //                    textColor = Color.Red,
@@ -724,12 +745,12 @@ fun TutorialNavGraph(
 //                    ) {
 //
 //                }
-                //ShapeTry()
-                // Speedometer(100)
-                //LazyRowLikePager()
-                //navController.popBackStack("A",inclusive = true) in c
-                //PagerIndicatorDemo()
-                //CircleRowWithTextAndImage()
+//ShapeTry()
+// Speedometer(100)
+//LazyRowLikePager()
+//navController.popBackStack("A",inclusive = true) in c
+//PagerIndicatorDemo()
+//CircleRowWithTextAndImage()
 
 //                val focusRequester = remember { FocusRequester() }
 //                val focusManager = LocalFocusManager.current
@@ -763,31 +784,30 @@ fun TutorialNavGraph(
 //                BoxAnim2() {
 //                    navController.navigate("SecondScreen")
 //                }
-                //GeneralAlertsList()
+//GeneralAlertsList()
 //                ThermometerCanvas(
 //                    modifier = Modifier
 //                        .size(300.dp)
 //                        .background(Color.Black)
 //                        .align(Alignment.CenterHorizontally)
 //                )
-                //NumberPicker(Modifier.padding(top = 50.dp))
-                // BoxOverlap(modifier =  Modifier.padding(top = 50.dp).align(Alignment.CenterHorizontally))
-                //LazyRowLikePager()
+//NumberPicker(Modifier.padding(top = 50.dp))
+// BoxOverlap(modifier =  Modifier.padding(top = 50.dp).align(Alignment.CenterHorizontally))
+//LazyRowLikePager()
 
 //                PagerIndicatorDemo()
 //                val progress = remember {
 //                    50
 //                }
-                //GeneralAlertsList()
-                //SwipetoDismiss()
+//GeneralAlertsList()
+//SwipetoDismiss()
 //                PieChartPreview(){ chartData,index ->
 //
 //                }
-            }
-        }
-        //SpeedometerScreen()
-        //Speedometer2(progress)
-        //Speedometer(progress)
+
+//SpeedometerScreen()
+//Speedometer2(progress)
+//Speedometer(progress)
 //                Spacer(modifier = Modifier.padding(16.dp))
 //                Text(
 //                    text = "E",
@@ -827,16 +847,16 @@ fun TutorialNavGraph(
 //                PagerIndicatorDemo()
 
 
-        //PagerDemo3()
-        //MaxWidthText()
+//PagerDemo3()
+//MaxWidthText()
 //            Column(modifier = Modifier.height(80.dp).padding(top = 20.dp)) {
 //                EquiRow()
 //            }
 
-        //AnotherProgressBar()
-        //ContinuousLineGraph()
-        //AnimatedHeartShape()
-        //ImageWithRedDot()
+//AnotherProgressBar()
+//ContinuousLineGraph()
+//AnimatedHeartShape()
+//ImageWithRedDot()
 //            Box {
 //                                            Image(
 //                                painter = painterResource(id = R.drawable.ic_launcher_background),
@@ -849,7 +869,7 @@ fun TutorialNavGraph(
 //                            )
 //            }
 
-        // Filters()
+// Filters()
 //            val items = remember {
 //                listOf("Man", "Woman")
 //            }
@@ -867,10 +887,10 @@ fun TutorialNavGraph(
 //                        selectedIndex = it
 //                    }
 //                )
-        //Chart()
-        // EquiRow()
-        //LazyRowWithColorAnimation()
-        //Speedometer(progress = 100)
+//Chart()
+// EquiRow()
+//LazyRowWithColorAnimation()
+//Speedometer(progress = 100)
 //                InstagramCarousel(
 //                    modifier = Modifier.align(Alignment.CenterHorizontally)
 //                        .fillMaxWidth()
@@ -881,16 +901,7 @@ fun TutorialNavGraph(
 //                            style = MaterialTheme.typography.bodyMedium
 //                        )
 //                    })
-        //           }
-
-        //MarqueeText(LoremIpsum().values.first().take(90))
-        composable("SecondScreen") {
-            SecondScreen(shouldRedirect)
-        }
-    }
-
-}
-
+//           }
 
 //                        Column(
 //                            modifier = Modifier
