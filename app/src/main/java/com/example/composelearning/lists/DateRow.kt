@@ -1,5 +1,7 @@
 package com.example.composelearning.lists
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,6 +27,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CalendarLazyRow() {
     val dateFormatter = DateTimeFormatter.ofPattern("yyyy, MMM d")
