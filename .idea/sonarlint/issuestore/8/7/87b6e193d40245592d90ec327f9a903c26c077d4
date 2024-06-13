@@ -1,0 +1,5 @@
+
+Skotlin:S6619Z";Remove this useless elvis operation ?:, it always succeeds.(ÞüÎ¬
+Pkotlin:S6619Š"7Remove this useless non-null check, it always succeeds.(™­ÿ¢
+9kotlin:S6305Ÿ" Don't expose mutable flow types.(®ì³ß
+dkotlin:S1871I"LThis branch's code block is the same as the block for the branch on line 69.(Îñ¯ð
