@@ -88,7 +88,7 @@ fun WeekSelectionPill(
 }
 
 /**
- * Calculates the animated Offset and Size of the red selection pill based on the CalendarState and
+ * Calculates the animated Offset and Size of the red selection pill based on the CalendarState.kt and
  * the Week SelectionState, based on the overall selectedPercentage.
  */
 @RequiresApi(Build.VERSION_CODES.O)

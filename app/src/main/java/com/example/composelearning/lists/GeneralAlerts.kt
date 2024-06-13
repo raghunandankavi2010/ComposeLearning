@@ -28,10 +28,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
@@ -61,6 +65,7 @@ fun getAlertsData(): MutableList<AlertsData> {
     return list
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Preview
 @Composable
 fun GeneralAlertsList() {
@@ -68,6 +73,9 @@ fun GeneralAlertsList() {
     val expand = remember { mutableStateMapOf<Int, Boolean>() }
     LazyColumn(
         modifier = Modifier
+            .semantics {
+                testTagsAsResourceId = true // typically at the root ui element
+            }
             .background(Color(0x29000000))
             .padding(top = 16.dp)
     ) {
@@ -84,6 +92,9 @@ fun GeneralAlerts(alertsData: AlertsData, expand: SnapshotStateMap<Int, Boolean>
 
     ElevatedCard(
         modifier = Modifier
+              .testTag(
+                "Alerts${alertsData.id}"
+                )
             .fillMaxSize()
             .wrapContentHeight()
             .padding(start = 16.dp, end = 16.dp),
