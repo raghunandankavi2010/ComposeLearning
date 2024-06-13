@@ -97,6 +97,7 @@ dependencies {
     implementation(// https://mvnrepository.com/artifact/androidx.paging/paging-compose
             runtimeOnly group: 'androidx.paging', name: 'paging-compose', version: '3.2.1'
     )
+    implementation "com.google.accompanist:accompanist-permissions:0.34.0"
 
 
 
