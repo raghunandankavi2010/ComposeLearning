@@ -510,9 +510,10 @@ fun TutorialNavGraph(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
-                CropBar() {
-
-                }
+                BottomBar()
+//                CropBar() {
+//
+//                }
 
 //                val calendarViewModel: CalendarViewModel = viewModel()
 //                CalendarScreen(onBackPressed = {
