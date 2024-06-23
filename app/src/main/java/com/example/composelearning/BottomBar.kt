@@ -54,11 +54,11 @@ sealed class Screen(val route: String) {
 @Composable
 fun BottomBar() {
     val navController = rememberNavController()
-    val showSearch = remember { mutableStateOf(false) }
+    val showSearch = remember { mutableStateOf(true) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedItem by remember { mutableIntStateOf(0) }
-    val items = listOf("Songs", "Artists", "Playlists")
+    val items = listOf("Songs", "Artists", "SmartFarm"," Activity")
     val drawerItems = listOf(
         Icons.Default.AccountCircle,
         Icons.Default.Favorite,
@@ -98,15 +98,15 @@ fun BottomBar() {
                 TopAppBar(
                     title = { Text(text = "BottombarDemo") },
                     actions = {
-                        if (showSearch.value) {
+                       // if (showSearch.value) {
                             IconButton(onClick = { showSearch.value = false }) {
                                 Icon(Icons.Filled.Search, contentDescription = "Search")
                             }
-                        } else {
+                        //} else {
                             IconButton(onClick = { showSearch.value = true }) {
                                 Icon(Icons.Filled.Settings, contentDescription = "Settings")
                             }
-                        }
+                        //}
                     },
                     navigationIcon = {
                         IconButton(onClick = {
