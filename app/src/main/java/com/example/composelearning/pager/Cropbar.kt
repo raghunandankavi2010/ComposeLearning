@@ -54,22 +54,16 @@ private fun Test() {
 }
 
 @Composable
-fun CropBar(onCropClicked: (Int) -> Unit) {
+fun CropBar(modifier: Modifier = Modifier,onCropClicked: (Int) -> Unit) {
     Column {
 
         Spacer(modifier = Modifier.height(20.dp))
         var selectedIndex by remember { mutableStateOf(0) }
-        val pages = listOf("kotlin", "java", "c#", "php", "golang", "A", "B", "C")
-        val colors = listOf(Color.Yellow, Color.Red, Color.White, Color.Blue, Color.Magenta)
+        val pages = listOf("kotlin", "java", "c#", "php", "golang", "A", "B", "C", "kotlin", "java", "c#", "php", "golang", "A", "B", "C")
+        val colors = listOf(Color.Yellow, Color.Red, Color.White, Color.Blue, Color.Magenta,Color.Yellow, Color.Red, Color.White, Color.Blue, Color.Magenta,Color.Magenta,Color.Yellow, Color.Red, Color.White, Color.Blue, Color.Magenta)
 
         val indicator = @Composable { tabPositions: List<TabPosition> ->
-            val color = when (selectedIndex) {
-                0 -> colors[0]
-                1 -> colors[1]
-                2 -> colors[2]
-                3 -> colors[3]
-                else -> colors[4]
-            }
+            val color = colors[selectedIndex]
             CustomIndicator(tabPositions = tabPositions, selectedIndex = selectedIndex, color)
         }
         MyScrollableTabRow(
