@@ -39,6 +39,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 
@@ -57,8 +58,7 @@ fun BottomBar() {
     val showSearch = remember { mutableStateOf(true) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    var selectedItem by remember { mutableIntStateOf(0) }
-    val items = listOf("Songs", "Artists", "SmartFarm"," Activity")
+    val items = listOf("home", "profile", "settings","other")
     val drawerItems = listOf(
         Icons.Default.AccountCircle,
         Icons.Default.Favorite,
@@ -124,20 +124,32 @@ fun BottomBar() {
                 )
             },
             bottomBar = {
+
+                // observe the backstack
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+
+                // observe current route to change the icon
+                // color,label color when navigated
+                val currentRoute = navBackStackEntry?.destination?.route
+
                 NavigationBar {
                     items.forEachIndexed { index, item ->
                         NavigationBarItem(
                             icon = { Icon(Icons.Filled.Favorite, contentDescription = item) },
                             label = { Text(item) },
-                            selected = selectedItem == index,
-                            onClick = { selectedItem = index }
+                            selected =  currentRoute == item,
+                            onClick = {
+                                navController.navigate(item) {
+                                    popUpTo(navController.graph.startDestinationId)
+                                    launchSingleTop = true
+                                }
+                            }
                         )
                     }
                 }
             },
-
-            ) {
-            NavHost(navController = navController, startDestination = Screen.Home.route) {
+            ) { inerPadding ->
+            NavHost(modifier = Modifier.padding(inerPadding),navController = navController, startDestination = Screen.Home.route) {
                 composable(Screen.Home.route) { HomeContent() }
                 composable(Screen.Profile.route) { ProfileContent() }
                 composable(Screen.Settings.route) { SettingsContent() }
@@ -151,19 +163,23 @@ fun BottomBar() {
 @Composable
 fun HomeContent() {
     // Content for Home screen
+    Text("home")
 }
 
 @Composable
 fun ProfileContent() {
+    Text("profile")
     // Content for Profile screen
 }
 
 @Composable
 fun SettingsContent() {
+    Text("settings")
     // Content for Settings screen
 }
 
 @Composable
 fun OtherContent() {
+    Text("Other")
     // Content for Other screen
 }
