@@ -2,6 +2,7 @@ package com.example.composelearning
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -43,15 +44,19 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -71,6 +76,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.composelearning.customshapes.OTPTextField
+import com.example.composelearning.images.ImageWithAction
+import com.example.composelearning.lists.CropHolder
+import com.example.composelearning.lists.CropScreen
+import com.example.composelearning.lists.getCropList
 import com.example.composelearning.pager.CropBar
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
@@ -510,7 +520,43 @@ fun TutorialNavGraph(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
-                BottomBar()
+                val context = LocalContext.current
+                val list = remember { mutableStateListOf<CropHolder>() }
+                LaunchedEffect(Unit) {
+                    repeat(3) {
+                        val cropHolder = CropHolder(R.drawable.tomato, R.drawable.ic_remove, it)
+                        list.add(cropHolder)
+                    }
+                }
+                //ImageWithAction()
+                val cropList by remember { mutableStateOf(getCropList()) }
+                val selectedIds = remember { mutableStateOf(emptySet<Int>()) }
+                CropScreen(list,cropList, selectedIds, { selected, cropId ->
+                    if (!selectedIds.value.contains(cropId) && selectedIds.value.size + list.size > 9) {
+                        selectedIds.value = selectedIds.value.minus(cropId)
+                        Toast.makeText(
+                            context,
+                            "Cannot select more than 10 crops",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        selectedIds.value = if (selected) {
+                            selectedIds.value.plus(cropId)
+                        } else {
+                            selectedIds.value.minus(cropId)
+                        }
+                    }
+                }, { cropId, index ->
+                    if (list.isNotEmpty()) {
+                        Toast.makeText(
+                            context,
+                            "Item Deleted at $index",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        list.removeAt(index)
+                    }
+                })
+                //BottomBar()
 //                CropBar() {
 //
 //                }
@@ -659,42 +705,7 @@ fun TutorialNavGraph(
 //                    listViewModel.updateItems(UIActions.Update(it))
 //                }
 
-//                val context = LocalContext.current
-//                val list = remember { mutableStateListOf<CropHolder>() }
-//                LaunchedEffect(Unit) {
-//                    repeat(3) {
-//                        val cropHolder = CropHolder(R.drawable.tomato, R.drawable.ic_remove, it)
-//                        list.add(cropHolder)
-//                    }
-//                }
-//                //ImageWithAction()
-//                val cropList by remember { mutableStateOf(getCropList()) }
-//                val selectedIds = remember { mutableStateOf(emptySet<Int>()) }
-//                CropScreen(list,cropList, selectedIds, { selected, cropId ->
-//                    if (!selectedIds.value.contains(cropId) && selectedIds.value.size + list.size > 9) {
-//                        selectedIds.value = selectedIds.value.minus(cropId)
-//                        Toast.makeText(
-//                            context,
-//                            "Cannot select more than 10 crops",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    } else {
-//                        selectedIds.value = if (selected) {
-//                            selectedIds.value.plus(cropId)
-//                        } else {
-//                            selectedIds.value.minus(cropId)
-//                        }
-//                    }
-//                }, { cropId, index ->
-//                    if (list.isNotEmpty()) {
-//                        Toast.makeText(
-//                            context,
-//                            "Item Deleted at $index",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                        list.removeAt(index)
-//                    }
-//                })
+
 //                ButtonSandbox()
 //                CustomRoundedButton(modifier = Modifier.width(200.dp).padding(top = 20.dp), content = {
 //                    CircularProgressIndicator(
@@ -732,23 +743,23 @@ fun TutorialNavGraph(
                 //PagerIndicatorDemo()
                 //CircleRowWithTextAndImage()
 
-//                val focusRequester = remember { FocusRequester() }
-//                val focusManager = LocalFocusManager.current
-//                var text by remember {
-//                    mutableStateOf("")
-//                }
-//
-//                OTPTextField(
-//                    value = text,
-//                    length = 4,
-//                    onValueChange = {
-//                        text = it
-//                        if (text.length == 4) {
-//                            // Handle the case when the OTP is complete
-//                            focusManager.clearFocus(true)
-//                        }
-//                    }
-//                )
+                val focusRequester = remember { FocusRequester() }
+                val focusManager = LocalFocusManager.current
+                var text by remember {
+                    mutableStateOf("")
+                }
+
+                OTPTextField(
+                    value = text,
+                    length = 4,
+                    onValueChange = {
+                        text = it
+                        if (text.length == 4) {
+                            // Handle the case when the OTP is complete
+                            focusManager.clearFocus(true)
+                        }
+                    }
+                )
 //
 //                PagerDemo3()
 //                ThermometerCanvas(
