@@ -205,14 +205,8 @@ fun ImageWithAction(
         ImageVector.vectorResource(id = R.drawable.ic_select_border)
     }
     val painter = rememberVectorPainter(image = vector)
-
     val context = LocalContext.current
-
     val selectUnselect = remember { mutableStateOf(false) }
-
-    // When the user taps on the Canvas, you can
-    // check if the tap offset is in one of the
-    // tracked Rects.
     val vectorImageBounds = rememberImageBounds()
 
     val borderModifier = if (selected|| isRemoveIconShow) {
