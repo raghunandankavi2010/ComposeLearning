@@ -82,6 +82,7 @@ import com.example.composelearning.lists.CropHolder
 import com.example.composelearning.lists.CropScreen
 import com.example.composelearning.lists.getCropList
 import com.example.composelearning.pager.CropBar
+import com.example.composelearning.pager.PagerIndicatorDemo
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
 import com.example.composelearning.ui.theme.ComposeLearningTheme
@@ -520,6 +521,9 @@ fun TutorialNavGraph(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
+
+                PagerIndicatorDemo()
+
                 val context = LocalContext.current
                 val list = remember { mutableStateListOf<CropHolder>() }
                 LaunchedEffect(Unit) {
@@ -528,34 +532,34 @@ fun TutorialNavGraph(
                         list.add(cropHolder)
                     }
                 }
-                //ImageWithAction()
-                val cropList by remember { mutableStateOf(getCropList()) }
-                val selectedIds = remember { mutableStateOf(emptySet<Int>()) }
-                CropScreen(list,cropList, selectedIds, { selected, cropId ->
-                    if (!selectedIds.value.contains(cropId) && selectedIds.value.size + list.size > 9) {
-                        selectedIds.value = selectedIds.value.minus(cropId)
-                        Toast.makeText(
-                            context,
-                            "Cannot select more than 10 crops",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        selectedIds.value = if (selected) {
-                            selectedIds.value.plus(cropId)
-                        } else {
-                            selectedIds.value.minus(cropId)
-                        }
-                    }
-                }, { cropId, index ->
-                    if (list.isNotEmpty()) {
-                        Toast.makeText(
-                            context,
-                            "Item Deleted at $index",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        list.removeAt(index)
-                    }
-                })
+//                //ImageWithAction()
+//                val cropList by remember { mutableStateOf(getCropList()) }
+//                val selectedIds = remember { mutableStateOf(emptySet<Int>()) }
+//                CropScreen(list,cropList, selectedIds, { selected, cropId ->
+//                    if (!selectedIds.value.contains(cropId) && selectedIds.value.size + list.size > 9) {
+//                        selectedIds.value = selectedIds.value.minus(cropId)
+//                        Toast.makeText(
+//                            context,
+//                            "Cannot select more than 10 crops",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    } else {
+//                        selectedIds.value = if (selected) {
+//                            selectedIds.value.plus(cropId)
+//                        } else {
+//                            selectedIds.value.minus(cropId)
+//                        }
+//                    }
+//                }, { cropId, index ->
+//                    if (list.isNotEmpty()) {
+//                        Toast.makeText(
+//                            context,
+//                            "Item Deleted at $index",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                        list.removeAt(index)
+//                    }
+//                })
                 //BottomBar()
 //                CropBar() {
 //
