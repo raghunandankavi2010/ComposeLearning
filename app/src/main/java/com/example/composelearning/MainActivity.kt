@@ -78,13 +78,17 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.composelearning.customshapes.OTPTextField
 import com.example.composelearning.images.ImageWithAction
+import com.example.composelearning.lists.CalendarLazyRow
 import com.example.composelearning.lists.CropHolder
 import com.example.composelearning.lists.CropScreen
 import com.example.composelearning.lists.getCropList
 import com.example.composelearning.pager.CropBar
 import com.example.composelearning.pager.PagerIndicatorDemo
+import com.example.composelearning.progess.CircleProgressInfinite
+import com.example.composelearning.progess.MultiColorProgress
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
+import com.example.composelearning.textfields.AmountTextField
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 import com.example.composelearning.ui.theme.DetailsScreen
 import com.example.composelearning.ui.theme.HomeScreen
@@ -521,17 +525,21 @@ fun TutorialNavGraph(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
 
+                CircleProgressInfinite()
+                MultiColorProgress()
+                //AmountTextField()
+                //CalendarLazyRow()
 
-                PagerIndicatorDemo()
-
-                val context = LocalContext.current
-                val list = remember { mutableStateListOf<CropHolder>() }
-                LaunchedEffect(Unit) {
-                    repeat(3) {
-                        val cropHolder = CropHolder(R.drawable.tomato, R.drawable.ic_remove, it)
-                        list.add(cropHolder)
-                    }
-                }
+//                PagerIndicatorDemo()
+//
+//                val context = LocalContext.current
+//                val list = remember { mutableStateListOf<CropHolder>() }
+//                LaunchedEffect(Unit) {
+//                    repeat(3) {
+//                        val cropHolder = CropHolder(R.drawable.tomato, R.drawable.ic_remove, it)
+//                        list.add(cropHolder)
+//                    }
+//                }
 //                //ImageWithAction()
 //                val cropList by remember { mutableStateOf(getCropList()) }
 //                val selectedIds = remember { mutableStateOf(emptySet<Int>()) }
@@ -747,23 +755,23 @@ fun TutorialNavGraph(
                 //PagerIndicatorDemo()
                 //CircleRowWithTextAndImage()
 
-                val focusRequester = remember { FocusRequester() }
-                val focusManager = LocalFocusManager.current
-                var text by remember {
-                    mutableStateOf("")
-                }
+//                val focusRequester = remember { FocusRequester() }
+//                val focusManager = LocalFocusManager.current
+//                var text by remember {
+//                    mutableStateOf("")
+//                }
 
-                OTPTextField(
-                    value = text,
-                    length = 4,
-                    onValueChange = {
-                        text = it
-                        if (text.length == 4) {
-                            // Handle the case when the OTP is complete
-                            focusManager.clearFocus(true)
-                        }
-                    }
-                )
+//                OTPTextField(
+//                    value = text,
+//                    length = 4,
+//                    onValueChange = {
+//                        text = it
+//                        if (text.length == 4) {
+//                            // Handle the case when the OTP is complete
+//                            focusManager.clearFocus(true)
+//                        }
+//                    }
+//                )
 //
 //                PagerDemo3()
 //                ThermometerCanvas(
