@@ -41,17 +41,17 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-val calendarEndDate: LocalDate = LocalDate.now()
-val calendarStartDate: LocalDate = LocalDate.now().minusYears(1)
-val initialDates = getDatesBetween(calendarStartDate, calendarEndDate)
 
-val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MMM")
-val dateFormatter2: DateTimeFormatter = DateTimeFormatter.ofPattern("d")
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CalendarLazyRow() {
+    val calendarEndDate: LocalDate = LocalDate.now()
+    val calendarStartDate: LocalDate = LocalDate.now().minusYears(1)
+    val initialDates = getDatesBetween(calendarStartDate, calendarEndDate)
 
+    val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("MMM")
+    val dateFormatter2: DateTimeFormatter = DateTimeFormatter.ofPattern("d")
     val lazyListState = rememberLazyListState()
     var selectedDate by remember {
         mutableIntStateOf(0)
