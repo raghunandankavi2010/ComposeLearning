@@ -42,8 +42,16 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-
-@RequiresApi(Build.VERSION_CODES.O)
+/**
+ *
+ * You've hit on a crucial concept in how Compose manages state and recomposition! Let's break down why the isSelected lambda doesn't cause unnecessary recompositions while a simple boolean value would: 1. Lambda as a Calculation, Not State:
+ * Deferred Evaluation: The isSelected lambda you've defined is essentially a small function that calculates whether an item is selected when it's called. It doesn't hold any state itself.
+ * No Direct Dependency: Each DateItem receives this lambda, but it doesn't directly depend on the selectedDateIndex state. The dependency is indirect, through the lambda. 2. Boolean as Direct State Dependency:
+ * Immediate Recomposition: If you were to pass a boolean isSelected value directly to each DateItem, calculated outside the itemsIndexed block, every DateItem would have a direct dependency on that boolean. When selectedDateIndex changes, all those booleans would be recalculated, triggering recomposition for every DateItem. 3. How the Lambda Optimizes:
+ * Targeted Recomposition: With the lambda, when selectedDateIndex changes, Compose only needs to re-evaluate the isSelected lambda for the items whose selection status actually changes. The other DateItem composables don't need to recompose because their isSelected calculation result remains the same. Key Takeaway: By using a lambda to calculate isSelected within each DateItem, you're effectively deferring the state read and comparison until it's absolutely necessary. This breaks the direct dependency between each DateItem and the selectedDateIndex state, leading to much more efficient and targeted recompositions. Think of it this way:
+ * Boolean: A light switch that's either on or off for everyone in the room. Changing the switch affects everyone immediately.
+ * Lambda: Each person has their own little switch they can check whenever they want. Changing the main switch only affects those who need to update their own little switch. This concept of deferring state reads and calculations is fundamental to optimizing performance in Compose applications.
+ */
 @Composable
 fun CalendarLazyRow() {
     val calendarEndDate: LocalDate = LocalDate.now()
@@ -82,7 +90,6 @@ fun CalendarLazyRow() {
 //    }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DateCard(
     index: Int,
