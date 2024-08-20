@@ -1,7 +1,5 @@
 package com.example.composelearning.lists
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.animateScrollBy
@@ -108,8 +106,6 @@ fun DateCard(
                 dateSelected(index)
             }
     ) {
-
-
         Box {
             Column(
                 modifier = Modifier
@@ -174,7 +170,6 @@ fun DateCard(
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun getDatesBetween(startDate: LocalDate, endDate: LocalDate): List<DateRange> {
     val dates = mutableListOf<DateRange>()
     var currentDate = startDate
