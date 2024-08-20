@@ -90,6 +90,7 @@ import com.example.composelearning.progess.CircleProgressInfinite
 import com.example.composelearning.progess.CircularProgressIndicator
 import com.example.composelearning.progess.IndeterminateCircularProgressBar
 import com.example.composelearning.progess.MultiColorProgress
+import com.example.composelearning.sotry.MyScreen
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
 import com.example.composelearning.textfields.AmountTextField
@@ -529,7 +530,8 @@ fun TutorialNavGraph(
                     .background(Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                CalendarLazyRow()
+                MyScreen()
+               // CalendarLazyRow()
 //                CircularProgressIndicator(modifier = Modifier.size(24.dp),
 //                    strokeWidth = 4.dp,
 //                    trackColor = Color.Gray

@@ -8,6 +8,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -1056,13 +1057,16 @@ fun SOBlur() {
         Modifier
             .fillMaxSize()
     ) {
-        Column(modifier = Modifier.fillMaxSize().blur(blur).clickable {
-            if (blur > 0.dp) {
-                blur = 0.dp
-            } else {
-                blur = 4.dp
-            }
-        }) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .blur(blur)
+            .clickable {
+                if (blur > 0.dp) {
+                    blur = 0.dp
+                } else {
+                    blur = 4.dp
+                }
+            }) {
 
 
             Text(text = "Hi")
@@ -1084,18 +1088,57 @@ fun SOBlur() {
 
             Text(text = positionText)
         }
-            Box(Modifier.offset(x = parent.x.pxToDp(), y = parent.y.pxToDp())) {
-                Text(
-                    modifier = Modifier,
-                    text = "Byeeeeeee",
-                    color = Color.Green
-                )
+        Box(Modifier.offset(x = parent.x.pxToDp(), y = parent.y.pxToDp())) {
+            Text(
+                modifier = Modifier,
+                text = "Byeeeeeee",
+                color = Color.Green
+            )
 
-            }
+        }
     }
 }
 
 @Composable
 fun Float.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun MyScreen() {
+    val list = (1..100).map { it.toString() }
+    val lazyListState = rememberLazyListState()
+    val firstVisibleItemIndex by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
+
+    Column {
+
+        if (firstVisibleItemIndex > 0) {
+
+            Box(modifier = Modifier
+                .height(58.dp)
+                .fillMaxWidth()
+                .background(Color.Green))
+
+        }
+        LazyColumn(state = lazyListState) {
+            item {
+                Box(modifier = Modifier
+                    .height(300.dp)
+                    .fillMaxWidth()
+                    .background(Color.Red))
+            }
+            items(list) { item ->
+                Text(
+                    text = item,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .background(Color.Blue)
+                )
+            }
+        }
+    }
+}
+
+
 
 
