@@ -3,7 +3,6 @@ package com.example.composelearning
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -46,19 +45,16 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -78,22 +74,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.composelearning.customshapes.OTPTextField
-import com.example.composelearning.images.ImageWithAction
-import com.example.composelearning.lists.CalendarLazyRow
-import com.example.composelearning.lists.CropHolder
-import com.example.composelearning.lists.CropScreen
-import com.example.composelearning.lists.getCropList
-import com.example.composelearning.pager.CropBar
-import com.example.composelearning.pager.PagerIndicatorDemo
-import com.example.composelearning.progess.CircleProgressInfinite
-import com.example.composelearning.progess.CircularProgressIndicator
-import com.example.composelearning.progess.IndeterminateCircularProgressBar
-import com.example.composelearning.progess.MultiColorProgress
-import com.example.composelearning.sotry.MyScreen
+import com.example.composelearning.pager.TabScreen
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
-import com.example.composelearning.textfields.AmountTextField
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 import com.example.composelearning.ui.theme.DetailsScreen
 import com.example.composelearning.ui.theme.HomeScreen
@@ -525,13 +508,42 @@ fun TutorialNavGraph(
         composable(route = "FirstScreen") { navBackEntryStack ->
             //DraggableLineDrawing()
             //BoxAnim()
+
+            var selectedIndex by remember {
+                mutableIntStateOf(0)
+            }
             Column(
                 modifier = Modifier
                     .background(Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                MyScreen()
-               // CalendarLazyRow()
+                TabScreen()
+//                val pages = listOf(
+//                    "kotlin",
+//                    "java",
+//                    "c#",
+//                    "php",
+//                    "golang",
+//                    "A",
+//                    "B",
+//                    "C",
+//                    "kotlin",
+//                    "java",
+//                    "c#",
+//                    "php",
+//                    "golang",
+//                    "A",
+//                    "B",
+//                    "C"
+//                )
+//
+//
+//                CropBar(pages = pages, onCropClicked = {
+//
+//                }, selectedIndex = selectedIndex, tabSelected = {
+//                    selectedIndex = it
+//                })
+                // CalendarLazyRow()
 //                CircularProgressIndicator(modifier = Modifier.size(24.dp),
 //                    strokeWidth = 4.dp,
 //                    trackColor = Color.Gray
@@ -543,7 +555,7 @@ fun TutorialNavGraph(
 //                    color = Color.Green,
 //                    strokeWidth = 8.dp
 //                )
-               // MultiColorProgress()
+                // MultiColorProgress()
                 //AmountTextField()
                 //CalendarLazyRow()
 
