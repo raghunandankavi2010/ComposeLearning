@@ -1,5 +1,6 @@
 package com.example.composelearning.sotry
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.expandHorizontally
@@ -1103,29 +1104,70 @@ fun SOBlur() {
 fun Float.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
 
 @OptIn(ExperimentalFoundationApi::class)
+//@Composable
+//fun MyScreen() {
+//    val list = (1..100).map { it.toString() }
+//    val lazyListState = rememberLazyListState()
+//    val firstVisibleItemIndex by remember { derivedStateOf { lazyListState.firstVisibleItemScrollOffset } }
+//
+//    Column {
+//
+//        if (firstVisibleItemIndex > 0) {
+//
+//            Box(modifier = Modifier
+//                .height(58.dp)
+//                .fillMaxWidth()
+//                .background(Color.Green))
+//
+//        }
+//        LazyColumn(state = lazyListState) {
+//            item {
+//                Box(modifier = Modifier
+//                    .height(300.dp)
+//                    .fillMaxWidth()
+//                    .background(Color.Red))
+//            }
+//            items(list) { item ->
+//                Text(
+//                    text = item,
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .height(50.dp)
+//                        .background(Color.Blue)
+//                )
+//            }
+//        }
+//    }
+//}
+
+
 @Composable
 fun MyScreen() {
     val list = (1..100).map { it.toString() }
     val lazyListState = rememberLazyListState()
-    val firstVisibleItemIndex by remember { derivedStateOf { lazyListState.firstVisibleItemIndex } }
+    val firstVisibleItemScrollOffset by remember { derivedStateOf { lazyListState.firstVisibleItemScrollOffset } }
+    var showGreenBox by remember { mutableStateOf(false) }
 
+    val heightInPixels = DpToPixels(58.dp)
     Column {
-
-        if (firstVisibleItemIndex > 0) {
-
-            Box(modifier = Modifier
+        // Green box that appears when the red box is scrolled 58 pixels
+        if (showGreenBox) {
+            Box(modifier= Modifier
                 .height(58.dp)
                 .fillMaxWidth()
-                .background(Color.Green))
-
+                .background(Color.Green)
+            )
         }
+
         LazyColumn(state = lazyListState) {
-            item {
-                Box(modifier = Modifier
-                    .height(300.dp)
-                    .fillMaxWidth()
-                    .background(Color.Red))
-            }
+                item {
+                    Box(
+                        modifier = Modifier
+                            .height(300.dp)
+                            .fillMaxWidth()
+                            .background(Color.Red)
+                    )
+                }
             items(list) { item ->
                 Text(
                     text = item,
@@ -1136,9 +1178,25 @@ fun MyScreen() {
                 )
             }
         }
+
+        // Check if scroll offset reaches 58 pixels and update showGreenBox
+        LaunchedEffect(firstVisibleItemScrollOffset) {
+
+            Log.d(".....","$firstVisibleItemScrollOffset")
+            if (firstVisibleItemScrollOffset >= 696) {
+                showGreenBox = true
+            } else {
+                showGreenBox = false
+            }
+        }
     }
 }
 
 
 
+@Composable
+fun DpToPixels(dpValue: Dp): Float {
+    val density = LocalDensity.current
+    return with(density) { dpValue.toPx() }
+}
 
