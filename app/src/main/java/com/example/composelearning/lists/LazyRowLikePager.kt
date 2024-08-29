@@ -1,6 +1,5 @@
 package com.example.composelearning.lists
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.snapping.SnapLayoutInfoProvider
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
@@ -23,7 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-@OptIn(ExperimentalFoundationApi::class)
+
 @Composable
 fun LazyRowLikePager() {
 
@@ -46,7 +45,6 @@ fun LazyRowLikePager() {
             flingBehavior = flingBehavior
         ) {
             items(200) { index ->
-
                 Box(
                     modifier =
                     Modifier

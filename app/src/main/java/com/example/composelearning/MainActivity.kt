@@ -74,9 +74,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.composelearning.lists.LazyRowLikePager
 import com.example.composelearning.pager.TabScreen
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
+import com.example.composelearning.textfields.ConditionalText
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 import com.example.composelearning.ui.theme.DetailsScreen
 import com.example.composelearning.ui.theme.HomeScreen
@@ -517,7 +519,12 @@ fun TutorialNavGraph(
                     .background(Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                TabScreen()
+
+                ConditionalText()
+                //LazyRowLikePager()
+
+               // TabScreen()
+
 //                val pages = listOf(
 //                    "kotlin",
 //                    "java",
