@@ -14,6 +14,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -253,8 +254,15 @@ fun TabScreen() {
             divider = {
 
             },
+
             indicator = { tabPositions ->
 
+//                TabRowDefaults.Indicator(
+//                    modifier = Modifier.tabIndicatorOffset(
+//                        currentTabPosition = tabPositions[tabIndex],
+//                    )
+//                )
+//
                 Image(
                     modifier = Modifier
                         .tabIndicatorOffset(tabPositions[tabIndex])
@@ -273,6 +281,7 @@ fun TabScreen() {
                 )
             }
         }
+
         when (tabIndex) {
             0 -> CustomButton(onClick = {  }) {
 
