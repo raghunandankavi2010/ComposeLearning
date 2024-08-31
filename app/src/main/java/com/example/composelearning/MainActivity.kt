@@ -76,6 +76,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.composelearning.lists.LazyRowLikePager
 import com.example.composelearning.pager.TabScreen
+import com.example.composelearning.sliders.Slider
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
 import com.example.composelearning.textfields.ConditionalText
@@ -519,8 +520,10 @@ fun TutorialNavGraph(
                     .background(Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-
-                ConditionalText()
+                var targetValue by remember {
+                    mutableStateOf(0f)
+                }
+                Slider(value = targetValue, onValueChange = { targetValue = it })
                 //LazyRowLikePager()
 
                // TabScreen()
