@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Surface
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -270,7 +271,7 @@ fun ImageWithAction(
             }
             .indication(
                 interactionSource,
-                rememberRipple(color = Color(0xFF00796B))
+                ripple(color = Color(0xFF00796B))
             )
     )
 }

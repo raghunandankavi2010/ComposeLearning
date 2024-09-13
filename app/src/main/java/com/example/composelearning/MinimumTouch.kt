@@ -1,8 +1,8 @@
+/*
 package com.example.composelearning
 
 
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LocalMinimumTouchTargetEnforcement
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.layout.LayoutModifier
@@ -60,4 +60,4 @@ private class MinimumTouchTargetModifier(val size: DpSize) : LayoutModifier {
     override fun hashCode(): Int {
         return size.hashCode()
     }
-}
+}*/
