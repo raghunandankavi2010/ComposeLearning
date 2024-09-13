@@ -1,5 +1,6 @@
 package com.example.composelearning
 
+import MainScreen
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
@@ -104,9 +105,8 @@ class MainActivity : ComponentActivity() {
 
                     //JetpackComposeNavigationApp()
                     val mainViewModel: MainViewModel = viewModel()
-
-
-                    TutorialNavGraph(mainViewModel)
+                    MainScreen()
+                    //TutorialNavGraph(mainViewModel)
 //                    val shouldShowIcon by mainViewModel.searchWidgetVisibility.collectAsState()
 //                    LogCompositions(tag = "Surface", msg = "${mainViewModel.hashCode()}")
 //
@@ -363,38 +363,38 @@ fun DefaultPreview() {
     }
 }
 
-@Composable
-@OptIn(ExperimentalFoundationApi::class)
-fun TooltipOnLongClickExample(onClick: () -> Unit = {}) {
-    // Commonly a Tooltip can be placed in a Box with a sibling
-    // that will be used as the 'anchor' for positioning.
-    Box(
-        Modifier
-            .height(300.dp)
-            .width(300.dp)
-            .background(Color.Red),
-        contentAlignment = Alignment.Center
-    ) {
-        val showTooltip = remember { mutableStateOf(false) }
-        // Buttons and Surfaces don't support onLongClick out of the box,
-        // so use a simple Box with combinedClickable
-        Box(
-            modifier = Modifier
-                .combinedClickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = rememberRipple(),
-                    onClickLabel = "Button action description",
-                    role = Role.Button,
-                    onClick = onClick,
-                    onLongClick = { showTooltip.value = true },
-                ),
-        ) {
-            Text("Click Me (will show tooltip on long click)")
-        }
-
-
-    }
-}
+//@Composable
+//@OptIn(ExperimentalFoundationApi::class)
+//fun TooltipOnLongClickExample(onClick: () -> Unit = {}) {
+//    // Commonly a Tooltip can be placed in a Box with a sibling
+//    // that will be used as the 'anchor' for positioning.
+//    Box(
+//        Modifier
+//            .height(300.dp)
+//            .width(300.dp)
+//            .background(Color.Red),
+//        contentAlignment = Alignment.Center
+//    ) {
+//        val showTooltip = remember { mutableStateOf(false) }
+//        // Buttons and Surfaces don't support onLongClick out of the box,
+//        // so use a simple Box with combinedClickable
+//        Box(
+//            modifier = Modifier
+//                .combinedClickable(
+//                    interactionSource = remember { MutableInteractionSource() },
+//                    indication = rememberRipple(),
+//                    onClickLabel = "Button action description",
+//                    role = Role.Button,
+//                    onClick = onClick,
+//                    onLongClick = { showTooltip.value = true },
+//                ),
+//        ) {
+//            Text("Click Me (will show tooltip on long click)")
+//        }
+//
+//
+//    }
+//}
 
 val String.color
     get() = Color(android.graphics.Color.parseColor(this))

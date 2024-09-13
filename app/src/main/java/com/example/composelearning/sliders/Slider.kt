@@ -17,6 +17,7 @@ import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.contentColorFor
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -362,10 +363,7 @@ private fun SliderImpl(
                     .focusable(interactionSource = interactionSource)
                     .indication(
                         interactionSource = interactionSource,
-                        indication = rememberRipple(
-                            bounded = false,
-                            radius = ThumbRippleRadius
-                        )
+                        indication = ripple()
                     )
             ) {
                 Image(
