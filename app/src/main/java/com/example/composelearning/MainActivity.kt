@@ -102,10 +102,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color.White
                 ) {
-
+                    SimpleJetsnackApp()
                     //JetpackComposeNavigationApp()
-                    val mainViewModel: MainViewModel = viewModel()
-                    MainScreen()
+                   // val mainViewModel: MainViewModel = viewModel()
+                   // MainScreen()
                     //TutorialNavGraph(mainViewModel)
 //                    val shouldShowIcon by mainViewModel.searchWidgetVisibility.collectAsState()
 //                    LogCompositions(tag = "Surface", msg = "${mainViewModel.hashCode()}")
