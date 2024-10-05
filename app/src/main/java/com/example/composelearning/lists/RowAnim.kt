@@ -12,10 +12,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -40,6 +43,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.boundsInParent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInParent
@@ -49,6 +53,7 @@ import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -226,6 +231,52 @@ fun EquiRow() {
         }
 
     }
+}
+
+
+@Composable
+fun CenteredCustomLayout() {
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        // Create a custom layout
+        Layout(
+            modifier = Modifier,
+            content = {
+                // Place your items here
+                Box(Modifier.size(50.dp).background(Color.Red))
+                Box(Modifier.size(50.dp).background(Color.Green))
+                // Add more items as needed
+            }
+        ) { measurables, constraints ->
+            // Calculate center coordinates for each item
+            val centerX = constraints.maxWidth / 2
+            val centerY = constraints.maxHeight / 2
+
+            // Position each item at its center
+            layout(constraints.maxWidth, constraints.maxHeight) {
+                measurables.forEach { measurable ->
+                    val placeable = measurable.measure(constraints)
+                    val itemCenterX = centerX - placeable.width / 2
+                    val itemCenterY = centerY - placeable.height / 2
+                    placeable.place(itemCenterX, itemCenterY)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun MyApp() {
+    Column {
+        CenteredCustomLayout()
+    }
+}
+
+@Preview
+@Composable
+fun PreviewMyApp() {
+    MyApp()
 }
 
 
