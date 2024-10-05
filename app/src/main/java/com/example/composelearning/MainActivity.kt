@@ -76,6 +76,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.composelearning.lists.LazyRowLikePager
+import com.example.composelearning.lists.MyApp
 import com.example.composelearning.pager.TabScreen
 import com.example.composelearning.sliders.Slider
 import com.example.composelearning.speedometer.Legend
@@ -102,7 +103,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color.White
                 ) {
-                    SimpleJetsnackApp()
+                    MyApp()
                     //JetpackComposeNavigationApp()
                    // val mainViewModel: MainViewModel = viewModel()
                    // MainScreen()
