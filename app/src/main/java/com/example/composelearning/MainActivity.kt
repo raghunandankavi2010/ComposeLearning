@@ -1,19 +1,15 @@
 package com.example.composelearning
 
-import MainScreen
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,7 +30,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -58,7 +53,6 @@ import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -68,20 +62,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.composelearning.lists.LazyRowLikePager
-import com.example.composelearning.lists.MyApp
-import com.example.composelearning.pager.TabScreen
+import com.example.composelearning.layouts.OverlappingComposables
 import com.example.composelearning.sliders.Slider
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
-import com.example.composelearning.textfields.ConditionalText
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 import com.example.composelearning.ui.theme.DetailsScreen
 import com.example.composelearning.ui.theme.HomeScreen
@@ -103,33 +93,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color.White
                 ) {
-                    MyApp()
-                    //JetpackComposeNavigationApp()
-                   // val mainViewModel: MainViewModel = viewModel()
-                   // MainScreen()
-                    //TutorialNavGraph(mainViewModel)
-//                    val shouldShowIcon by mainViewModel.searchWidgetVisibility.collectAsState()
-//                    LogCompositions(tag = "Surface", msg = "${mainViewModel.hashCode()}")
-//
-//                    Scaffold(
-//                        topBar = {
-//                            DefaultAppBar(shouldShowIcon)
-////                            TopAppBar(
-////                                title = {
-////                                    Text(text = "Compose Ui Samples")
-////                                },
-////                                navigationIcon = {
-////                                    IconButton(onClick = { }) {
-////                                        Icon(Icons.Filled.Menu, "")
-////                                    }
-////                                },
-////                                backgroundColor = Blue,
-////                                contentColor = White,
-////                                elevation = 12.dp
-////                            )
-//                        }) {
-
-//                    }
+                    com.example.composelearning.shaders.BlurImageComposable()
+                    //OverlappingComposables()
                 }
             }
         }
