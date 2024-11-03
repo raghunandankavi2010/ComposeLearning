@@ -1,24 +1,0 @@
-
-kkotlin:S1172g"(Remove these unused function parameters.(Î»ØªùÿÿÿÿJ$d358d0ac-8bd5-42e9-bd4a-6d5ceff3fe25
-gkotlin:S1172Ü"(Remove these unused function parameters.(ÕÃåJ$e8c9da4f-1cb0-488f-afce-ea522dc55b0e
-ukotlin:S1172X"2Use "_" instead of these unused lambda parameters.(Ó·‰ÓúÿÿÿÿJ$6205413b-5676-4dde-bfc3-2f77214bf336
-\kotlin:S125Y"Remove this commented out code.(¦‰¥®J$8fb1fb05-4757-4280-becf-6d5cdc88d186
-]kotlin:S125€"Remove this commented out code.(ÍÀ™úJ$806daefe-d33f-4be8-a79f-fc8bf5ac2076
-]kotlin:S125½"Remove this commented out code.(ïâè”J$ebfcd86a-c571-44bb-a4c1-8dbab6696465
-bkotlin:S125…"Remove this commented out code.(¦şÕçüÿÿÿÿJ$9181c06f-c29e-4fab-87fd-ffa1919e982c
-bkotlin:S125™"Remove this commented out code.(şÿö¤ùÿÿÿÿJ$a1e58c2c-b31e-4347-9ab9-8accaa9d8fb3
-ƒkotlin:S107c"GThis function has 8 parameters, which is greater than the 7 authorized.(ìÅÆ$J$3c80763c-48d5-4bc9-b8f9-f766e16c026d
-‹kotlin:S107Ï"HThis function has 16 parameters, which is greater than the 7 authorized.(øÌ¿½øÿÿÿÿJ$967d11cd-e350-4da4-b6fe-f329bb26bb90
-wkotlin:S1481"9Remove this unused "smallDataCoefficient" local variable.(ßƒïvJ$db489b27-91c5-4837-ba3c-fefa81318569
-tkotlin:S1481—"0Remove this unused "coEfficient" local variable.(”ªû‹ùÿÿÿÿJ$d386f150-c5e4-4bb3-9dd3-a1a311db60fc
-mkotlin:S1481u"*Remove this unused "width" local variable.(®¥¦©ûÿÿÿÿJ$f5be34ea-5b0b-46e4-a7df-6f5bb5da8444
-vkotlin:S1481ó"7Remove this unused "halfTriangleHeight" local variable.(Ûßß‹J$b9b0d12c-72fe-4a86-9197-06a9fce83a4e
-ukotlin:S1481ò"6Remove this unused "halfTriangleWidth" local variable.(æûŒ¬J$7d7bcf65-ded4-494d-b412-babdd509c5c9
-wkotlin:S1481ñ"3Remove this unused "halfRectHeight" local variable.(ğØ‘ûşÿÿÿÿJ$7007f2e8-3b9b-41c8-9177-e36373565265
-vkotlin:S1481ğ"2Remove this unused "halfRectWidth" local variable.(Û®†ïùÿÿÿÿJ$ebdbb521-f281-48aa-985b-64cf456bfa0b
-hkotlin:S1481î")Remove this unused "arcW" local variable.(õØÄçJ$26d7b46b-946f-4234-a6f4-9a049fe94ba7
-ikotlin:S1481í"+Remove this unused "angRad" local variable.(æË­dJ$db4da27d-d137-49b1-a9fa-5694abd9a267
-pkotlin:S1481ì"2Remove this unused "indexSelected" local variable.(£©ï)J$9f586d9d-0eaa-4b5f-97c3-50419409abad
-kkotlin:S1481ë",Remove this unused "offsetY" local variable.(Ù÷¯†J$0b2b2261-ecde-428b-9a43-d60425742873
-pkotlin:S1481ê",Remove this unused "offsetX" local variable.(§ø½§ÿÿÿÿÿJ$a083727d-5b2d-468b-b64a-d0ba88d02282
-nkotlin:S1481ã"/Remove this unused "pointerTip" local variable.(·ãòJ$7321570f-44fb-47c6-b51e-9ebfef56cab9
