@@ -68,8 +68,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.composelearning.graphics.BlurContainer
 import com.example.composelearning.layouts.OverlappingComposables
 import com.example.composelearning.sliders.Slider
+import com.example.composelearning.sotry.SwipeToCancel
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
 import com.example.composelearning.ui.theme.ComposeLearningTheme
@@ -93,8 +95,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color.White
                 ) {
-                    com.example.composelearning.shaders.BlurImageComposable()
-                    //OverlappingComposables()
+                    BlurContainer {
+                        Text(
+                            "Advisory is disabled",
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             }
         }
@@ -109,12 +115,12 @@ fun MainContent() {
         "J", "K", "L", "M", "N", "O", "P", "Q", "R",
         "S", "T", "U", "W", "X", "Y", "Z"
     )
-    val currentPosition = remember { mutableStateOf(0) }
+    val currentPosition = remember { mutableIntStateOf(0) }
     LogCompositions("JetpackCompose.app", "MyComposable function")
     val onClick: (String, Int) -> Unit = { alphabet: String, positionClicked: Int ->
         currentPosition.value = positionClicked
     }
-    ProfileList(list, currentPosition = currentPosition.value, onClick)
+    ProfileList(list, currentPosition = currentPosition.intValue, onClick)
 }
 
 @Composable
