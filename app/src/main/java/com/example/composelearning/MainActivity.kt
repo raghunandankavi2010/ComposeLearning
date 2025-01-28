@@ -498,7 +498,7 @@ fun TutorialNavGraph(
                 Slider(value = targetValue, onValueChange = { targetValue = it })
                 //LazyRowLikePager()
 
-               // TabScreen()
+                // TabScreen()
 
 //                val pages = listOf(
 //                    "kotlin",
