@@ -139,10 +139,26 @@ fun BottomBar() {
                             label = { Text(item) },
                             selected =  currentRoute == item,
                             onClick = {
-                                navController.navigate(item) {
-                                    popUpTo(navController.graph.startDestinationId)
-                                    launchSingleTop = true
+
+                                if (currentRoute != item) {
+//
+//                                    val visibleEntries = navController.visibleEntries.value
+//                                    if (visibleEntries.any { it.destination.route == item }) {
+//                                        // If the entry already exists, pop it
+//                                        navController.popBackStack(item, inclusive = true)
+//                                    }
+                                    // Navigate to the new destination
+                                    navController.navigate(item) {
+                                        navController.popBackStack(item,true)
+                                        launchSingleTop = true
+                                       // restoreState = true
+                                    }
                                 }
+//
+//                                    navController.navigate(item) {
+//                                    //popUpTo(navController.graph.startDestinationId)
+//                                    launchSingleTop = true
+//                                }
                             }
                         )
                     }
