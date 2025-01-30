@@ -68,6 +68,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.composelearning.anim.RandomEqualizer
 import com.example.composelearning.graphics.BlurContainer
 import com.example.composelearning.layouts.OverlappingComposables
 import com.example.composelearning.sliders.Slider
@@ -95,12 +96,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color.White
                 ) {
-                    BlurContainer {
-                        Text(
-                            "Advisory is disabled",
-                            textAlign = TextAlign.Center
-                        )
-                    }
+                    RandomEqualizer(
+                        Modifier
+                            .fillMaxSize()
+                            .background(Color.White)
+                    )
                 }
             }
         }
