@@ -68,11 +68,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.composelearning.anim.RandomEqualizer
-import com.example.composelearning.graphics.BlurContainer
-import com.example.composelearning.layouts.OverlappingComposables
+import com.example.composelearning.progess.MultiColorProgress
 import com.example.composelearning.sliders.Slider
-import com.example.composelearning.sotry.SwipeToCancel
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
 import com.example.composelearning.ui.theme.ComposeLearningTheme
@@ -96,11 +93,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color.White
                 ) {
-                    RandomEqualizer(
-                        Modifier
-                            .fillMaxSize()
-                            .background(Color.White)
-                    )
+                    Column(modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally) {
+                        MultiColorProgress()
+                    }
+
                 }
             }
         }

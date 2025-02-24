@@ -57,23 +57,14 @@ fun MultiColorProgress(
         Float.VectorConverter,
         infiniteRepeatable(
             animation = tween(
-                durationMillis = 5000,
+                durationMillis = 800,
                 easing = LinearEasing
             )
         ),
         label = "MultiColorProgress"
     )
 
-    // Animate path completion with a larger target value
-//    val animatedProgress by infiniteTransition.animateFloat(
-//        initialValue = 0f,
-//        targetValue = 360f, // Double the full circle (360 degrees)
-//        animationSpec = infiniteRepeatable(
-//            du = tween(durationMillis = 2000), // Adjust duration as needed
-//            repeatMode = RepeatMode.Restart
-//        ),
-//        label = "MultiColorProgress"
-//    )
+
 
     Canvas(modifier = Modifier.size(24.dp)) {
         val size = Size(24.dp.toPx(), 24.dp.toPx())
@@ -90,9 +81,9 @@ fun MultiColorProgress(
             style = stroke
         )
 
-//        withTransform({
-//            rotate(degrees = xc, pivot = center)
-//        }) {
+        withTransform({
+            rotate(degrees = animatedProgress, pivot = center)
+        }) {
             drawArc(
                 color = colors[1],
                 startAngle = 270f, // Use modulo to keep between 0 and 360
@@ -107,23 +98,23 @@ fun MultiColorProgress(
 
             drawArc(
                 color = colors[3],
-                startAngle = 270 + 90f  ,
-                sweepAngle = animatedProgress,
+                startAngle = 270 + 90f,
+                sweepAngle = 45f,
                 useCenter = false,
                 topLeft = Offset(stroke.width / 2, stroke.width / 2),
                 size = Size(diameter, diameter),
                 style = Stroke(8f, cap = StrokeCap.Round)
             )
-        drawArc(
-            color = colors[2],
-            startAngle = 270f + 45f,
-            sweepAngle =  45f,
-            useCenter = false,
-            topLeft = Offset(stroke.width / 2, stroke.width / 2),
-            size = Size(diameter, diameter),
-            style = Stroke(8f, cap = StrokeCap.Round)
-        )
-  //      }
+            drawArc(
+                color = colors[2],
+                startAngle = 270f + 45f,
+                sweepAngle = 45f,
+                useCenter = false,
+                topLeft = Offset(stroke.width / 2, stroke.width / 2),
+                size = Size(diameter, diameter),
+                style = Stroke(8f, cap = StrokeCap.Round)
+            )
+        }
     }
 }
 
