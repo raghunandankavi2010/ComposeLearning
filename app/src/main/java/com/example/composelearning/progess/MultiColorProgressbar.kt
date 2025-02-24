@@ -65,7 +65,6 @@ fun MultiColorProgress(
     )
 
 
-
     Canvas(modifier = Modifier.size(24.dp)) {
         val size = Size(24.dp.toPx(), 24.dp.toPx())
         val diameter = size.minDimension - stroke.width
