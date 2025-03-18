@@ -354,7 +354,7 @@ fun Speedometer3(
     progress: Int,
 ) {
 
-    BoxWithConstraints(modifier = Modifier
+    BoxWithConstraints(modifier = modifier
         .fillMaxWidth()
         .height(130.dp)) {
 
