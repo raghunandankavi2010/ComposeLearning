@@ -1,5 +1,7 @@
 package com.example.composelearning.graphics
 
+import android.graphics.RenderEffect
+import android.graphics.Shader
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.colorspace.ColorSpaces
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.composelearning.speedometer.Speedometer3
@@ -71,4 +75,15 @@ fun BlurSampleWithHaze(modifier: Modifier = Modifier) {
             )
         }
     }
+}
+
+@Composable
+fun BlurWithRenderEffect(modifier: Modifier = Modifier) {
+    Box {
+        Speedometer3(modifier.graphicsLayer(
+            renderEffect = RenderEffect.createBlurEffect(25f,25f, Shader.TileMode.DECAL).asComposeRenderEffect()
+        ), 30, 30, 30, 10, 50)
+        Text("Testing Blur in compose", modifier.align(Alignment.Center))
+    }
+
 }
