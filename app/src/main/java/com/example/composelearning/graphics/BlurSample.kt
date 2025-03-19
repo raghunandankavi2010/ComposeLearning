@@ -85,5 +85,4 @@ fun BlurWithRenderEffect(modifier: Modifier = Modifier) {
         ), 30, 30, 30, 10, 50)
         Text("Testing Blur in compose", modifier.align(Alignment.Center))
     }
-
 }

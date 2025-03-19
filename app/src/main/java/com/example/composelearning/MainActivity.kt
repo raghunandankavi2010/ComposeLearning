@@ -68,7 +68,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.composelearning.graphics.AnimatedBorderButton
 import com.example.composelearning.graphics.BlurWithRenderEffect
+import com.example.composelearning.graphics.BorderProgressBar
 import com.example.composelearning.sliders.Slider
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
@@ -96,7 +98,7 @@ class MainActivity : ComponentActivity() {
                     Column(modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally) {
-                        BlurWithRenderEffect()
+                        BorderProgressBar()
                     }
                 }
             }
