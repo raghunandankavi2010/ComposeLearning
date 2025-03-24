@@ -1,10 +1,15 @@
 package com.example.composelearning
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,6 +35,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -51,6 +57,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -68,10 +75,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.composelearning.graphics.AnimatedBorderButton
-import com.example.composelearning.graphics.BlurWithRenderEffect
-import com.example.composelearning.graphics.BorderProgressBar
-import com.example.composelearning.lists.TestTextFieldList
 import com.example.composelearning.sliders.Slider
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
@@ -86,6 +89,8 @@ class MainActivity : ComponentActivity() {
         "UnusedMaterialScaffoldPaddingParameter",
         "UnusedMaterial3ScaffoldPaddingParameter"
     )
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -96,10 +101,38 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color.White
                 ) {
+                    val context = LocalContext.current
+
+                    var selectedUri by remember { mutableStateOf<Uri?>(null) }
+
+                    val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+                        if (uri != null) {
+                            val contentResolver = context.contentResolver
+                            contentResolver.getType(uri)?.let { mimeType ->
+                                if (mimeType == "image/jpeg" || mimeType == "image/png" || mimeType == "image/jpg") {
+                                    Log.d("PhotoPicker", "Selected URI: $uri")
+                                    selectedUri = uri
+                                } else {
+                                    Log.d("PhotoPicker", "wrong mime type")
+                                }
+                            }
+                        } else {
+                            Log.d("PhotoPicker", "No media selected")
+                        }
+                    }
                     Column(modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally) {
-                        TestTextFieldList()
+                        MyScreen(modifier= Modifier.size(300.dp), selectedUri)
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        Button(onClick = {
+                            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                        }) {
+                            Text("Select Image")
+                        }
+
                     }
                 }
             }
