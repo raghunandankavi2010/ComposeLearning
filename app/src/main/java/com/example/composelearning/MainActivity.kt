@@ -69,12 +69,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.composelearning.animcompose.CircularReveal
+import com.example.composelearning.lists.MultiSourceListScreen
+import com.example.composelearning.lists.MultiSourcePagingSource
+import com.example.composelearning.lists.MultiSourceViewModel
+import com.example.composelearning.lists.generateDummyData
 import com.example.composelearning.sliders.Slider
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
@@ -94,49 +102,54 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val dataSources = generateDummyData()
+        val pagingSourceFactory = { MultiSourcePagingSource(dataSources) }
+
         setContent {
-            ComposeLearningTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = Color.White
-                ) {
-                    val context = LocalContext.current
-
-                    var selectedUri by remember { mutableStateOf<Uri?>(null) }
-
-                    val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-                        if (uri != null) {
-                            val contentResolver = context.contentResolver
-                            contentResolver.getType(uri)?.let { mimeType ->
-                                if (mimeType == "image/jpeg" || mimeType == "image/png" || mimeType == "image/jpg") {
-                                    Log.d("PhotoPicker", "Selected URI: $uri")
-                                    selectedUri = uri
-                                } else {
-                                    Log.d("PhotoPicker", "wrong mime type")
-                                }
-                            }
-                        } else {
-                            Log.d("PhotoPicker", "No media selected")
-                        }
-                    }
-                    Column(modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally) {
-                        MyScreen(modifier= Modifier.size(300.dp), selectedUri)
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        Button(onClick = {
-                            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                        }) {
-                            Text("Select Image")
-                        }
-
-                    }
+            val viewModel: MultiSourceViewModel = viewModel(factory = object : ViewModelProvider.Factory {
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return MultiSourceViewModel(pagingSourceFactory) as T
                 }
-            }
+            })
+
+            MultiSourceListScreen(viewModel = viewModel)
         }
+
+//        setContent {
+//            ComposeLearningTheme {
+//                // A surface container using the 'background' color from the theme
+//                Surface(
+//                    modifier = Modifier.fillMaxSize(),
+//                    color = Color.White
+//                ) {
+//                    val context = LocalContext.current
+//
+//                    var selectedUri by remember { mutableStateOf<Uri?>(null) }
+//
+//                    val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+//                        if (uri != null) {
+//                            val contentResolver = context.contentResolver
+//                            contentResolver.getType(uri)?.let { mimeType ->
+//                                if (mimeType == "image/jpeg" || mimeType == "image/png" || mimeType == "image/jpg") {
+//                                    Log.d("PhotoPicker", "Selected URI: $uri")
+//                                    selectedUri = uri
+//                                } else {
+//                                    Log.d("PhotoPicker", "wrong mime type")
+//                                }
+//                            }
+//                        } else {
+//                            Log.d("PhotoPicker", "No media selected")
+//                        }
+//                    }
+//                    Column(modifier = Modifier.fillMaxSize(),
+//                        verticalArrangement = Arrangement.Center,
+//                        horizontalAlignment = Alignment.CenterHorizontally) {
+//                        CircularReveal()
+//
+//                    }
+//                }
+//            }
+//        }
     }
 }
 
