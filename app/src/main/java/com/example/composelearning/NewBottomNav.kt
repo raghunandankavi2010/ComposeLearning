@@ -38,7 +38,7 @@ import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun SimpleJetsnackApp() {
+fun SampleBottomNavWithSharedElementTransition() {
     val navController = rememberNavController()
     SharedTransitionLayout {
         CompositionLocalProvider(

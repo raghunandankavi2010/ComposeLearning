@@ -106,50 +106,8 @@ class MainActivity : ComponentActivity() {
         val pagingSourceFactory = { MultiSourcePagingSource(dataSources) }
 
         setContent {
-            val viewModel: MultiSourceViewModel = viewModel(factory = object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return MultiSourceViewModel(pagingSourceFactory) as T
-                }
-            })
-
-            MultiSourceListScreen(viewModel = viewModel)
+            SampleBottomNavWithSharedElementTransition()
         }
-
-//        setContent {
-//            ComposeLearningTheme {
-//                // A surface container using the 'background' color from the theme
-//                Surface(
-//                    modifier = Modifier.fillMaxSize(),
-//                    color = Color.White
-//                ) {
-//                    val context = LocalContext.current
-//
-//                    var selectedUri by remember { mutableStateOf<Uri?>(null) }
-//
-//                    val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-//                        if (uri != null) {
-//                            val contentResolver = context.contentResolver
-//                            contentResolver.getType(uri)?.let { mimeType ->
-//                                if (mimeType == "image/jpeg" || mimeType == "image/png" || mimeType == "image/jpg") {
-//                                    Log.d("PhotoPicker", "Selected URI: $uri")
-//                                    selectedUri = uri
-//                                } else {
-//                                    Log.d("PhotoPicker", "wrong mime type")
-//                                }
-//                            }
-//                        } else {
-//                            Log.d("PhotoPicker", "No media selected")
-//                        }
-//                    }
-//                    Column(modifier = Modifier.fillMaxSize(),
-//                        verticalArrangement = Arrangement.Center,
-//                        horizontalAlignment = Alignment.CenterHorizontally) {
-//                        CircularReveal()
-//
-//                    }
-//                }
-//            }
-//        }
     }
 }
 
@@ -164,7 +122,7 @@ fun MainContent() {
     val currentPosition = remember { mutableIntStateOf(0) }
     LogCompositions("JetpackCompose.app", "MyComposable function")
     val onClick: (String, Int) -> Unit = { alphabet: String, positionClicked: Int ->
-        currentPosition.value = positionClicked
+        currentPosition.intValue = positionClicked
     }
     ProfileList(list, currentPosition = currentPosition.intValue, onClick)
 }
@@ -229,7 +187,7 @@ fun ShowAddImage() {
             contentDescription = "Add more",
             modifier = Modifier
                 .size(40.dp)
-                .clip(CircleShape)                       // clip to the circle shape
+                .clip(CircleShape)
                 .clickable { }
         )
         Text(
