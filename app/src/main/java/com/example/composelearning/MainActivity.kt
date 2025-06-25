@@ -79,6 +79,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.composelearning.animcompose.CircularReveal
+import com.example.composelearning.customlayout.MatchLongestTextWidth
 import com.example.composelearning.lists.MultiSourceListScreen
 import com.example.composelearning.lists.MultiSourcePagingSource
 import com.example.composelearning.lists.MultiSourceViewModel
@@ -106,7 +107,7 @@ class MainActivity : ComponentActivity() {
         val pagingSourceFactory = { MultiSourcePagingSource(dataSources) }
 
         setContent {
-            SampleBottomNavWithSharedElementTransition()
+            MatchLongestTextWidth("Looooooooooooooooooong text","Short text")
         }
     }
 }
