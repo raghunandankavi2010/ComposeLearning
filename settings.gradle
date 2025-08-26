@@ -11,6 +11,9 @@ dependencyResolutionManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
+        maven {
+            url = uri("https://repository.blacknut.com/")
+        }
     }
 }
 rootProject.name = "ComposeLearning"
