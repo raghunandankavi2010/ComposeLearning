@@ -1,10 +1,16 @@
 package com.example.composelearning
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -49,6 +55,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -66,7 +73,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.composelearning.animcompose.MultiColorIndeterminateCircularProgressBarPreview
+import com.blacknut.launcher.GameLaunchActivity
+import com.example.composelearning.animcompose.PreviewMyAwesomeLoadingScreen
+import com.example.composelearning.animcompose.SinWave
 import com.example.composelearning.sliders.Slider
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
@@ -87,7 +96,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            MultiColorIndeterminateCircularProgressBarPreview()
+            MainContent()
         }
     }
 }
@@ -95,18 +104,47 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainContent() {
-    val list = listOf(
-        "A", "B", "C", "D", "E", "F", "G", "H", "I",
-        "J", "K", "L", "M", "N", "O", "P", "Q", "R",
-        "S", "T", "U", "W", "X", "Y", "Z"
-    )
-    val currentPosition = remember { mutableIntStateOf(0) }
-    LogCompositions("JetpackCompose.app", "MyComposable function")
-    val onClick: (String, Int) -> Unit = { alphabet: String, positionClicked: Int ->
-        currentPosition.intValue = positionClicked
+    val gameLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result: ActivityResult ->
+        // 4. Handle the result here
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            // Process the data from the result
+            val returnedValue = data?.getStringExtra("your_result_key") // Example
+            Log.d("GameLauncher", "Game finished successfully. Result: $returnedValue")
+            // Update your UI or ViewModel based on the result
+        } else if (result.resultCode == Activity.RESULT_CANCELED) {
+            Log.d("GameLauncher", "Game launch was canceled or failed.")
+            // Handle cancellation or failure
+        } else {
+            Log.d("GameLauncher", "Game finished with result code: ${result.resultCode}")
+            // Handle other custom result codes if any
+        }
     }
-    ProfileList(list, currentPosition = currentPosition.intValue, onClick)
-}
+        val context = LocalContext.current
+        val intent = Intent(context, GameLaunchActivity::class.java)
+        val bundle = Bundle()
+        bundle.putString("gameId", "3133")
+        bundle.putString("accessToken", "DgXVwl5XRQqSlg&FLaK2tA")
+        bundle.putInt("logLevel", 4)
+        intent.putExtras(bundle)
+        context.startActivity(intent)
+    }
+
+
+//    val list = listOf(
+//        "A", "B", "C", "D", "E", "F", "G", "H", "I",
+//        "J", "K", "L", "M", "N", "O", "P", "Q", "R",
+//        "S", "T", "U", "W", "X", "Y", "Z"
+//    )
+//    val currentPosition = remember { mutableIntStateOf(0) }
+//    LogCompositions("JetpackCompose.app", "MyComposable function")
+//    val onClick: (String, Int) -> Unit = { alphabet: String, positionClicked: Int ->
+//        currentPosition.intValue = positionClicked
+//    }
+//    ProfileList(list, currentPosition = currentPosition.intValue, onClick)
+//}
 
 @Composable
 fun ProfileList(list: List<String>, currentPosition: Int, onClick: (String, Int) -> Unit) {
@@ -377,7 +415,8 @@ fun DefaultAppBar(
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         TopAppBar(
             title = {
-                Text(text = "Compose UI Sample",
+                Text(
+                    text = "Compose UI Sample",
                     modifier = Modifier
                         .clickable { }
                         // margin
