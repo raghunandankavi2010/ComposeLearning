@@ -1,5 +1,6 @@
 package com.example.composelearning
 
+import MentionTextField
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -95,7 +96,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            AppNavigation()
+            MentionTextField()
         }
     }
 }
