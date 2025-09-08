@@ -68,7 +68,6 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -79,10 +78,6 @@ import com.example.composelearning.sliders.Slider
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
 import com.example.composelearning.ui.theme.ComposeLearningTheme
-import com.example.composelearning.ui.theme.DetailsScreen
-import com.example.composelearning.ui.theme.HomeScreen
-import com.example.composelearning.ui.theme.Screen
-import com.example.composelearning.ui.theme.ThirdScreen
 
 class MainActivity : ComponentActivity() {
     @SuppressLint(
@@ -441,36 +436,6 @@ fun DefaultAppBar(
     }
 }
 
-@Composable
-fun JetpackComposeNavigationApp() {
-    val navController = rememberNavController()
-
-    NavHost(navController = navController, startDestination = Screen.Home.route) {
-        composable(route = Screen.Home.route) {
-            HomeScreen { name ->
-                navController.navigate(Screen.Details.createRoute(name))
-            }
-        }
-        composable(
-            route = Screen.Details.route,
-            arguments = listOf(navArgument("name") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val name = backStackEntry.arguments?.getString("name") ?: ""
-            DetailsScreen(name = name, { navController.popBackStack() }, {
-                navController.navigate(Screen.ThirdScreen.route)
-            })
-        }
-
-        composable(
-            route = Screen.ThirdScreen.route
-        ) { backStackEntry ->
-
-            ThirdScreen {
-                navController.popBackStack()
-            }
-        }
-    }
-}
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

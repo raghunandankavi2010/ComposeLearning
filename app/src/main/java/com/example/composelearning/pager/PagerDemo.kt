@@ -28,6 +28,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PagerDemo(modifier: Modifier = Modifier) {
