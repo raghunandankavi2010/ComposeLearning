@@ -1,16 +1,10 @@
 package com.example.composelearning
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,6 +15,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,6 +28,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -55,7 +51,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -71,10 +66,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.blacknut.launcher.GameLaunchActivity
-import com.example.composelearning.lists.AppNavigation
+import com.example.composelearning.customshapes.OnlyTopArcsShape
 import com.example.composelearning.sliders.Slider
+import com.example.composelearning.sotry.topBorder
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
 import com.example.composelearning.ui.theme.ComposeLearningTheme
@@ -90,40 +84,62 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            AppNavigation()
+
+            Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+                TopArcComposable()
+            }
         }
     }
-}
 
+    @Composable
+    fun TopArcComposable() {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Box with only top-left and top-right rounded corners:",
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            Box(
+                modifier = Modifier
+                    .height(200.dp)
+                    .width(300.dp)
+                    .clip(OnlyTopArcsShape(24.dp)) // Increased corner radius for better visibility
 
-@Composable
-fun MainContent() {
-    val gameLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
-    ) { result: ActivityResult ->
-        // 4. Handle the result here
-        if (result.resultCode == Activity.RESULT_OK) {
-            val data: Intent? = result.data
-            // Process the data from the result
-            val returnedValue = data?.getStringExtra("your_result_key") // Example
-            Log.d("GameLauncher", "Game finished successfully. Result: $returnedValue")
-            // Update your UI or ViewModel based on the result
-        } else if (result.resultCode == Activity.RESULT_CANCELED) {
-            Log.d("GameLauncher", "Game launch was canceled or failed.")
-            // Handle cancellation or failure
-        } else {
-            Log.d("GameLauncher", "Game finished with result code: ${result.resultCode}")
-            // Handle other custom result codes if any
+                    .background(color = Color.Green)
+                    .clickable {
+                        // Handle click
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "Hello Only Top Arcs!", color = Color.White)
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Text(
+                text = "Smaller example:",
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            Box(
+                modifier = Modifier
+                    .height(100.dp)
+                    .width(150.dp)
+                    .topBorder(strokeWidth = 2.dp, color = Color.Black, cornerRadiusDp = 24.dp)
+                    .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+                    .background(color = Color.Green)
+                    .clickable {
+                        // Handle click
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = "Small", color = Color.White)
+            }
         }
-    }
-        val context = LocalContext.current
-        val intent = Intent(context, GameLaunchActivity::class.java)
-        val bundle = Bundle()
-        bundle.putString("gameId", "3133")
-        bundle.putString("accessToken", "DgXVwl5XRQqSlg&FLaK2tA")
-        bundle.putInt("logLevel", 4)
-        intent.putExtras(bundle)
-        context.startActivity(intent)
     }
 
 
@@ -140,217 +156,217 @@ fun MainContent() {
 //    ProfileList(list, currentPosition = currentPosition.intValue, onClick)
 //}
 
-@Composable
-fun ProfileList(list: List<String>, currentPosition: Int, onClick: (String, Int) -> Unit) {
-    // Column(Modifier.padding(start = 8.dp, top = 20.dp, end = 8.dp)) {
-    val countProfileImage = if (list.size > 3) {
-        list.size - 3
-    } else {
-        0
-    }
-    val toShowList = list.take(4)
-    val totalCount = 10
-    val listState = rememberLazyListState()
-    val firstVisibleItemIndex by remember(listState) {
-        derivedStateOf {
-            listState.layoutInfo.visibleItemsInfo.first().index
+    @Composable
+    fun ProfileList(list: List<String>, currentPosition: Int, onClick: (String, Int) -> Unit) {
+        // Column(Modifier.padding(start = 8.dp, top = 20.dp, end = 8.dp)) {
+        val countProfileImage = if (list.size > 3) {
+            list.size - 3
+        } else {
+            0
         }
-    }
-
-    Row(
-        modifier = Modifier.wrapContentWidth(),
-        horizontalArrangement = Arrangement.Center
-    ) {
-        LazyRow(
-            state = listState,
-            horizontalArrangement = Arrangement.spacedBy((-32).dp)
-        ) {
-            val firstVisibleItem = listState.firstVisibleItemIndex
-            val offSet = listState.firstVisibleItemScrollOffset
-            itemsIndexed(toShowList) { index, item ->
-                val alpha = if (currentPosition != index) {
-                    1f
-                } else {
-                    1f
-                }
-                if (index == 3) {
-                    ProfilePictureWithImage(
-                        onClick,
-                        item,
-                        index,
-                        count = countProfileImage
-                    )
-                } else {
-                    ProfilePicture(alpha, onClick, item, index)
-                    Spacer(modifier = Modifier.padding(8.dp))
-                }
+        val toShowList = list.take(4)
+        val totalCount = 10
+        val listState = rememberLazyListState()
+        val firstVisibleItemIndex by remember(listState) {
+            derivedStateOf {
+                listState.layoutInfo.visibleItemsInfo.first().index
             }
         }
-        //  }
+
+        Row(
+            modifier = Modifier.wrapContentWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            LazyRow(
+                state = listState,
+                horizontalArrangement = Arrangement.spacedBy((-32).dp)
+            ) {
+                val firstVisibleItem = listState.firstVisibleItemIndex
+                val offSet = listState.firstVisibleItemScrollOffset
+                itemsIndexed(toShowList) { index, item ->
+                    val alpha = if (currentPosition != index) {
+                        1f
+                    } else {
+                        1f
+                    }
+                    if (index == 3) {
+                        ProfilePictureWithImage(
+                            onClick,
+                            item,
+                            index,
+                            count = countProfileImage
+                        )
+                    } else {
+                        ProfilePicture(alpha, onClick, item, index)
+                        Spacer(modifier = Modifier.padding(8.dp))
+                    }
+                }
+            }
+            //  }
+        }
     }
-}
 
-@Composable
-fun ShowAddImage() {
-    Column(
-        modifier = Modifier.height(200.dp)
-    ) {
-        Image(
-            painter = painterResource(R.drawable.ic_launcher_background),
-            contentDescription = "Add more",
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-                .clickable { }
-        )
-        Text(
-            "Add",
-            textAlign = TextAlign.Center,
-            modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
-        )
-    }
-}
-
-@Composable
-fun ProfilePictureWithImage(
-    onClick: (String, Int) -> Unit,
-    item: String,
-    index: Int,
-    count: Int,
-) {
-    LogCompositions("JetpackCompose.app", "Profile Picture")
-    Box(
-        modifier = Modifier
-            .size(40.dp)
-            .clip(CircleShape)
-            .background("#F0F5F9".color, CircleShape)
-            .clickable { onClick(item, index) },
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            painter = painterResource(R.drawable.ic_launcher_background),
-            contentDescription = "Contact profile picture",
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)                       // clip to the circle shape
-                .border(2.dp, Blue, CircleShape)
-                .clickable { onClick(item, index) }
-        )
-
-        Text(
-            "+$count",
-            color = Black,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .width(30.dp)
-                .height(30.dp)
-                .wrapContentHeight()
-        )
-    }
-}
-
-@Composable
-fun ProfilePictureWithCount(
-    onClick: (String, Int) -> Unit,
-    item: String,
-    index: Int,
-    count: Int,
-) {
-    LogCompositions("JetpackCompose.app", "Profile Picture")
-    Box(
-        modifier = Modifier
-            .size(40.dp)
-            .clip(CircleShape)
-            .background("#F0F5F9".color, CircleShape)
-            .clickable { onClick(item, index) },
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            "$count",
-            color = Black,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .width(30.dp)
-                .height(30.dp)
-                .wrapContentHeight()
-        )
-    }
-}
-
-@Composable
-fun ProfilePicture(alpha: Float, onClick: (String, Int) -> Unit, item: String, index: Int) {
-    LogCompositions("JetpackCompose.app", "Profile Picture")
-    Column {
-        Image(
-            painter = painterResource(R.drawable.ic_launcher_background),
-            contentDescription = "Contact profile picture",
-            alpha = alpha,
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)                       // clip to the circle shape
-                .border(2.dp, Blue, CircleShape)
-                .clickable { onClick(item, index) }
-        )
-    }
-}
-
-@Composable
-fun rememberScrollContext(listState: LazyListState): ScrollContext {
-    val scrollContext by remember {
-        derivedStateOf {
-            ScrollContext(
-                firstVisibleItem = listState.firstVisibleItemIndex,
-                offset = listState.firstVisibleItemScrollOffset
+    @Composable
+    fun ShowAddImage() {
+        Column(
+            modifier = Modifier.height(200.dp)
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_launcher_background),
+                contentDescription = "Add more",
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .clickable { }
+            )
+            Text(
+                "Add",
+                textAlign = TextAlign.Center,
+                modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
             )
         }
     }
-    return scrollContext
-}
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
+    @Composable
+    fun ProfilePictureWithImage(
+        onClick: (String, Int) -> Unit,
+        item: String,
+        index: Int,
+        count: Int,
+    ) {
+        LogCompositions("JetpackCompose.app", "Profile Picture")
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .background("#F0F5F9".color, CircleShape)
+                .clickable { onClick(item, index) },
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(R.drawable.ic_launcher_background),
+                contentDescription = "Contact profile picture",
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)                       // clip to the circle shape
+                    .border(2.dp, Blue, CircleShape)
+                    .clickable { onClick(item, index) }
+            )
 
-data class ScrollContext(
-    val firstVisibleItem: Int,
-    val offset: Int,
-)
+            Text(
+                "+$count",
+                color = Black,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .width(30.dp)
+                    .height(30.dp)
+                    .wrapContentHeight()
+            )
+        }
+    }
 
-@Preview(showBackground = false)
-@Composable
-fun ProfilePreview() {
-    Image(
-        painter = painterResource(R.drawable.ic_launcher_background),
-        contentDescription = "Contact profile picture",
-        alpha = 1f,
-        modifier = Modifier
-            .size(64.dp)
-            .clip(CircleShape)
-            .border(5.dp, Blue, CircleShape)
-            .clickable { }
+    @Composable
+    fun ProfilePictureWithCount(
+        onClick: (String, Int) -> Unit,
+        item: String,
+        index: Int,
+        count: Int,
+    ) {
+        LogCompositions("JetpackCompose.app", "Profile Picture")
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .background("#F0F5F9".color, CircleShape)
+                .clickable { onClick(item, index) },
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                "$count",
+                color = Black,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .width(30.dp)
+                    .height(30.dp)
+                    .wrapContentHeight()
+            )
+        }
+    }
+
+    @Composable
+    fun ProfilePicture(alpha: Float, onClick: (String, Int) -> Unit, item: String, index: Int) {
+        LogCompositions("JetpackCompose.app", "Profile Picture")
+        Column {
+            Image(
+                painter = painterResource(R.drawable.ic_launcher_background),
+                contentDescription = "Contact profile picture",
+                alpha = alpha,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)                       // clip to the circle shape
+                    .border(2.dp, Blue, CircleShape)
+                    .clickable { onClick(item, index) }
+            )
+        }
+    }
+
+    @Composable
+    fun rememberScrollContext(listState: LazyListState): ScrollContext {
+        val scrollContext by remember {
+            derivedStateOf {
+                ScrollContext(
+                    firstVisibleItem = listState.firstVisibleItemIndex,
+                    offset = listState.firstVisibleItemScrollOffset
+                )
+            }
+        }
+        return scrollContext
+    }
+
+    @Composable
+    fun Greeting(name: String) {
+        Text(text = "Hello $name!")
+    }
+
+    data class ScrollContext(
+        val firstVisibleItem: Int,
+        val offset: Int,
     )
-}
 
-@Preview(showBackground = false)
-@Composable
-fun ImageWithCount() {
-    val onClick: (String, Int) -> Unit = { _: String, _: Int ->
+    @Preview(showBackground = false)
+    @Composable
+    fun ProfilePreview() {
+        Image(
+            painter = painterResource(R.drawable.ic_launcher_background),
+            contentDescription = "Contact profile picture",
+            alpha = 1f,
+            modifier = Modifier
+                .size(64.dp)
+                .clip(CircleShape)
+                .border(5.dp, Blue, CircleShape)
+                .clickable { }
+        )
     }
-    ComposeLearningTheme {
-        ProfilePictureWithCount(onClick = onClick, "A", 0, 6)
-    }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    ComposeLearningTheme {
-        //RowItem(color = Color.Red)
-        //BottomPanel()
-        // Greeting("Android")
+    @Preview(showBackground = false)
+    @Composable
+    fun ImageWithCount() {
+        val onClick: (String, Int) -> Unit = { _: String, _: Int ->
+        }
+        ComposeLearningTheme {
+            ProfilePictureWithCount(onClick = onClick, "A", 0, 6)
+        }
     }
-}
+
+    @Preview(showBackground = true)
+    @Composable
+    fun DefaultPreview() {
+        ComposeLearningTheme {
+            //RowItem(color = Color.Red)
+            //BottomPanel()
+            // Greeting("Android")
+        }
+    }
 
 //@Composable
 //@OptIn(ExperimentalFoundationApi::class)
@@ -385,108 +401,108 @@ fun DefaultPreview() {
 //    }
 //}
 
-val String.color
-    get() = Color(android.graphics.Color.parseColor(this))
-private val colors = listOf(
-    Color.Red,
-    Color.Green,
-    Color.Blue,
-    Color.Magenta,
-    Color.Black,
-    Color.Cyan,
-    Color.DarkGray
-)
+    val String.color
+        get() = Color(android.graphics.Color.parseColor(this))
+    private val colors = listOf(
+        Color.Red,
+        Color.Green,
+        Color.Blue,
+        Color.Magenta,
+        Color.Black,
+        Color.Cyan,
+        Color.DarkGray
+    )
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DefaultAppBar(
-    shouldShowIcon: Boolean,
-) {
-
-
-    LogCompositions(tag = "AppBar", msg = shouldShowIcon.toString())
-
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        TopAppBar(
-            title = {
-                Text(
-                    text = "Compose UI Sample",
-                    modifier = Modifier
-                        .clickable { }
-                        // margin
-                        .padding(start = 160.dp)
-                )
-            },
-            actions = {
-                if (shouldShowIcon) {
-                    IconButton(
-                        onClick = { },
-                        modifier = Modifier.background(Color.Black),
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Menu,
-                            contentDescription = "Search Icon",
-                            tint = Color.Black,
-                            modifier = Modifier,
-                        )
-                    }
-                }
-            }
-        )
-    }
-}
-
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun TutorialNavGraph(
-    mainViewModel: MainViewModel,
-    modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController(),
-    startDestination: String = "FirstScreen",
-) {
-
-    var redirect by remember {
-        mutableStateOf(false)
-    }
-
-    LaunchedEffect(redirect) {
-        if (navController.currentBackStackEntry?.destination?.route != "FirstScreen") {
-            navController.popBackStack(route = "FirstScreen", inclusive = false)
-        }
-    }
-
-    val shouldRedirect: (Boolean) -> Unit = {
-        redirect = !redirect
-    }
-
-
-    NavHost(
-        modifier = modifier.statusBarsPadding(),
-        navController = navController,
-        startDestination = startDestination
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun DefaultAppBar(
+        shouldShowIcon: Boolean,
     ) {
 
 
-        composable(route = "FirstScreen") { navBackEntryStack ->
-            //DraggableLineDrawing()
-            //BoxAnim()
+        LogCompositions(tag = "AppBar", msg = shouldShowIcon.toString())
 
-            var selectedIndex by remember {
-                mutableIntStateOf(0)
-            }
-            Column(
-                modifier = Modifier
-                    .background(Color.White),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                var targetValue by remember {
-                    mutableStateOf(0f)
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Compose UI Sample",
+                        modifier = Modifier
+                            .clickable { }
+                            // margin
+                            .padding(start = 160.dp)
+                    )
+                },
+                actions = {
+                    if (shouldShowIcon) {
+                        IconButton(
+                            onClick = { },
+                            modifier = Modifier.background(Color.Black),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Menu,
+                                contentDescription = "Search Icon",
+                                tint = Color.Black,
+                                modifier = Modifier,
+                            )
+                        }
+                    }
                 }
-                Slider(value = targetValue, onValueChange = { targetValue = it })
-                //LazyRowLikePager()
+            )
+        }
+    }
 
-                // TabScreen()
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    @Composable
+    fun TutorialNavGraph(
+        mainViewModel: MainViewModel,
+        modifier: Modifier = Modifier,
+        navController: NavHostController = rememberNavController(),
+        startDestination: String = "FirstScreen",
+    ) {
+
+        var redirect by remember {
+            mutableStateOf(false)
+        }
+
+        LaunchedEffect(redirect) {
+            if (navController.currentBackStackEntry?.destination?.route != "FirstScreen") {
+                navController.popBackStack(route = "FirstScreen", inclusive = false)
+            }
+        }
+
+        val shouldRedirect: (Boolean) -> Unit = {
+            redirect = !redirect
+        }
+
+
+        NavHost(
+            modifier = modifier.statusBarsPadding(),
+            navController = navController,
+            startDestination = startDestination
+        ) {
+
+
+            composable(route = "FirstScreen") { navBackEntryStack ->
+                //DraggableLineDrawing()
+                //BoxAnim()
+
+                var selectedIndex by remember {
+                    mutableIntStateOf(0)
+                }
+                Column(
+                    modifier = Modifier
+                        .background(Color.White),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    var targetValue by remember {
+                        mutableStateOf(0f)
+                    }
+                    Slider(value = targetValue, onValueChange = { targetValue = it })
+                    //LazyRowLikePager()
+
+                    // TabScreen()
 
 //                val pages = listOf(
 //                    "kotlin",
@@ -513,7 +529,7 @@ fun TutorialNavGraph(
 //                }, selectedIndex = selectedIndex, tabSelected = {
 //                    selectedIndex = it
 //                })
-                // CalendarLazyRow()
+                    // CalendarLazyRow()
 //                CircularProgressIndicator(modifier = Modifier.size(24.dp),
 //                    strokeWidth = 4.dp,
 //                    trackColor = Color.Gray
@@ -525,9 +541,9 @@ fun TutorialNavGraph(
 //                    color = Color.Green,
 //                    strokeWidth = 8.dp
 //                )
-                // MultiColorProgress()
-                //AmountTextField()
-                //CalendarLazyRow()
+                    // MultiColorProgress()
+                    //AmountTextField()
+                    //CalendarLazyRow()
 
 //                PagerIndicatorDemo()
 //
@@ -567,7 +583,7 @@ fun TutorialNavGraph(
 //                        list.removeAt(index)
 //                    }
 //                })
-                //BottomBar()
+                    //BottomBar()
 //                CropBar() {
 //
 //                }
@@ -705,10 +721,10 @@ fun TutorialNavGraph(
 //                }
 //
 //                CreateAlertDialog()
-                //ParentComposable()
+                    //ParentComposable()
 
-                //ProgressMeter()
-                //GeneralAlertsList()
+                    //ProgressMeter()
+                    //GeneralAlertsList()
 
 //                val listViewModel: ListViewModel = viewModel()
 //
@@ -727,7 +743,7 @@ fun TutorialNavGraph(
 //                }) {
 //
 //                }
-                //Pager2()
+                    //Pager2()
 
 //                ThermometerCanvas(
 //                    modifier = Modifier
@@ -736,7 +752,7 @@ fun TutorialNavGraph(
 //                        .align(Alignment.CenterHorizontally)
 //                )
 
-                //PagerIndicatorDemo()
+                    //PagerIndicatorDemo()
 
 //                ButtonWithBorder(
 //                    textColor = Color.Red,
@@ -747,12 +763,12 @@ fun TutorialNavGraph(
 //                    ) {
 //
 //                }
-                //ShapeTry()
-                // Speedometer(100)
-                //LazyRowLikePager()
-                //navController.popBackStack("A",inclusive = true) in c
-                //PagerIndicatorDemo()
-                //CircleRowWithTextAndImage()
+                    //ShapeTry()
+                    // Speedometer(100)
+                    //LazyRowLikePager()
+                    //navController.popBackStack("A",inclusive = true) in c
+                    //PagerIndicatorDemo()
+                    //CircleRowWithTextAndImage()
 
 //                val focusRequester = remember { FocusRequester() }
 //                val focusManager = LocalFocusManager.current
@@ -786,31 +802,31 @@ fun TutorialNavGraph(
 //                BoxAnim2() {
 //                    navController.navigate("SecondScreen")
 //                }
-                //GeneralAlertsList()
+                    //GeneralAlertsList()
 //                ThermometerCanvas(
 //                    modifier = Modifier
 //                        .size(300.dp)
 //                        .background(Color.Black)
 //                        .align(Alignment.CenterHorizontally)
 //                )
-                //NumberPicker(Modifier.padding(top = 50.dp))
-                // BoxOverlap(modifier =  Modifier.padding(top = 50.dp).align(Alignment.CenterHorizontally))
-                //LazyRowLikePager()
+                    //NumberPicker(Modifier.padding(top = 50.dp))
+                    // BoxOverlap(modifier =  Modifier.padding(top = 50.dp).align(Alignment.CenterHorizontally))
+                    //LazyRowLikePager()
 
 //                PagerIndicatorDemo()
 //                val progress = remember {
 //                    50
 //                }
-                //GeneralAlertsList()
-                //SwipetoDismiss()
+                    //GeneralAlertsList()
+                    //SwipetoDismiss()
 //                PieChartPreview(){ chartData,index ->
 //
 //                }
+                }
             }
-        }
-        //SpeedometerScreen()
-        //Speedometer2(progress)
-        //Speedometer(progress)
+            //SpeedometerScreen()
+            //Speedometer2(progress)
+            //Speedometer(progress)
 //                Spacer(modifier = Modifier.padding(16.dp))
 //                Text(
 //                    text = "E",
@@ -850,16 +866,16 @@ fun TutorialNavGraph(
 //                PagerIndicatorDemo()
 
 
-        //PagerDemo3()
-        //MaxWidthText()
+            //PagerDemo3()
+            //MaxWidthText()
 //            Column(modifier = Modifier.height(80.dp).padding(top = 20.dp)) {
 //                EquiRow()
 //            }
 
-        //AnotherProgressBar()
-        //ContinuousLineGraph()
-        //AnimatedHeartShape()
-        //ImageWithRedDot()
+            //AnotherProgressBar()
+            //ContinuousLineGraph()
+            //AnimatedHeartShape()
+            //ImageWithRedDot()
 //            Box {
 //                                            Image(
 //                                painter = painterResource(id = R.drawable.ic_launcher_background),
@@ -872,7 +888,7 @@ fun TutorialNavGraph(
 //                            )
 //            }
 
-        // Filters()
+            // Filters()
 //            val items = remember {
 //                listOf("Man", "Woman")
 //            }
@@ -890,10 +906,10 @@ fun TutorialNavGraph(
 //                        selectedIndex = it
 //                    }
 //                )
-        //Chart()
-        // EquiRow()
-        //LazyRowWithColorAnimation()
-        //Speedometer(progress = 100)
+            //Chart()
+            // EquiRow()
+            //LazyRowWithColorAnimation()
+            //Speedometer(progress = 100)
 //                InstagramCarousel(
 //                    modifier = Modifier.align(Alignment.CenterHorizontally)
 //                        .fillMaxWidth()
@@ -904,15 +920,15 @@ fun TutorialNavGraph(
 //                            style = MaterialTheme.typography.bodyMedium
 //                        )
 //                    })
-        //           }
+            //           }
 
-        //MarqueeText(LoremIpsum().values.first().take(90))
-        composable("SecondScreen") {
-            SecondScreen(shouldRedirect)
+            //MarqueeText(LoremIpsum().values.first().take(90))
+            composable("SecondScreen") {
+                SecondScreen(shouldRedirect)
+            }
         }
-    }
 
-}
+    }
 
 
 //                        Column(
@@ -1044,7 +1060,7 @@ fun TutorialNavGraph(
 //BottomPanel()
 //Speedometer(progress = 100)
 //DragGestureTest()
-/* var progress by remember { mutableStateOf(0f) }
+    /* var progress by remember { mutableStateOf(0f) }
  Spacer(modifier = Modifier.padding(16.dp))
  Row {
      Text(text = "Test1")
@@ -1209,90 +1225,91 @@ fun TutorialNavGraph(
      }
  }*/
 
-@Preview(showBackground = true)
-@Composable
-fun Telegu() {
+    @Preview(showBackground = true)
+    @Composable
+    fun Telegu() {
 
-    Text(
-        modifier = Modifier,
-        text = "స్ప్రే చేశారా?",
-        style = TextStyle(
-            fontSize = 32.sp,
-            lineHeight = 32.sp,
-            fontFamily = FontFamily(Font(R.font.jio_type_black)),
-            fontWeight = FontWeight(900),
-            color = Color(0xFF141414),
+        Text(
+            modifier = Modifier,
+            text = "స్ప్రే చేశారా?",
+            style = TextStyle(
+                fontSize = 32.sp,
+                lineHeight = 32.sp,
+                fontFamily = FontFamily(Font(R.font.jio_type_black)),
+                fontWeight = FontWeight(900),
+                color = Color(0xFF141414),
 
-            )
-    )
-}
-
-@Preview(widthDp = 300, showBackground = true)
-@Composable
-fun PreviewScreen() {
-
-    Column {
-        Row(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Legend(Color(0xFFE30513), "ప్రమాదం", alpha = true)
-
-            Legend(Color(0xFFF7AB20), "ఒత్తిడి", alpha = false)
-
-            Legend(Color(0xFF25AB21), "వాంఛనీయ", alpha = true)
-
-            Legend(Color(0xFF2253DA), "అదనపు", alpha = true)
-        }
-        Speedometer3(
-            modifier = Modifier.padding(top = 16.dp),
-            25,
-            10,
-            10,
-            55,
-            50
-        )
-
-        Row(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 16.dp)
-                .height(32.dp)
-        ) {
-
-            Text(
-                modifier = Modifier,
-                text = "68.1",
-                style = TextStyle(
-                    fontSize = 32.sp,
-                    lineHeight = 32.sp,
-                    fontFamily = FontFamily(Font(R.font.jio_type_black)),
-                    fontWeight = FontWeight(900),
-                    color = Color(0xFF141414),
-
-                    )
-            )
-            Box(
-                modifier = Modifier
-                    .align(Alignment.Bottom)
-                    .width(18.dp)
-                    .height(24.dp)
-                    .padding(start = 2.dp, end = 1.dp)
-            ) {
-                Text(
-                    modifier = Modifier.padding(top = 3.dp),
-                    text = "%",
-                    style = TextStyle(
-                        fontSize = 18.sp,
-                        lineHeight = 24.sp,
-                        fontFamily = FontFamily(Font(R.font.jio_type_light)),
-                        fontWeight = FontWeight(700),
-                        color = Color(0xFF141414),
-                        textAlign = TextAlign.Center
-                    )
                 )
-            }
-        }
+        )
     }
 
+    @Preview(widthDp = 300, showBackground = true)
+    @Composable
+    fun PreviewScreen() {
+
+        Column {
+            Row(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Legend(Color(0xFFE30513), "ప్రమాదం", alpha = true)
+
+                Legend(Color(0xFFF7AB20), "ఒత్తిడి", alpha = false)
+
+                Legend(Color(0xFF25AB21), "వాంఛనీయ", alpha = true)
+
+                Legend(Color(0xFF2253DA), "అదనపు", alpha = true)
+            }
+            Speedometer3(
+                modifier = Modifier.padding(top = 16.dp),
+                25,
+                10,
+                10,
+                55,
+                50
+            )
+
+            Row(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .padding(top = 16.dp)
+                    .height(32.dp)
+            ) {
+
+                Text(
+                    modifier = Modifier,
+                    text = "68.1",
+                    style = TextStyle(
+                        fontSize = 32.sp,
+                        lineHeight = 32.sp,
+                        fontFamily = FontFamily(Font(R.font.jio_type_black)),
+                        fontWeight = FontWeight(900),
+                        color = Color(0xFF141414),
+
+                        )
+                )
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.Bottom)
+                        .width(18.dp)
+                        .height(24.dp)
+                        .padding(start = 2.dp, end = 1.dp)
+                ) {
+                    Text(
+                        modifier = Modifier.padding(top = 3.dp),
+                        text = "%",
+                        style = TextStyle(
+                            fontSize = 18.sp,
+                            lineHeight = 24.sp,
+                            fontFamily = FontFamily(Font(R.font.jio_type_light)),
+                            fontWeight = FontWeight(700),
+                            color = Color(0xFF141414),
+                            textAlign = TextAlign.Center
+                        )
+                    )
+                }
+            }
+        }
+
+    }
 }

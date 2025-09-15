@@ -684,12 +684,12 @@ fun Modifier.topBorder(strokeWidth: Dp, color: Color, cornerRadiusDp: Dp): Modif
         val width = size.width
         val height = size.height
 
-        drawLine(
-            color = color,
-            start = Offset(x = 0f, y = height),
-            end = Offset(x = 0f, y = cornerRadiusPx),
-            strokeWidth = strokeWidthPx
-        )
+//        drawLine(
+//            color = color,
+//            start = Offset(x = 0f, y = height),
+//            end = Offset(x = 0f, y = cornerRadiusPx),
+//            strokeWidth = strokeWidthPx
+//        )
 
         drawArc(
             color = color,
@@ -718,12 +718,12 @@ fun Modifier.topBorder(strokeWidth: Dp, color: Color, cornerRadiusDp: Dp): Modif
             style = Stroke(width = strokeWidthPx)
         )
 
-        drawLine(
-            color = color,
-            start = Offset(x = width, y = height),
-            end = Offset(x = width, y = cornerRadiusPx),
-            strokeWidth = strokeWidthPx
-        )
+//        drawLine(
+//            color = color,
+//            start = Offset(x = width, y = height),
+//            end = Offset(x = width, y = cornerRadiusPx),
+//            strokeWidth = strokeWidthPx
+//        )
     }
 }
 
