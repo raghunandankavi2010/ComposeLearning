@@ -66,6 +66,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.composelearning.anim.TransformableSample
+import com.example.composelearning.anim.ZoomableImage
 import com.example.composelearning.customshapes.OnlyTopArcsShape
 import com.example.composelearning.sliders.Slider
 import com.example.composelearning.sotry.topBorder
@@ -86,7 +88,9 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-                TopArcComposable()
+
+                ZoomableImage(painterResource(id = R.drawable.ic_launcher_background))
+                //TransformableSample()
             }
         }
     }
