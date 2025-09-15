@@ -316,3 +316,117 @@ class CustomCardShape(private val radius: Float) : Shape {
 
 @Composable
 fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
+
+
+//border color = #5d6474
+// card color = #333d51
+fun drawTopRoundedRectPath(size: Size, cornerRadius: Float): Path {
+    return Path().apply {
+        // Start at the point where the top-left arc begins after its curve
+        // Or, more explicitly, move to the starting point for the top edge
+        moveTo(x = cornerRadius, y = 0f) // Start drawing from after the arc's initial curve
+
+        // Line to the start of the top-left arc
+        lineTo(x = size.width - cornerRadius, y = 0f)
+
+        // Top right arc
+        arcTo(
+            rect = Rect(
+                left = size.width - cornerRadius,
+                top = 0f, // Adjusted top to be 0 for consistency
+                right = size.width + cornerRadius,
+                bottom = 2 * cornerRadius // This defines the height of the bounding box for the arc
+            ),
+            startAngleDegrees = 270.0f, // Start at the top point of the circle
+            sweepAngleDegrees = 90.0f,  // Sweep clockwise to the right
+            forceMoveTo = false
+        )
+
+        // Line down the right side
+        lineTo(x = size.width, y = size.height)
+
+        // Line across the bottom
+        lineTo(x = 0f, y = size.height)
+
+        // Line up the left side
+        lineTo(x = 0f, y = cornerRadius)
+
+        // Top left arc
+        arcTo(
+            rect = Rect(
+                left = -cornerRadius,
+                top = 0f, // Adjusted top to be 0 for consistency
+                right = cornerRadius,
+                bottom = 2 * cornerRadius // This defines the height of the bounding box for the arc
+            ),
+            startAngleDegrees = 180.0f, // Start at the left point of the circle
+            sweepAngleDegrees = 90.0f,  // Sweep clockwise upwards
+            forceMoveTo = false
+        )
+        close()
+    }
+}
+
+class TopRoundedRectShape(private val cornerRadius: Dp) : Shape {
+    override fun createOutline(
+        size: Size,
+        layoutDirection: LayoutDirection,
+        density: Density
+    ): androidx.compose.ui.graphics.Outline {
+        val cornerRadiusPx = with(density) { cornerRadius.toPx() }
+        return androidx.compose.ui.graphics.Outline.Generic(
+            drawTopRoundedRectPath(size, cornerRadiusPx)
+        )
+    }
+}
+
+
+// Your custom Path drawing function - refined for only top-left and top-right arcs
+fun drawOnlyTopArcsPath(size: Size, cornerRadius: Float): Path {
+    return Path().apply {
+        reset()
+        moveTo(x = cornerRadius, y = 0f)
+        lineTo(x = size.width - cornerRadius, y = 0f)
+        arcTo(
+            rect = Rect(
+                left = size.width - 2 * cornerRadius,
+                top = 0f,
+                right = size.width,
+                bottom = 2 * cornerRadius
+            ),
+            startAngleDegrees = 270.0f,
+            sweepAngleDegrees = 90.0f,
+            forceMoveTo = false
+        )
+
+        lineTo(x = size.width, y = size.height)
+        lineTo(x = 0f, y = size.height)
+        lineTo(x = 0f, y = cornerRadius)
+
+        arcTo(
+            rect = Rect(
+                left = 0f,
+                top = 0f,
+                right = 2 * cornerRadius,
+                bottom = 2 * cornerRadius
+            ),
+            startAngleDegrees = 180.0f,
+            sweepAngleDegrees = 90.0f,
+            forceMoveTo = false
+        )
+        close()
+    }
+}
+
+class OnlyTopArcsShape(private val cornerRadius: Dp) : Shape {
+    override fun createOutline(
+        size: Size,
+        layoutDirection: LayoutDirection,
+        density: Density
+    ): Outline {
+        val cornerRadiusPx = with(density) { cornerRadius.toPx() }
+        return Outline.Generic(
+            drawOnlyTopArcsPath(size, cornerRadiusPx)
+        )
+    }
+}
