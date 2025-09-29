@@ -30,23 +30,19 @@ import kotlin.math.roundToInt
 fun ZoomableImage(imagePainter: Painter) {
 
     var scale by remember { mutableFloatStateOf(1f) }
-    var offset by remember { mutableStateOf(Offset(100f,100f)) }
+    var offset by remember { mutableStateOf(Offset.Zero) }
     val state = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
         scale *= zoomChange
         offset += offsetChange
     }
 
-
     Box(
-        modifier = Modifier.size(
-            100.dp
-        )
+        modifier = Modifier.size(100.dp)
     ) {
         Image(
             painter = imagePainter,
             contentDescription = null,
             modifier = Modifier
-
                 // Apply initial size here. This sets the base size that scale=1f refers to.
                 //.size(100.dp)
                 .graphicsLayer(
@@ -56,11 +52,10 @@ fun ZoomableImage(imagePainter: Painter) {
                     translationY = offset.y
                 )
                 .transformable(state = state)
-                .fillMaxSize()
             // It's often good practice to make the content fill available space within its size
             // or define a contentScale if you want specific behavior when the image is smaller/larger.
             // For pinch-zoom, leave contentScale as is or set it to ContentScale.Fit/Crop as needed.
-             // This would make the image fill the 100dp, then scale
+             .fillMaxSize()// This would make the image fill the 100dp, then scale
         )
     }
 }

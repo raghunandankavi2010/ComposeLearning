@@ -66,6 +66,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.composelearning.anim.GamepadLayout
 import com.example.composelearning.anim.TransformableSample
 import com.example.composelearning.anim.ZoomableImage
 import com.example.composelearning.customshapes.OnlyTopArcsShape
@@ -88,8 +89,8 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-
-                ZoomableImage(painterResource(id = R.drawable.ic_launcher_background))
+                GamepadLayout()
+                //ZoomableImage(painterResource(id = R.drawable.ic_launcher_background))
                 //TransformableSample()
             }
         }
