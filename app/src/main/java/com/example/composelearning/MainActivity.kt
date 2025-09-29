@@ -66,14 +66,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.composelearning.anim.GamepadLayout
-import com.example.composelearning.anim.TransformableSample
-import com.example.composelearning.anim.ZoomableImage
 import com.example.composelearning.customshapes.OnlyTopArcsShape
 import com.example.composelearning.sliders.Slider
 import com.example.composelearning.sotry.topBorder
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
+import com.example.composelearning.textstyling.LinkAnnotationExample
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -89,7 +87,7 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-                GamepadLayout()
+                LinkAnnotationExample()
                 //ZoomableImage(painterResource(id = R.drawable.ic_launcher_background))
                 //TransformableSample()
             }
