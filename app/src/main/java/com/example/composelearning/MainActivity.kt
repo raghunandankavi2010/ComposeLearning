@@ -67,6 +67,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.composelearning.customshapes.OnlyTopArcsShape
+import com.example.composelearning.modifiers.AvatarPreview
 import com.example.composelearning.sliders.Slider
 import com.example.composelearning.sotry.topBorder
 import com.example.composelearning.speedometer.Legend
@@ -87,7 +88,7 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-                LinkAnnotationExample()
+                AvatarPreview()
                 //ZoomableImage(painterResource(id = R.drawable.ic_launcher_background))
                 //TransformableSample()
             }
