@@ -1,11 +1,15 @@
 package com.example.composelearning
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,10 +19,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -34,11 +40,16 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -48,10 +59,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -62,20 +79,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.composelearning.customshapes.OnlyTopArcsShape
-import com.example.composelearning.modifiers.AvatarPreview
+import com.example.composelearning.lists.GeneralAlertsList
 import com.example.composelearning.sliders.Slider
 import com.example.composelearning.sotry.topBorder
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
-import com.example.composelearning.textstyling.LinkAnnotationExample
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     @SuppressLint(
         "UnusedMaterialScaffoldPaddingParameter",
         "UnusedMaterial3ScaffoldPaddingParameter"
@@ -85,14 +103,79 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContent {
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.light(
+                Color.Transparent.toArgb(),
+                Color.Transparent.toArgb()
+            ),
+            navigationBarStyle = SystemBarStyle.light(
+                Color.Transparent.toArgb(),
+                Color.Transparent.toArgb(),
+            )
+        )
 
-            Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
-                AvatarPreview()
-                //ZoomableImage(painterResource(id = R.drawable.ic_launcher_background))
-                //TransformableSample()
+        setContent {
+            val view = LocalView.current
+            val isLightMode = true // can you use this when developing
+            SideEffect {
+                val window = (view.context as Activity).window
+                val insetsController = WindowCompat.getInsetsController(window, view)
+
+                insetsController.isAppearanceLightStatusBars = isLightMode
+                insetsController.isAppearanceLightNavigationBars = isLightMode
+            }
+
+            ComposeLearningTheme {
+                Column(
+                    modifier = Modifier
+
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                    ) {
+                        GeneralAlertsList(
+                            modifier = Modifier
+                        )
+                    }
+                }
+
             }
         }
+    }
+
+
+    @Composable
+    private fun StatusBarProtection(
+        color: Color = MaterialTheme.colorScheme.surfaceContainer,
+        heightProvider: () -> Float = calculateGradientHeight(),
+    ) {
+
+        Canvas(Modifier.fillMaxSize()) {
+            val calculatedHeight = heightProvider()
+            val gradient = Brush.verticalGradient(
+                colors = listOf(
+                    color.copy(alpha = 1f),
+                    color.copy(alpha = .8f),
+                    Color.Transparent
+                ),
+                startY = 0f,
+                endY = calculatedHeight
+            )
+            drawRect(
+                brush = gradient,
+                size = Size(size.width, calculatedHeight),
+            )
+        }
+    }
+
+    @Composable
+    fun calculateGradientHeight(): () -> Float {
+        val statusBars = WindowInsets.statusBars
+        val density = LocalDensity.current
+        return { statusBars.getTop(density).times(1.2f) }
     }
 
     @Composable
