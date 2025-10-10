@@ -22,6 +22,8 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
@@ -74,7 +76,7 @@ fun getAlertsData(): MutableList<AlertsData> {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun GeneralAlertsList(modifier: Modifier) {
+fun GeneralAlertsList(modifier: Modifier, lazyListState: LazyListState = rememberLazyListState()) {
     val list = getAlertsData()
     val expand = remember { mutableStateMapOf<Int, Boolean>() }
     LazyColumn(
@@ -83,7 +85,8 @@ fun GeneralAlertsList(modifier: Modifier) {
                 testTagsAsResourceId = true // typically at the root ui element
             }
             .background(Color(0x29000000)),
-        contentPadding = WindowInsets.systemBars.asPaddingValues()
+        contentPadding = WindowInsets.systemBars.asPaddingValues(),
+        state = lazyListState
     ) {
 
         items(list.size, key = { index -> list[index].id }) { index ->
