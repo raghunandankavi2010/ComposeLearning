@@ -1,6 +1,7 @@
 package com.example.composelearning.lists
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FloatSpringSpec
@@ -60,7 +61,7 @@ interface CarouselState2 {
     val range: ClosedRange<Int>
 
     suspend fun snapTo(value: Float)
-    suspend fun scrollTo(value: Int)
+    suspend fun scrollTo(value: Int, triggerCallback: Boolean = false)
     suspend fun decayTo(velocity: Float, value: Float)
     suspend fun stop()
 
@@ -90,11 +91,11 @@ class CarouselStateImpl2(
         animatable.snapTo(value.coerceIn(floatRange))
         // If snapping to a value, consider it a selection if it's a whole number
         if (value.roundToInt().toFloat() == value) {
-            onSelectionFinished?.invoke(value.roundToInt())
+           onSelectionFinished?.invoke(value.roundToInt())
         }
     }
 
-    override suspend fun scrollTo(value: Int) {
+    override suspend fun scrollTo(value: Int, triggerCallback: Boolean) {
         animatable.animateTo(
             targetValue = value.toFloat().coerceIn(floatRange),
             animationSpec = decayAnimationSpec // Use spring for programmatic scrolls too
@@ -111,6 +112,7 @@ class CarouselStateImpl2(
         )
         // Trigger the callback after the animation finishes
         onSelectionFinished?.invoke(target.roundToInt())
+        //Log.d("","$target")
     }
 
     override fun equals(other: Any?): Boolean {
@@ -242,9 +244,6 @@ fun InstagramCarousel2(
                                 scope.launch {
                                     state.scrollTo(i)
                                 }
-                                Toast
-                                    .makeText(context, "$i", Toast.LENGTH_SHORT)
-                                    .show()
                             }
                     )
                 }
