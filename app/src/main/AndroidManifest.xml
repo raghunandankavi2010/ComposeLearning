@@ -17,8 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ComposeLearning">
         <activity
-            android:name=".MainActivity"
+            android:name=".ListActivity"
             android:exported="true"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.ComposeLearning">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

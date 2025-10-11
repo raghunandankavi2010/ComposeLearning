@@ -44,7 +44,7 @@ val categories = listOf(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun App() {
+fun StickyList() {
     val listState = rememberLazyListState()
     val topHeaderIndex by remember {
         derivedStateOf {

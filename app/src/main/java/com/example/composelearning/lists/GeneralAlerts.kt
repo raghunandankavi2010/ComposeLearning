@@ -6,15 +6,24 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
@@ -66,35 +75,42 @@ fun getAlertsData(): MutableList<AlertsData> {
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
-@Preview
 @Composable
-fun GeneralAlertsList() {
+fun GeneralAlertsList(modifier: Modifier, lazyListState: LazyListState = rememberLazyListState()) {
     val list = getAlertsData()
     val expand = remember { mutableStateMapOf<Int, Boolean>() }
     LazyColumn(
-        modifier = Modifier
+        modifier = modifier
             .semantics {
                 testTagsAsResourceId = true // typically at the root ui element
             }
-            .background(Color(0x29000000))
-            .padding(top = 16.dp)
+            .background(Color(0x29000000)),
+        contentPadding = WindowInsets.systemBars.asPaddingValues(),
+        state = lazyListState
     ) {
 
         items(list.size, key = { index -> list[index].id }) { index ->
-            GeneralAlerts(list[index],expand, index)
+            val isExpanded = expand[index] ?: false
+            GeneralAlerts(alertsData =  list[index], expand = isExpanded, index = index,
+                onExpandClicked = { index, isExpand  -> expand[index] = isExpand })
             Spacer(modifier = Modifier.padding(top = 16.dp))
         }
     }
 }
 
 @Composable
-fun GeneralAlerts(alertsData: AlertsData, expand: SnapshotStateMap<Int, Boolean>, index: Int) {
+fun GeneralAlerts(
+    alertsData: AlertsData,
+    expand: Boolean,
+    index: Int,
+    onExpandClicked: (Int,Boolean) -> Unit
+) {
 
     ElevatedCard(
         modifier = Modifier
-              .testTag(
+            .testTag(
                 "Alerts${alertsData.id}"
-                )
+            )
             .fillMaxSize()
             .wrapContentHeight()
             .padding(start = 16.dp, end = 16.dp),
@@ -148,7 +164,7 @@ fun GeneralAlerts(alertsData: AlertsData, expand: SnapshotStateMap<Int, Boolean>
 
 
                 val drawable =
-                    if (expand[index] == true) {
+                    if (expand) {
                         R.drawable.icon_up
                     } else {
                         R.drawable.icon_down
@@ -160,8 +176,7 @@ fun GeneralAlerts(alertsData: AlertsData, expand: SnapshotStateMap<Int, Boolean>
                     modifier = Modifier
                         .size(24.dp)
                         .clickable {
-                            val isExpand = expand[index] ?: false
-                            expand[index] = !isExpand
+                            onExpandClicked(index,!expand)
                         }
                 )
             }
@@ -178,7 +193,7 @@ fun GeneralAlerts(alertsData: AlertsData, expand: SnapshotStateMap<Int, Boolean>
             )
 
             val modifier =
-                if (expand[index] == true) {
+                if (expand ) {
                     Modifier.wrapContentHeight()
                 } else {
                     Spacer(modifier = Modifier.padding(bottom = 16.dp))
@@ -186,7 +201,7 @@ fun GeneralAlerts(alertsData: AlertsData, expand: SnapshotStateMap<Int, Boolean>
                 }
 
             AnimatedVisibility(
-                visible = expand[index] ?: false,
+                visible = expand,
             ) {
 
                 Text(
