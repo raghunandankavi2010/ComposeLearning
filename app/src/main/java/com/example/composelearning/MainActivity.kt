@@ -76,6 +76,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.blacknut.launcher.GameLaunchActivity
 import com.example.composelearning.lists.AppNavigation
+import com.example.composelearning.lists.InstagramCarousel2
+import com.example.composelearning.lists.InstagramCarouselPreview2
 import com.example.composelearning.sliders.Slider
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
@@ -96,7 +98,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            MentionTextField()
+            InstagramCarouselPreview2()
         }
     }
 }
