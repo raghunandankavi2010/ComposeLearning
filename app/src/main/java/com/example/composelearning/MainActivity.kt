@@ -72,9 +72,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.blacknut.launcher.GameLaunchActivity
-import com.example.composelearning.lists.CircularListDemo
-import com.example.composelearning.lists.InstagramCarousel2
-import com.example.composelearning.lists.InstagramCarouselPreview2
+import com.example.composelearning.animcompose.StaggeredGridDemo
 import com.example.composelearning.sliders.Slider
 import com.example.composelearning.speedometer.Legend
 import com.example.composelearning.speedometer.Speedometer3
@@ -91,7 +89,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            InstagramCarouselPreview2()
+            StaggeredGridDemo()
         }
     }
 }
