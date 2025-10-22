@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.example.composelearning.animcompose.SidePanelArrangement
 import com.example.composelearning.animcompose.SidePanelLayout
 import com.example.composelearning.animcompose.SidePanelState
+import com.example.composelearning.animcompose.SpotlightDemoScreen
 import com.example.composelearning.animcompose.rememberSidePanelState
 import kotlinx.coroutines.launch
 
@@ -37,7 +38,7 @@ class SidePanelActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    DraggableSheetRight()
+                   MainScreenContent()
                 }
             }
         }
