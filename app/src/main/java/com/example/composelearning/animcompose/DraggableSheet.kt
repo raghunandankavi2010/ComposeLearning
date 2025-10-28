@@ -28,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.platform.LocalDensity
@@ -76,6 +77,7 @@ fun DraggableSheetRight(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .offset { IntOffset(x = dragState.requireOffset().roundToInt(), y = 0) }
                 .width(totalDraggableWidth)
+                .background(Color.White,RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp))
                 .fillMaxHeight()
         ) {
             Surface(
