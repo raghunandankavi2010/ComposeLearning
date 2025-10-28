@@ -5,6 +5,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColorScheme(
     primary = Purple200,
@@ -46,3 +47,7 @@ fun ComposeLearningTheme(
         content = content
     )
 }
+
+val Black900 = Color(0xFF121212) // Example dark grey
+val Black700 = Color(0xFF282828) // Example slightly lighter dark grey
+val White800 = Color(0xFFCCCCCC) // Example off-white
