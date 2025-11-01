@@ -31,7 +31,6 @@ fun CircularMenuScreenWithFullAnimation() {
     val menuVisible = remember { mutableStateOf(false) }
 
     val animationDuration = 5000
-
     val animationProgress = remember { Animatable(0f) }
 
     LaunchedEffect(showMenu.value) {
@@ -56,7 +55,11 @@ fun CircularMenuScreenWithFullAnimation() {
     ) {
         // Center Button
         Button(
-            onClick = { showMenu.value = !showMenu.value },
+            onClick = {
+                if(animationProgress.value ==0f || animationProgress.value == 1f) {
+                    showMenu.value = !showMenu.value
+                }
+            },
             modifier = Modifier
                 .size(80.dp)
                 .clip(CircleShape)
