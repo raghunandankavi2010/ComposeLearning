@@ -157,8 +157,8 @@ fun ParticleExplosionScreen() {
             circleRadiusDp = 150.dp,
             minSpawnDelay = 2L,
             maxSpawnDelay = 10L,
-            minDuration = 1000L,
-            maxDuration = 5000L,
+            minDuration = 700L,
+            maxDuration = 1000L,
             // ⭐ Using the new scale parameters for a dramatic effect
             minRadiusDp = 0.5.dp, // Starts very small
             maxRadiusDp = 8.dp    // Grows significantly
