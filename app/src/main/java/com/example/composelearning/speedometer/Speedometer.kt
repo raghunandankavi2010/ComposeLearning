@@ -202,10 +202,12 @@ fun SpeedometerTry(
     progress: Int,
 ) {
 
-    BoxWithConstraints(modifier = Modifier
-        .padding(top = 25.dp)
-        .width(300.dp)
-        .height(130.dp)) {
+    BoxWithConstraints(
+        modifier = Modifier
+            .padding(top = 25.dp)
+            .width(300.dp)
+            .height(130.dp)
+    ) {
 
         LogCompositions("Speedometer", "Running")
         val textMeasurer = rememberTextMeasurer()
@@ -242,7 +244,7 @@ fun SpeedometerTry(
                     outerRadius = outerRadius,
                     cornerRadius = cornerRadius,
 
-                )
+                    )
             }
         }
 
@@ -344,6 +346,7 @@ fun SpeedometerTry(
         )
     }
 }
+
 @Composable
 fun Speedometer3(
     modifier: Modifier = Modifier,
@@ -354,9 +357,13 @@ fun Speedometer3(
     progress: Int,
 ) {
 
-    BoxWithConstraints(modifier = modifier
-        .fillMaxWidth()
-        .height(130.dp)) {
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(11.dp)
+            .height(160.dp)
+    )
+    {
 
         LogCompositions("Speedometer", "Running")
         val textMeasurer = rememberTextMeasurer()
@@ -371,10 +378,10 @@ fun Speedometer3(
 
         LaunchedEffect(progress) {
             //launch {
-                progressAnimation.animateTo(
-                    targetValue = progress.toFloat(),
-                    animationSpec = tween(durationMillis = 3000, easing = CustomEaseOutBounce)
-                )
+            progressAnimation.animateTo(
+                targetValue = progress.toFloat(),
+                animationSpec = tween(durationMillis = 3000, easing = CustomEaseOutBounce)
+            )
             //}
         }
         val innerRadius = 60.dp.dpToPx()
@@ -467,8 +474,8 @@ fun Speedometer3(
 
                     drawPath(redPath, Color(0xFFE30513))
                     drawPath(yellow, Color(0xFFF7AB20))
-                    drawPath(green,Color(0xFF25AB21))
-                    drawPath(blue,Color(0xFF2253DA))
+                    drawPath(green, Color(0xFF25AB21))
+                    drawPath(blue, Color(0xFF2253DA))
 
                     rotate(
                         progressAnimation.value * (arcDegrees) / 100f,
@@ -526,7 +533,7 @@ fun Path.addRoundedPolarBox(
 
     arcTo(
         rect = Rect(center = center, radius = outerRadius),
-        startAngleDegrees = (endAngleDegrees ).toFloat(),
+        startAngleDegrees = (endAngleDegrees).toFloat(),
         sweepAngleDegrees = -(sweepAngleDegrees - 2 * outerAngleShift).toFloat(),
         forceMoveTo = false,
     )
@@ -544,7 +551,6 @@ fun Path.addRoundedPolarBox(
     )
     close()
 }
-
 
 
 fun Path.addRoundedPolarBoxAllSides(
@@ -604,7 +610,7 @@ fun Path.addRoundedPolarBoxAllSides(
     )
     arcTo(
         rect = Rect(center = center, radius = outerRadius),
-        startAngleDegrees = (endAngleDegrees ).toFloat(),
+        startAngleDegrees = (endAngleDegrees).toFloat(),
         sweepAngleDegrees = -(sweepAngleDegrees - 2 * outerAngleShift).toFloat(),
         forceMoveTo = false,
     )
@@ -643,19 +649,19 @@ fun Path.addRoundedEndBox(
     arcTo(
         rect = Rect(
             center = Offset(
-                x = (center.x + innerRadiusShift * cos((startAngleDegrees ) * PI / 180)).toFloat(),
-                y = (center.y + innerRadiusShift * sin((startAngleDegrees ) * PI / 180)).toFloat(),
+                x = (center.x + innerRadiusShift * cos((startAngleDegrees) * PI / 180)).toFloat(),
+                y = (center.y + innerRadiusShift * sin((startAngleDegrees) * PI / 180)).toFloat(),
             ),
             radius = 0.1f,
         ),
-        startAngleDegrees = startAngleDegrees ,
+        startAngleDegrees = startAngleDegrees,
         sweepAngleDegrees = (90).toFloat(),
         forceMoveTo = true,
     )
     // arc from start to sweep minus the arc part ie start to sweep angle arc
     arcTo(
         rect = Rect(center = center, radius = innerRadius),
-        startAngleDegrees = (startAngleDegrees ).toFloat(),
+        startAngleDegrees = (startAngleDegrees).toFloat(),
         sweepAngleDegrees = (sweepAngleDegrees - 2 * innerAngleShift).toFloat(),
         forceMoveTo = false,
     )
@@ -688,8 +694,8 @@ fun Path.addRoundedEndBox(
     // left top arc
     arcTo(
         rect = Rect(center = center, radius = outerRadius),
-        startAngleDegrees = (endAngleDegrees - innerAngleShift ).toFloat(),
-        sweepAngleDegrees = -(sweepAngleDegrees-  innerAngleShift).toFloat(),
+        startAngleDegrees = (endAngleDegrees - innerAngleShift).toFloat(),
+        sweepAngleDegrees = -(sweepAngleDegrees - innerAngleShift).toFloat(),
         forceMoveTo = false,
     )
 
