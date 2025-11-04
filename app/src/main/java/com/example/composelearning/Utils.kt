@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 
 class Ref(var value: Int)
 
@@ -17,4 +19,10 @@ inline fun LogCompositions(tag: String, msg: String) {
         SideEffect { ref.value++ }
         Log.d(tag, "Compositions: $msg ${ref.value}")
     }
+}
+
+@Composable
+fun convertPxToDp(px: Int): Dp {
+    val density = LocalDensity.current
+    return with(density) { px.toDp() }
 }
