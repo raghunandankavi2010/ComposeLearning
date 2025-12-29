@@ -43,7 +43,7 @@ fun ThermometerCanvas(modifier: Modifier = Modifier, progress: Int = 100) {
     LaunchedEffect(animVal) {
         animVal.animateTo(
             targetValue = 1f,
-            animationSpec = tween(durationMillis = 5000, easing = LinearEasing)
+            animationSpec = tween(durationMillis = 2000, easing = LinearEasing)
         )
     }
 

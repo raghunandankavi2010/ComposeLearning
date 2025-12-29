@@ -54,12 +54,12 @@ dependencies {
 
     implementation 'androidx.core:core-ktx:1.17.0'
     implementation "androidx.constraintlayout:constraintlayout-compose:1.1.1"
-    implementation 'androidx.compose.runtime:runtime:1.9.2'
-    implementation 'androidx.compose.ui:ui-geometry:1.9.2'
-    implementation 'androidx.compose.animation:animation-core:1.9.3'
-    def composeBom = platform('androidx.compose:compose-bom:2025.09.01')
-    implementation platform('androidx.compose:compose-bom:2025.09.01')
-    androidTestImplementation platform('androidx.compose:compose-bom:2025.09.01')
+    implementation 'androidx.compose.runtime:runtime:1.10.0'
+    implementation 'androidx.compose.ui:ui-geometry:1.10.0'
+    implementation 'androidx.compose.animation:animation-core:1.10.0'
+    def composeBom = platform('androidx.compose:compose-bom:2025.12.01')
+    implementation platform('androidx.compose:compose-bom:2025.12.01')
+    androidTestImplementation platform('androidx.compose:compose-bom:2025.12.01')
 
     implementation 'androidx.core:core-ktx:1.17.0'
     implementation 'androidx.compose.ui:ui'
@@ -67,38 +67,38 @@ dependencies {
     implementation  'androidx.compose.material3:material3'
 
     implementation 'androidx.compose.ui:ui-tooling-preview'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.9.4'
-    implementation 'androidx.activity:activity-compose:1.11.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.10.0'
+    implementation 'androidx.activity:activity-compose:1.12.2'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
     debugImplementation 'androidx.compose.ui:ui-tooling'
     implementation 'androidx.compose.ui:ui-util'
     // https://mvnrepository.com/artifact/androidx.compose.foundation/foundation
-    implementation group: 'androidx.compose.foundation', name: 'foundation', version: '1.9.2'
+    implementation group: 'androidx.compose.foundation', name: 'foundation', version: '1.10.0'
 
     // https://mvnrepository.com/artifact/androidx.compose.animation/animation
     implementation  'androidx.compose.animation:animation'
     // https://mvnrepository.com/artifact/androidx.lifecycle/lifecycle-viewmodel-compose
-    implementation group: 'androidx.lifecycle', name: 'lifecycle-viewmodel-compose', version: '2.9.4'
+    implementation group: 'androidx.lifecycle', name: 'lifecycle-viewmodel-compose', version: '2.10.0'
     // https://mvnrepository.com/artifact/androidx.navigation/navigation-compose
-    implementation group: 'androidx.navigation', name: 'navigation-compose', version: '2.9.5'
+    implementation group: 'androidx.navigation', name: 'navigation-compose', version: '2.9.6'
     // https://mvnrepository.com/artifact/androidx.compose.runtime/runtime
-    implementation('androidx.lifecycle:lifecycle-runtime-compose:2.9.4')
+    implementation('androidx.lifecycle:lifecycle-runtime-compose:2.10.0')
 
     implementation("io.coil-kt:coil-compose:2.7.0")
 
     // https://mvnrepository.com/artifact/androidx.lifecycle/lifecycle-viewmodel-ktx
-    implementation group: 'androidx.lifecycle', name: 'lifecycle-viewmodel-ktx', version: '2.9.4'
+    implementation group: 'androidx.lifecycle', name: 'lifecycle-viewmodel-ktx', version: '2.10.0'
     // https://mvnrepository.com/artifact/androidx.compose.foundation/foundation
-    implementation 'androidx.compose.foundation:foundation:1.9.2'
+    implementation 'androidx.compose.foundation:foundation:1.10.0'
     // https://mvnrepository.com/artifact/androidx.compose.material3/material3
     implementation group: 'androidx.compose.material3', name: 'material3', version: '1.4.0'
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.4")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
 
-    implementation "androidx.graphics:graphics-shapes:1.0.1"
+    implementation "androidx.graphics:graphics-shapes:1.1.0"
     // https://mvnrepository.com/artifact/androidx.compose.ui/ui
-    implementation group: 'androidx.compose.ui', name: 'ui', version: '1.9.2'
+    implementation group: 'androidx.compose.ui', name: 'ui', version: '1.10.0'
 
     implementation(// https://mvnrepository.com/artifact/androidx.paging/paging-compose
             runtimeOnly group: 'androidx.paging', name: 'paging-compose', version: '3.2.1'
@@ -106,12 +106,12 @@ dependencies {
     implementation "com.google.accompanist:accompanist-permissions:0.37.3"
 
     implementation("androidx.core:core-ktx:1.17.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.4")
-    implementation("androidx.compose.animation:animation:1.9.2")
-    implementation("dev.chrisbanes.haze:haze:1.6.10")
-    implementation("dev.chrisbanes.haze:haze-materials:1.6.10")
-    implementation("androidx.media3:media3-exoplayer:1.8.0") // Or latest version
-    implementation("androidx.media3:media3-ui:1.8.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.10.0")
+    implementation("androidx.compose.animation:animation:1.10.0")
+    implementation("dev.chrisbanes.haze:haze:1.7.1")
+    implementation("dev.chrisbanes.haze:haze-materials:1.7.1")
+    implementation("androidx.media3:media3-exoplayer:1.9.0") // Or latest version
+    implementation("androidx.media3:media3-ui:1.9.0")
 
     def paging_version = "3.3.6"
 

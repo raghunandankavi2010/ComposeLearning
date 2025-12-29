@@ -3,7 +3,7 @@ package com.example.composelearning
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.example.composelearning.animcompose.BouncingBallAnimation
+import com.example.composelearning.animcompose.PulsatingCircle2
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 class MainActivity : ComponentActivity() {
@@ -11,7 +11,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ComposeLearningTheme {
-                BouncingBallAnimation()
+                PulsatingCircle2()
             }
         }
     }
