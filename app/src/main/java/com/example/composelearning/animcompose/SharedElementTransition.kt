@@ -41,6 +41,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.animation.with
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -65,6 +66,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -136,8 +138,7 @@ fun ProductScreen(products: List<Product>) {
         val sharedScope = this
 
         val screenTransition = updateTransition(
-            targetState = state,
-            label = "screenTransition"
+            targetState = state, label = "screenTransition"
         )
 
         val sharedConfig = remember(screenTransition) {
@@ -147,14 +148,12 @@ fun ProductScreen(products: List<Product>) {
         val backgroundColor by screenTransition.animateColor(label = "backgroundColor") { target ->
             when (target) {
                 ScreenState.List -> MaterialTheme.colorScheme.surface
-                is ScreenState.Detail ->
-                    MaterialTheme.colorScheme.surface.copy(alpha = 1f)
+                is ScreenState.Detail -> MaterialTheme.colorScheme.surface.copy(alpha = 1f)
             }
         }
 
         Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = backgroundColor
+            modifier = Modifier.fillMaxSize(), color = backgroundColor
         ) {
             screenTransition.AnimatedContent(
                 transitionSpec = {
@@ -168,44 +167,48 @@ fun ProductScreen(products: List<Product>) {
                             (slideIntoContainer(
                                 AnimatedContentTransitionScope.SlideDirection.Left,
                                 animationSpec = tween(SCREEN_DURATION, easing = CinematicEasing)
-                            ) + fadeIn(tween(SCREEN_DURATION, easing = LinearOutSlowInEasing))
-                                    + scaleIn(
+                            ) + fadeIn(
+                                tween(
+                                    SCREEN_DURATION,
+                                    easing = LinearOutSlowInEasing
+                                )
+                            ) + scaleIn(
                                 initialScale = 0.98f,
                                 animationSpec = tween(SCREEN_DURATION, easing = CinematicEasing)
-                            )) with
-                                    (slideOutOfContainer(
-                                        AnimatedContentTransitionScope.SlideDirection.Left,
-                                        animationSpec = tween(
-                                            SCREEN_DURATION,
-                                            easing = CinematicEasing
-                                        )
-                                    ) + fadeOut(
-                                        tween(
-                                            SCREEN_DURATION - 150,
-                                            easing = FastOutSlowInEasing
-                                        )
-                                    ))
+                            )).togetherWith(
+                                slideOutOfContainer(
+                                    AnimatedContentTransitionScope.SlideDirection.Left,
+                                    animationSpec = tween(
+                                        SCREEN_DURATION, easing = CinematicEasing
+                                    )
+                                ) + fadeOut(
+                                    tween(
+                                        SCREEN_DURATION - 150, easing = FastOutSlowInEasing
+                                    )
+                                )
+                            )
                         }
 
                         backward -> {
                             (slideIntoContainer(
                                 AnimatedContentTransitionScope.SlideDirection.Right,
                                 animationSpec = tween(
-                                    SCREEN_DURATION - 80,
-                                    easing = CinematicEasing
+                                    SCREEN_DURATION - 80, easing = CinematicEasing
                                 )
-                            ) + fadeIn(tween(SCREEN_DURATION - 80))) with
-                                    (slideOutOfContainer(
+                            ) + fadeIn(tween(SCREEN_DURATION - 80)))
+                                .togetherWith(
+                                    slideOutOfContainer(
                                         AnimatedContentTransitionScope.SlideDirection.Right,
                                         animationSpec = tween(
-                                            SCREEN_DURATION - 80,
-                                            easing = CinematicEasing
+                                            SCREEN_DURATION - 80, easing = CinematicEasing
                                         )
-                                    ) + fadeOut(tween(SCREEN_DURATION - 150)))
+                                    ) + fadeOut(tween(SCREEN_DURATION - 150))
+                                )
                         }
 
                         else -> {
-                            fadeIn(tween(240)) with fadeOut(tween(200))
+                            fadeIn(tween(240))
+                                .togetherWith(fadeOut(tween(200)))
                         }
                     }.using(SizeTransform(clip = false))
                 },
@@ -250,8 +253,7 @@ private fun directionAwareSharedConfig(
             get() {
                 val current = transition.currentState
                 val target = transition.targetState
-                return (current is ScreenState.List && target is ScreenState.Detail) ||
-                        (current is ScreenState.Detail && target is ScreenState.List)
+                return (current is ScreenState.List && target is ScreenState.Detail) || (current is ScreenState.Detail && target is ScreenState.List)
             }
 
         override val shouldKeepEnabledForOngoingAnimation: Boolean
@@ -267,8 +269,7 @@ private fun linearBoundsTransform(
     durationMillis: Int = SHARED_DURATION
 ): BoundsTransform = BoundsTransform { _, _ ->
     tween(
-        durationMillis,
-        easing = CubicBezierEasing(0.2f, 0.9f, 0.3f, 1.15f)
+        durationMillis, easing = CubicBezierEasing(0.2f, 0.9f, 0.3f, 1.15f)
     )
 }
 
@@ -280,8 +281,7 @@ private fun linearBoundsTransform(
  */
 @OptIn(ExperimentalSharedTransitionApi::class)
 private fun arcBoundsTransform(
-    durationMillis: Int = SHARED_DURATION,
-    arcMode: ArcMode = ArcMode.ArcAbove
+    durationMillis: Int = SHARED_DURATION, arcMode: ArcMode = ArcMode.ArcAbove
 ): BoundsTransform = BoundsTransform { initial, target ->
     keyframes {
         this.durationMillis = durationMillis
@@ -381,8 +381,7 @@ fun SharedTransitionScope.ProductListItem(
                 .size(72.dp)
                 .sharedElement(
                     sharedContentState = rememberSharedContentState(
-                        key = "image-${product.id}",
-                        config = sharedConfig
+                        key = "image-${product.id}", config = sharedConfig
                     ),
                     animatedVisibilityScope = animatedVisibilityScope,
                     boundsTransform = linearBoundsTransform(),
@@ -404,8 +403,7 @@ fun SharedTransitionScope.ProductListItem(
                 modifier = Modifier
                     .sharedElement(
                         sharedContentState = rememberSharedContentState(
-                            key = "title-${product.id}",
-                            config = sharedConfig
+                            key = "title-${product.id}", config = sharedConfig
                         ),
                         animatedVisibilityScope = animatedVisibilityScope,
                         boundsTransform = arcTitleTransform()
@@ -423,8 +421,7 @@ fun SharedTransitionScope.ProductListItem(
                 modifier = Modifier
                     .sharedElement(
                         sharedContentState = rememberSharedContentState(
-                            key = "subtitle-${product.id}",
-                            config = sharedConfig
+                            key = "subtitle-${product.id}", config = sharedConfig
                         ),
                         animatedVisibilityScope = animatedVisibilityScope,
                         boundsTransform = arcSubtitleTransform()
@@ -452,13 +449,11 @@ private fun AnimatedContentScope.ProductDetail(
         modifier = Modifier.fillMaxSize()
     ) {
         TopAppBar(
-            title = {},
-            navigationIcon = {
+            title = {}, navigationIcon = {
                 IconButton(onClick = onBack) {
-                    Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                 }
-            },
-            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            }, colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.Transparent
             )
         )
@@ -472,17 +467,14 @@ private fun AnimatedContentScope.ProductDetail(
                     .height(320.dp)
                     .sharedBounds(
                         sharedContentState = rememberSharedContentState(
-                            key = "imageBounds-${product.id}",
-                            config = sharedConfig
+                            key = "imageBounds-${product.id}", config = sharedConfig
                         ),
                         animatedVisibilityScope = animatedVisibilityScope,
                         resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(
-                            contentScale = ContentScale.Fit,
-                            alignment = Alignment.Center
+                            contentScale = ContentScale.Fit, alignment = Alignment.Center
                         ),
                         boundsTransform = arcBoundsTransform(),
-                    ),
-                contentAlignment = Alignment.Center
+                    ), contentAlignment = Alignment.Center
             ) {
                 Image(
                     painter = painterResource(id = product.imageRes),
@@ -493,8 +485,7 @@ private fun AnimatedContentScope.ProductDetail(
                         .offset(y = (-40).dp)
                         .sharedElement(
                             sharedContentState = rememberSharedContentState(
-                                key = "image-${product.id}",
-                                config = sharedConfig
+                                key = "image-${product.id}", config = sharedConfig
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
                             boundsTransform = linearBoundsTransform(),
@@ -532,8 +523,7 @@ private fun AnimatedContentScope.ProductDetail(
                         modifier = Modifier
                             .sharedElement(
                                 sharedContentState = rememberSharedContentState(
-                                    key = "title-${product.id}",
-                                    config = sharedConfig
+                                    key = "title-${product.id}", config = sharedConfig
                                 ),
                                 animatedVisibilityScope = animatedVisibilityScope,
                                 boundsTransform = arcTitleTransform()
@@ -552,8 +542,7 @@ private fun AnimatedContentScope.ProductDetail(
                         modifier = Modifier
                             .sharedElement(
                                 sharedContentState = rememberSharedContentState(
-                                    key = "subtitle-${product.id}",
-                                    config = sharedConfig
+                                    key = "subtitle-${product.id}", config = sharedConfig
                                 ),
                                 animatedVisibilityScope = animatedVisibilityScope,
                                 boundsTransform = arcSubtitleTransform()
@@ -582,24 +571,18 @@ private fun AnimatedContentScope.ProductDetail(
                             delayMillis = 120,
                             easing = CinematicEasing
                         )
-                    ) { it / 5 },
-                    exit = fadeOut(
+                    ) { it / 5 }, exit = fadeOut(
                         animationSpec = tween(260)
                     ) + slideOutVertically(
                         animationSpec = tween(260)
-                    ) { it / 5 }
-                ),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) { it / 5 }), verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = "Details",
-                style = MaterialTheme.typography.titleMedium
+                text = "Details", style = MaterialTheme.typography.titleMedium
             )
 
             Text(
-                text = loremLong,
-                style = MaterialTheme.typography.bodyMedium,
-                lineHeight = 20.sp
+                text = loremLong, style = MaterialTheme.typography.bodyMedium, lineHeight = 20.sp
             )
         }
     }
@@ -624,74 +607,62 @@ val sampleProducts: List<Product> = listOf(
         title = "Espresso",
         subtitle = "Strong, short, and bold – the purest coffee shot.",
         imageRes = R.drawable.ic_launcher_background,
-    ),
-    Product(
+    ), Product(
         id = "cappuccino",
         title = "Cappuccino",
         subtitle = "Velvety milk foam over a rich espresso base.",
         imageRes = R.drawable.ic_launcher_background,
-    ),
-    Product(
+    ), Product(
         id = "latte",
         title = "Caffè Latte",
         subtitle = "Smooth and milky, perfect for a slow morning.",
         imageRes = R.drawable.ic_launcher_background,
-    ),
-    Product(
+    ), Product(
         id = "mocha",
         title = "Mocha",
         subtitle = "Chocolate meets espresso – a sweet classic.",
         imageRes = R.drawable.ic_launcher_background,
-    ),
-    Product(
+    ), Product(
         id = "iced",
         title = "Iced Coffee",
         subtitle = "Cold, refreshing, and perfect for summer days.",
         imageRes = R.drawable.ic_launcher_background,
-    ),
-    Product(
+    ), Product(
         id = "cookies",
         title = "Fresh Cookies",
         subtitle = "Warm, gooey cookies – perfect with any drink.",
         imageRes = R.drawable.ic_launcher_background,
-    ),
-    Product(
+    ), Product(
         id = "flat_white",
         title = "Flat White",
         subtitle = "Silky microfoam over a rich double espresso.",
         imageRes = R.drawable.ic_launcher_background,
-    ),
-    Product(
+    ), Product(
         id = "filter",
         title = "Filter Coffee",
         subtitle = "Slow-brewed, clean and bright in flavor.",
         imageRes = R.drawable.ic_launcher_background,
-    ),
-    Product(
+    ), Product(
         id = "toast",
         title = "Buttered Toast",
         subtitle = "Golden, crispy slices with melted butter.",
         imageRes = R.drawable.ic_launcher_background,
-    ),
-    Product(
+    ), Product(
         id = "tea",
         title = "Herbal Tea",
         subtitle = "Calming blend of herbs, no caffeine, all comfort.",
         imageRes = R.drawable.ic_launcher_background,
-    ),
-    Product(
+    ), Product(
         id = "cake",
         title = "Slice of Cake",
         subtitle = "Rich, moist cake – your afternoon treat.",
         imageRes = R.drawable.ic_launcher_background,
-    ),
-    Product(
+    ), Product(
         id = "cupcake",
         title = "Cupcake",
         subtitle = "Small, sweet, and topped with creamy frosting.",
         imageRes = R.drawable.ic_launcher_background,
-    ),
-    Product(
+    ), Product(
         id = "takeaway",
         title = "Takeaway Coffee",
         subtitle = "Your favorite brew, ready to go.",
