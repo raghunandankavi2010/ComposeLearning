@@ -2,6 +2,7 @@ package com.example.composelearning.animcompose
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,9 +17,10 @@ import kotlin.random.Random
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.PI
+import kotlin.math.pow
 
 // Particle data class remains the same
-data class Particle(
+data class Particle1(
     val initialColor: Color,
     val initialAngleRad: Float,
     val maxDistance: Float,
@@ -43,7 +45,7 @@ fun ContinuousParticleStream(
     val minRadiusPx = with(LocalDensity.current) { minRadiusDp.toPx() }
     val maxRadiusPx = with(LocalDensity.current) { maxRadiusDp.toPx() }
 
-    val particles = remember { mutableStateListOf<Particle>() }
+    val particles = remember { mutableStateListOf<Particle1>() }
     var currentTime by remember { mutableStateOf(0L) }
     var relativeStartTime by remember { mutableStateOf<Long?>(null) }
 
@@ -70,7 +72,7 @@ fun ContinuousParticleStream(
             val duration = Random.nextLong(minDuration, maxDuration + 1)
             val color = Color(Random.nextFloat(), Random.nextFloat(), Random.nextFloat())
 
-            val newParticle = Particle(
+            val newParticle = Particle1(
                 initialColor = color,
                 initialAngleRad = angle,
                 maxDistance = circleRadiusPx,
@@ -163,5 +165,115 @@ fun ParticleExplosionScreen() {
             minRadiusDp = 0.5.dp, // Starts very small
             maxRadiusDp = 8.dp    // Grows significantly
         )
+    }
+}
+
+
+
+/**
+ * Data class representing a single physical particle.
+ */
+data class RealisticParticle(
+    val color: Color,
+    val vx: Float,          // Velocity X (pixels per tick)
+    val vy: Float,          // Velocity Y (pixels per tick)
+    val gravity: Float,     // Constant acceleration downward
+    val drag: Float,        // Friction coefficient (0.0 to 1.0)
+    val maxLife: Long,      // Total lifespan in ms
+    val startTime: Long,    // Birth timestamp
+    val initialSize: Float  // Starting radius
+)
+
+@Composable
+fun RealisticExplosionScreen() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF0A0A0A)), // Dark background for contrast
+        contentAlignment = Alignment.Center
+    ) {
+        ContinuousExplosionSystem()
+    }
+}
+
+@Composable
+fun ContinuousExplosionSystem() {
+    val particles = remember { mutableStateListOf<RealisticParticle>() }
+    var currentTime by remember { mutableLongStateOf(0L) }
+    var appStartTime by remember { mutableStateOf<Long?>(null) }
+
+    // 1. ANIMATION TICKER: Drives the clock for physics calculations
+    LaunchedEffect(Unit) {
+        while (true) {
+            withFrameMillis { frameTime ->
+                if (appStartTime == null) appStartTime = frameTime
+                currentTime = frameTime - (appStartTime!!)
+            }
+        }
+    }
+
+    // 2. SPAWN LOOP: Creates new bursts or individual particles
+    LaunchedEffect(Unit) {
+        while (true) {
+            // Spawn a burst of particles at once
+            val burstSize = Random.nextInt(5, 15)
+            val burstColor = Color(Random.nextFloat(), Random.nextFloat(), Random.nextFloat(), 1f)
+
+            repeat(burstSize) {
+                val angle = Random.nextFloat() * 2 * PI.toFloat()
+                val speed = Random.nextFloat() * 12f + 4f // Randomized launch speed
+
+                particles.add(
+                    RealisticParticle(
+                        color = burstColor,
+                        vx = cos(angle) * speed,
+                        vy = sin(angle) * speed,
+                        gravity = 0.2f,        // Adjust for "heaviness"
+                        drag = 0.96f,           // 0.98 = thin air, 0.90 = thick water
+                        maxLife = Random.nextLong(800, 1500),
+                        startTime = currentTime,
+                        initialSize = Random.nextFloat() * 10f + 5f
+                    )
+                )
+            }
+            delay(Random.nextLong(20, 100)) // Frequency of sparks
+        }
+    }
+
+    // 3. CLEANUP: Remove dead particles
+    LaunchedEffect(currentTime) {
+        particles.removeAll { currentTime - it.startTime > it.maxLife }
+    }
+
+    // 4. DRAWING: Calculates position based on physics equations
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        val center = Offset(size.width / 2f, size.height / 2f)
+
+        particles.forEach { particle ->
+            val lifeTime = currentTime - particle.startTime
+            if (lifeTime < 0) return@forEach
+
+            // Convert time to "ticks" (roughly 60fps) for easier physics math
+            val t = lifeTime / 16f
+
+            /**
+             * PHYSICS MATH:
+             * x = v0 * t * drag^t
+             * y = (v0 * t + 0.5 * g * t^2) * drag^t
+             */
+            val friction = particle.drag.pow(t)
+            val dx = (particle.vx * t) * friction
+            val dy = (particle.vy * t + 0.5f * particle.gravity * t.pow(2)) * friction
+
+            val progress = lifeTime.toFloat() / particle.maxLife
+            val alpha = (1f - progress).coerceIn(0f, 1f)
+            val currentRadius = particle.initialSize * (1f - progress)
+
+            drawCircle(
+                color = particle.color.copy(alpha = alpha),
+                radius = currentRadius,
+                center = Offset(center.x + dx, center.y + dy)
+            )
+        }
     }
 }
