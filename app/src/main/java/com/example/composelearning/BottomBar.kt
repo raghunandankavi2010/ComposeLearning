@@ -1,3 +1,4 @@
+/*
 package com.example.composelearning
 
 import android.annotation.SuppressLint
@@ -199,3 +200,4 @@ fun OtherContent() {
     Text("Other")
     // Content for Other screen
 }
+*/
