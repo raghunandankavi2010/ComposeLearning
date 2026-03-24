@@ -19,7 +19,7 @@ data class AnimationCategory(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController) {
+fun MainHomeScreen(navController: NavController) {
     val categories = listOf(
         AnimationCategory(
             "Math Basics",
@@ -81,6 +81,16 @@ fun HomeScreen(navController: NavController) {
             "Bottle Wave Animation",
             "Animating bottle wave filling",
             AnimScreen.BottleWaveAnimation.route
+        ),
+        AnimationCategory(
+            "Date Picker",
+            "Horizontal Date Picker",
+            AnimScreen.DatePickerScreen.route
+        ),
+        AnimationCategory(
+            "File Delete animation",
+            "File delete Animation",
+            AnimScreen.FileDeleteAnimation.route
         )
     )
 

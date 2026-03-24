@@ -24,6 +24,10 @@ sealed class AnimScreen(val route: String) {
     object GameEnvironment : AnimScreen("game_environment")
 
     object BottleWaveAnimation : AnimScreen("bottle_wave_animation")
+
+    object DatePickerScreen : AnimScreen("date_picker")
+
+    object FileDeleteAnimation : AnimScreen("file_delete_animation")
 }
 
 @Composable
@@ -37,7 +41,7 @@ fun AppNavigation(
         modifier = modifier
     ) {
         composable(AnimScreen.Home.route) {
-            HomeScreen(navController)
+            MainHomeScreen(navController)
         }
         composable(AnimScreen.MathBasics.route) {
             MathBasicsScreen()
@@ -75,10 +79,16 @@ fun AppNavigation(
         composable(AnimScreen.GameEnvironment.route) {
             GameEnvironmentScreen()
         }
-
         composable(AnimScreen.BottleWaveAnimation.route) {
             BottleWaveAnimation()
         }
+        composable(AnimScreen.DatePickerScreen.route) {
+            PhysicsDatePicker{
 
+            }
+        }
+        composable(AnimScreen.FileDeleteAnimation.route) {
+            FileManagerPreview()
+        }
     }
 }
