@@ -1,11 +1,24 @@
 package com.example.composelearning.animcompose
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -76,7 +89,11 @@ fun MainHomeScreen(navController: NavController) {
             "Spring, decay, fling",
             AnimScreen.PhysicsAnimations.route
         ),
-        AnimationCategory("Physics Game", "Bubble Pop Game", AnimScreen.GameEnvironment.route),
+        AnimationCategory(
+            "Physics Game",
+            "Bubble Pop Game",
+            AnimScreen.GameEnvironment.route
+        ),
         AnimationCategory(
             "Bottle Wave Animation",
             "Animating bottle wave filling",
