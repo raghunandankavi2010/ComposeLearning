@@ -1,6 +1,5 @@
 package com.example.composelearning.animcompose
 
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.*
@@ -14,10 +13,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -27,45 +25,66 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import kotlin.math.abs
 
+@Immutable
+data class DatePickerItem(
+    val date: LocalDate,
+    val dayOfWeek: String,
+    val dayOfMonth: String,
+    val month: String
+)
+
+@Stable
+class PhysicsDatePickerState(initialDate: LocalDate) {
+    var selectedDate by mutableStateOf(initialDate)
+}
+
 @Composable
 fun PhysicsDatePicker(
     modifier: Modifier = Modifier,
     onDateSelected: (LocalDate) -> Unit = {}
 ) {
-    // Generate dates: 1 year before and after today
     val today = remember { LocalDate.now() }
-    val dates = remember {
-        (-365..365).map { offset -> today.plusDays(offset.toLong()) }
+    val pickerState = remember { PhysicsDatePickerState(today) }
+    
+    val dateItems = remember {
+        val formatterEEE = DateTimeFormatter.ofPattern("EEE")
+        val formatterMMM = DateTimeFormatter.ofPattern("MMM")
+        (-365..365).map { offset ->
+            val d = today.plusDays(offset.toLong())
+            DatePickerItem(
+                date = d,
+                dayOfWeek = d.format(formatterEEE).uppercase(),
+                dayOfMonth = d.dayOfMonth.toString(),
+                month = d.format(formatterMMM)
+            )
+        }
     }
     
-    val initialIndex = 365 // Today's index
-    val listState = rememberLazyListState(initialFirstVisibleItemIndex = initialIndex)
+    val listState = rememberLazyListState(initialFirstVisibleItemIndex = 365)
     val snapFlingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
     
     val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
-    val itemWidth = 80.dp
+    val horizontalPaddingValues = remember(configuration.screenWidthDp) {
+        val screenWidth = configuration.screenWidthDp.dp
+        val itemWidth = 80.dp
+        PaddingValues(horizontal = (screenWidth - itemWidth) / 2)
+    }
     
-    // Calculate content padding to center the items
-    val horizontalPadding = (screenWidth - itemWidth) / 2
+    val currentOnDateSelected by rememberUpdatedState(onDateSelected)
     
-    // Track the selected date based on center position
-    var selectedDate by remember { mutableStateOf(today) }
-    
-    // Efficiently track the center item
     LaunchedEffect(listState) {
         snapshotFlow { listState.firstVisibleItemIndex }
             .collect { _ ->
                 val layoutInfo = listState.layoutInfo
-                val center = layoutInfo.viewportEndOffset / 2
+                val center = (layoutInfo.viewportStartOffset + layoutInfo.viewportEndOffset) / 2
                 val closestItem = layoutInfo.visibleItemsInfo.minByOrNull { 
                     abs((it.offset + it.size / 2) - center) 
                 }
                 closestItem?.let {
-                    val newDate = dates[it.index]
-                    if (newDate != selectedDate) {
-                        selectedDate = newDate
-                        onDateSelected(newDate)
+                    val newDate = dateItems[it.index].date
+                    if (newDate != pickerState.selectedDate) {
+                        pickerState.selectedDate = newDate
+                        currentOnDateSelected(newDate)
                     }
                 }
             }
@@ -78,17 +97,7 @@ fun PhysicsDatePicker(
             .padding(vertical = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Selected Month/Year Header
-        Text(
-            text = selectedDate.format(DateTimeFormatter.ofPattern("MMMM yyyy")),
-            style = TextStyle(
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 0.5.sp
-            ),
-            modifier = Modifier.padding(bottom = 24.dp)
-        )
+        DatePickerHeader(dateProvider = { pickerState.selectedDate })
 
         Box(
             modifier = Modifier
@@ -96,31 +105,21 @@ fun PhysicsDatePicker(
                 .height(140.dp),
             contentAlignment = Alignment.Center
         ) {
-            // Static Selection Indicator
-            Surface(
-                modifier = Modifier
-                    .size(width = 74.dp, height = 110.dp),
-                color = Color.White.copy(alpha = 0.1f),
-                shape = RoundedCornerShape(24.dp),
-                border = androidx.compose.foundation.BorderStroke(
-                    1.dp, 
-                    Brush.verticalGradient(
-                        listOf(Color.White.copy(alpha = 0.3f), Color.Transparent)
-                    )
-                )
-            ) {}
+            SelectionIndicator()
 
-            // The Scrolling Dates
             LazyRow(
                 state = listState,
                 flingBehavior = snapFlingBehavior,
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = horizontalPadding),
+                contentPadding = horizontalPaddingValues,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                itemsIndexed(dates) { index, date ->
+                itemsIndexed(
+                    items = dateItems, 
+                    key = { _, item -> item.date.toEpochDay() }
+                ) { index, item ->
                     DateItem(
-                        date = date,
+                        item = item,
                         listState = listState,
                         index = index
                     )
@@ -131,46 +130,88 @@ fun PhysicsDatePicker(
 }
 
 @Composable
+private fun DatePickerHeader(dateProvider: () -> LocalDate) {
+    val date = dateProvider()
+    Text(
+        text = date.format(DateTimeFormatter.ofPattern("MMMM yyyy")),
+        style = TextStyle(
+            color = Color.White,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 0.5.sp
+        ),
+        modifier = Modifier.padding(bottom = 24.dp)
+    )
+}
+
+@Composable
+private fun SelectionIndicator() {
+    Surface(
+        modifier = Modifier.size(width = 74.dp, height = 110.dp),
+        color = Color.White.copy(alpha = 0.1f),
+        shape = RoundedCornerShape(24.dp),
+        border = androidx.compose.foundation.BorderStroke(
+            1.dp, 
+            Brush.verticalGradient(
+                listOf(Color.White.copy(alpha = 0.3f), Color.Transparent)
+            )
+        )
+    ) {}
+}
+
+@Composable
 private fun DateItem(
-    date: LocalDate,
+    item: DatePickerItem,
     listState: LazyListState,
     index: Int
 ) {
-    // Distance from the center of the viewport
-    val distanceFromCenter = remember(listState) {
+    val normalizedDistanceState = remember(listState, index) {
         derivedStateOf {
             val layoutInfo = listState.layoutInfo
             val visibleItem = layoutInfo.visibleItemsInfo.find { it.index == index }
             if (visibleItem != null) {
                 val viewportCenter = (layoutInfo.viewportStartOffset + layoutInfo.viewportEndOffset) / 2
                 val itemCenter = visibleItem.offset + visibleItem.size / 2
-                abs(viewportCenter - itemCenter).toFloat()
-            } else {
-                1000f // Far away if not visible
-            }
+                val distance = abs(viewportCenter - itemCenter).toFloat()
+                (distance / 200f).coerceIn(0f, 1f)
+            } else 1f
         }
     }
 
-    // Normalized distance
-    val maxDistance = 200f 
-    val normalizedDistance = (distanceFromCenter.value / maxDistance).coerceIn(0f, 1f)
-    
-    // Interpolation for scaling and alpha
-    val scale = 1.3f - (normalizedDistance * 0.4f)
-    val alpha = 1f - (normalizedDistance * 0.7f)
-    val isSelected = normalizedDistance < 0.2f
+    val isSelected by remember {
+        derivedStateOf { normalizedDistanceState.value < 0.2f }
+    }
 
+    DateItemContent(
+        item = item,
+        isSelectedProvider = { isSelected },
+        distanceProvider = { normalizedDistanceState.value }
+    )
+}
+
+@Composable
+private fun DateItemContent(
+    item: DatePickerItem,
+    isSelectedProvider: () -> Boolean,
+    distanceProvider: () -> Float
+) {
+    val isSelected = isSelectedProvider()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .width(80.dp)
             .fillMaxHeight()
-            .scale(scale)
-            .alpha(alpha)
+            .graphicsLayer {
+                val dist = distanceProvider()
+                val scale = 1.3f - (dist * 0.4f)
+                scaleX = scale
+                scaleY = scale
+                alpha = 1f - (dist * 0.7f)
+            }
     ) {
         Text(
-            text = date.format(DateTimeFormatter.ofPattern("EEE")).uppercase(),
+            text = item.dayOfWeek,
             style = TextStyle(
                 fontSize = 12.sp,
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
@@ -181,7 +222,7 @@ private fun DateItem(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = date.dayOfMonth.toString(),
+            text = item.dayOfMonth,
             style = TextStyle(
                 fontSize = 32.sp,
                 fontWeight = if (isSelected) FontWeight.Black else FontWeight.Bold,
@@ -192,7 +233,7 @@ private fun DateItem(
         Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            text = date.format(DateTimeFormatter.ofPattern("MMM")),
+            text = item.month,
             style = TextStyle(
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Medium,
