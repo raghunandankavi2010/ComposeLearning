@@ -13,6 +13,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -171,56 +172,64 @@ fun BottleWithWater(
             .fillMaxSize()
             .padding(8.dp)
     ) {
-        val bottleWidth = size.width * 0.4f
+        val bottleWidth = size.width * 0.35f
         val bottleHeight = size.height * 0.7f
-        val neckWidth = bottleWidth * 0.4f
-        val neckHeight = bottleHeight * 0.15f
+        val neckWidth = bottleWidth * 0.45f
+        val neckHeight = bottleHeight * 0.2f
+        val shoulderHeight = bottleHeight * 0.1f
+        val bodyHeight = bottleHeight - neckHeight - shoulderHeight
 
         val startX = center.x - bottleWidth / 2
         val endX = center.x + bottleWidth / 2
-        val topY = center.y - bottleHeight / 2
         val bottomY = center.y + bottleHeight / 2
+        val topY = bottomY - bottleHeight
 
-        // Draw water first
-        if (fillLevel > 0) {
-            drawWater(
-                startX = startX,
-                endX = endX,
-                bottomY = bottomY,
-                topY = topY,
-                neckHeight = neckHeight,
-                fillLevel = fillLevel,
-                waveOffset = waveOffset,
-                waveAmplitude = waveAmplitude,
-                waveFrequency = waveFrequency
-            )
-        }
-
-        // Draw bottle outline
-        drawBottleOutline(
-            startX = startX,
-            endX = endX,
-            topY = topY,
-            bottomY = bottomY,
-            neckWidth = neckWidth,
-            neckHeight = neckHeight
-        )
-
-        // Draw bottle neck highlight
-        drawBottleNeck(
+        // Bottle Path for outline and clipping
+        val bottlePath = createBottlePath(
             center = center,
+            bottleWidth = bottleWidth,
+            bottleHeight = bottleHeight,
             neckWidth = neckWidth,
             neckHeight = neckHeight,
-            topY = topY
+            shoulderHeight = shoulderHeight
         )
 
-        // Draw measurement lines (optional)
+        // Draw water first with clipping to bottle shape
+        if (fillLevel > 0) {
+            clipPath(bottlePath) {
+                drawWater(
+                    startX = startX,
+                    endX = endX,
+                    bottomY = bottomY,
+                    topY = topY,
+                    fillLevel = fillLevel,
+                    waveOffset = waveOffset,
+                    waveAmplitude = waveAmplitude,
+                    waveFrequency = waveFrequency
+                )
+            }
+        }
+
+        // Draw measurement lines
         drawMeasurementLines(
             startX = startX,
             endX = endX,
-            topY = topY,
             bottomY = bottomY,
-            neckHeight = neckHeight
+            bodyHeight = bodyHeight
+        )
+
+        // Draw bottle outline
+        drawPath(
+            path = bottlePath,
+            color = Color.DarkGray,
+            style = Stroke(width = 4.dp.toPx(), join = StrokeJoin.Round)
+        )
+
+        // Draw the Cap
+        drawBottleCap(
+            center = center,
+            neckWidth = neckWidth,
+            topY = topY
         )
 
         // Draw fill percentage text
@@ -238,170 +247,198 @@ fun BottleWithWater(
     }
 }
 
-private fun DrawScope.drawWater(
-    startX: Float,
-    endX: Float,
-    bottomY: Float,
-    topY: Float,
-    neckHeight: Float,
-    fillLevel: Float,
-    waveOffset: Float,
-    waveAmplitude: Float,
-    waveFrequency: Float
-) {
-    val waterHeight = (bottomY - topY - neckHeight) * fillLevel
-    val waterSurfaceY = bottomY - waterHeight
-
-    val waterPath = Path()
-
-    // Start at bottom left
-    waterPath.moveTo(startX, bottomY)
-
-    // Draw right side bottom to surface
-    waterPath.lineTo(endX, bottomY)
-    waterPath.lineTo(endX, waterSurfaceY)
-
-    // Draw wave at the top (right to left)
-    val steps = 30
-    for (i in steps downTo 0) {
-        val x = startX + (endX - startX) * (i.toFloat() / steps)
-
-        // Advanced sine wave with multiple harmonics for more natural look
-        val wave1 = sin((x * waveFrequency / 100f) + waveOffset) * waveAmplitude
-        val wave2 = sin((x * waveFrequency * 2 / 100f) + waveOffset * 2) * (waveAmplitude * 0.3f)
-        val waveY = waterSurfaceY + wave1 + wave2
-
-        waterPath.lineTo(x, waveY)
-    }
-
-    // Close path
-    waterPath.close()
-
-    // Draw water with gradient and subtle transparency
-    drawPath(
-        path = waterPath,
-        brush = Brush.verticalGradient(
-            colors = listOf(
-                Color(0xFF81D4FA).copy(alpha = 0.9f), // Light blue at top
-                Color(0xFF0277BD).copy(alpha = 0.95f)  // Dark blue at bottom
-            ),
-            startY = waterSurfaceY,
-            endY = bottomY
-        )
-    )
-
-    // Add water surface highlight (small white line at the top of waves)
-    val surfacePath = Path()
-    for (i in 0..steps) {
-        val x = startX + (endX - startX) * (i.toFloat() / steps)
-        val wave1 = sin((x * waveFrequency / 100f) + waveOffset) * waveAmplitude
-        val wave2 = sin((x * waveFrequency * 2 / 100f) + waveOffset * 2) * (waveAmplitude * 0.3f)
-        val waveY = waterSurfaceY + wave1 + wave2
-
-        if (i == 0) surfacePath.moveTo(x, waveY)
-        else surfacePath.lineTo(x, waveY)
-    }
-
-    drawPath(
-        path = surfacePath,
-        color = Color.White.copy(alpha = 0.5f),
-        style = Stroke(width = 2.dp.toPx())
-    )
-}
-
-private fun DrawScope.drawBottleOutline(
-    startX: Float,
-    endX: Float,
-    topY: Float,
-    bottomY: Float,
+private fun createBottlePath(
+    center: Offset,
+    bottleWidth: Float,
+    bottleHeight: Float,
     neckWidth: Float,
-    neckHeight: Float
-) {
-    val path = Path()
-
-    // Start at bottom left
-    path.moveTo(startX, bottomY)
-
-    // Left side of bottle
-    path.lineTo(startX, topY + neckHeight)
-
-    // Left side of neck
-    path.lineTo(center.x - neckWidth / 2, topY + neckHeight)
-    path.lineTo(center.x - neckWidth / 2, topY)
-
-    // Top of bottle (opening)
-    path.lineTo(center.x + neckWidth / 2, topY)
-
-    // Right side of neck
-    path.lineTo(center.x + neckWidth / 2, topY + neckHeight)
-
-    // Right side of bottle
-    path.lineTo(endX, topY + neckHeight)
-    path.lineTo(endX, bottomY)
-
-    // Close the path (bottom)
-    path.close()
-
-    // Draw bottle outline
-    drawPath(
-        path = path,
-        color = Color.Black,
-        style = Stroke(width = 4.dp.toPx())
-    )
+    neckHeight: Float,
+    shoulderHeight: Float
+): Path {
+    val startX = center.x - bottleWidth / 2
+    val endX = center.x + bottleWidth / 2
+    val bottomY = center.y + bottleHeight / 2
+    val topY = bottomY - bottleHeight
+    val bodyHeight = bottleHeight - neckHeight - shoulderHeight
+    
+    return Path().apply {
+        // Bottom left corner (rounded)
+        moveTo(startX + 20f, bottomY)
+        quadraticTo(startX, bottomY, startX, bottomY - 20f)
+        
+        // Left side body
+        lineTo(startX, bottomY - bodyHeight)
+        
+        // Left shoulder (curved transition to neck)
+        quadraticTo(
+            startX, 
+            topY + neckHeight, 
+            center.x - neckWidth / 2, 
+            topY + neckHeight
+        )
+        
+        // Left neck
+        lineTo(center.x - neckWidth / 2, topY)
+        
+        // Top opening
+        lineTo(center.x + neckWidth / 2, topY)
+        
+        // Right neck
+        lineTo(center.x + neckWidth / 2, topY + neckHeight)
+        
+        // Right shoulder
+        quadraticTo(
+            endX, 
+            topY + neckHeight, 
+            endX, 
+            bottomY - bodyHeight
+        )
+        
+        // Right side body
+        lineTo(endX, bottomY - 20f)
+        
+        // Bottom right corner (rounded)
+        quadraticTo(endX, bottomY, endX - 20f, bottomY)
+        
+        close()
+    }
 }
 
-private fun DrawScope.drawBottleNeck(
+private fun DrawScope.drawBottleCap(
     center: Offset,
     neckWidth: Float,
-    neckHeight: Float,
     topY: Float
 ) {
-    // Draw neck highlight
-    drawLine(
-        color = Color.LightGray,
-        start = Offset(center.x - neckWidth / 2 + 2.dp.toPx(), topY + neckHeight),
-        end = Offset(center.x - neckWidth / 2 + 2.dp.toPx(), topY),
-        strokeWidth = 2.dp.toPx()
-    )
-
-    // Draw bottle rim
+    val capWidth = neckWidth + 10.dp.toPx()
+    val capHeight = 22.dp.toPx()
+    
+    // Cap Body
     drawRoundRect(
-        color = Color.Gray,
-        topLeft = Offset(center.x - neckWidth / 2 - 2.dp.toPx(), topY - 2.dp.toPx()),
-        size = Size(neckWidth + 4.dp.toPx(), 4.dp.toPx()),
-        cornerRadius = CornerRadius(2.dp.toPx())
+        color = Color(0xFF2C3E50), // Nice dark navy/gray for cap
+        topLeft = Offset(center.x - capWidth / 2, topY - capHeight + 2.dp.toPx()),
+        size = Size(capWidth, capHeight),
+        cornerRadius = CornerRadius(4.dp.toPx())
     )
+    
+    // Cap Details (vertical ridges)
+    for (i in 0..6) {
+        val x = (center.x - capWidth / 2) + (capWidth / 6) * i
+        drawLine(
+            color = Color.White.copy(alpha = 0.15f),
+            start = Offset(x, topY - capHeight + 6.dp.toPx()),
+            end = Offset(x, topY - 6.dp.toPx()),
+            strokeWidth = 1.dp.toPx()
+        )
+    }
 }
 
 private fun DrawScope.drawMeasurementLines(
     startX: Float,
     endX: Float,
-    topY: Float,
     bottomY: Float,
-    neckHeight: Float
+    bodyHeight: Float
 ) {
-    val dashPathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 5f))
+    val dashPathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f))
+    val markers = listOf(
+        0.25f to "250ml",
+        0.50f to "500ml",
+        0.75f to "750ml",
+        1.00f to "1000ml"
+    )
 
-    // Draw measurement lines at 25%, 50%, 75%
-    for (i in 1..3) {
-        val y = bottomY - (bottomY - topY - neckHeight) * (i * 0.25f)
+    markers.forEach { (ratio, label) ->
+        val y = bottomY - (bodyHeight * ratio)
+        
+        // Draw dashed line across the bottle
         drawLine(
-            color = Color.Gray.copy(alpha = 0.3f),
-            start = Offset(startX - 5.dp.toPx(), y),
-            end = Offset(endX + 5.dp.toPx(), y),
+            color = Color.Black.copy(alpha = 0.2f),
+            start = Offset(startX, y),
+            end = Offset(endX, y),
             strokeWidth = 1.dp.toPx(),
             pathEffect = dashPathEffect
         )
 
-        // Draw percentage labels
+        // Draw small tick marks outside
+        drawLine(
+            color = Color.DarkGray,
+            start = Offset(startX - 5.dp.toPx(), y),
+            end = Offset(startX, y),
+            strokeWidth = 2.dp.toPx()
+        )
+
+        // Draw label text
         drawContext.canvas.nativeCanvas.drawText(
-            "${i * 25}%",
-            endX + 10.dp.toPx(),
+            label,
+            startX - 10.dp.toPx(),
             y + 4.dp.toPx(),
             android.graphics.Paint().apply {
-                color = android.graphics.Color.GRAY
-                textSize = 10.sp.toPx()
+                color = android.graphics.Color.DKGRAY
+                textSize = 12.sp.toPx()
+                textAlign = android.graphics.Paint.Align.RIGHT
             }
         )
     }
+}
+
+private fun DrawScope.drawWater(
+    startX: Float,
+    endX: Float,
+    bottomY: Float,
+    topY: Float,
+    fillLevel: Float,
+    waveOffset: Float,
+    waveAmplitude: Float,
+    waveFrequency: Float
+) {
+    val totalHeight = bottomY - topY
+    val waterHeight = totalHeight * fillLevel
+    val waterSurfaceY = bottomY - waterHeight
+
+    val waterPath = Path()
+    // We draw water slightly wider than the bottle to ensure clipping covers edges
+    val overfill = 100f
+    
+    waterPath.moveTo(startX - overfill, bottomY + overfill)
+    waterPath.lineTo(endX + overfill, bottomY + overfill)
+    waterPath.lineTo(endX + overfill, waterSurfaceY)
+
+    val steps = 40
+    for (i in steps downTo 0) {
+        val x = (startX - overfill) + (endX - startX + 2 * overfill) * (i.toFloat() / steps)
+        val wave1 = sin((x * waveFrequency / 100f) + waveOffset) * waveAmplitude
+        val wave2 = sin((x * waveFrequency * 1.5f / 100f) + waveOffset * 1.5f) * (waveAmplitude * 0.4f)
+        val waveY = waterSurfaceY + wave1 + wave2
+        waterPath.lineTo(x, waveY)
+    }
+    waterPath.close()
+
+    drawPath(
+        path = waterPath,
+        brush = Brush.verticalGradient(
+            colors = listOf(
+                Color(0xFF4FC3F7), // Light Blue
+                Color(0xFF0288D1)  // Deeper Blue
+            ),
+            startY = waterSurfaceY,
+            endY = bottomY
+        )
+    )
+    
+    // Subtle foam/light line on top of waves
+    val foamPath = Path()
+    for (i in 0..steps) {
+        val x = (startX - overfill) + (endX - startX + 2 * overfill) * (i.toFloat() / steps)
+        val wave1 = sin((x * waveFrequency / 100f) + waveOffset) * waveAmplitude
+        val wave2 = sin((x * waveFrequency * 1.5f / 100f) + waveOffset * 1.5f) * (waveAmplitude * 0.4f)
+        val waveY = waterSurfaceY + wave1 + wave2
+        
+        if (i == 0) foamPath.moveTo(x, waveY)
+        else foamPath.lineTo(x, waveY)
+    }
+
+    drawPath(
+        path = foamPath,
+        color = Color.White.copy(alpha = 0.3f),
+        style = Stroke(width = 2.dp.toPx())
+    )
 }

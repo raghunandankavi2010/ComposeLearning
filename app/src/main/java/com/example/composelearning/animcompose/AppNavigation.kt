@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.composelearning.ValueBasedAnimationsScreen
+import com.example.composelearning.graphics.PreviewThermometerCanvas
 
 sealed class AnimScreen(val route: String) {
     object Home : AnimScreen("home")
@@ -28,6 +29,8 @@ sealed class AnimScreen(val route: String) {
     object DatePickerScreen : AnimScreen("date_picker")
 
     object FileDeleteAnimation : AnimScreen("file_delete_animation")
+
+    object ThermometerAnimation : AnimScreen("thermometer_animation")
 }
 
 @Composable
@@ -89,6 +92,10 @@ fun AppNavigation(
         }
         composable(AnimScreen.FileDeleteAnimation.route) {
             FileManagerPreview()
+        }
+        composable(AnimScreen.ThermometerAnimation.route) {
+            PreviewThermometerCanvas()
+            //ThermometerAnimation()
         }
     }
 }

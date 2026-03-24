@@ -108,6 +108,11 @@ fun MainHomeScreen(navController: NavController) {
             "File Delete animation",
             "File delete Animation",
             AnimScreen.FileDeleteAnimation.route
+        ),
+        AnimationCategory(
+            "Thermometer Animation",
+            "Medical thermometer visualization",
+            AnimScreen.ThermometerAnimation.route
         )
     )
 
