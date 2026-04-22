@@ -1,7 +1,8 @@
 plugins {
-    id 'com.android.application'
-    id("org.jetbrains.kotlin.plugin.compose")
-    id "org.jetbrains.kotlin.plugin.serialization"
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -28,17 +29,19 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_19
-        targetCompatibility JavaVersion.VERSION_19
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+    }
+
+    kotlinOptions {
+        jvmTarget = "21"
     }
 
     buildFeatures {
         compose true
         buildConfig true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.10.4"
-    }
+    
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
@@ -48,60 +51,49 @@ android {
 }
 
 dependencies {
-
-    implementation 'androidx.core:core-ktx:1.18.0'
-    implementation "androidx.constraintlayout:constraintlayout-compose:1.1.1"
-    implementation 'androidx.compose.runtime:runtime:1.10.5'
-    implementation 'androidx.compose.ui:ui-geometry:1.10.5'
-    implementation 'androidx.compose.animation:animation-core:1.10.5'
-    implementation platform('androidx.compose:compose-bom:2026.03.00')
-    implementation 'androidx.compose.animation:animation:1.10.5'
-    implementation 'androidx.compose.ui:ui-graphics:1.10.5'
-    implementation 'androidx.compose.ui:ui:1.10.5'
-    androidTestImplementation platform('androidx.compose:compose-bom:2026.03.00')
-
-    implementation 'androidx.compose.ui:ui'
-    implementation 'androidx.compose.material3:material3'
-
-    implementation 'androidx.compose.ui:ui-tooling-preview'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.10.0'
-    implementation 'androidx.activity:activity-compose:1.12.4'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
-    debugImplementation 'androidx.compose.ui:ui-tooling'
-    implementation 'androidx.compose.ui:ui-util'
-    implementation 'androidx.compose.foundation:foundation:1.10.4'
-
-    implementation 'androidx.compose.animation:animation'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0'
-    implementation 'androidx.navigation:navigation-compose:2.9.7'
-    implementation 'androidx.lifecycle:lifecycle-runtime-compose:2.10.0'
-
-    implementation("io.coil-kt:coil-compose:2.7.0")
-
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0'
-    implementation 'androidx.compose.material3:material3:1.4.0'
-
-    implementation "androidx.graphics:graphics-shapes:1.1.0"
-    implementation 'androidx.compose.ui:ui:1.10.5'
-
-    implementation "com.google.accompanist:accompanist-permissions:0.37.3"
-
-    implementation("dev.chrisbanes.haze:haze:1.7.2")
-    implementation("dev.chrisbanes.haze:haze-materials:1.7.2")
-    implementation("androidx.media3:media3-exoplayer:1.9.3")
-    implementation("androidx.media3:media3-ui:1.9.3")
-
-    def paging_version = "3.4.1"
-    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
-    testImplementation "androidx.paging:paging-common:$paging_version"
-    implementation "androidx.paging:paging-compose:$paging_version"
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.constraintlayout.compose)
     
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.material.icons.extended)
+
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.activity.compose)
+
+    // Navigation
+    implementation(libs.androidx.navigation.compose)
+
+    // Navigation 3
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.coil.compose)
+    implementation(libs.haze)
+    implementation(libs.haze.materials)
+    implementation(libs.androidx.media3.exoplayer)
+    implementation(libs.androidx.media3.ui)
+    
+    implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.androidx.paging.compose)
+    
+    implementation(libs.androidx.graphics.shapes)
+    implementation(libs.accompanist.permissions)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
+
     implementation("com.blacknut.launcher:player:2.0.18")
-    implementation("androidx.compose.material:material-icons-extended:1.7.8")
-
     implementation("de.drick.compose:edge-to-edge-preview:0.7.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
-
 }

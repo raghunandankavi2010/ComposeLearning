@@ -1,101 +1,68 @@
 package com.example.composelearning.animcompose
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.ui.NavDisplay
 import com.example.composelearning.ValueBasedAnimationsScreen
 import com.example.composelearning.graphics.PreviewThermometerCanvas
+import kotlinx.serialization.Serializable
 
-sealed class AnimScreen(val route: String) {
-    object Home : AnimScreen("home")
-    object MathBasics : AnimScreen("math_basics")
-    object DrawingFundamentals : AnimScreen("drawing_fundamentals")
-    object LinesShapesArcs : AnimScreen("lines_shapes_arcs")
-    object PathsComplexShapes : AnimScreen("paths_complex_shapes")
-    object ImagesBitmaps : AnimScreen("images_bitmaps")
-    object CanvasState : AnimScreen("canvas_state")
-    object TouchGestures : AnimScreen("touch_gestures")
-    object AnimationBasics : AnimScreen("animation_basics")
-    object ValueBasedAnimations : AnimScreen("value_based_animations")
-    object TransitionAnimations : AnimScreen("transition_animations")
-    object PhysicsAnimations : AnimScreen("physics_animations")
-    object GameEnvironment : AnimScreen("game_environment")
-
-    object BottleWaveAnimation : AnimScreen("bottle_wave_animation")
-
-    object DatePickerScreen : AnimScreen("date_picker")
-
-    object FileDeleteAnimation : AnimScreen("file_delete_animation")
-
-    object ThermometerAnimation : AnimScreen("thermometer_animation")
+@Serializable sealed interface AnimScreen : NavKey {
+    @Serializable data object Home : AnimScreen
+    @Serializable data object MathBasics : AnimScreen
+    @Serializable data object DrawingFundamentals : AnimScreen
+    @Serializable data object LinesShapesArcs : AnimScreen
+    @Serializable data object PathsComplexShapes : AnimScreen
+    @Serializable data object ImagesBitmaps : AnimScreen
+    @Serializable data object CanvasState : AnimScreen
+    @Serializable data object TouchGestures : AnimScreen
+    @Serializable data object AnimationBasics : AnimScreen
+    @Serializable data object ValueBasedAnimations : AnimScreen
+    @Serializable data object TransitionAnimations : AnimScreen
+    @Serializable data object PhysicsAnimations : AnimScreen
+    @Serializable data object GameEnvironment : AnimScreen
+    @Serializable data object BottleWaveAnimation : AnimScreen
+    @Serializable data object DatePickerScreen : AnimScreen
+    @Serializable data object FileDeleteAnimation : AnimScreen
+    @Serializable data object ThermometerAnimation : AnimScreen
 }
 
 @Composable
 fun AppNavigation(
-    modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController()
+    modifier: Modifier = Modifier
 ) {
-    NavHost(
-        navController = navController,
-        startDestination = AnimScreen.Home.route,
-        modifier = modifier
-    ) {
-        composable(AnimScreen.Home.route) {
-            MainHomeScreen(navController)
-        }
-        composable(AnimScreen.MathBasics.route) {
-            MathBasicsScreen()
-        }
-        composable(AnimScreen.DrawingFundamentals.route) {
-            DrawingFundamentalsScreen()
-        }
-        composable(AnimScreen.LinesShapesArcs.route) {
-            LinesShapesArcsScreen()
-        }
-        composable(AnimScreen.PathsComplexShapes.route) {
-            PathsComplexShapesScreen()
-        }
-        composable(AnimScreen.ImagesBitmaps.route) {
-            ImagesBitmapsScreen()
-        }
-        composable(AnimScreen.CanvasState.route) {
-            CanvasStateScreen()
-        }
-        composable(AnimScreen.TouchGestures.route) {
-            TouchGesturesScreen()
-        }
-        composable(AnimScreen.AnimationBasics.route) {
-            NewYearsEveFireworksScreen()
-        }
-        composable(AnimScreen.ValueBasedAnimations.route) {
-            ValueBasedAnimationsScreen()
-        }
-        composable(AnimScreen.TransitionAnimations.route) {
-            TransitionAnimationsScreen()
-        }
-        composable(AnimScreen.PhysicsAnimations.route) {
-            PhysicsAnimationsScreen()
-        }
-        composable(AnimScreen.GameEnvironment.route) {
-            GameEnvironmentScreen()
-        }
-        composable(AnimScreen.BottleWaveAnimation.route) {
-            BottleWaveAnimation()
-        }
-        composable(AnimScreen.DatePickerScreen.route) {
-            PhysicsDatePicker{
+    val navigationState = rememberNavigationState(
+        startRoute = AnimScreen.Home,
+        topLevelRoutes = setOf(AnimScreen.Home)
+    )
+    val navigator = remember { Navigator(navigationState) }
 
-            }
-        }
-        composable(AnimScreen.FileDeleteAnimation.route) {
-            FileManagerPreview()
-        }
-        composable(AnimScreen.ThermometerAnimation.route) {
-            PreviewThermometerCanvas()
-            //ThermometerAnimation()
-        }
+    val entryProvider = entryProvider<NavKey> {
+        entry<AnimScreen.Home> { MainHomeScreen(navigator) }
+        entry<AnimScreen.MathBasics> { MathBasicsScreen() }
+        entry<AnimScreen.DrawingFundamentals> { DrawingFundamentalsScreen() }
+        entry<AnimScreen.LinesShapesArcs> { LinesShapesArcsScreen() }
+        entry<AnimScreen.PathsComplexShapes> { PathsComplexShapesScreen() }
+        entry<AnimScreen.ImagesBitmaps> { ImagesBitmapsScreen() }
+        entry<AnimScreen.CanvasState> { CanvasStateScreen() }
+        entry<AnimScreen.TouchGestures> { TouchGesturesScreen() }
+        entry<AnimScreen.AnimationBasics> { NewYearsEveFireworksScreen() }
+        entry<AnimScreen.ValueBasedAnimations> { ValueBasedAnimationsScreen() }
+        entry<AnimScreen.TransitionAnimations> { TransitionAnimationsScreen() }
+        entry<AnimScreen.PhysicsAnimations> { PhysicsAnimationsScreen() }
+        entry<AnimScreen.GameEnvironment> { GameEnvironmentScreen() }
+        entry<AnimScreen.BottleWaveAnimation> { BottleWaveAnimation() }
+        entry<AnimScreen.DatePickerScreen> { PhysicsDatePicker {} }
+        entry<AnimScreen.FileDeleteAnimation> { FileManagerPreview() }
+        entry<AnimScreen.ThermometerAnimation> { PreviewThermometerCanvas() }
     }
+
+    NavDisplay(
+        modifier = modifier,
+        entries = navigationState.toEntries(entryProvider),
+        onBack = { navigator.goBack() }
+    )
 }

@@ -21,98 +21,96 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-
 
 data class AnimationCategory(
     val title: String,
     val description: String,
-    val route: String
+    val route: AnimScreen
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainHomeScreen(navController: NavController) {
+fun MainHomeScreen(navigator: Navigator) {
     val categories = listOf(
         AnimationCategory(
             "Math Basics",
             "Coordinate systems, vectors, trigonometry",
-            AnimScreen.MathBasics.route
+            AnimScreen.MathBasics
         ),
         AnimationCategory(
             "Drawing Fundamentals",
             "Canvas, DrawScope, coordinate systems",
-            AnimScreen.DrawingFundamentals.route
+            AnimScreen.DrawingFundamentals
         ),
         AnimationCategory(
             "Lines, Shapes & Arcs",
             "Primitives and basic shapes",
-            AnimScreen.LinesShapesArcs.route
+            AnimScreen.LinesShapesArcs
         ),
         AnimationCategory(
             "Paths & Complex Shapes",
             "Bezier curves and custom paths",
-            AnimScreen.PathsComplexShapes.route
+            AnimScreen.PathsComplexShapes
         ),
         AnimationCategory(
             "Images & Bitmaps",
             "Working with images on canvas",
-            AnimScreen.ImagesBitmaps.route
+            AnimScreen.ImagesBitmaps
         ),
         AnimationCategory(
             "Canvas State",
             "Save/restore, transformations",
-            AnimScreen.CanvasState.route
+            AnimScreen.CanvasState
         ),
         AnimationCategory(
             "Touch & Gestures",
             "Drag, pinch, multi-touch",
-            AnimScreen.TouchGestures.route
+            AnimScreen.TouchGestures
         ),
         AnimationCategory(
             "Animation Basics",
             "Value-based and infinite animations",
-            AnimScreen.AnimationBasics.route
+            AnimScreen.AnimationBasics
         ),
         AnimationCategory(
             "Value-Based Animations",
             "Custom types and keyframes",
-            AnimScreen.ValueBasedAnimations.route
+            AnimScreen.ValueBasedAnimations
         ),
         AnimationCategory(
             "Transition Animations",
             "State-driven animations",
-            AnimScreen.TransitionAnimations.route
+            AnimScreen.TransitionAnimations
         ),
         AnimationCategory(
             "Physics Animations",
             "Spring, decay, fling",
-            AnimScreen.PhysicsAnimations.route
+            AnimScreen.PhysicsAnimations
         ),
         AnimationCategory(
             "Physics Game",
             "Bubble Pop Game",
-            AnimScreen.GameEnvironment.route
+            AnimScreen.GameEnvironment
         ),
         AnimationCategory(
             "Bottle Wave Animation",
             "Animating bottle wave filling",
-            AnimScreen.BottleWaveAnimation.route
+            AnimScreen.BottleWaveAnimation
         ),
         AnimationCategory(
             "Date Picker",
             "Horizontal Date Picker",
-            AnimScreen.DatePickerScreen.route
+            AnimScreen.DatePickerScreen
         ),
         AnimationCategory(
             "File Delete animation",
             "File delete Animation",
-            AnimScreen.FileDeleteAnimation.route
+            AnimScreen.FileDeleteAnimation
         ),
         AnimationCategory(
             "Thermometer Animation",
             "Medical thermometer visualization",
-            AnimScreen.ThermometerAnimation.route
+            AnimScreen.ThermometerAnimation
         )
     )
 
@@ -138,7 +136,7 @@ fun MainHomeScreen(navController: NavController) {
                 CategoryCard(
                     title = category.title,
                     description = category.description,
-                    onClick = { navController.navigate(category.route) }
+                    onClick = { navigator.navigate(category.route) }
                 )
             }
         }
