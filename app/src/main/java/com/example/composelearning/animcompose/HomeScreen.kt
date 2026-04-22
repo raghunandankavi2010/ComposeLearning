@@ -33,6 +33,11 @@ data class AnimationCategory(
 fun MainHomeScreen(navigator: Navigator) {
     val categories = listOf(
         AnimationCategory(
+            "Stacked Tinder Cards",
+            "Swipeable cards with Coil images",
+            AnimScreen.StackedCards
+        ),
+        AnimationCategory(
             "Math Basics",
             "Coordinate systems, vectors, trigonometry",
             AnimScreen.MathBasics

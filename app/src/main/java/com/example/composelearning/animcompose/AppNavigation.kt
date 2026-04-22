@@ -3,6 +3,7 @@ package com.example.composelearning.animcompose
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
@@ -28,6 +29,7 @@ import kotlinx.serialization.Serializable
     @Serializable data object DatePickerScreen : AnimScreen
     @Serializable data object FileDeleteAnimation : AnimScreen
     @Serializable data object ThermometerAnimation : AnimScreen
+    @Serializable data object StackedCards : AnimScreen
 }
 
 @Composable
@@ -40,7 +42,7 @@ fun AppNavigation(
     )
     val navigator = remember { Navigator(navigationState) }
 
-    val entryProvider = entryProvider<NavKey> {
+    val entryProvider: (NavKey) -> NavEntry<out NavKey> = entryProvider {
         entry<AnimScreen.Home> { MainHomeScreen(navigator) }
         entry<AnimScreen.MathBasics> { MathBasicsScreen() }
         entry<AnimScreen.DrawingFundamentals> { DrawingFundamentalsScreen() }
@@ -58,11 +60,12 @@ fun AppNavigation(
         entry<AnimScreen.DatePickerScreen> { PhysicsDatePicker {} }
         entry<AnimScreen.FileDeleteAnimation> { FileManagerPreview() }
         entry<AnimScreen.ThermometerAnimation> { PreviewThermometerCanvas() }
+        entry<AnimScreen.StackedCards> { TinderSwipeScreen() }
     }
 
     NavDisplay(
         modifier = modifier,
-        entries = navigationState.toEntries(entryProvider),
+        entries = navigationState.toEntries(entryProvider as (NavKey) -> NavEntry<NavKey>),
         onBack = { navigator.goBack() }
     )
 }
