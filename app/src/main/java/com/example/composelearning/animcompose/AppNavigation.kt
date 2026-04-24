@@ -30,6 +30,7 @@ import kotlinx.serialization.Serializable
     @Serializable data object FileDeleteAnimation : AnimScreen
     @Serializable data object ThermometerAnimation : AnimScreen
     @Serializable data object StackedCards : AnimScreen
+    @Serializable data object April2026Features : AnimScreen
 }
 
 @Composable
@@ -61,6 +62,7 @@ fun AppNavigation(
         entry<AnimScreen.FileDeleteAnimation> { FileManagerPreview() }
         entry<AnimScreen.ThermometerAnimation> { PreviewThermometerCanvas() }
         entry<AnimScreen.StackedCards> { TinderSwipeScreen() }
+        entry<AnimScreen.April2026Features> { April2026FeaturesScreen(onBack = { navigator.goBack() }) }
     }
 
     NavDisplay(

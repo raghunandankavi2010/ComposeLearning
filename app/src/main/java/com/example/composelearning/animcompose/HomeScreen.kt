@@ -38,6 +38,11 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.StackedCards
         ),
         AnimationCategory(
+            "April 2026 Updates",
+            "New features: Morphing Shapes, PullToRefreshBox, Shared Elements",
+            AnimScreen.April2026Features
+        ),
+        AnimationCategory(
             "Math Basics",
             "Coordinate systems, vectors, trigonometry",
             AnimScreen.MathBasics
