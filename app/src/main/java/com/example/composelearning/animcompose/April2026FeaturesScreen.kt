@@ -6,6 +6,7 @@ import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
@@ -42,9 +43,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.AnimatedPane
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
+import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,10 +62,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asComposePath
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.graphics.shapes.Morph
 import androidx.graphics.shapes.RoundedPolygon
 import androidx.graphics.shapes.toPath
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.PlayerView
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -67,7 +78,8 @@ import kotlinx.coroutines.launch
     ExperimentalMaterial3Api::class,
     ExperimentalSharedTransitionApi::class,
     ExperimentalGridApi::class,
-    ExperimentalFlexBoxApi::class
+    ExperimentalFlexBoxApi::class,
+    ExperimentalMaterial3AdaptiveApi::class
 )
 @Composable
 fun April2026FeaturesScreen(onBack: () -> Unit) {
@@ -110,6 +122,15 @@ fun April2026FeaturesScreen(onBack: () -> Unit) {
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(32.dp)
             ) {
+                item {
+                    Text(
+                        "Foldable Video Sample (Adaptive)",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    FoldableVideoSample()
+                }
+
                 item {
                     Text(
                         "Morphing Shapes (Graphics Shapes 1.1.0)",
@@ -166,6 +187,86 @@ fun April2026FeaturesScreen(onBack: () -> Unit) {
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+@Composable
+fun FoldableVideoSample() {
+    val navigator = rememberListDetailPaneScaffoldNavigator<String>()
+    
+    Box(modifier = Modifier.fillMaxWidth().height(400.dp).background(Color.Black.copy(alpha = 0.05f), RoundedCornerShape(12.dp))) {
+        ListDetailPaneScaffold(
+            directive = navigator.scaffoldDirective,
+            value = navigator.scaffoldValue,
+            listPane = {
+                AnimatedPane {
+                    VideoPlayerPane()
+                }
+            },
+            detailPane = {
+                AnimatedPane {
+                    VideoDescriptionPane()
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun VideoPlayerPane() {
+    val context = LocalContext.current
+    val exoPlayer = remember {
+        ExoPlayer.Builder(context).build().apply {
+            val mediaItem = MediaItem.fromUri("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")
+            setMediaItem(mediaItem)
+            prepare()
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            exoPlayer.release()
+        }
+    }
+
+    AndroidView(
+        factory = { ctx ->
+            PlayerView(ctx).apply {
+                player = exoPlayer
+            }
+        },
+        modifier = Modifier.fillMaxSize()
+    )
+}
+
+@Composable
+fun VideoDescriptionPane() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text("Big Buck Bunny", style = MaterialTheme.typography.headlineSmall)
+        Text(
+            "Big Buck Bunny tells the story of a giant rabbit with a heart bigger than himself. " +
+            "When one sunny day three rodents rudely harass him, something snaps... " +
+            "and the giant rabbit takes a revenge in a comical way!",
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(Modifier.height(16.dp))
+        Text("Comments", style = MaterialTheme.typography.titleMedium)
+        repeat(3) { index ->
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    "User $index: This video is amazing!",
+                    modifier = Modifier.padding(8.dp),
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
         }
     }
@@ -232,9 +333,70 @@ fun RoundedBox(color: Color, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .size(60.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .background(color)
+            .background(color, RoundedCornerShape(8.dp))
     )
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+fun SharedElementDemo() {
+    var showDetail by remember { mutableStateOf(false) }
+    SharedTransitionLayout {
+        AnimatedContent(
+            targetState = showDetail,
+            transitionSpec = {
+                fadeIn(tween(500)) togetherWith fadeOut(tween(500))
+            },
+            label = "shared_element"
+        ) { targetShowDetail ->
+            if (targetShowDetail) {
+                DetailView(onBack = { showDetail = false }, sharedTransitionScope = this@SharedTransitionLayout, animatedVisibilityScope = this@AnimatedContent)
+            } else {
+                ListView(onItemClick = { showDetail = true }, sharedTransitionScope = this@SharedTransitionLayout, animatedVisibilityScope = this@AnimatedContent)
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+fun ListView(onItemClick: () -> Unit, sharedTransitionScope: androidx.compose.animation.SharedTransitionScope, animatedVisibilityScope: androidx.compose.animation.AnimatedVisibilityScope) {
+    with(sharedTransitionScope) {
+        Box(
+            modifier = Modifier
+                .size(100.dp)
+                .sharedElement(
+                    rememberSharedContentState(key = "item"),
+                    animatedVisibilityScope = animatedVisibilityScope
+                )
+                .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(16.dp))
+                .clickable { onItemClick() }
+        )
+    }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+fun DetailView(onBack: () -> Unit, sharedTransitionScope: androidx.compose.animation.SharedTransitionScope, animatedVisibilityScope: androidx.compose.animation.AnimatedVisibilityScope) {
+    with(sharedTransitionScope) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp)
+                    .sharedElement(
+                        rememberSharedContentState(key = "item"),
+                        animatedVisibilityScope = animatedVisibilityScope
+                    )
+                    .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(32.dp))
+                    .clickable { onBack() }
+            )
+        }
+    }
 }
 
 @Composable
@@ -243,94 +405,27 @@ fun MorphingShapeDemo() {
     val progress by animateFloatAsState(
         targetValue = if (isSquare) 0f else 1f,
         animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy, stiffness = Spring.StiffnessLow),
-        label = "morphProgress"
+        label = "morph"
     )
 
-    val polygon1 = remember {
-        RoundedPolygon(
-            numVertices = 4,
-            radius = 100f,
-            centerX = 100f,
-            centerY = 100f
-        )
-    }
-    val polygon2 = remember {
-        RoundedPolygon(
-            numVertices = 8,
-            radius = 100f,
-            centerX = 100f,
-            centerY = 100f
-        )
-    }
-    val morph = remember(polygon1, polygon2) {
-        Morph(polygon1, polygon2)
-    }
+    val square = remember { RoundedPolygon(4, rounding = androidx.graphics.shapes.CornerRounding(0.2f)) }
+    val circle = remember { RoundedPolygon(12, rounding = androidx.graphics.shapes.CornerRounding(0.5f)) }
+    val morph = remember(square, circle) { Morph(square, circle) }
 
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(200.dp)
-            .clickable { isSquare = !isSquare },
-        contentAlignment = Alignment.Center
-    ) {
-        Box(
-            modifier = Modifier
-                .size(200.dp)
-                .drawWithCache {
-                    val path = morph.toPath(progress).asComposePath()
-                    onDrawBehind {
-                        drawPath(path, color = Color(0xFF6C63FF))
-                    }
-                }
-        )
-        Text(
-            "Tap to Morph",
-            modifier = Modifier.align(Alignment.BottomCenter),
-            style = MaterialTheme.typography.labelSmall
-        )
-    }
-}
-
-@OptIn(ExperimentalSharedTransitionApi::class)
-@Composable
-fun SharedElementDemo() {
-    var showDetails by remember { mutableStateOf(false) }
-
-    SharedTransitionLayout {
-        AnimatedContent(
-            targetState = showDetails,
-            transitionSpec = {
-                fadeIn() togetherWith fadeOut()
-            },
-            label = "sharedContent"
-        ) { targetShowDetails ->
-            if (!targetShowDetails) {
-                Box(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .sharedElement(
-                            rememberSharedContentState(key = "box"),
-                            animatedVisibilityScope = this
-                        )
-                        .background(Color.Red)
-                        .clickable { showDetails = true }
-                )
-            } else {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .sharedElement(
-                            rememberSharedContentState(key = "box"),
-                            animatedVisibilityScope = this
-                        )
-                        .background(Color.Red)
-                        .clickable { showDetails = false },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("Expanded Details", color = Color.White)
+            .size(200.dp)
+            .padding(16.dp)
+            .clickable { isSquare = !isSquare }
+            .drawWithCache {
+                val path = morph.toPath(progress).asComposePath()
+                onDrawBehind {
+                    drawPath(path, Color(0xFF6200EE))
                 }
             }
+    ) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+           // Content inside the morphing shape
         }
     }
 }
