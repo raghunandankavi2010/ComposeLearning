@@ -42,6 +42,7 @@ import kotlinx.serialization.Serializable
     @Serializable data object BezierCurves : AnimScreen
     @Serializable data object SineWave : AnimScreen
     @Serializable data object CustomPager : AnimScreen
+    @Serializable data object BezierExplorer : AnimScreen
 }
 
 @Composable
@@ -80,6 +81,7 @@ fun AppNavigation(
         entry<AnimScreen.CustomPager> { CustomPagerSample(onBack = { navigator.goBack() }) }
 
         entry<AnimScreen.DrawScale> { DrawScaleOnTouch(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.BezierExplorer> { BezierCurveExplorerScreen() }
     }
 
     NavDisplay(

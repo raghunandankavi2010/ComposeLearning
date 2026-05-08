@@ -38,6 +38,11 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.DrawScale
         ),
         AnimationCategory(
+            "Bezier Curve Explorer",
+            "Quadratic + cubic playgrounds, De Casteljau, Figma SVG → Compose",
+            AnimScreen.BezierExplorer
+        ),
+        AnimationCategory(
             "Animated Balance Counter",
             "Count-up balance animation from 0 to target",
             AnimScreen.AnimatedBalance
