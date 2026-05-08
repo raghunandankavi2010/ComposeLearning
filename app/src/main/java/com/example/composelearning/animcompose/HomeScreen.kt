@@ -33,6 +33,11 @@ data class AnimationCategory(
 fun MainHomeScreen(navigator: Navigator) {
     val categories = listOf(
         AnimationCategory(
+            "Animated Balance Counter",
+            "Count-up balance animation from 0 to target",
+            AnimScreen.AnimatedBalance
+        ),
+        AnimationCategory(
             "Stacked Tinder Cards",
             "Swipeable cards with Coil images",
             AnimScreen.StackedCards
