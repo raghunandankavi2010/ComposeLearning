@@ -10,6 +10,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.example.composelearning.ValueBasedAnimationsScreen
 import com.example.composelearning.anim.AnimatedBalanceDemo
 import com.example.composelearning.graphics.PreviewThermometerCanvas
+import com.example.composelearning.graphics.BezierCurveSample
 import kotlinx.serialization.Serializable
 
 @Serializable sealed interface AnimScreen : NavKey {
@@ -33,6 +34,7 @@ import kotlinx.serialization.Serializable
     @Serializable data object StackedCards : AnimScreen
     @Serializable data object April2026Features : AnimScreen
     @Serializable data object AnimatedBalance : AnimScreen
+    @Serializable data object BezierCurves : AnimScreen
 }
 
 @Composable
@@ -66,6 +68,7 @@ fun AppNavigation(
         entry<AnimScreen.StackedCards> { TinderSwipeScreen() }
         entry<AnimScreen.April2026Features> { April2026FeaturesScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.AnimatedBalance> { AnimatedBalanceDemo() }
+        entry<AnimScreen.BezierCurves> { BezierCurveSample(onBack = { navigator.goBack() }) }
     }
 
     NavDisplay(

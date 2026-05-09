@@ -38,6 +38,11 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.AnimatedBalance
         ),
         AnimationCategory(
+            "Bezier Curves",
+            "Math, Interactive playground, and Figma conversion",
+            AnimScreen.BezierCurves
+        ),
+        AnimationCategory(
             "Stacked Tinder Cards",
             "Swipeable cards with Coil images",
             AnimScreen.StackedCards
