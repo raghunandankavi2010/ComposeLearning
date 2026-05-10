@@ -9,12 +9,13 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.example.composelearning.ValueBasedAnimationsScreen
 import com.example.composelearning.anim.AnimatedBalanceDemo
-import com.example.composelearning.graphics.PreviewThermometerCanvas
 import com.example.composelearning.graphics.BezierCurveSample
-import com.example.composelearning.graphics.SineWaveSample
+import com.example.composelearning.graphics.DrawScaleOnTouch
+import com.example.composelearning.graphics.PreviewThermometerCanvas
 import kotlinx.serialization.Serializable
 
 @Serializable sealed interface AnimScreen : NavKey {
+    @Serializable data object DrawScale: AnimScreen
     @Serializable data object Home : AnimScreen
     @Serializable data object MathBasics : AnimScreen
     @Serializable data object DrawingFundamentals : AnimScreen
@@ -33,7 +34,8 @@ import kotlinx.serialization.Serializable
     @Serializable data object FileDeleteAnimation : AnimScreen
     @Serializable data object ThermometerAnimation : AnimScreen
     @Serializable data object StackedCards : AnimScreen
-    @Serializable data object April2026Features : AnimScreen
+    @Serializable data
+    object April2026Features : AnimScreen
     @Serializable data object AnimatedBalance : AnimScreen
     @Serializable data object BezierCurves : AnimScreen
     @Serializable data object SineWave : AnimScreen
@@ -71,7 +73,8 @@ fun AppNavigation(
         entry<AnimScreen.April2026Features> { April2026FeaturesScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.AnimatedBalance> { AnimatedBalanceDemo() }
         entry<AnimScreen.BezierCurves> { BezierCurveSample(onBack = { navigator.goBack() }) }
-        entry<AnimScreen.SineWave> { SineWaveSample(onBack = { navigator.goBack() }) }
+
+        entry<AnimScreen.DrawScale> { DrawScaleOnTouch(onBack = { navigator.goBack() }) }
     }
 
     NavDisplay(

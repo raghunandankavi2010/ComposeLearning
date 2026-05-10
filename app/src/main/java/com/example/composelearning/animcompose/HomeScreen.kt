@@ -33,6 +33,11 @@ data class AnimationCategory(
 fun MainHomeScreen(navigator: Navigator) {
     val categories = listOf(
         AnimationCategory(
+            "Draw and scale",
+            "Draw and scale on touch",
+            AnimScreen.DrawScale
+        ),
+        AnimationCategory(
             "Animated Balance Counter",
             "Count-up balance animation from 0 to target",
             AnimScreen.AnimatedBalance
