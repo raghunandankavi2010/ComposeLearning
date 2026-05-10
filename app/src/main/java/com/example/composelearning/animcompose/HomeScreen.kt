@@ -53,6 +53,11 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.SineWave
         ),
         AnimationCategory(
+            "Custom Layout Pager",
+            "Building a pager from scratch with velocity tracking",
+            AnimScreen.CustomPager
+        ),
+        AnimationCategory(
             "Stacked Tinder Cards",
             "Swipeable cards with Coil images",
             AnimScreen.StackedCards

@@ -12,6 +12,8 @@ import com.example.composelearning.anim.AnimatedBalanceDemo
 import com.example.composelearning.graphics.BezierCurveSample
 import com.example.composelearning.graphics.DrawScaleOnTouch
 import com.example.composelearning.graphics.PreviewThermometerCanvas
+import com.example.composelearning.graphics.SineWaveSample
+import com.example.composelearning.customlayout.CustomPagerSample
 import kotlinx.serialization.Serializable
 
 @Serializable sealed interface AnimScreen : NavKey {
@@ -39,6 +41,7 @@ import kotlinx.serialization.Serializable
     @Serializable data object AnimatedBalance : AnimScreen
     @Serializable data object BezierCurves : AnimScreen
     @Serializable data object SineWave : AnimScreen
+    @Serializable data object CustomPager : AnimScreen
 }
 
 @Composable
@@ -73,6 +76,8 @@ fun AppNavigation(
         entry<AnimScreen.April2026Features> { April2026FeaturesScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.AnimatedBalance> { AnimatedBalanceDemo() }
         entry<AnimScreen.BezierCurves> { BezierCurveSample(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.SineWave> { SineWaveSample(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.CustomPager> { CustomPagerSample(onBack = { navigator.goBack() }) }
 
         entry<AnimScreen.DrawScale> { DrawScaleOnTouch(onBack = { navigator.goBack() }) }
     }
