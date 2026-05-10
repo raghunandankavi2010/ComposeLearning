@@ -11,6 +11,7 @@ import com.example.composelearning.ValueBasedAnimationsScreen
 import com.example.composelearning.anim.AnimatedBalanceDemo
 import com.example.composelearning.graphics.PreviewThermometerCanvas
 import com.example.composelearning.graphics.BezierCurveSample
+import com.example.composelearning.graphics.SineWaveSample
 import kotlinx.serialization.Serializable
 
 @Serializable sealed interface AnimScreen : NavKey {
@@ -35,6 +36,7 @@ import kotlinx.serialization.Serializable
     @Serializable data object April2026Features : AnimScreen
     @Serializable data object AnimatedBalance : AnimScreen
     @Serializable data object BezierCurves : AnimScreen
+    @Serializable data object SineWave : AnimScreen
 }
 
 @Composable
@@ -69,6 +71,7 @@ fun AppNavigation(
         entry<AnimScreen.April2026Features> { April2026FeaturesScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.AnimatedBalance> { AnimatedBalanceDemo() }
         entry<AnimScreen.BezierCurves> { BezierCurveSample(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.SineWave> { SineWaveSample(onBack = { navigator.goBack() }) }
     }
 
     NavDisplay(

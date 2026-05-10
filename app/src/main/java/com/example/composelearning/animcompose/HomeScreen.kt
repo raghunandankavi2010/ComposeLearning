@@ -43,6 +43,11 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.BezierCurves
         ),
         AnimationCategory(
+            "Sine Wave Animation",
+            "Animated wave with interactive dot and variable amplitude",
+            AnimScreen.SineWave
+        ),
+        AnimationCategory(
             "Stacked Tinder Cards",
             "Swipeable cards with Coil images",
             AnimScreen.StackedCards
