@@ -33,6 +33,11 @@ data class AnimationCategory(
 fun MainHomeScreen(navigator: Navigator) {
     val categories = listOf(
         AnimationCategory(
+            "YouTube Style Screen",
+            "Complex layout with custom concave shapes and lists",
+            AnimScreen.YouTubeStyle
+        ),
+        AnimationCategory(
             "Draw and scale",
             "Draw and scale on touch",
             AnimScreen.DrawScale

@@ -43,6 +43,7 @@ import kotlinx.serialization.Serializable
     @Serializable data object SineWave : AnimScreen
     @Serializable data object CustomPager : AnimScreen
     @Serializable data object BezierExplorer : AnimScreen
+    @Serializable data object YouTubeStyle : AnimScreen
 }
 
 @Composable
@@ -82,6 +83,7 @@ fun AppNavigation(
 
         entry<AnimScreen.DrawScale> { DrawScaleOnTouch(onBack = { navigator.goBack() }) }
         entry<AnimScreen.BezierExplorer> { BezierCurveExplorerScreen() }
+        entry<AnimScreen.YouTubeStyle> { YouTubeScreen(onBack = { navigator.goBack() }) }
     }
 
     NavDisplay(
