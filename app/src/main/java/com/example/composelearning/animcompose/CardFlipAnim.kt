@@ -1,15 +1,9 @@
 package com.example.composelearning.animcompose
 
-import android.graphics.RenderEffect
-import android.graphics.Shader
-import android.os.Build
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -27,45 +21,48 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.CreditCard
 import androidx.compose.material.icons.rounded.Wifi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.delay
-import kotlin.math.absoluteValue
+import kotlinx.coroutines.launch
+import kotlin.math.PI
+import kotlin.math.sin
 
 /**
- * A premium 3D card flip animation with realistic gloss, shadows, and spring physics.
- * Features:
- * - True 3D perspective rotation with backface visibility
- * - Dynamic gloss effect that shifts during rotation
- * - Holographic security elements
- * - Magnetic strip and signature panel on back
- * - Spring-based animation with anticipatory overshoot
+ * Buttery-smooth 3D credit-card flip.
+ *
+ * Why this version is smooth where the previous wasn't:
+ *  1. A single Animatable<Float> drives rotation — no LaunchedEffect re-arming
+ *     a separate tween on every frame.
+ *  2. All animated values are read INSIDE the graphicsLayer { } lambda. That
+ *     lambda runs in the draw phase, so frame updates skip recomposition and
+ *     only invalidate the layer — the cheapest possible path.
+ *  3. Proper backface culling: each face is fully opaque while its side faces
+ *     the camera and fully hidden once it's past 90°. No alpha crossfade, so
+ *     there is never a "double-rendered" mushy zone near 90°.
+ *  4. cameraDistance is generous (30 × density) so perspective looks real
+ *     instead of fish-eyed.
+ *  5. Spring is well-damped (dampingRatio 0.9, MediumLow stiffness) so the
+ *     card settles cleanly with no visible oscillation.
  */
 @Composable
 fun CreditCardFlip(
@@ -76,70 +73,51 @@ fun CreditCardFlip(
     cvv: String = "847",
     cardType: CardType = CardType.VISA
 ) {
-    var isFlipped by remember { mutableStateOf(false) }
-    var isGlossActive by remember { mutableStateOf(false) }
-
-    // Spring-based rotation with anticipatory feel
-    val rotation by animateFloatAsState(
-        targetValue = if (isFlipped) 180f else 0f,
-        animationSpec = spring(
-            dampingRatio = 0.6f, // Slight overshoot for premium feel
-            stiffness = 200f,     // Not too stiff, not too loose
-            visibilityThreshold = 0.5f
-        ),
-        label = "cardRotation"
-    )
-
-    // Scale animation for "lift" effect when flipping
-    val scale by animateFloatAsState(
-        targetValue = if (isGlossActive) 1.05f else 1f,
-        animationSpec = spring(
-            dampingRatio = 0.8f,
-            stiffness = 300f
-        ),
-        label = "cardScale"
-    )
-
-    // Gloss position animation
-    val glossOffset = remember { Animatable(-1f) }
-
-    LaunchedEffect(rotation) {
-        // Animate gloss sweep during rotation
-        val progress = rotation / 180f
-        glossOffset.animateTo(
-            targetValue = if (progress < 0.5f) progress * 2 else (1 - progress) * 2,
-            animationSpec = tween(300)
-        )
-    }
-
-    // Calculate which side is visible
-    val normalizedRotation = rotation % 360
-    val isFrontVisible = normalizedRotation in 0f..90f || normalizedRotation in 270f..360f
+    // Single source of truth for the flip angle in degrees (0 .. 180).
+    // Animatable gives us cancel-on-retap behaviour for free: a new launch
+    // cancels any in-flight animation and continues from the current value,
+    // which is what makes rapid taps feel responsive instead of janky.
+    val rotation = remember { Animatable(0f) }
+    val scope = rememberCoroutineScope()
 
     Box(
         modifier = modifier
+            // Outer horizontal padding so the card never touches the screen
+            // edges — applied before .fillMaxWidth so the card itself sizes
+            // to the available width *inside* the inset, and the click area
+            // matches the visible card silhouette.
+            .padding(horizontal = 20.dp)
             .fillMaxWidth()
             .height(220.dp)
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
             ) {
-                isGlossActive = true
-                isFlipped = !isFlipped
+                // Toggle target: if we're past the midpoint, snap back to 0,
+                // otherwise go to 180. Reading .value here is fine — it only
+                // happens on click, not every frame.
+                val target = if (rotation.value < 90f) 180f else 0f
+                scope.launch {
+                    rotation.animateTo(
+                        targetValue = target,
+                        animationSpec = spring(
+                            dampingRatio = 0.9f,                  // settles without bouncing
+                            stiffness = Spring.StiffnessMediumLow // ~500ms feel
+                        )
+                    )
+                }
             }
             .graphicsLayer {
-                this.scaleX = scale
-                this.scaleY = scale
-                cameraDistance = 12f * density // Critical for 3D depth
+                // Bigger cameraDistance = less perspective distortion.
+                // The default in Compose is 8 × density which is extreme.
+                cameraDistance = 30f * density
             },
         contentAlignment = Alignment.Center
     ) {
-        // Front Face
+        // Front face: rotates from 0° → 180°.
         CardFace(
-            isVisible = isFrontVisible,
-            rotation = rotation,
-            isFront = true,
-            glossOffset = glossOffset.value
+            angleProvider = { rotation.value },
+            isFront = true
         ) {
             CardFrontContent(
                 cardNumber = cardNumber,
@@ -149,61 +127,95 @@ fun CreditCardFlip(
             )
         }
 
-        // Back Face
+        // Back face: pre-rotated by 180° so it starts facing AWAY from us and
+        // ends facing us when rotation reaches 180°. This is the standard
+        // two-plane flip trick — both faces share the same rotation source,
+        // they're just offset by half a turn.
         CardFace(
-            isVisible = !isFrontVisible,
-            rotation = rotation,
-            isFront = false,
-            glossOffset = glossOffset.value
+            angleProvider = { rotation.value },
+            isFront = false
         ) {
             CardBackContent(
                 cvv = cvv,
-                cardHolder = cardHolder
+                cardHolder = cardHolder,
+                cardType = cardType
             )
         }
     }
 }
 
+/**
+ * One side of the card. The angle is passed as a lambda so that reading it
+ * happens inside graphicsLayer { }, deferring to the draw phase and skipping
+ * recomposition on every animation tick.
+ */
 @Composable
 private fun CardFace(
-    isVisible: Boolean,
-    rotation: Float,
+    angleProvider: () -> Float,
     isFront: Boolean,
-    glossOffset: Float,
     content: @Composable () -> Unit
 ) {
-    // Calculate 3D transform
-    val adjustedRotation = if (isFront) rotation else rotation - 180f
-
-    // Fade out when perpendicular to viewer (at 90 degrees)
-    val alpha = 1f - (adjustedRotation.absoluteValue / 90f).coerceIn(0f, 1f)
-
     Box(
         modifier = Modifier
             .fillMaxSize()
             .graphicsLayer {
-                this.rotationY = adjustedRotation
-                this.transformOrigin = TransformOrigin(0.5f, 0.5f)
-                this.alpha = alpha
-                // Add subtle shadow based on rotation
-                this.shadowElevation = if (isVisible) 20f else 5f
+                val angle = angleProvider()
+                // The back face is mounted 180° behind the front. As `angle`
+                // sweeps 0 → 180, the front goes 0 → 180 and the back goes
+                // -180 → 0, so exactly one face is camera-facing at any time.
+                val faceAngle = if (isFront) angle else angle - 180f
+                rotationY = faceAngle
+                transformOrigin = TransformOrigin(0.5f, 0.5f)
+
+                // Backface culling. Instead of cross-fading alpha (which
+                // produces a visible flash where both faces overlap), we
+                // simply hide a face the moment it turns past 90°. The user
+                // never sees both faces at once.
+                alpha = if (faceAngle > -90f && faceAngle < 90f) 1f else 0f
+
+                // Subtle "lift" at the midpoint of the flip. sin(angle) peaks
+                // at 90° and is 0 at the endpoints, so the shadow swells
+                // mid-flip and recedes at the start/end — gives the card a
+                // sense of rising off the surface as it turns.
+                // (GraphicsLayerScope has no translationZ; shadowElevation
+                // carries the depth cue.)
+                val radians = (angle * PI / 180f).toFloat()
+                shadowElevation = 8f + sin(radians) * 20f
+
+                // Shape + clip MUST live inside the graphicsLayer block.
+                // shadowElevation is cast from the layer's shape, so if we
+                // only `.clip(RoundedCornerShape(...))` afterwards the
+                // content gets rounded but the shadow keeps a rectangular
+                // outline — that's what produced the little corner
+                // "stubs" sticking out past the rounded edges.
+                shape = RoundedCornerShape(24.dp)
+                clip = true
+
+                // No extra scaleX/scaleY here. rotationY with cameraDistance
+                // already produces the correct perspective foreshortening;
+                // layering our own scale on top would leave the front and
+                // back at different sizes (cos(0)=+1 vs cos(π)=-1), which is
+                // what made the card visibly shrink after the flip.
             }
-            .clip(RoundedCornerShape(24.dp))
             .drawWithContent {
                 drawContent()
-
-                // Dynamic gloss effect
-                if (isVisible && alpha > 0.3f) {
-                    val glossX = size.width * glossOffset
+                // Specular sweep: a thin highlight that travels across the
+                // card as it rotates. Position is derived directly from the
+                // rotation angle — no separate animator to drift out of sync.
+                val angle = angleProvider()
+                val faceAngle = if (isFront) angle else angle - 180f
+                if (faceAngle > -90f && faceAngle < 90f) {
+                    val sweep = faceAngle / 90f  // -1 .. 1 across the face
+                    val glossX = size.width * (0.5f + sweep * 0.6f)
                     drawRect(
                         brush = Brush.linearGradient(
                             colors = listOf(
                                 Color.White.copy(alpha = 0f),
-                                Color.White.copy(alpha = 0.15f),
+                                Color.White.copy(alpha = 0.18f),
                                 Color.White.copy(alpha = 0f)
                             ),
-                            start = Offset(glossX - 100f, 0f),
-                            end = Offset(glossX + 100f, size.height)
+                            start = Offset(glossX - 120f, 0f),
+                            end = Offset(glossX + 120f, size.height)
                         )
                     )
                 }
@@ -223,59 +235,101 @@ private fun CardFrontContent(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            // Deep midnight-to-indigo gradient — feels like a real metal/dark
+            // premium card. Diagonal direction gives the surface a natural
+            // sheen when combined with the gloss sweep in CardFace.
             .background(
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        Color(0xFF1e3c72),
-                        Color(0xFF2a5298),
-                        Color(0xFF1e3c72)
+                        Color(0xFF0F1F3D),
+                        Color(0xFF1B3A6B),
+                        Color(0xFF2A5298),
+                        Color(0xFF1B3A6B)
                     ),
                     start = Offset(0f, 0f),
                     end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
                 )
             )
     ) {
-        // Subtle pattern overlay
-        CardPattern()
+        // Soft radial highlight in the top-right — looks like ambient light
+        // bouncing off the card surface. Replaces the busy circle pattern.
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            Color.White.copy(alpha = 0.10f),
+                            Color.Transparent
+                        ),
+                        center = Offset(900f, 0f),
+                        radius = 700f
+                    )
+                )
+        )
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
+                .padding(horizontal = 24.dp, vertical = 20.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            // Top row: Chip and Contactless
+            // ── Row 1: issuer brand + contactless ──
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // EMV Chip
-                ChipElement()
-
-                // Contactless icon
+                Text(
+                    text = "NORTHWIND BANK",
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        letterSpacing = 2.sp
+                    )
+                )
                 Icon(
                     imageVector = Icons.Rounded.Wifi,
                     contentDescription = "Contactless",
-                    tint = Color.White.copy(alpha = 0.8f),
-                    modifier = Modifier.size(28.dp)
+                    tint = Color.White.copy(alpha = 0.85f),
+                    // Rotated so the "waves" emit horizontally, like the real
+                    // contactless symbol you see on cards.
+                    modifier = Modifier
+                        .size(24.dp)
+                        .graphicsLayer { rotationZ = 90f }
                 )
             }
 
-            // Card Number with spacing
-            Text(
-                text = cardNumber,
-                style = TextStyle(
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 26.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White,
-                    letterSpacing = 2.sp
-                ),
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
+            // ── Row 2: EMV chip ──
+            ChipElement()
 
-            // Bottom row: Cardholder and Expiry
+            // ── Row 3: card number ──
+            // Real cards group digits in fours. We render four groups in a
+            // Row with even spacing so kerning stays consistent regardless
+            // of input — `cardNumber` is just used as the source of digits.
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                cardNumber
+                    .replace(" ", "")
+                    .chunked(4)
+                    .forEach { group ->
+                        Text(
+                            text = group,
+                            style = TextStyle(
+                                fontFamily = FontFamily.Monospace,
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.White,
+                                letterSpacing = 2.sp
+                            )
+                        )
+                    }
+            }
+
+            // ── Row 4: holder + expiry + brand ──
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -285,9 +339,9 @@ private fun CardFrontContent(
                     Text(
                         text = "CARD HOLDER",
                         style = TextStyle(
-                            fontSize = 10.sp,
+                            fontSize = 8.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Color.White.copy(alpha = 0.7f),
+                            color = Color.White.copy(alpha = 0.6f),
                             letterSpacing = 1.sp
                         )
                     )
@@ -295,21 +349,20 @@ private fun CardFrontContent(
                     Text(
                         text = cardHolder,
                         style = TextStyle(
-                            fontSize = 16.sp,
+                            fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.White,
-                            letterSpacing = 1.5.sp
+                            letterSpacing = 1.2.sp
                         )
                     )
                 }
-
-                Column(horizontalAlignment = Alignment.End) {
+                Column(horizontalAlignment = Alignment.Start) {
                     Text(
-                        text = "EXPIRES",
+                        text = "VALID THRU",
                         style = TextStyle(
-                            fontSize = 10.sp,
+                            fontSize = 8.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Color.White.copy(alpha = 0.7f),
+                            color = Color.White.copy(alpha = 0.6f),
                             letterSpacing = 1.sp
                         )
                     )
@@ -317,241 +370,268 @@ private fun CardFrontContent(
                     Text(
                         text = expiryDate,
                         style = TextStyle(
-                            fontSize = 16.sp,
+                            fontFamily = FontFamily.Monospace,
+                            fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.White,
                             letterSpacing = 1.sp
                         )
                     )
                 }
+                CardTypeLogo(type = cardType)
             }
         }
-
-        // Card type logo (bottom right)
-        CardTypeLogo(
-            type = cardType,
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(24.dp)
-                .offset(y = (-8).dp)
-        )
     }
 }
 
 @Composable
 private fun CardBackContent(
     cvv: String,
-    cardHolder: String
+    cardHolder: String,
+    cardType: CardType = CardType.VISA
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            // Slightly darker palette than the front to imply depth and to
+            // make the white signature panel pop.
             .background(
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        Color(0xFF16213e),
-                        Color(0xFF1a1a2e),
-                        Color(0xFF16213e)
+                        Color(0xFF0B1530),
+                        Color(0xFF132447),
+                        Color(0xFF0B1530)
                     ),
                     start = Offset(0f, 0f),
                     end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
                 )
             )
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
-            // Magnetic Strip
+        Column(modifier = Modifier.fillMaxSize()) {
+
+            // ── Magnetic strip ──
+            // Real cards have the magstripe flush against the top, full-bleed
+            // edge-to-edge. No horizontal padding here.
+            Spacer(modifier = Modifier.height(20.dp))
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 32.dp)
-                    .height(48.dp)
-                    .background(Color(0xFF0a0a0a))
-            ) {
-                // Strip texture
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            brush = Brush.horizontalGradient(
-                                colors = listOf(
-                                    Color(0xFF1a1a1a),
-                                    Color(0xFF0a0a0a),
-                                    Color(0xFF1a1a1a)
-                                )
+                    .height(44.dp)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                Color(0xFF050505),
+                                Color(0xFF1A1A1A),
+                                Color(0xFF050505)
                             )
                         )
-                )
-            }
+                    )
+            )
 
-            // Signature panel and CVV
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // ── Signature panel + CVV ──
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp)
-                    .padding(top = 24.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    .padding(horizontal = 24.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Signature strip
+                // Signature strip. Real cards have diagonal "void if removed"
+                // hatching behind the signature — we mimic that with a
+                // repeating linear gradient.
                 Box(
                     modifier = Modifier
-                        .weight(2f)
-                        .height(40.dp)
+                        .weight(1f)
+                        .height(34.dp)
+                        .clip(RoundedCornerShape(3.dp))
                         .background(
-                            color = Color(0xFFf0f0f0),
-                            shape = RoundedCornerShape(4.dp)
+                            brush = Brush.linearGradient(
+                                colors = listOf(
+                                    Color(0xFFEDEDED),
+                                    Color(0xFFD8D8D8),
+                                    Color(0xFFEDEDED),
+                                    Color(0xFFD8D8D8),
+                                    Color(0xFFEDEDED)
+                                ),
+                                start = Offset(0f, 0f),
+                                end = Offset(40f, 40f),
+                                tileMode = androidx.compose.ui.graphics.TileMode.Repeated
+                            )
                         )
-                        .padding(horizontal = 12.dp),
+                        .padding(horizontal = 10.dp),
                     contentAlignment = Alignment.CenterStart
                 ) {
                     Text(
                         text = cardHolder,
                         style = TextStyle(
                             fontFamily = FontFamily.Cursive,
-                            fontSize = 18.sp,
-                            color = Color(0xFF333333)
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFF1A1A1A)
                         )
                     )
                 }
 
-                // CVV Box
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+                // CVV box. Width matches the signature height so the two
+                // elements feel visually balanced. The little "CVV" label
+                // sits just above so it doesn't crowd the panel.
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text = "CVV",
                         style = TextStyle(
-                            fontSize = 10.sp,
+                            fontSize = 7.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Color.White.copy(alpha = 0.7f)
+                            color = Color.White.copy(alpha = 0.6f),
+                            letterSpacing = 1.sp
                         )
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(3.dp))
                     Box(
                         modifier = Modifier
-                            .width(60.dp)
-                            .height(32.dp)
-                            .background(
-                                color = Color.White,
-                                shape = RoundedCornerShape(4.dp)
-                            ),
+                            .width(58.dp)
+                            .height(26.dp)
+                            .background(Color.White, RoundedCornerShape(3.dp)),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = cvv,
                             style = TextStyle(
                                 fontFamily = FontFamily.Monospace,
-                                fontSize = 14.sp,
+                                fontSize = 13.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1a1a2e)
+                                color = Color(0xFF1A1A2E),
+                                letterSpacing = 1.sp
                             )
                         )
                     }
                 }
             }
 
-            // Hologram and security text
+            Spacer(modifier = Modifier.weight(1f))
+
+            // ── Bottom row: small print + brand ──
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(24.dp),
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Bottom
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                // Holographic element
-                HologramElement()
-
-                // Security text
                 Text(
-                    text = "This card is property of the issuing bank. If found, please return to the nearest branch.",
+                    text = "Property of issuing bank.\nIf found, return to nearest branch.",
                     style = TextStyle(
-                        fontSize = 8.sp,
-                        color = Color.White.copy(alpha = 0.5f),
-                        lineHeight = 12.sp
+                        fontSize = 7.sp,
+                        color = Color.White.copy(alpha = 0.45f),
+                        lineHeight = 10.sp,
+                        letterSpacing = 0.5.sp
                     ),
-                    modifier = Modifier.width(200.dp)
+                    modifier = Modifier.weight(1f)
                 )
+                CardTypeLogo(type = cardType)
             }
         }
     }
 }
 
+/**
+ * EMV chip rendered as a 2×3 grid of gold contact pads. This is the most
+ * recognisable visual element of a real card — the previous version had a
+ * "+"-shape that didn't match what an actual chip looks like.
+ */
 @Composable
 private fun ChipElement() {
+    // The outer "frame" is a darker gold, the pads are bright gold. Thin
+    // dark seams between pads come from the parent background showing
+    // through the spacing between Boxes.
     Box(
         modifier = Modifier
-            .width(48.dp)
-            .height(36.dp)
+            .width(40.dp)
+            .height(30.dp)
+            .clip(RoundedCornerShape(5.dp))
             .background(
                 brush = Brush.linearGradient(
                     colors = listOf(
-                        Color(0xFFd4af37),
-                        Color(0xFFf4d03f),
-                        Color(0xFFd4af37)
+                        Color(0xFF8B6914),
+                        Color(0xFFB8860B),
+                        Color(0xFF8B6914)
                     )
-                ),
-                shape = RoundedCornerShape(8.dp)
-            )
-            .padding(4.dp)
-    ) {
-        // Chip circuitry pattern
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            repeat(3) {
-                Box(
-                    modifier = Modifier
-                        .width(2.dp)
-                        .fillMaxHeight()
-                        .background(Color(0xFF8b6914))
                 )
+            )
+            .padding(2.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(1.5.dp)
+        ) {
+            // Three rows of two pads each.
+            repeat(3) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f),
+                    horizontalArrangement = Arrangement.spacedBy(1.5.dp)
+                ) {
+                    repeat(2) {
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight()
+                                .background(
+                                    brush = Brush.linearGradient(
+                                        colors = listOf(
+                                            Color(0xFFE6C547),
+                                            Color(0xFFD4AF37),
+                                            Color(0xFFA8821C)
+                                        )
+                                    ),
+                                    shape = RoundedCornerShape(1.5.dp)
+                                )
+                        )
+                    }
+                }
             }
         }
-        Box(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .size(16.dp)
-                .background(
-                    color = Color(0xFFd4af37),
-                    shape = RoundedCornerShape(4.dp)
-                )
-                .border(2.dp, Color(0xFF8b6914), RoundedCornerShape(4.dp))
-        )
     }
+
 }
 
 @Composable
 private fun CardTypeLogo(type: CardType, modifier: Modifier = Modifier) {
     when (type) {
+        // VISA wordmark: italic, ExtraBold, no letter-spacing — same visual
+        // recipe the real wordmark uses. Looks instantly recognisable.
         CardType.VISA -> {
             Text(
                 text = "VISA",
                 style = TextStyle(
-                    fontSize = 28.sp,
+                    fontSize = 22.sp,
                     fontWeight = FontWeight.ExtraBold,
-                    color = Color.White,
-                    letterSpacing = 2.sp
+                    fontStyle = androidx.compose.ui.text.font.FontStyle.Italic,
+                    color = Color.White
                 ),
                 modifier = modifier
             )
         }
+        // Mastercard: two overlapping circles. Using clip+background gives a
+        // perfect blend in the middle without alpha tricks.
         CardType.MASTERCARD -> {
-            Row(modifier = modifier) {
+            Row(
+                modifier = modifier,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Box(
                     modifier = Modifier
-                        .size(32.dp)
-                        .background(Color(0xFFeb001b), shape = RoundedCornerShape(16.dp))
+                        .size(22.dp)
+                        .background(Color(0xFFEB001B), shape = RoundedCornerShape(11.dp))
                 )
                 Box(
                     modifier = Modifier
-                        .size(32.dp)
-                        .offset(x = (-12).dp)
-                        .background(Color(0xFFf79e1b), shape = RoundedCornerShape(16.dp))
-                        .alpha(0.9f)
+                        .size(22.dp)
+                        .offset(x = (-9).dp)
+                        .background(Color(0xFFF79E1B), shape = RoundedCornerShape(11.dp))
+                        .alpha(0.85f)
                 )
             }
         }
@@ -559,81 +639,15 @@ private fun CardTypeLogo(type: CardType, modifier: Modifier = Modifier) {
             Text(
                 text = "AMEX",
                 style = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF2E86C1)
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = Color.White,
+                    letterSpacing = 1.sp
                 ),
                 modifier = modifier
             )
         }
     }
-}
-
-@Composable
-private fun CardPattern() {
-    // Subtle geometric pattern
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .alpha(0.03f)
-            .drawWithContent {
-                drawContent()
-                // Draw subtle circles
-                for (i in 0..5) {
-                    drawCircle(
-                        color = Color.White,
-                        radius = 100f + i * 50f,
-                        center = Offset(size.width * 0.8f, size.height * 0.2f)
-                    )
-                }
-            }
-    )
-}
-
-@Composable
-private fun HologramElement() {
-    Box(
-        modifier = Modifier
-            .size(48.dp, 32.dp)
-            .background(
-                brush = Brush.linearGradient(
-                    colors = listOf(
-                        Color(0xFFc0c0c0),
-                        Color(0xFFe8e8e8),
-                        Color(0xFFa0a0a0),
-                        Color(0xFFd0d0d0)
-                    )
-                ),
-                shape = RoundedCornerShape(4.dp)
-            )
-            .padding(4.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            imageVector = Icons.Rounded.CreditCard,
-            contentDescription = null,
-            tint = Color(0xFF666666),
-            modifier = Modifier.size(20.dp)
-        )
-    }
-}
-
-// Extension for border modifier
-private fun Modifier.border(width: Int, color: Color, shape: RoundedCornerShape): Modifier {
-    return this.then(
-        Modifier.drawWithContent {
-            drawContent()
-            drawRoundRect(
-                color = color,
-                size = size,
-                cornerRadius = androidx.compose.ui.geometry.CornerRadius(
-                    shape.topStart.toPx(size, this),
-                    shape.topStart.toPx(size, this)
-                ),
-                style = androidx.compose.ui.graphics.drawscope.Stroke(width = width.toFloat())
-            )
-        }
-    )
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFFF0F0F0)

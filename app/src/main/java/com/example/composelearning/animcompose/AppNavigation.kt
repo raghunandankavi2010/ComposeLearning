@@ -1,7 +1,11 @@
 package com.example.composelearning.animcompose
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
@@ -36,14 +40,34 @@ import kotlinx.serialization.Serializable
     @Serializable data object FileDeleteAnimation : AnimScreen
     @Serializable data object ThermometerAnimation : AnimScreen
     @Serializable data object StackedCards : AnimScreen
-    @Serializable data
-    object April2026Features : AnimScreen
+    @Serializable data object April2026Features : AnimScreen
     @Serializable data object AnimatedBalance : AnimScreen
     @Serializable data object BezierCurves : AnimScreen
     @Serializable data object SineWave : AnimScreen
     @Serializable data object CustomPager : AnimScreen
     @Serializable data object BezierExplorer : AnimScreen
     @Serializable data object YouTubeStyle : AnimScreen
+    @Serializable data object CircleMenu : AnimScreen
+    @Serializable data object ChatApp : AnimScreen
+    @Serializable data object SineWavePath : AnimScreen
+    @Serializable data object SimpleNav : AnimScreen
+    @Serializable data object BottomSheet : AnimScreen
+    @Serializable data object Spotlight : AnimScreen
+    @Serializable data object TextShimmer : AnimScreen
+    @Serializable data object CardFlip : AnimScreen
+    @Serializable data object FluidTabs : AnimScreen
+    @Serializable data object DraggableSheet : AnimScreen
+    @Serializable data object StaggeredGrid : AnimScreen
+    @Serializable data object ParticleExplosion : AnimScreen
+    @Serializable data object RealisticExplosion : AnimScreen
+    @Serializable data object SensorCard : AnimScreen
+    @Serializable data object GradientProgress : AnimScreen
+    @Serializable data object CircularReveal : AnimScreen
+    @Serializable data object PulsatingCircles : AnimScreen
+    @Serializable data object BouncingBall : AnimScreen
+    @Serializable data object MultiColorProgress : AnimScreen
+    @Serializable data object SharedElementProduct : AnimScreen
+    @Serializable data object SidePanelDemo : AnimScreen
 }
 
 @Composable
@@ -84,6 +108,42 @@ fun AppNavigation(
         entry<AnimScreen.DrawScale> { DrawScaleOnTouch(onBack = { navigator.goBack() }) }
         entry<AnimScreen.BezierExplorer> { BezierCurveExplorerScreen() }
         entry<AnimScreen.YouTubeStyle> { YouTubeScreen(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.CircleMenu> { CircularMenuScreenWithFullAnimation() }
+        
+        entry<AnimScreen.ChatApp> { ChatAppNavigation() }
+        entry<AnimScreen.SineWavePath> { TutorialContent() }
+        entry<AnimScreen.SimpleNav> { SimpleAppNavigation() }
+        entry<AnimScreen.BottomSheet> { BottomSheet() }
+        entry<AnimScreen.Spotlight> { SpotlightDemoScreen(onFinish = { navigator.goBack() }) }
+        entry<AnimScreen.TextShimmer> { ShimmerTextShowcase() }
+        entry<AnimScreen.CardFlip> { 
+            Box(
+                modifier = Modifier.fillMaxSize().systemBarsPadding(),
+                contentAlignment = Alignment.Center
+            ) {
+                CreditCardFlip() 
+            }
+        }
+        entry<AnimScreen.FluidTabs> { FluidTabBarShowcase() }
+        entry<AnimScreen.DraggableSheet> { DraggableSheetRight() }
+        entry<AnimScreen.StaggeredGrid> { StaggeredGridDemo() }
+        entry<AnimScreen.ParticleExplosion> { ParticleExplosionScreen() }
+        entry<AnimScreen.RealisticExplosion> { RealisticExplosionScreen() }
+        entry<AnimScreen.SensorCard> { 
+            Box(
+                modifier = Modifier.fillMaxSize().systemBarsPadding(),
+                contentAlignment = Alignment.Center
+            ) {
+                SensorReactiveCard() 
+            }
+        }
+        entry<AnimScreen.GradientProgress> { MyAwesomeLoadingScreen() }
+        entry<AnimScreen.CircularReveal> { CircularReveal() }
+        entry<AnimScreen.PulsatingCircles> { MapsStylePulsatingCircle() }
+        entry<AnimScreen.BouncingBall> { BouncingBallAnimation() }
+        entry<AnimScreen.MultiColorProgress> { MultiColorIndeterminateCircularProgressBarPreview() }
+        entry<AnimScreen.SharedElementProduct> { ProductScreen(products = sampleProducts) }
+        entry<AnimScreen.SidePanelDemo> { SidePanelDemoScreen() }
     }
 
     NavDisplay(

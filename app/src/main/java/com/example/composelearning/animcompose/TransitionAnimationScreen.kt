@@ -35,7 +35,9 @@ fun TransitionAnimationsScreen() {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .systemBarsPadding()
     ) {
+        // Demo selector
         LazyRow(
             modifier = Modifier.padding(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -49,6 +51,7 @@ fun TransitionAnimationsScreen() {
             }
         }
 
+        // Selected demo
         Box(
             modifier = Modifier
                 .fillMaxSize()

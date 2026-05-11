@@ -75,6 +75,7 @@ fun TutorialContent() {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .systemBarsPadding()
             .padding(40.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -147,5 +148,3 @@ fun TutorialContent() {
     }
 
 }
-
-

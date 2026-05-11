@@ -37,7 +37,8 @@ fun NewYearsEveFireworksScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black),
+            .background(Color.Black)
+            .systemBarsPadding(),
         contentAlignment = Alignment.Center
     ) {
         // Fireworks background
@@ -70,7 +71,7 @@ fun NewYearsEveFireworksScreen() {
             ),
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .padding(top = 48.dp)
+                .padding(top = 16.dp)
         )
     }
 }

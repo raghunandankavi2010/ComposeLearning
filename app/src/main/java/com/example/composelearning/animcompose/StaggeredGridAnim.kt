@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -56,6 +57,7 @@ fun StaggeredGridDemo() {
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFF0F1115))
+            .systemBarsPadding()
             .clickable { trigger++ },
         contentAlignment = Alignment.Center
     ) {

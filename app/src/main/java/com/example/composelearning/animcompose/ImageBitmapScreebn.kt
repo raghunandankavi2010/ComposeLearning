@@ -36,6 +36,7 @@ fun ImagesBitmapsScreen() {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .systemBarsPadding()
     ) {
         LazyRow(
             modifier = Modifier

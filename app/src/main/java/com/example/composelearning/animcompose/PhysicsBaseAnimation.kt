@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.*
@@ -41,6 +42,7 @@ fun PhysicsAnimationsScreen() {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .systemBarsPadding()
     ) {
         LazyRow(
             modifier = Modifier.padding(8.dp),
@@ -55,6 +57,7 @@ fun PhysicsAnimationsScreen() {
             }
         }
 
+        // Selected demo
         Box(
             modifier = Modifier
                 .fillMaxSize()

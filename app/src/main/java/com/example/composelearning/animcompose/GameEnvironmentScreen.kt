@@ -114,59 +114,61 @@ fun GameEnvironmentScreen() {
         }
     }
 
-    when (gameState) {
-        GameState.TUTORIAL -> {
-            TutorialScreen(
-                onStartGame = {
-                    gameState = GameState.PLAYING
-                    score = 0
-                    lives = 3
-                    bubbles = emptyList()
-                    popEffects = emptyList()
-                    lastFrameTime = 0L
-                    animationTime = 0f
-                    spawnTimer = 0f
-                }
-            )
-        }
-        GameState.PLAYING -> {
-            BubbleGameScreen(
-                bubbles = bubbles,
-                popEffects = popEffects,
-                score = score,
-                lives = lives,
-                animationTime = animationTime,
-                onTap = { offset ->
-                    val tappedBubble = bubbles.reversed().find { bubble ->
-                        val distance = (offset - bubble.position).getDistance()
-                        distance <= bubble.radius
+    Box(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
+        when (gameState) {
+            GameState.TUTORIAL -> {
+                TutorialScreen(
+                    onStartGame = {
+                        gameState = GameState.PLAYING
+                        score = 0
+                        lives = 3
+                        bubbles = emptyList()
+                        popEffects = emptyList()
+                        lastFrameTime = 0L
+                        animationTime = 0f
+                        spawnTimer = 0f
                     }
-                    if (tappedBubble != null) {
-                        bubbles = bubbles - tappedBubble
-                        popEffects = popEffects + createPopEffect(tappedBubble)
-                        when (tappedBubble.type) {
-                            BubbleType.NORMAL -> score += 10
-                            BubbleType.BONUS -> score += 25
-                            BubbleType.GOLDEN -> score += 50
-                            BubbleType.BOMB -> {
-                                lives--
-                                score = (score - 20).coerceAtLeast(0)
-                                if (lives <= 0) {
-                                    gameState = GameState.GAME_OVER
-                                    if (score > highScore) highScore = score
+                )
+            }
+            GameState.PLAYING -> {
+                BubbleGameScreen(
+                    bubbles = bubbles,
+                    popEffects = popEffects,
+                    score = score,
+                    lives = lives,
+                    animationTime = animationTime,
+                    onTap = { offset ->
+                        val tappedBubble = bubbles.reversed().find { bubble ->
+                            val distance = (offset - bubble.position).getDistance()
+                            distance <= bubble.radius
+                        }
+                        if (tappedBubble != null) {
+                            bubbles = bubbles - tappedBubble
+                            popEffects = popEffects + createPopEffect(tappedBubble)
+                            when (tappedBubble.type) {
+                                BubbleType.NORMAL -> score += 10
+                                BubbleType.BONUS -> score += 25
+                                BubbleType.GOLDEN -> score += 50
+                                BubbleType.BOMB -> {
+                                    lives--
+                                    score = (score - 20).coerceAtLeast(0)
+                                    if (lives <= 0) {
+                                        gameState = GameState.GAME_OVER
+                                        if (score > highScore) highScore = score
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            )
-        }
-        GameState.GAME_OVER -> {
-            GameOverScreen(
-                score = score,
-                highScore = highScore,
-                onRestart = { gameState = GameState.TUTORIAL }
-            )
+                )
+            }
+            GameState.GAME_OVER -> {
+                GameOverScreen(
+                    score = score,
+                    highScore = highScore,
+                    onRestart = { gameState = GameState.TUTORIAL }
+                )
+            }
         }
     }
 }

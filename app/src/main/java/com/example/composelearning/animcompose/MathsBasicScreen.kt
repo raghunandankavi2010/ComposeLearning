@@ -29,6 +29,7 @@ fun MathBasicsScreen() {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .systemBarsPadding()
     ) {
         // Demo selector
         LazyRow(

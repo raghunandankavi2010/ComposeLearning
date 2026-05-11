@@ -1,111 +1,134 @@
 package com.example.composelearning.animcompose
 
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
-import kotlin.math.max
 
+/**
+ * A highly polished pulsating animation similar to Google Maps.
+ * It uses multiple ripple layers with staggered start times to create a fluid outward motion.
+ */
 @Composable
-fun PulsatingCircle() {
-    val strokeWidth by remember { mutableStateOf(10) }
-    val infiniteTransition = rememberInfiniteTransition()
-    val pulseMagnitude by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 5000),
-            repeatMode = RepeatMode.Restart
-        )
-    )
+fun MapsStylePulsatingCircle() {
+    val infiniteTransition = rememberInfiniteTransition(label = "MapsPulse")
 
-    val pulseMagnitude2 by infiniteTransition.animateFloat(
+    // The primary pulse value that goes from 0 to 1
+    val progress by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            // Use the same duration, but add a delay
-            animation = tween(durationMillis = 5200, delayMillis = 100), // <-- Delay of 300ms
+            animation = tween(2500, easing = LinearOutSlowInEasing),
             repeatMode = RepeatMode.Restart
         ),
-        label = "pulseMagnitude2"
+        label = "pulseProgress"
     )
 
-    Canvas(modifier = Modifier.fillMaxSize()) {
-        drawCircle(
-            color = Color.Red.copy(alpha = 1 - pulseMagnitude),
-            radius = size.minDimension / 2 * pulseMagnitude - strokeWidth.dp.toPx(),
-            style = Fill //Stroke(width = strokeWidth.dp.toPx())
-        )
+    val blueColor = Color(0xFF4285F4) // Signature Google Maps Blue
 
-        drawCircle(
-            color = Color.Green.copy(alpha =  1f - pulseMagnitude2),
-            radius = size.minDimension / 2 * pulseMagnitude2 - strokeWidth.dp.toPx(),
-            style = Fill// Stroke(width = strokeWidth.dp.toPx())
-        )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFF8F9FA)) // Light Google Maps-like background
+            .systemBarsPadding(),
+        contentAlignment = Alignment.Center
+    ) {
+        Canvas(modifier = Modifier.size(300.dp)) {
+            val centerRadius = 8.dp.toPx()
+            val maxRippleRadius = 100.dp.toPx()
+
+            // We draw 3 ripple layers using the same progress but with different offsets
+            // to create a continuous outward ripple effect.
+            val ripples = listOf(
+                progress,             // Ripple 1
+                (progress + 0.33f) % 1f, // Ripple 2 (staggered)
+                (progress + 0.66f) % 1f  // Ripple 3 (staggered)
+            )
+
+            ripples.forEach { rippleProgress ->
+                val alpha = (1f - rippleProgress) * 0.35f
+                val radius = centerRadius + (maxRippleRadius - centerRadius) * rippleProgress
+                
+                // Outer soft halo
+                drawCircle(
+                    color = blueColor.copy(alpha = alpha),
+                    radius = radius,
+                    style = Fill
+                )
+                
+                // Subtle outline for the ripple
+                drawCircle(
+                    color = blueColor.copy(alpha = alpha * 0.5f),
+                    radius = radius,
+                    style = Stroke(width = 1.dp.toPx())
+                )
+            }
+
+            // High-contrast center dot
+            // 1. White border/glow
+            drawCircle(
+                color = Color.White,
+                radius = centerRadius + 2.dp.toPx(),
+                style = Fill
+            )
+            // 2. The blue core
+            drawCircle(
+                color = blueColor,
+                radius = centerRadius,
+                style = Fill
+            )
+        }
     }
 }
 
-
+/**
+ * A simpler pulsating effect that uses RepeatMode.Reverse for a "breathing" feel.
+ */
 @Composable
 fun PulsatingCircle2() {
-    val durationMillis = 2000
-    val delayMillis = 800 // The delay for the second circle
+    val infiniteTransition = rememberInfiniteTransition(label = "PulsatingCircles")
 
-    val infiniteTransition = rememberInfiniteTransition(label = "TimeBasedPulsatingCircle")
-
-    // 1. Animate a single 'time' value from 0 to the duration of the animation.
-    val time by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = durationMillis.toFloat(),
+    val scale by infiniteTransition.animateFloat(
+        initialValue = 0.6f,
+        targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = durationMillis, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
+            animation = tween(1500, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
         ),
-        label = "animationTime"
+        label = "scale"
     )
 
-    Canvas(modifier = Modifier.fillMaxSize()) {
-        val maxRadius = size.minDimension / 2f
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF0F1115))
+            .systemBarsPadding(),
+        contentAlignment = Alignment.Center
+    ) {
+        Canvas(modifier = Modifier.size(200.dp)) {
+            val baseRadius = size.minDimension / 2
+            
+            // Outer glow
+            drawCircle(
+                color = Color(0xFF6C63FF).copy(alpha = 0.2f * (1f - scale + 0.6f)),
+                radius = baseRadius * scale,
+                style = Fill
+            )
 
-        // --- Circle 1 Calculations ---
-        // 'progress' is a value from 0.0 to 1.0 representing the animation's state.
-        val progress1 = time / durationMillis
-        val radius1 = maxRadius * progress1
-        val alpha1 = 1f - progress1
-
-        // --- Circle 2 Calculations ---
-        // Introduce the delay by subtracting it from the main 'time'.
-        // Use max(0f, ...) to ensure the time for the second circle doesn't go below zero.
-        val time2 = max(0f, time - delayMillis)
-        val progress2 = time2 / (durationMillis - delayMillis) // Adjust progress to its own timeline
-        val radius2 = maxRadius * progress2
-        val alpha2 = 1f - progress2
-
-        // --- Draw the first circle (Green) ---
-        drawCircle(
-            color = Color.Green.copy(alpha = alpha1),
-            radius = radius1,
-            style = Fill
-        )
-
-        // --- Draw the second circle (Red) ---
-        drawCircle(
-            color = Color.Red.copy(alpha = 1f),
-            radius = radius2,
-            style = Fill
-        )
+            // Inner core
+            drawCircle(
+                color = Color(0xFF6C63FF).copy(alpha = 0.8f),
+                radius = baseRadius * 0.4f,
+                style = Fill
+            )
+        }
     }
 }
-

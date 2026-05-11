@@ -36,6 +36,7 @@ fun TouchGesturesScreen() {
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .systemBarsPadding()
     ) {
         LazyRow(
             modifier = Modifier.padding(8.dp),

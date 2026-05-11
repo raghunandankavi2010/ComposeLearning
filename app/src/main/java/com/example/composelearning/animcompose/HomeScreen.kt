@@ -33,14 +33,99 @@ data class AnimationCategory(
 fun MainHomeScreen(navigator: Navigator) {
     val categories = listOf(
         AnimationCategory(
+            "Product Shared Elements",
+            "Cinema-style transitions between product list and details",
+            AnimScreen.SharedElementProduct
+        ),
+        AnimationCategory(
+            "Chat App Navigation",
+            "Shared element transitions in a messaging UI",
+            AnimScreen.ChatApp
+        ),
+        AnimationCategory(
+            "Fluid Tab Bar",
+            "Morphing indicators and spring-based interactions",
+            AnimScreen.FluidTabs
+        ),
+        AnimationCategory(
+            "3D Card Flip",
+            "Realistic credit card flip with gloss and shadows",
+            AnimScreen.CardFlip
+        ),
+        AnimationCategory(
+            "Sensor Reactive Card",
+            "Credit card that tilts based on device sensors",
+            AnimScreen.SensorCard
+        ),
+        AnimationCategory(
+            "Spotlight Walkthrough",
+            "Interactive feature highlighting overlay system",
+            AnimScreen.Spotlight
+        ),
+        AnimationCategory(
+            "Text Shimmer Effects",
+            "Premium shimmer, wave, and spotlight text animations",
+            AnimScreen.TextShimmer
+        ),
+        AnimationCategory(
+            "Circular Menu",
+            "Animated menu buttons emerging from center",
+            AnimScreen.CircleMenu
+        ),
+        AnimationCategory(
             "YouTube Style Screen",
-            "Complex layout with custom concave shapes and lists",
+            "Complex layout with custom concave shapes and nested scrolling",
             AnimScreen.YouTubeStyle
         ),
         AnimationCategory(
-            "Draw and scale",
-            "Draw and scale on touch",
-            AnimScreen.DrawScale
+            "Particle Explosion",
+            "Continuous stream of particles with scaling and alpha",
+            AnimScreen.ParticleExplosion
+        ),
+        AnimationCategory(
+            "Realistic Physics Explosion",
+            "Gravity and drag based particle system",
+            AnimScreen.RealisticExplosion
+        ),
+        AnimationCategory(
+            "Staggered Grid Animation",
+            "Grid items appearing with delayed entrance",
+            AnimScreen.StaggeredGrid
+        ),
+        AnimationCategory(
+            "Sine Wave Path",
+            "Animating segments of a mathematical sine wave",
+            AnimScreen.SineWavePath
+        ),
+        AnimationCategory(
+            "Circular Reveal",
+            "Expanding circular path reveal (WhatsApp style)",
+            AnimScreen.CircularReveal
+        ),
+        AnimationCategory(
+            "Draggable Side Sheet",
+            "Panel that pulls out from the right side of the screen",
+            AnimScreen.DraggableSheet
+        ),
+        AnimationCategory(
+            "Pulsating Circles",
+            "Multiple overlapping pulse animations",
+            AnimScreen.PulsatingCircles
+        ),
+        AnimationCategory(
+            "Multi-Color Progress",
+            "Comet-style indeterminate circular progress bar",
+            AnimScreen.MultiColorProgress
+        ),
+        AnimationCategory(
+            "Gradient Progress Bar",
+            "Arc-based progress with linear gradient",
+            AnimScreen.GradientProgress
+        ),
+        AnimationCategory(
+            "Bouncing Ball",
+            "Vertical bounce animation with screen boundaries",
+            AnimScreen.BouncingBall
         ),
         AnimationCategory(
             "Bezier Curve Explorer",
@@ -53,23 +138,8 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.AnimatedBalance
         ),
         AnimationCategory(
-            "Bezier Curves",
-            "Math, Interactive playground, and Figma conversion",
-            AnimScreen.BezierCurves
-        ),
-        AnimationCategory(
-            "Sine Wave Animation",
-            "Animated wave with interactive dot and variable amplitude",
-            AnimScreen.SineWave
-        ),
-        AnimationCategory(
-            "Custom Layout Pager",
-            "Building a pager from scratch with velocity tracking",
-            AnimScreen.CustomPager
-        ),
-        AnimationCategory(
             "Stacked Tinder Cards",
-            "Swipeable cards with Coil images",
+            "Swipeable cards with interaction physics",
             AnimScreen.StackedCards
         ),
         AnimationCategory(
