@@ -24,6 +24,7 @@ import com.example.composelearning.graphics.BezierCurveSample
 import com.example.composelearning.graphics.DrawScaleOnTouch
 import com.example.composelearning.graphics.SineWaveSample
 import com.example.composelearning.customlayout.CustomPagerSample
+import com.example.composelearning.shaders.ShadersHubScreen
 import kotlinx.serialization.Serializable
 
 @Serializable sealed interface AnimScreen : NavKey {
@@ -80,6 +81,7 @@ import kotlinx.serialization.Serializable
     @Serializable data object DonutChartDemo : AnimScreen
     @Serializable data object CandleChartDemo : AnimScreen
     @Serializable data object TemperatureGaugeDemo : AnimScreen
+    @Serializable data object ShaderDemos : AnimScreen
 }
 
 @Composable
@@ -162,6 +164,7 @@ fun AppNavigation(
         entry<AnimScreen.DonutChartDemo> { DonutChartShowcaseScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.CandleChartDemo> { CandleChartShowcaseScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.TemperatureGaugeDemo> { TemperatureShowcaseScreen(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.ShaderDemos> { ShadersHubScreen() }
     }
 
     NavDisplay(

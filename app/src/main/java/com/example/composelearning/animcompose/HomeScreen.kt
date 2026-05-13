@@ -33,6 +33,11 @@ data class AnimationCategory(
 fun MainHomeScreen(navigator: Navigator) {
     val categories = listOf(
         AnimationCategory(
+            "AGSL Shader Demos",
+            "Blur, frosted glass, mesh gradient, shimmer, liquid button, film grain",
+            AnimScreen.ShaderDemos
+        ),
+        AnimationCategory(
             "Speedometer",
             "Arc speedometer with animated needle and color thresholds",
             AnimScreen.Speedometer
