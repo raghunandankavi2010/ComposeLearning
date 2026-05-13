@@ -33,6 +33,36 @@ data class AnimationCategory(
 fun MainHomeScreen(navigator: Navigator) {
     val categories = listOf(
         AnimationCategory(
+            "Speedometer",
+            "Arc speedometer with animated needle and color thresholds",
+            AnimScreen.Speedometer
+        ),
+        AnimationCategory(
+            "Fitness — Continuous Line Chart",
+            "Paged line chart, scroll left to load older days. RecyclerView-decorator style.",
+            AnimScreen.FitnessLineChart
+        ),
+        AnimationCategory(
+            "Bar Chart",
+            "Grouped + stacked, gradient bars, tap to select",
+            AnimScreen.BarChartDemo
+        ),
+        AnimationCategory(
+            "Donut Chart",
+            "Animated sweep, center slot, tap-to-select segment, legend",
+            AnimScreen.DonutChartDemo
+        ),
+        AnimationCategory(
+            "Candle Chart",
+            "OHLC bars with wicks, volume strip, animated entry",
+            AnimScreen.CandleChartDemo
+        ),
+        AnimationCategory(
+            "Thermometer & Temperature Gauge",
+            "Material-themed thermometer + draggable gauge (refactored)",
+            AnimScreen.TemperatureGaugeDemo
+        ),
+        AnimationCategory(
             "Product Shared Elements",
             "Cinema-style transitions between product list and details",
             AnimScreen.SharedElementProduct

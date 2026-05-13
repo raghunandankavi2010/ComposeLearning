@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun SpeedometerScreen() {
     var targetValue by remember {
-        mutableStateOf(0f)
+        mutableFloatStateOf(0f)
     }
     val progress = remember(targetValue) { Animatable(initialValue = 0f) }
     val scope = rememberCoroutineScope()

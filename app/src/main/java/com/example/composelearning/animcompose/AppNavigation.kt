@@ -13,6 +13,12 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.example.composelearning.ValueBasedAnimationsScreen
 import com.example.composelearning.anim.AnimatedBalanceDemo
+import com.example.composelearning.charts.BarChartShowcaseScreen
+import com.example.composelearning.charts.CandleChartShowcaseScreen
+import com.example.composelearning.charts.DonutChartShowcaseScreen
+import com.example.composelearning.charts.FitnessLineChartScreen
+import com.example.composelearning.charts.SpeedometerNavScreen
+import com.example.composelearning.charts.TemperatureShowcaseScreen
 import com.example.composelearning.graphics.BezierCurveSample
 import com.example.composelearning.graphics.DrawScaleOnTouch
 import com.example.composelearning.graphics.PreviewThermometerCanvas
@@ -68,6 +74,12 @@ import kotlinx.serialization.Serializable
     @Serializable data object MultiColorProgress : AnimScreen
     @Serializable data object SharedElementProduct : AnimScreen
     @Serializable data object SidePanelDemo : AnimScreen
+    @Serializable data object Speedometer : AnimScreen
+    @Serializable data object FitnessLineChart : AnimScreen
+    @Serializable data object BarChartDemo : AnimScreen
+    @Serializable data object DonutChartDemo : AnimScreen
+    @Serializable data object CandleChartDemo : AnimScreen
+    @Serializable data object TemperatureGaugeDemo : AnimScreen
 }
 
 @Composable
@@ -144,6 +156,12 @@ fun AppNavigation(
         entry<AnimScreen.MultiColorProgress> { MultiColorIndeterminateCircularProgressBarPreview() }
         entry<AnimScreen.SharedElementProduct> { ProductScreen(products = sampleProducts) }
         entry<AnimScreen.SidePanelDemo> { SidePanelDemoScreen() }
+        entry<AnimScreen.Speedometer> { SpeedometerNavScreen(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.FitnessLineChart> { FitnessLineChartScreen(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.BarChartDemo> { BarChartShowcaseScreen(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.DonutChartDemo> { DonutChartShowcaseScreen(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.CandleChartDemo> { CandleChartShowcaseScreen(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.TemperatureGaugeDemo> { TemperatureShowcaseScreen(onBack = { navigator.goBack() }) }
     }
 
     NavDisplay(
