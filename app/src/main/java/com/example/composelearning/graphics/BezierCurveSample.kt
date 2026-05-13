@@ -40,49 +40,58 @@ fun BezierCurveSample(onBack: () -> Unit) {
         },
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp)
-        ) {
-            Text(
-                text = "Understanding Bezier Curves",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(16.dp))
+        BezierCurveSampleContent(
+            modifier = Modifier.padding(innerPadding).fillMaxSize(),
+        )
+    }
+}
 
-            MathDetailsSection()
+/**
+ * Body of [BezierCurveSample] extracted so the same content can be embedded inside a tab without
+ * nesting another Scaffold/TopAppBar.
+ */
+@Composable
+fun BezierCurveSampleContent(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "Understanding Bezier Curves",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(24.dp))
+        MathDetailsSection()
 
-            Text(
-                text = "Interactive Playground",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "Drag points to explore. Scrolling is enabled when not dragging a point.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            InteractiveBezierDemo()
+        Spacer(modifier = Modifier.height(24.dp))
 
-            Spacer(modifier = Modifier.height(32.dp))
+        Text(
+            text = "Interactive Playground",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = "Drag points to explore. Scrolling is enabled when not dragging a point.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        InteractiveBezierDemo()
 
-            FigmaDeepDiveSection()
-            
-            Spacer(modifier = Modifier.height(32.dp))
-            
-            ComplexFigmaExample()
+        Spacer(modifier = Modifier.height(32.dp))
 
-            Spacer(modifier = Modifier.height(32.dp))
-            
-            FigmaToComposeSection()
-        }
+        FigmaDeepDiveSection()
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        ComplexFigmaExample()
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        FigmaToComposeSection()
     }
 }
 

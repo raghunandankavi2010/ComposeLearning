@@ -14,6 +14,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.example.composelearning.ValueBasedAnimationsScreen
 import com.example.composelearning.anim.AnimatedBalanceDemo
 import com.example.composelearning.charts.BarChartShowcaseScreen
+import com.example.composelearning.charts.BezierShowcaseScreen
 import com.example.composelearning.charts.CandleChartShowcaseScreen
 import com.example.composelearning.charts.DonutChartShowcaseScreen
 import com.example.composelearning.charts.FitnessLineChartScreen
@@ -21,7 +22,6 @@ import com.example.composelearning.charts.SpeedometerNavScreen
 import com.example.composelearning.charts.TemperatureShowcaseScreen
 import com.example.composelearning.graphics.BezierCurveSample
 import com.example.composelearning.graphics.DrawScaleOnTouch
-import com.example.composelearning.graphics.PreviewThermometerCanvas
 import com.example.composelearning.graphics.SineWaveSample
 import com.example.composelearning.customlayout.CustomPagerSample
 import kotlinx.serialization.Serializable
@@ -109,16 +109,16 @@ fun AppNavigation(
         entry<AnimScreen.BottleWaveAnimation> { BottleWaveAnimation() }
         entry<AnimScreen.DatePickerScreen> { PhysicsDatePicker {} }
         entry<AnimScreen.FileDeleteAnimation> { FileManagerPreview() }
-        entry<AnimScreen.ThermometerAnimation> { PreviewThermometerCanvas() }
+        entry<AnimScreen.ThermometerAnimation> { ThermometerAnimation() }
         entry<AnimScreen.StackedCards> { TinderSwipeScreen() }
         entry<AnimScreen.April2026Features> { April2026FeaturesScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.AnimatedBalance> { AnimatedBalanceDemo() }
-        entry<AnimScreen.BezierCurves> { BezierCurveSample(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.BezierCurves> { BezierShowcaseScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.SineWave> { SineWaveSample(onBack = { navigator.goBack() }) }
         entry<AnimScreen.CustomPager> { CustomPagerSample(onBack = { navigator.goBack() }) }
 
         entry<AnimScreen.DrawScale> { DrawScaleOnTouch(onBack = { navigator.goBack() }) }
-        entry<AnimScreen.BezierExplorer> { BezierCurveExplorerScreen() }
+        entry<AnimScreen.BezierExplorer> { BezierShowcaseScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.YouTubeStyle> { YouTubeScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.CircleMenu> { CircularMenuScreenWithFullAnimation() }
         

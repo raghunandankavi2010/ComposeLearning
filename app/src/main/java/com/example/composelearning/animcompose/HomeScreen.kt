@@ -58,9 +58,14 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.CandleChartDemo
         ),
         AnimationCategory(
-            "Thermometer & Temperature Gauge",
-            "Material-themed thermometer + draggable gauge (refactored)",
+            "Thermometer & Temperature",
+            "Gauge, Material thermometer, and animated medical thermometer — tabbed",
             AnimScreen.TemperatureGaugeDemo
+        ),
+        AnimationCategory(
+            "Bezier Curves",
+            "Deep dive + interactive Explorer (quadratic, cubic, Figma → Compose) — tabbed",
+            AnimScreen.BezierCurves
         ),
         AnimationCategory(
             "Product Shared Elements",
@@ -158,11 +163,6 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.BouncingBall
         ),
         AnimationCategory(
-            "Bezier Curve Explorer",
-            "Quadratic + cubic playgrounds, De Casteljau, Figma SVG → Compose",
-            AnimScreen.BezierExplorer
-        ),
-        AnimationCategory(
             "Animated Balance Counter",
             "Count-up balance animation from 0 to target",
             AnimScreen.AnimatedBalance
@@ -251,11 +251,6 @@ fun MainHomeScreen(navigator: Navigator) {
             "File Delete animation",
             "File delete Animation",
             AnimScreen.FileDeleteAnimation
-        ),
-        AnimationCategory(
-            "Thermometer Animation",
-            "Medical thermometer visualization",
-            AnimScreen.ThermometerAnimation
         )
     )
 

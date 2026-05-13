@@ -4,20 +4,15 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,7 +21,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -52,14 +46,22 @@ data class ThermometerSpec(
 )
 
 /**
- * Material-themed thermometer that scales to whatever bounds the parent provides.
+ * Material-themed thermometer that centres its tube + bulb in the canvas regardless of how much
+ * width is allotted, with optional scale labels rendered to the LEFT of the tube.
  *
  * Improvements over the legacy `ThermometerCanvas`:
  *   • No magic 161dp / 40dp hardcodes — sizes come from the measured canvas.
  *   • Value-driven color (cool → warm → hot) using the [ThermometerSpec] thresholds.
  *   • Vector-drawable independence — drawn entirely with primitives.
  *   • Accessibility: exposes the current reading via [Modifier.semantics].
- *   • Single Animatable shared across recompositions; animates whenever [value] changes.
+ *
+ * Layout:
+ *   • If [label] is non-null, a `Column` shows the title and the current reading centered above
+ *     the thermometer body.
+ *   • The thermometer body (tube + bulb) is drawn at the canvas's horizontal center. Scale labels
+ *     extend to the left of the bulb's centre line and may overflow into the left padding — keep
+ *     enough room on the left of the parent to avoid clipping when [ThermometerSpec.showScale] is
+ *     true.
  */
 @Composable
 fun ThermometerV2(
@@ -87,20 +89,37 @@ fun ThermometerV2(
         else -> spec.coolColor
     }
 
-    Box(
+    Column(
         modifier = modifier
             .semantics { contentDescription = "${label ?: "Thermometer"}: ${anim.value.toInt()}" },
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Canvas(modifier = Modifier.fillMaxSize().padding(8.dp)) {
+        if (label != null) {
+            Text(text = label, style = theme.titleStyle, color = theme.onSurface)
+            Text(
+                text = "${anim.value.toInt()}",
+                style = theme.titleStyle.copy(fontSize = theme.titleStyle.fontSize * 1.6f),
+                color = theme.onSurface,
+            )
+            Spacer(Modifier.height(8.dp))
+        }
+        Canvas(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(8.dp),
+        ) {
             val tube = spec.tubeWidth.toPx()
             val bulb = spec.bulbDiameter.toPx()
-            val centerX = if (spec.showScale) size.width - bulb / 2f - 16.dp.toPx() else size.width / 2f
+            // The thermometer body is always centered horizontally. Scale labels (when shown) sit
+            // to the left of the tube — the parent is expected to provide enough left padding.
+            val centerX = size.width / 2f
             val bulbCenterY = size.height - bulb / 2f - 4.dp.toPx()
             val tubeTopY = 8.dp.toPx()
-            val tubeBottomY = bulbCenterY - bulb * 0.3f
+            val tubeBottomY = bulbCenterY - bulb / 2
             val tubeHeight = tubeBottomY - tubeTopY
 
-            // Outer tube outline
+            // Outer tube outline (a single rounded stroke wrapping the tube channel).
             drawRoundRect(
                 color = theme.gridColor,
                 topLeft = Offset(centerX - tube / 2f - 4.dp.toPx(), tubeTopY - 6.dp.toPx()),
@@ -108,7 +127,7 @@ fun ThermometerV2(
                 cornerRadius = CornerRadius(tube / 2f + 4.dp.toPx(), tube / 2f + 4.dp.toPx()),
                 style = Stroke(width = 1.5.dp.toPx()),
             )
-            // Tube background (light tube)
+            // Tube channel background — matches surface so unfilled mercury reads as 'empty'.
             drawRoundRect(
                 color = theme.surface,
                 topLeft = Offset(centerX - tube / 2f, tubeTopY),
@@ -116,11 +135,15 @@ fun ThermometerV2(
                 cornerRadius = CornerRadius(tube / 2f, tube / 2f),
             )
 
-            // Bulb outline + background
-            drawCircle(theme.gridColor, radius = bulb / 2f + 2.dp.toPx(), center = Offset(centerX, bulbCenterY), style = Stroke(1.5.dp.toPx()))
-            drawCircle(color.copy(alpha = 0.25f), radius = bulb / 2f, center = Offset(centerX, bulbCenterY))
+            // Bulb outline.
+            drawCircle(
+                theme.gridColor,
+                radius = bulb / 2f + 2.dp.toPx(),
+                center = Offset(centerX, bulbCenterY),
+                style = Stroke(1.5.dp.toPx()),
+            )
 
-            // Mercury column
+            // Mercury column inside the tube.
             val filledHeight = tubeHeight * fraction
             val mercuryTop = tubeBottomY - filledHeight
             val brush = Brush.verticalGradient(
@@ -135,16 +158,10 @@ fun ThermometerV2(
                 cornerRadius = CornerRadius(tube / 2f, tube / 2f),
             )
 
-            // Bulb mercury
-            drawCircle(color = color, radius = bulb / 2f - 4.dp.toPx(), center = Offset(centerX, bulbCenterY))
-            // Specular highlight on bulb
-            drawCircle(
-                color = Color.White.copy(alpha = 0.35f),
-                radius = bulb / 5f,
-                center = Offset(centerX - bulb / 6f, bulbCenterY - bulb / 6f),
-            )
+            // Bulb mercury — solid fill, no alpha background ring or highlight.
+            drawCircle(color = color, radius = bulb / 2f, center = Offset(centerX, bulbCenterY))
 
-            // Tick marks + labels
+            // Tick marks + labels to the left of the tube.
             if (spec.showScale) {
                 val ticks = spec.tickIntervals.coerceAtLeast(2)
                 for (i in 0..ticks) {
@@ -167,19 +184,6 @@ fun ThermometerV2(
                         ),
                     )
                 }
-            }
-        }
-
-        if (label != null) {
-            Column(
-                modifier = Modifier.padding(8.dp),
-                horizontalAlignment = Alignment.Start,
-            ) {
-                Text(text = label, style = theme.titleStyle)
-                Text(
-                    text = "${anim.value.toInt()}",
-                    style = theme.titleStyle.copy(fontSize = theme.titleStyle.fontSize * 1.6f),
-                )
             }
         }
     }

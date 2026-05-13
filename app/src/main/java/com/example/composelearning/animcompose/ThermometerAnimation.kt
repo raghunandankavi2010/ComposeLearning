@@ -137,24 +137,36 @@ fun Thermometer(
         val tubeWidth = 24.dp.toPx()
         val totalHeight = size.height
         val bottomOffset = 60.dp.toPx()
-        
+
         val centerX = size.width / 2
         val bulbCenterY = totalHeight - bottomOffset - bulbRadius
-        
+
+        // Geometry of the glass:
+        //   • tubeTop                — top of the rounded cap.
+        //   • tubeCapBottom          — where the cap straightens into the parallel tube walls.
+        //   • mercuryColumnBottom    — where the visible mercury column ends (just inside the bulb,
+        //                              for a seamless join with the bulb fill).
+        //   • mercuryColumnTop       — top end of the usable tube section, just below the cap.
+        //
+        // Markers span [mercuryColumnBottom .. mercuryColumnTop] so every tick lines up with a
+        // value that the mercury can actually reach.
         val tubeTop = 40.dp.toPx()
+        val tubeCapBottom = tubeTop + 10.dp.toPx()
+        val mercuryColumnTop = tubeCapBottom
+        val mercuryColumnBottom = bulbCenterY - bulbRadius + 6.dp.toPx()
+        val mercuryRange = mercuryColumnBottom - mercuryColumnTop
         val tubeBottom = bulbCenterY
-        val tubeHeight = tubeBottom - tubeTop
 
         // 1. Draw Glass Outline (Tube + Bulb)
         val glassPath = Path().apply {
             // Bulb
             addOval(Rect(centerX - bulbRadius, bulbCenterY - bulbRadius, centerX + bulbRadius, bulbCenterY + bulbRadius))
-            
+
             // Tube
             moveTo(centerX - tubeWidth / 2, tubeBottom)
-            lineTo(centerX - tubeWidth / 2, tubeTop + 10.dp.toPx())
+            lineTo(centerX - tubeWidth / 2, tubeCapBottom)
             quadraticTo(centerX - tubeWidth / 2, tubeTop, centerX, tubeTop)
-            quadraticTo(centerX + tubeWidth / 2, tubeTop, centerX + tubeWidth / 2, tubeTop + 10.dp.toPx())
+            quadraticTo(centerX + tubeWidth / 2, tubeTop, centerX + tubeWidth / 2, tubeCapBottom)
             lineTo(centerX + tubeWidth / 2, tubeBottom)
         }
 
@@ -164,7 +176,7 @@ fun Thermometer(
             color = Color(0xFFE2E8F0),
             style = Stroke(width = 8.dp.toPx(), join = StrokeJoin.Round)
         )
-        
+
         // Inner Glass Background
         drawPath(
             path = glassPath,
@@ -172,20 +184,20 @@ fun Thermometer(
             style = Fill
         )
 
-        // 2. Draw Measurement Markers
+        // 2. Draw Measurement Markers across the mercury-reachable range.
         drawMarkers(
             centerX = centerX,
             tubeWidth = tubeWidth,
-            tubeTop = tubeTop,
-            tubeBottom = tubeBottom,
+            mercuryTop = mercuryColumnTop,
+            mercuryBottom = mercuryColumnBottom,
             minTemp = minTemp,
             maxTemp = maxTemp
         )
 
         // 3. Draw Liquid (Mercury/Red Fluid)
         val fillRatio = ((temperature - minTemp) / (maxTemp - minTemp)).coerceIn(0f, 1f)
-        val liquidTopY = tubeBottom - (tubeHeight * fillRatio)
-        
+        val liquidTopY = mercuryColumnBottom - mercuryRange * fillRatio
+
         // Liquid Color based on temperature
         val liquidColor = if (temperature > 38f) Color(0xFFEF4444) else Color(0xFF3B82F6)
 
@@ -196,19 +208,22 @@ fun Thermometer(
             center = Offset(centerX, bulbCenterY)
         )
 
-        // Liquid in Tube
+        // Liquid in Tube — centered on centerX. At fillRatio=0 the rect collapses to zero height
+        // at mercuryColumnBottom (just inside the bulb), so the join with the bulb stays clean.
+        val mercuryWidth = tubeWidth - 12.dp.toPx()
         drawRoundRect(
             color = liquidColor,
-            topLeft = Offset(centerX - (tubeWidth / 2) + 6.dp.toPx(), liquidTopY),
-            size = Size(tubeWidth - 12.dp.toPx(), tubeBottom - liquidTopY + 2.dp.toPx()),
+            topLeft = Offset(centerX - mercuryWidth / 2f, liquidTopY),
+            size = Size(mercuryWidth, mercuryColumnBottom - liquidTopY + 2.dp.toPx()),
             cornerRadius = CornerRadius(4.dp.toPx())
         )
-        
-        // Highlight on liquid for 3D effect
+
+        // Highlight on liquid for 3D effect — centered on the mercury column.
+        val highlightWidth = 4.dp.toPx()
         drawRoundRect(
             color = Color.White.copy(alpha = 0.3f),
-            topLeft = Offset(centerX - (tubeWidth / 2) + 8.dp.toPx(), liquidTopY + 4.dp.toPx()),
-            size = Size(4.dp.toPx(), tubeBottom - liquidTopY - 8.dp.toPx()),
+            topLeft = Offset(centerX - highlightWidth / 2f, liquidTopY + 4.dp.toPx()),
+            size = Size(highlightWidth, (mercuryColumnBottom - liquidTopY - 8.dp.toPx()).coerceAtLeast(0f)),
             cornerRadius = CornerRadius(2.dp.toPx())
         )
     }
@@ -217,50 +232,56 @@ fun Thermometer(
 private fun DrawScope.drawMarkers(
     centerX: Float,
     tubeWidth: Float,
-    tubeTop: Float,
-    tubeBottom: Float,
+    mercuryTop: Float,
+    mercuryBottom: Float,
     minTemp: Float,
     maxTemp: Float
 ) {
-    val tubeHeight = tubeBottom - tubeTop
+    // Markers span the same vertical range as the mercury column, so each integer-degree tick
+    // sits exactly where the mercury head will be when the thermometer reads that temperature.
+    val range = mercuryBottom - mercuryTop
     val totalTicks = (maxTemp - minTemp).toInt()
-    
+    val labelPaint = android.graphics.Paint().apply {
+        color = android.graphics.Color.GRAY
+        textSize = 12.sp.toPx()
+        textAlign = android.graphics.Paint.Align.LEFT
+        isAntiAlias = true
+    }
+    // Vertically center labels on their tick line (paint baseline = top + ascent + 0.5 * height).
+    val fontMetrics = labelPaint.fontMetrics
+    val labelBaselineOffset = (-fontMetrics.ascent - fontMetrics.descent) / 2f
+
     for (i in 0..totalTicks) {
-        val y = tubeBottom - (tubeHeight * (i.toFloat() / totalTicks))
+        val y = mercuryBottom - range * (i.toFloat() / totalTicks)
         val tempValue = minTemp + i
-        
+
         // Main Ticks
         drawLine(
             color = Color(0xFF94A3B8),
-            start = Offset(centerX + tubeWidth / 2, y),
-            end = Offset(centerX + tubeWidth / 2 + 12.dp.toPx(), y),
+            start = Offset(centerX + tubeWidth / 2 + 2.dp.toPx(), y),
+            end = Offset(centerX + tubeWidth / 2 + 14.dp.toPx(), y),
             strokeWidth = 2.dp.toPx()
         )
-        
-        // Sub-ticks
+
+        // Sub-ticks between this main tick and the next one (4 minor ticks at 0.2 increments).
         if (i < totalTicks) {
             for (j in 1..4) {
-                val subY = y - (tubeHeight / totalTicks) * (j.toFloat() / 5f)
+                val subY = y - (range / totalTicks) * (j.toFloat() / 5f)
                 drawLine(
                     color = Color(0xFFCBD5E1),
-                    start = Offset(centerX + tubeWidth / 2, subY),
-                    end = Offset(centerX + tubeWidth / 2 + 6.dp.toPx(), subY),
+                    start = Offset(centerX + tubeWidth / 2 + 2.dp.toPx(), subY),
+                    end = Offset(centerX + tubeWidth / 2 + 8.dp.toPx(), subY),
                     strokeWidth = 1.dp.toPx()
                 )
             }
         }
 
-        // Labels
+        // Label — baseline computed from font metrics so the digit visually centers on the tick.
         drawContext.canvas.nativeCanvas.drawText(
             "${tempValue.toInt()}",
-            centerX + tubeWidth / 2 + 18.dp.toPx(),
-            y + 5.dp.toPx(),
-            android.graphics.Paint().apply {
-                color = android.graphics.Color.GRAY
-                textSize = 12.sp.toPx()
-                textAlign = android.graphics.Paint.Align.LEFT
-                isAntiAlias = true
-            }
+            centerX + tubeWidth / 2 + 20.dp.toPx(),
+            y + labelBaselineOffset,
+            labelPaint
         )
     }
 }

@@ -23,6 +23,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -271,10 +273,8 @@ fun CandleChartShowcaseScreen(onBack: () -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TemperatureShowcaseScreen(onBack: () -> Unit) {
-    var temp by remember { mutableFloatStateOf(22f) }
-    var roomTemp by remember { mutableFloatStateOf(0f) }
-    // ThermometerV2 reading: animate to oscillating value when screen opens.
-    val thermometerValue by remember { mutableStateOf(78f) }
+    val tabs = listOf("Gauge", "Thermometer V2", "Animation")
+    var selectedTab by remember { mutableStateOf(0) }
 
     Scaffold(
         modifier = Modifier.systemBarsPadding(),
@@ -291,33 +291,107 @@ fun TemperatureShowcaseScreen(onBack: () -> Unit) {
             Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState())
         ) {
-            Text("Temperature gauge — drag the indicator", style = MaterialTheme.typography.titleMedium)
-            Spacer(Modifier.height(16.dp))
-            TemperatureGaugeV2(
-                value = temp,
-                onValueChange = { temp = it },
-                spec = TemperatureGaugeSpec(minValue = 0f, maxValue = 60f),
-            )
-            Spacer(Modifier.height(24.dp))
-            Text("Reading: ${temp.toInt()} °C", style = MaterialTheme.typography.bodyLarge)
+            TabRow(selectedTabIndex = selectedTab) {
+                tabs.forEachIndexed { index, title ->
+                    Tab(
+                        selected = selectedTab == index,
+                        onClick = { selectedTab = index },
+                        text = { Text(title) },
+                    )
+                }
+            }
+            when (selectedTab) {
+                0 -> TemperatureGaugeTab()
+                1 -> ThermometerV2Tab()
+                else -> com.example.composelearning.animcompose.ThermometerAnimation()
+            }
+        }
+    }
+}
 
-            Spacer(Modifier.height(32.dp))
-            Text("Thermometer — Material-themed", style = MaterialTheme.typography.titleMedium)
-            Spacer(Modifier.height(16.dp))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(320.dp),
-            ) {
-                ThermometerV2(
-                    value = thermometerValue,
+@Composable
+private fun TemperatureGaugeTab() {
+    var temp by remember { mutableFloatStateOf(22f) }
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        Text("Temperature gauge — drag the indicator", style = MaterialTheme.typography.titleMedium)
+        Spacer(Modifier.height(16.dp))
+        TemperatureGaugeV2(
+            value = temp,
+            onValueChange = { temp = it },
+            spec = TemperatureGaugeSpec(minValue = 0f, maxValue = 60f),
+        )
+        Spacer(Modifier.height(24.dp))
+        Text("Reading: ${temp.toInt()} °C", style = MaterialTheme.typography.bodyLarge)
+    }
+}
+
+@Composable
+private fun ThermometerV2Tab() {
+    val thermometerValue by remember { mutableStateOf(78f) }
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Text("Thermometer — Material-themed", style = MaterialTheme.typography.titleMedium)
+        Spacer(Modifier.height(16.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+        ) {
+            ThermometerV2(
+                value = thermometerValue,
+                modifier = Modifier.fillMaxSize(),
+                spec = ThermometerSpec(minValue = 0f, maxValue = 100f),
+                label = "Body",
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BezierShowcaseScreen(onBack: () -> Unit) {
+    val tabs = listOf("Deep Dive", "Explorer")
+    var selectedTab by remember { mutableStateOf(0) }
+
+    Scaffold(
+        modifier = Modifier.systemBarsPadding(),
+        topBar = {
+            TopAppBar(
+                title = { Text("Bezier Curves") },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                ),
+            )
+        }
+    ) { padding ->
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            TabRow(selectedTabIndex = selectedTab) {
+                tabs.forEachIndexed { index, title ->
+                    Tab(
+                        selected = selectedTab == index,
+                        onClick = { selectedTab = index },
+                        text = { Text(title) },
+                    )
+                }
+            }
+            when (selectedTab) {
+                0 -> com.example.composelearning.graphics.BezierCurveSampleContent(
                     modifier = Modifier.fillMaxSize(),
-                    spec = ThermometerSpec(minValue = 0f, maxValue = 100f),
-                    label = "Body",
                 )
+                else -> com.example.composelearning.animcompose.BezierCurveExplorerScreen()
             }
         }
     }
