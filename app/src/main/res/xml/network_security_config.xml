@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Release builds: only trust the system trust store (the standard secure default).
+    Debug builds (debug-overrides): also trust user-installed CAs, so a developer on a
+    network that does SSL inspection (corporate proxy, Zscaler, etc.) can install the
+    proxy's root certificate on the emulator/device and the app will accept it.
+
+    This is the recommended way to fix
+        javax.net.ssl.SSLHandshakeException:
+            Trust anchor for certification path not found
+    without weakening security in production: release builds continue to reject any cert
+    chain that doesn't lead to a system-trusted root.
+
+    To install a user CA on a running emulator/device:
+      Settings → Security → Encryption & credentials → Install a certificate → CA
+    Then re-run the app in debug.
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+    <debug-overrides>
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </debug-overrides>
+</network-security-config>

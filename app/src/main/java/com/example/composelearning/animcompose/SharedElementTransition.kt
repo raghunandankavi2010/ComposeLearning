@@ -16,7 +16,6 @@ package com.example.composelearning.animcompose
  * limitations under the License.
  */
 
-import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -43,7 +42,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.animation.with
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -86,24 +84,116 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.composelearning.R
+import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
+import coil.size.Size
 
 /**
  * Simple UI model representing a product item that can be displayed and animated
  * across the list and detail screens.
+ *
+ * `imageUrl` points to a single remote image; the list thumbnail and the detail header reuse the
+ * SAME URL so Coil can serve both from a shared bitmap. See [rememberProductImageRequest] for the
+ * caching contract that makes this work without a flicker during the shared element transition.
  */
 data class Product(
     val id: String,
     val title: String,
     val subtitle: String,
-    @DrawableRes val imageRes: Int,
+    val imageUrl: String,
 )
+
+/**
+ * Build a Coil [ImageRequest] for a product, set up so that the list thumbnail and the detail
+ * header behave like one image as far as the cache is concerned.
+ *
+ * Why a single request per product matters for shared element transitions:
+ *   1. By default, Coil sizes the request to the layout's measured size — so a 72.dp thumbnail and
+ *      a 240.dp header would issue two separate network requests and live as two distinct memory
+ *      cache entries. Tapping a list row would then "snap" to a half-loaded detail image and
+ *      crossfade in, flickering on top of the shared element animation.
+ *   2. Pinning [Size.ORIGINAL] makes both call sites ask for the same pixel buffer. One download.
+ *   3. Setting both [ImageRequest.Builder.memoryCacheKey] and
+ *      [ImageRequest.Builder.placeholderMemoryCacheKey] to a stable per-product key means the
+ *      detail screen's `AsyncImage` finds the list-loaded bitmap in cache instantly when the
+ *      transition lands — there is no "loading" frame to flicker.
+ *   4. Crossfade is disabled (`crossfade(false)`). With a memory-cache hit the destination would
+ *      otherwise fade in from transparent, which competes visually with the shared-element layer
+ *      that's still animating on top.
+ *
+ * How the transition itself plays out:
+ *   • While the transition is in flight, the shared content is drawn into an overlay above both
+ *     screens. The overlay uses the SOURCE composable's painter (so the bitmap that's already
+ *     loaded in the list does the heavy lifting during the morph). The destination's
+ *     `AsyncImage` is composed underneath but its content only matters once the transition
+ *     completes — and by then the cache key lookup returns the same bitmap synchronously.
+ *   • Net result: the user sees a single image growing from 72dp → 240dp. No second download.
+ */
+@Composable
+private fun rememberProductImageRequest(product: Product): ImageRequest {
+    val context = LocalContext.current
+    return remember(product.id, product.imageUrl) {
+        ImageRequest.Builder(context)
+            .data(product.imageUrl)
+            // Force the same pixel buffer for every consumer of this product's image.
+            .size(Size.ORIGINAL)
+            // Shared cache key — list and detail end up looking up the same memory entry.
+            .memoryCacheKey(product.id)
+            .placeholderMemoryCacheKey(product.id)
+            // Enable both caches explicitly so a cache miss doesn't silently do nothing.
+            .memoryCachePolicy(CachePolicy.ENABLED)
+            .diskCachePolicy(CachePolicy.ENABLED)
+            .networkCachePolicy(CachePolicy.ENABLED)
+            // Disable Coil's own crossfade — it interferes with the shared element overlay.
+            .crossfade(false)
+            .build()
+    }
+}
+
+/**
+ * Wrapper around [AsyncImage] that always paints SOMETHING.
+ *
+ * Default `AsyncImage` draws an empty rectangle while the image is loading and on error — which
+ * looks like "nothing happened" on screen. The placeholder/error painters here keep a visible
+ * surface in place so the layout doesn't appear empty.
+ *
+ * On the error path we also log the underlying throwable so failures (e.g. emulator without
+ * internet, DNS issues, certificate problems) show up in logcat under the `ProductImage` tag.
+ */
+@Composable
+private fun ProductImage(
+    request: ImageRequest,
+    contentDescription: String?,
+    modifier: Modifier = Modifier,
+    contentScale: ContentScale = ContentScale.Crop,
+) {
+    val placeholderPainter: Painter = ColorPainter(MaterialTheme.colorScheme.surfaceVariant)
+    val errorPainter: Painter = ColorPainter(MaterialTheme.colorScheme.errorContainer)
+    AsyncImage(
+        model = request,
+        contentDescription = contentDescription,
+        modifier = modifier,
+        contentScale = contentScale,
+        placeholder = placeholderPainter,
+        error = errorPainter,
+        fallback = placeholderPainter,
+        onError = { state ->
+            android.util.Log.e(
+                "ProductImage",
+                "Failed to load ${request.data}",
+                state.result.throwable,
+            )
+        },
+    )
+}
 
 /**
  * Represents the high-level navigation state of the product screen.
@@ -364,6 +454,7 @@ fun SharedTransitionScope.ProductListItem(
     sharedConfig: SharedTransitionScope.SharedContentConfig
 ) {
     val shape = RoundedCornerShape(20.dp)
+    val imageRequest = rememberProductImageRequest(product)
 
     Row(
         modifier = Modifier
@@ -374,8 +465,13 @@ fun SharedTransitionScope.ProductListItem(
             .padding(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(id = product.imageRes),
+        // List thumbnail. Uses the same Coil request as the detail header — sharing the memory
+        // cache key avoids a second download and the corresponding flash of a placeholder while
+        // the shared element transition is running. The 16.dp rounded clip is mirrored into
+        // `clipInOverlayDuringTransition` so the overlay drawn during the transition is also
+        // rounded (without it the image pops "rounded → square → rounded").
+        ProductImage(
+            request = imageRequest,
             contentDescription = product.title,
             modifier = Modifier
                 .size(72.dp)
@@ -385,9 +481,9 @@ fun SharedTransitionScope.ProductListItem(
                     ),
                     animatedVisibilityScope = animatedVisibilityScope,
                     boundsTransform = linearBoundsTransform(),
+                    clipInOverlayDuringTransition = OverlayClip(RoundedCornerShape(16.dp)),
                 )
                 .clip(RoundedCornerShape(16.dp)),
-            contentScale = ContentScale.Crop
         )
 
         Spacer(Modifier.width(16.dp))
@@ -458,9 +554,16 @@ private fun AnimatedContentScope.ProductDetail(
             )
         )
 
+        val imageRequest = rememberProductImageRequest(product)
         with(sharedScope) {
             val headerShape = RoundedCornerShape(bottomStart = 42.dp, bottomEnd = 42.dp)
+            val imageShape = RoundedCornerShape(16.dp)
 
+            // The rounded bottom corners belong to the whole header card, not the image. We clip
+            // the outer Box (which also has `sharedBounds`) so the gradient and the text inside
+            // are clipped along with the image. `clipInOverlayDuringTransition = OverlayClip(...)`
+            // makes the overlay drawn during the transition respect the same shape — otherwise
+            // the corners only appear after the transition finishes.
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -474,10 +577,16 @@ private fun AnimatedContentScope.ProductDetail(
                             contentScale = ContentScale.Fit, alignment = Alignment.Center
                         ),
                         boundsTransform = arcBoundsTransform(),
-                    ), contentAlignment = Alignment.Center
+                        clipInOverlayDuringTransition = OverlayClip(headerShape),
+                    )
+                    .clip(headerShape),
+                contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(id = product.imageRes),
+                // Detail header image — same Coil request as the list thumbnail, so the bitmap is
+                // already in memory cache when this composition resolves (no second download, no
+                // crossfade-into-placeholder competing with the shared element overlay).
+                ProductImage(
+                    request = imageRequest,
                     contentDescription = product.title,
                     modifier = Modifier
                         .size(240.dp)
@@ -489,12 +598,9 @@ private fun AnimatedContentScope.ProductDetail(
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
                             boundsTransform = linearBoundsTransform(),
+                            clipInOverlayDuringTransition = OverlayClip(imageShape),
                         )
-                        .graphicsLayer {
-                            shape = headerShape
-                            clip = !isTransitionActive
-                        },
-                    contentScale = ContentScale.Crop
+                        .clip(imageShape),
                 )
 
                 Box(
@@ -601,71 +707,93 @@ private val loremLong = """
 /**
  * Sample product data for previews or manual testing.
  */
+/**
+ * Sample products. Image URLs point at specific photos on Unsplash's CDN — each one was picked to
+ * match the product it represents (a real espresso photo for espresso, etc.). The URLs use
+ * Unsplash's image-resize params (`w`, `q`, `auto=format`, `fit=crop`) so the CDN returns a
+ * reasonably-sized cropped image rather than the multi-megabyte original.
+ *
+ * If a particular URL ever 404s (Unsplash photos can be taken down by their authors), the
+ * `ProductImage` wrapper will show the `errorContainer` placeholder and log the failure under the
+ * `ProductImage` tag in logcat — easy to spot and swap.
+ */
 val sampleProducts: List<Product> = listOf(
     Product(
         id = "espresso",
         title = "Espresso",
         subtitle = "Strong, short, and bold – the purest coffee shot.",
-        imageRes = R.drawable.ic_launcher_background,
+        imageUrl = unsplash("photo-1510707577719-ae7c14805e3a"),
     ), Product(
         id = "cappuccino",
         title = "Cappuccino",
         subtitle = "Velvety milk foam over a rich espresso base.",
-        imageRes = R.drawable.ic_launcher_background,
+        imageUrl = unsplash("photo-1572442388796-11668a67e53d"),
     ), Product(
         id = "latte",
         title = "Caffè Latte",
         subtitle = "Smooth and milky, perfect for a slow morning.",
-        imageRes = R.drawable.ic_launcher_background,
+        imageUrl = unsplash("photo-1561882468-9110e03e0f78"),
     ), Product(
         id = "mocha",
         title = "Mocha",
         subtitle = "Chocolate meets espresso – a sweet classic.",
-        imageRes = R.drawable.ic_launcher_background,
+        imageUrl = unsplash("photo-1578314675229-c7fb52e9d23c"),
     ), Product(
         id = "iced",
         title = "Iced Coffee",
         subtitle = "Cold, refreshing, and perfect for summer days.",
-        imageRes = R.drawable.ic_launcher_background,
+        imageUrl = unsplash("photo-1517701604599-bb29b565090c"),
     ), Product(
         id = "cookies",
         title = "Fresh Cookies",
         subtitle = "Warm, gooey cookies – perfect with any drink.",
-        imageRes = R.drawable.ic_launcher_background,
+        imageUrl = unsplash("photo-1499636136210-6f4ee915583e"),
     ), Product(
         id = "flat_white",
         title = "Flat White",
         subtitle = "Silky microfoam over a rich double espresso.",
-        imageRes = R.drawable.ic_launcher_background,
+        imageUrl = unsplash("photo-1497935586351-b67a49e012bf"),
     ), Product(
         id = "filter",
         title = "Filter Coffee",
         subtitle = "Slow-brewed, clean and bright in flavor.",
-        imageRes = R.drawable.ic_launcher_background,
+        imageUrl = unsplash("photo-1442550528053-c431ecb55509"),
     ), Product(
         id = "toast",
         title = "Buttered Toast",
         subtitle = "Golden, crispy slices with melted butter.",
-        imageRes = R.drawable.ic_launcher_background,
+        imageUrl = unsplash("photo-1525351484163-7529414344d8"),
     ), Product(
         id = "tea",
         title = "Herbal Tea",
         subtitle = "Calming blend of herbs, no caffeine, all comfort.",
-        imageRes = R.drawable.ic_launcher_background,
+        imageUrl = unsplash("photo-1576092768241-dec231879fc3"),
     ), Product(
         id = "cake",
         title = "Slice of Cake",
         subtitle = "Rich, moist cake – your afternoon treat.",
-        imageRes = R.drawable.ic_launcher_background,
+        imageUrl = unsplash("photo-1565958011703-44f9829ba187"),
     ), Product(
         id = "cupcake",
         title = "Cupcake",
         subtitle = "Small, sweet, and topped with creamy frosting.",
-        imageRes = R.drawable.ic_launcher_background,
+        imageUrl = unsplash("photo-1426869981800-95ebf51ce900"),
     ), Product(
         id = "takeaway",
         title = "Takeaway Coffee",
         subtitle = "Your favorite brew, ready to go.",
-        imageRes = R.drawable.ic_launcher_background,
+        imageUrl = unsplash("photo-1521017432531-fbd92d768814"),
     )
 )
+
+/**
+ * Build an Unsplash CDN URL for a specific photo ID, with sane resize / quality / format params
+ * so the CDN does the heavy lifting of returning a right-sized JPEG/WebP instead of the
+ * multi-megapixel original.
+ *   • `w=800`             — width in pixels; height scales proportionally
+ *   • `q=80`              — JPEG quality (good visual quality, much smaller than 100)
+ *   • `auto=format`       — let the CDN serve WebP/AVIF to clients that support it
+ *   • `fit=crop`          — center-crop instead of letterboxing
+ */
+private fun unsplash(photoId: String): String =
+    "https://images.unsplash.com/$photoId?w=800&q=80&auto=format&fit=crop"
