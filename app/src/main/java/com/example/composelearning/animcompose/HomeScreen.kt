@@ -33,6 +33,11 @@ data class AnimationCategory(
 fun MainHomeScreen(navigator: Navigator) {
     val categories = listOf(
         AnimationCategory(
+            "Shadow Playground",
+            "Every Compose shadow: elevation, colored ambient/spot, dropShadow, innerShadow, brush, neumorphism, press-to-lift",
+            AnimScreen.ShadowsPlayground
+        ),
+        AnimationCategory(
             "Tutorial Overlay",
             "Coach-mark walkthrough on a LazyColumn — auto-scrolls to off-screen targets, animated cutout, callout card",
             AnimScreen.TutorialOverlay
