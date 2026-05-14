@@ -106,6 +106,11 @@ private fun TutorialContent(
     var overlayCoords by remember { mutableStateOf<LayoutCoordinates?>(null) }
     var overlaySize by remember { mutableStateOf(IntSize.Zero) }
 
+    val tutorialRunning = state.tutorial is TutorialUiState.TutorialState.Running
+    LaunchedEffect(tutorialRunning) {
+        if (tutorialRunning) controller.activate() else controller.deactivate()
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()

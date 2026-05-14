@@ -36,6 +36,7 @@ import com.example.composelearning.R
 import com.example.composelearning.customshapes.dpToPx
 
 import com.example.composelearning.graphics.drawRoundedRightEndArc
+import com.example.composelearning.shaders.nativeBlur
 import kotlinx.coroutines.launch
 import kotlin.math.PI
 import kotlin.math.asin
@@ -358,7 +359,7 @@ fun Speedometer3(
 ) {
 
     BoxWithConstraints(
-        modifier = Modifier
+        modifier = modifier.nativeBlur(20f)
             .fillMaxWidth()
             .padding(11.dp)
             .height(160.dp)
