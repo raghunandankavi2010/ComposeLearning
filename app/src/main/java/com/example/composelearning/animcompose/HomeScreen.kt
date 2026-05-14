@@ -33,6 +33,11 @@ data class AnimationCategory(
 fun MainHomeScreen(navigator: Navigator) {
     val categories = listOf(
         AnimationCategory(
+            "Time Range Knob",
+            "Circular 24h dial with two draggable knobs — drag to set bedtime and wake-up; screen morphs between day and night themes",
+            AnimScreen.TimeRangeKnob
+        ),
+        AnimationCategory(
             "Shadow Playground",
             "Every Compose shadow: elevation, colored ambient/spot, dropShadow, innerShadow, brush, neumorphism, press-to-lift",
             AnimScreen.ShadowsPlayground

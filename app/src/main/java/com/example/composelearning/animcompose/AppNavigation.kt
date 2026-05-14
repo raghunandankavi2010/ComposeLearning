@@ -24,6 +24,7 @@ import com.example.composelearning.customlayout.CustomPagerSample
 import com.example.composelearning.graphics.DrawScaleOnTouch
 import com.example.composelearning.graphics.SineWaveSample
 import com.example.composelearning.shaders.ShadersHubScreen
+import com.example.composelearning.clocks.TimeRangeKnobScreen
 import com.example.composelearning.shadows.ShadowsShowcaseScreen
 import com.example.composelearning.tutorial.ui.TutorialScreen
 import kotlinx.serialization.Serializable
@@ -85,6 +86,7 @@ import kotlinx.serialization.Serializable
     @Serializable data object ShaderDemos : AnimScreen
     @Serializable data object TutorialOverlay : AnimScreen
     @Serializable data object ShadowsPlayground : AnimScreen
+    @Serializable data object TimeRangeKnob : AnimScreen
 }
 
 @Composable
@@ -170,6 +172,7 @@ fun AppNavigation(
         entry<AnimScreen.ShaderDemos> { ShadersHubScreen() }
         entry<AnimScreen.TutorialOverlay> { TutorialScreen() }
         entry<AnimScreen.ShadowsPlayground> { ShadowsShowcaseScreen() }
+        entry<AnimScreen.TimeRangeKnob> { TimeRangeKnobScreen() }
     }
 
     NavDisplay(
