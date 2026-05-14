@@ -33,6 +33,71 @@ data class AnimationCategory(
 fun MainHomeScreen(navigator: Navigator) {
     val categories = listOf(
         AnimationCategory(
+            "Calendar Picker",
+            "Month-view calendar with day selection and a custom CalendarViewModel",
+            AnimScreen.CalendarPicker,
+        ),
+        AnimationCategory(
+            "Biometric Animation",
+            "Fingerprint scanner with idle / scanning / success / error states",
+            AnimScreen.BiometricDemo,
+        ),
+        AnimationCategory(
+            "Button Animation",
+            "Spring-driven button press animation",
+            AnimScreen.ButtonAnimation,
+        ),
+        AnimationCategory(
+            "Game Pad",
+            "Custom gamepad controller layout",
+            AnimScreen.GamePad,
+        ),
+        AnimationCategory(
+            "Sine Wave (Canvas)",
+            "Pure Canvas sine wave animation",
+            AnimScreen.SinWaveCanvas,
+        ),
+        AnimationCategory(
+            "Bezier Curve Explorer",
+            "Interactive quadratic / cubic Bezier playground",
+            AnimScreen.BezierExplorer,
+        ),
+        AnimationCategory(
+            "Blur Effects",
+            "Modifier.blur and Haze frosted-glass demos",
+            AnimScreen.BlurEffects,
+        ),
+        AnimationCategory(
+            "Drag-to-Draw",
+            "Free-form line drawing via drag gestures",
+            AnimScreen.DragDraw,
+        ),
+        AnimationCategory(
+            "Vertical Circular List",
+            "Items wrap around a vertical circular axis as you scroll",
+            AnimScreen.VerticalCircularList,
+        ),
+        AnimationCategory(
+            "Alerts List",
+            "Notifications-style list with grouped sections",
+            AnimScreen.AlertsList,
+        ),
+        AnimationCategory(
+            "Product List",
+            "Generic LazyColumn with remote image loading",
+            AnimScreen.ProductList,
+        ),
+        AnimationCategory(
+            "Horizontal Pager (LazyRow)",
+            "LazyRow that snaps like a pager",
+            AnimScreen.HorizontalPager,
+        ),
+        AnimationCategory(
+            "Drag-to-Reorder List",
+            "Long-press a row to drag and reorder it",
+            AnimScreen.DragReorderList,
+        ),
+        AnimationCategory(
             "Time Range Knob",
             "Circular 24h dial with two draggable knobs — drag to set bedtime and wake-up; screen morphs between day and night themes",
             AnimScreen.TimeRangeKnob

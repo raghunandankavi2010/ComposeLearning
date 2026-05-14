@@ -11,8 +11,22 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
+import androidx.compose.foundation.layout.padding
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.composelearning.ValueBasedAnimationsScreen
 import com.example.composelearning.anim.AnimatedBalanceDemo
+import com.example.composelearning.anim.BiometricDemoPanel
+import com.example.composelearning.anim.ButtonAnimationTest
+import com.example.composelearning.anim.GamepadLayout
+import com.example.composelearning.calendar.CalendarScreen
+import com.example.composelearning.calendar.CalendarViewModel
+import com.example.composelearning.customshapes.DraggableLineDrawing
+import com.example.composelearning.graphics.BlurSample
+import com.example.composelearning.lists.GeneralAlertsList
+import com.example.composelearning.lists.LazyRowLikePager
+import com.example.composelearning.lists.PreviewCircularListVertical
+import com.example.composelearning.lists.ProductListScreen
+import com.example.composelearning.lists.ReOrderList
 import com.example.composelearning.charts.BarChartShowcaseScreen
 import com.example.composelearning.charts.BezierShowcaseScreen
 import com.example.composelearning.charts.CandleChartShowcaseScreen
@@ -87,6 +101,18 @@ import kotlinx.serialization.Serializable
     @Serializable data object TutorialOverlay : AnimScreen
     @Serializable data object ShadowsPlayground : AnimScreen
     @Serializable data object TimeRangeKnob : AnimScreen
+    @Serializable data object BiometricDemo : AnimScreen
+    @Serializable data object ButtonAnimation : AnimScreen
+    @Serializable data object GamePad : AnimScreen
+    @Serializable data object SinWaveCanvas : AnimScreen
+    @Serializable data object CalendarPicker : AnimScreen
+    @Serializable data object DragDraw : AnimScreen
+    @Serializable data object BlurEffects : AnimScreen
+    @Serializable data object VerticalCircularList : AnimScreen
+    @Serializable data object AlertsList : AnimScreen
+    @Serializable data object ProductList : AnimScreen
+    @Serializable data object HorizontalPager : AnimScreen
+    @Serializable data object DragReorderList : AnimScreen
 }
 
 @Composable
@@ -125,7 +151,7 @@ fun AppNavigation(
         entry<AnimScreen.CustomPager> { CustomPagerSample(onBack = { navigator.goBack() }) }
 
         entry<AnimScreen.DrawScale> { DrawScaleOnTouch(onBack = { navigator.goBack() }) }
-        entry<AnimScreen.BezierExplorer> { BezierShowcaseScreen(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.BezierExplorer> { BezierCurveExplorerScreen() }
         entry<AnimScreen.YouTubeStyle> { YouTubeScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.CircleMenu> { CircularMenuScreenWithFullAnimation() }
         
@@ -173,6 +199,57 @@ fun AppNavigation(
         entry<AnimScreen.TutorialOverlay> { TutorialScreen() }
         entry<AnimScreen.ShadowsPlayground> { ShadowsShowcaseScreen() }
         entry<AnimScreen.TimeRangeKnob> { TimeRangeKnobScreen() }
+        entry<AnimScreen.BiometricDemo> {
+            Box(
+                modifier = Modifier.fillMaxSize().systemBarsPadding(),
+                contentAlignment = Alignment.Center,
+            ) { BiometricDemoPanel() }
+        }
+        entry<AnimScreen.ButtonAnimation> {
+            Box(
+                modifier = Modifier.fillMaxSize().systemBarsPadding(),
+                contentAlignment = Alignment.Center,
+            ) { ButtonAnimationTest() }
+        }
+        entry<AnimScreen.GamePad> {
+            Box(
+                modifier = Modifier.fillMaxSize().systemBarsPadding(),
+                contentAlignment = Alignment.Center,
+            ) { GamepadLayout() }
+        }
+        entry<AnimScreen.SinWaveCanvas> {
+            Box(
+                modifier = Modifier.fillMaxSize().systemBarsPadding(),
+                contentAlignment = Alignment.Center,
+            ) { SinWave() }
+        }
+        entry<AnimScreen.CalendarPicker> {
+            CalendarScreen(
+                onBackPressed = { navigator.goBack() },
+                mainViewModel = viewModel<CalendarViewModel>(),
+            )
+        }
+        entry<AnimScreen.DragDraw> {
+            Box(
+                modifier = Modifier.fillMaxSize().systemBarsPadding(),
+            ) { DraggableLineDrawing() }
+        }
+        entry<AnimScreen.BlurEffects> {
+            BlurSample(modifier = Modifier.fillMaxSize().systemBarsPadding())
+        }
+        entry<AnimScreen.VerticalCircularList> { PreviewCircularListVertical() }
+        entry<AnimScreen.AlertsList> {
+            GeneralAlertsList(modifier = Modifier.fillMaxSize().systemBarsPadding())
+        }
+        entry<AnimScreen.ProductList> {
+            Box(modifier = Modifier.fillMaxSize().systemBarsPadding()) { ProductListScreen() }
+        }
+        entry<AnimScreen.HorizontalPager> {
+            Box(modifier = Modifier.fillMaxSize().systemBarsPadding()) { LazyRowLikePager() }
+        }
+        entry<AnimScreen.DragReorderList> {
+            Box(modifier = Modifier.fillMaxSize().systemBarsPadding()) { ReOrderList() }
+        }
     }
 
     NavDisplay(
