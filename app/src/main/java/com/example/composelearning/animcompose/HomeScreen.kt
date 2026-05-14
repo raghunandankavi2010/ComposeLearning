@@ -33,6 +33,11 @@ data class AnimationCategory(
 fun MainHomeScreen(navigator: Navigator) {
     val categories = listOf(
         AnimationCategory(
+            "Tutorial Overlay",
+            "Coach-mark walkthrough on a LazyColumn — auto-scrolls to off-screen targets, animated cutout, callout card",
+            AnimScreen.TutorialOverlay
+        ),
+        AnimationCategory(
             "AGSL Shader Demos",
             "Blur, frosted glass, mesh gradient, shimmer, liquid button, film grain",
             AnimScreen.ShaderDemos
