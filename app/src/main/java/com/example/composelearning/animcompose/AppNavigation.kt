@@ -25,12 +25,7 @@ import com.example.composelearning.graphics.AnimatedBorderButton
 import com.example.composelearning.graphics.BlurSample
 import com.example.composelearning.graphics.BorderProgressBar
 import com.example.composelearning.images.OverlappingImagesScreen
-import com.example.composelearning.lists.GeneralAlertsList
-import com.example.composelearning.lists.LazyRowLikePager
 import com.example.composelearning.lists.ListsShowcaseScreen
-import com.example.composelearning.lists.PreviewCircularListVertical
-import com.example.composelearning.lists.ProductListScreen
-import com.example.composelearning.lists.ReOrderList
 import com.example.composelearning.pager.PagerShowcaseScreen
 import com.example.composelearning.textfields.MarqueeText
 import com.example.composelearning.charts.BarChartShowcaseScreen
@@ -118,6 +113,8 @@ import kotlinx.serialization.Serializable
     @Serializable data object PagerShowcase : AnimScreen
     @Serializable data object MarqueeDemo : AnimScreen
     @Serializable data object OverlappingImages : AnimScreen
+    @Serializable data object NetflixLogo : AnimScreen
+    @Serializable data object AnmolNetflix : AnimScreen
 }
 
 @Composable
@@ -262,6 +259,8 @@ fun AppNavigation(
         entry<AnimScreen.OverlappingImages> {
             OverlappingImagesScreen(modifier = Modifier.systemBarsPadding())
         }
+        entry<AnimScreen.NetflixLogo> { NetflixLogoAnimation() }
+        entry<AnimScreen.AnmolNetflix> { AnmolNetflixIntroAnimation() }
     }
 
     NavDisplay(

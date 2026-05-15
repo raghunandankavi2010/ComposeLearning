@@ -33,6 +33,16 @@ data class AnimationCategory(
 fun MainHomeScreen(navigator: Navigator) {
     val categories = listOf(
         AnimationCategory(
+            "Netflix — Shape redraw (mine)",
+            "Path + clipPath + gradient sweep. Clean geometry, ~120 LOC. Tap to replay.",
+            AnimScreen.NetflixLogo,
+        ),
+        AnimationCategory(
+            "Netflix — Paint redraw (Anmol port)",
+            "Port of @anmolverma's compose-animation-examples: 31 gradient strips per stroke + 28 colour sparkles + 6 parallel keyframe tracks. Painterly fidelity.",
+            AnimScreen.AnmolNetflix,
+        ),
+        AnimationCategory(
             "Calendar Picker",
             "Month-view calendar with day selection and a custom CalendarViewModel",
             AnimScreen.CalendarPicker,

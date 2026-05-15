@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.composelearning.sotry.SwipeToCancel
 
 private val TABS = listOf(
     "Alerts",
@@ -56,7 +57,7 @@ fun ListsShowcaseScreen() {
                 1 -> ProductListScreen()
                 2 -> StickyList()
                 3 -> ReOrderList()
-                4 -> SwipetoDismiss()
+                4 -> SwipeToCancel(closeScreen = {}, isExpandedScreen = false)
                 5 -> Test2()
                 6 -> JioNews()
                 7 -> CalendarLazyRow()
