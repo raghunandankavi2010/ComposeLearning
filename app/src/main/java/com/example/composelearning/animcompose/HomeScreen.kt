@@ -33,9 +33,9 @@ data class AnimationCategory(
 fun MainHomeScreen(navigator: Navigator) {
     val categories = listOf(
         AnimationCategory(
-            "Bubble Sort Rainbow",
-            "Compose port of intmath.com's CSS demo — 60 hue columns shuffled, then bubble-sorted with animated reorder via LazyRow.animateItem. Tap to reshuffle.",
-            AnimScreen.BubbleSortRainbow,
+            "Sort Animations",
+            "Tabbed hub: bubble, quick, insertion, selection, shell, merge, heap, and Timsort — same 32 shuffled hue columns, animated reorder, off-thread vs main-thread benchmark per algorithm.",
+            AnimScreen.SortAnimation,
         ),
         AnimationCategory(
             "Netflix — Shape redraw (mine)",
