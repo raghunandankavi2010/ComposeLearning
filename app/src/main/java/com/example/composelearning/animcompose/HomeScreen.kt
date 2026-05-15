@@ -68,11 +68,6 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.SinWaveCanvas,
         ),
         AnimationCategory(
-            "Bezier Curve Explorer",
-            "Interactive quadratic / cubic Bezier playground",
-            AnimScreen.BezierExplorer,
-        ),
-        AnimationCategory(
             "Blur Effects",
             "Modifier.blur and Haze frosted-glass demos",
             AnimScreen.BlurEffects,

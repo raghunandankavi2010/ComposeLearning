@@ -69,7 +69,6 @@ import kotlinx.serialization.Serializable
     @Serializable data object BezierCurves : AnimScreen
     @Serializable data object SineWave : AnimScreen
     @Serializable data object CustomPager : AnimScreen
-    @Serializable data object BezierExplorer : AnimScreen
     @Serializable data object YouTubeStyle : AnimScreen
     @Serializable data object CircleMenu : AnimScreen
     @Serializable data object ChatApp : AnimScreen
@@ -154,7 +153,6 @@ fun AppNavigation(
         entry<AnimScreen.CustomPager> { CustomPagerSample(onBack = { navigator.goBack() }) }
 
         entry<AnimScreen.DrawScale> { DrawScaleOnTouch(onBack = { navigator.goBack() }) }
-        entry<AnimScreen.BezierExplorer> { BezierCurveExplorerScreen() }
         entry<AnimScreen.YouTubeStyle> { YouTubeScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.CircleMenu> { CircularMenuScreenWithFullAnimation() }
         
