@@ -19,14 +19,16 @@ package com.example.composelearning.calendar
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.composelearning.calendar.model.CalendarState
+import com.example.composelearning.calendar.model.CalendarState.Companion.DAYS_IN_WEEK
 import com.example.composelearning.calendar.model.CalendarUiState
 import com.example.composelearning.calendar.model.Week
 import androidx.compose.ui.Modifier
@@ -55,10 +57,19 @@ fun WeekSelectionPill(
     val widthPerDayPx = with(LocalDensity.current) { widthPerDay.toPx() }
     val cornerRadiusPx = with(LocalDensity.current) { 24.dp.toPx() }
 
+    // Canvas is sized to exactly the row of seven Day cells (7 × CELL_SIZE). That keeps the
+    // pill's coordinate space identical to the Week row's, so `getOffsetAndSize` can do its
+    // maths in cell units without any edge-padding correction.
     Canvas(
+        // clipToBounds is critical: for continuation rows, the pill intentionally extends
+        // `leftSize`/`rightSize` past the canvas edge so its rounded corner sits *outside*
+        // the visible area and the visible edge reads as flush — i.e. the pill on one row
+        // appears to flow into the next. Without clipping, the rounded curve leaks into the
+        // neighbouring day cells of the row above/below.
         modifier = modifier
-            .padding(horizontal = 36.dp)
-            .fillMaxWidth(),
+            .width(widthPerDay * DAYS_IN_WEEK)
+            .height(widthPerDay)
+            .clipToBounds(),
         onDraw = {
 
             val (offset, size) = getOffsetAndSize(

@@ -22,6 +22,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.EaseOutQuart
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -91,11 +92,14 @@ fun Calendar(
     val scrollState = rememberLazyListState()
 
     LazyColumn(
-        state =  scrollState,
-        modifier = modifier
-            .consumeWindowInsets(contentPadding)
-            .padding(horizontal = 24.dp),
-        contentPadding = contentPadding
+        // No horizontal padding here: the 7-cell grid is 336.dp wide (7 × CELL_SIZE) and we
+        // need each item to give that grid its full width. The MonthHeader composable already
+        // applies its own .padding(24.dp), so headers stay visually inset; the days+pill rows
+        // just centre themselves via `contentModifier` (fillMaxWidth + wrapContentWidth(Center))
+        // inside the full-width item, and the pill canvas now actually gets the 336.dp it asks for.
+        state = scrollState,
+        modifier = modifier.consumeWindowInsets(contentPadding),
+        contentPadding = contentPadding,
     ) {
         calendarState.listMonths.forEach { month ->
             itemsCalendarMonth(
@@ -166,25 +170,29 @@ private fun LazyListScope.itemsCalendarMonth(
         val beginningWeek = week.yearMonth.atDay(1).plusWeeks(week.number.toLong())
         val currentDay = beginningWeek.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
 
-        if (calendarUiState.hasSelectedPeriodOverlap(
-                currentDay,
-                currentDay.plusDays(6)
-            )
-        ) {
-            WeekSelectionPill(
-                state = calendarUiState,
-                currentWeekStart = currentDay,
-                widthPerDay = CELL_SIZE,
+        // Box stacks the pill *under* the day cells (drawn first) so the highlight reads as a
+        // background sweep. Same `contentModifier` (fillMaxWidth + wrapContentWidth(Center))
+        // applies to both, so their coordinate spaces line up exactly.
+        Box(modifier = contentModifier) {
+            if (calendarUiState.hasSelectedPeriodOverlap(
+                    currentDay,
+                    currentDay.plusDays(6),
+                )
+            ) {
+                WeekSelectionPill(
+                    state = calendarUiState,
+                    currentWeekStart = currentDay,
+                    widthPerDay = CELL_SIZE,
+                    week = week,
+                    selectedPercentageTotalProvider = selectedPercentageProvider,
+                )
+            }
+            Week(
+                calendarUiState = calendarUiState,
                 week = week,
-                selectedPercentageTotalProvider = selectedPercentageProvider
+                onDayClicked = onDayClicked,
             )
         }
-        Week(
-            calendarUiState = calendarUiState,
-            modifier = contentModifier,
-            week = week,
-            onDayClicked = onDayClicked
-        )
     }
 }
 
