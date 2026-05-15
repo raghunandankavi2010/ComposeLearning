@@ -12,21 +12,25 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.composelearning.ValueBasedAnimationsScreen
 import com.example.composelearning.anim.AnimatedBalanceDemo
+import com.example.composelearning.PercentageBaseLayout
 import com.example.composelearning.anim.BiometricDemoPanel
 import com.example.composelearning.anim.ButtonAnimationTest
-import com.example.composelearning.anim.GamepadLayout
 import com.example.composelearning.calendar.CalendarScreen
 import com.example.composelearning.calendar.CalendarViewModel
-import com.example.composelearning.customshapes.DraggableLineDrawing
+import com.example.composelearning.graphics.AnimatedBorderButton
 import com.example.composelearning.graphics.BlurSample
+import com.example.composelearning.graphics.BorderProgressBar
 import com.example.composelearning.lists.GeneralAlertsList
 import com.example.composelearning.lists.LazyRowLikePager
 import com.example.composelearning.lists.PreviewCircularListVertical
 import com.example.composelearning.lists.ProductListScreen
 import com.example.composelearning.lists.ReOrderList
+import com.example.composelearning.pager.PagerShowcaseScreen
+import com.example.composelearning.textfields.MarqueeText
 import com.example.composelearning.charts.BarChartShowcaseScreen
 import com.example.composelearning.charts.BezierShowcaseScreen
 import com.example.composelearning.charts.CandleChartShowcaseScreen
@@ -103,16 +107,18 @@ import kotlinx.serialization.Serializable
     @Serializable data object TimeRangeKnob : AnimScreen
     @Serializable data object BiometricDemo : AnimScreen
     @Serializable data object ButtonAnimation : AnimScreen
-    @Serializable data object GamePad : AnimScreen
     @Serializable data object SinWaveCanvas : AnimScreen
     @Serializable data object CalendarPicker : AnimScreen
-    @Serializable data object DragDraw : AnimScreen
     @Serializable data object BlurEffects : AnimScreen
     @Serializable data object VerticalCircularList : AnimScreen
     @Serializable data object AlertsList : AnimScreen
     @Serializable data object ProductList : AnimScreen
     @Serializable data object HorizontalPager : AnimScreen
     @Serializable data object DragReorderList : AnimScreen
+    @Serializable data object PercentageLayout : AnimScreen
+    @Serializable data object PathProgress : AnimScreen
+    @Serializable data object PagerShowcase : AnimScreen
+    @Serializable data object MarqueeDemo : AnimScreen
 }
 
 @Composable
@@ -211,12 +217,6 @@ fun AppNavigation(
                 contentAlignment = Alignment.Center,
             ) { ButtonAnimationTest() }
         }
-        entry<AnimScreen.GamePad> {
-            Box(
-                modifier = Modifier.fillMaxSize().systemBarsPadding(),
-                contentAlignment = Alignment.Center,
-            ) { GamepadLayout() }
-        }
         entry<AnimScreen.SinWaveCanvas> {
             Box(
                 modifier = Modifier.fillMaxSize().systemBarsPadding(),
@@ -228,11 +228,6 @@ fun AppNavigation(
                 onBackPressed = { navigator.goBack() },
                 mainViewModel = viewModel<CalendarViewModel>(),
             )
-        }
-        entry<AnimScreen.DragDraw> {
-            Box(
-                modifier = Modifier.fillMaxSize().systemBarsPadding(),
-            ) { DraggableLineDrawing() }
         }
         entry<AnimScreen.BlurEffects> {
             BlurSample(modifier = Modifier.fillMaxSize().systemBarsPadding())
@@ -249,6 +244,33 @@ fun AppNavigation(
         }
         entry<AnimScreen.DragReorderList> {
             Box(modifier = Modifier.fillMaxSize().systemBarsPadding()) { ReOrderList() }
+        }
+        entry<AnimScreen.PagerShowcase> { PagerShowcaseScreen() }
+        entry<AnimScreen.PercentageLayout> {
+            Box(modifier = Modifier.fillMaxSize().systemBarsPadding()) { PercentageBaseLayout() }
+        }
+        entry<AnimScreen.PathProgress> {
+            androidx.compose.foundation.layout.Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .systemBarsPadding()
+                    .padding(24.dp),
+                verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                AnimatedBorderButton()
+                BorderProgressBar()
+            }
+        }
+        entry<AnimScreen.MarqueeDemo> {
+            Box(
+                modifier = Modifier.fillMaxSize().systemBarsPadding().padding(24.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                MarqueeText(
+                    text = "This is a long marquee text that scrolls horizontally when it overflows the available space — Jetpack Compose marquee demo.",
+                )
+            }
         }
     }
 

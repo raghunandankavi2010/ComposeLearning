@@ -48,11 +48,6 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.ButtonAnimation,
         ),
         AnimationCategory(
-            "Game Pad",
-            "Custom gamepad controller layout",
-            AnimScreen.GamePad,
-        ),
-        AnimationCategory(
             "Sine Wave (Canvas)",
             "Pure Canvas sine wave animation",
             AnimScreen.SinWaveCanvas,
@@ -66,11 +61,6 @@ fun MainHomeScreen(navigator: Navigator) {
             "Blur Effects",
             "Modifier.blur and Haze frosted-glass demos",
             AnimScreen.BlurEffects,
-        ),
-        AnimationCategory(
-            "Drag-to-Draw",
-            "Free-form line drawing via drag gestures",
-            AnimScreen.DragDraw,
         ),
         AnimationCategory(
             "Vertical Circular List",
@@ -96,6 +86,26 @@ fun MainHomeScreen(navigator: Navigator) {
             "Drag-to-Reorder List",
             "Long-press a row to drag and reorder it",
             AnimScreen.DragReorderList,
+        ),
+        AnimationCategory(
+            "Pager & Carousel Showcase",
+            "Tabbed showcase: Instagram coverflow, Instagram v2, HorizontalPager demo, custom-Layout pager",
+            AnimScreen.PagerShowcase,
+        ),
+        AnimationCategory(
+            "Percentage Layout",
+            "BoxWithConstraints + percentage-based offset positioning",
+            AnimScreen.PercentageLayout,
+        ),
+        AnimationCategory(
+            "Path Progress",
+            "Animated path-drawing border button and progress bar",
+            AnimScreen.PathProgress,
+        ),
+        AnimationCategory(
+            "Marquee Text",
+            "Horizontally scrolling overflowing text with gradient edges",
+            AnimScreen.MarqueeDemo,
         ),
         AnimationCategory(
             "Time Range Knob",
