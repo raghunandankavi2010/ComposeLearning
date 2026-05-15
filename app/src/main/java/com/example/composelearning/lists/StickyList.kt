@@ -50,7 +50,8 @@ fun StickyList() {
         derivedStateOf {
             val firstVisibleItem = listState.firstVisibleItemIndex
             val headerHeight = 56.dp // Adjust based on your header height
-            if (listState.firstVisibleItemScrollOffset.dp < headerHeight) firstVisibleItem else firstVisibleItem + 1
+            val index = if (listState.firstVisibleItemScrollOffset.dp < headerHeight) firstVisibleItem else firstVisibleItem + 1
+            index.coerceIn(categories.indices)
         }
     }
     val scale = remember { mutableStateOf(1f) }

@@ -63,29 +63,9 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.BlurEffects,
         ),
         AnimationCategory(
-            "Vertical Circular List",
-            "Items wrap around a vertical circular axis as you scroll",
-            AnimScreen.VerticalCircularList,
-        ),
-        AnimationCategory(
-            "Alerts List",
-            "Notifications-style list with grouped sections",
-            AnimScreen.AlertsList,
-        ),
-        AnimationCategory(
-            "Product List",
-            "Generic LazyColumn with remote image loading",
-            AnimScreen.ProductList,
-        ),
-        AnimationCategory(
-            "Horizontal Pager (LazyRow)",
-            "LazyRow that snaps like a pager",
-            AnimScreen.HorizontalPager,
-        ),
-        AnimationCategory(
-            "Drag-to-Reorder List",
-            "Long-press a row to drag and reorder it",
-            AnimScreen.DragReorderList,
+            "Lists Showcase",
+            "12 tabbed list demos: alerts, products, sticky, reorder, swipe, staggered, news, calendar, circular ↕/↔, LazyRow, number picker",
+            AnimScreen.ListsShowcase,
         ),
         AnimationCategory(
             "Pager & Carousel Showcase",
@@ -106,6 +86,11 @@ fun MainHomeScreen(navigator: Navigator) {
             "Marquee Text",
             "Horizontally scrolling overflowing text with gradient edges",
             AnimScreen.MarqueeDemo,
+        ),
+        AnimationCategory(
+            "Overlapping Images",
+            "Custom Layout that stacks avatars with a slider-controlled overlap factor",
+            AnimScreen.OverlappingImages,
         ),
         AnimationCategory(
             "Time Range Knob",

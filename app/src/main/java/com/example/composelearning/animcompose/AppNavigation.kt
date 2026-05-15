@@ -24,8 +24,10 @@ import com.example.composelearning.calendar.CalendarViewModel
 import com.example.composelearning.graphics.AnimatedBorderButton
 import com.example.composelearning.graphics.BlurSample
 import com.example.composelearning.graphics.BorderProgressBar
+import com.example.composelearning.images.OverlappingImagesScreen
 import com.example.composelearning.lists.GeneralAlertsList
 import com.example.composelearning.lists.LazyRowLikePager
+import com.example.composelearning.lists.ListsShowcaseScreen
 import com.example.composelearning.lists.PreviewCircularListVertical
 import com.example.composelearning.lists.ProductListScreen
 import com.example.composelearning.lists.ReOrderList
@@ -110,15 +112,12 @@ import kotlinx.serialization.Serializable
     @Serializable data object SinWaveCanvas : AnimScreen
     @Serializable data object CalendarPicker : AnimScreen
     @Serializable data object BlurEffects : AnimScreen
-    @Serializable data object VerticalCircularList : AnimScreen
-    @Serializable data object AlertsList : AnimScreen
-    @Serializable data object ProductList : AnimScreen
-    @Serializable data object HorizontalPager : AnimScreen
-    @Serializable data object DragReorderList : AnimScreen
+    @Serializable data object ListsShowcase : AnimScreen
     @Serializable data object PercentageLayout : AnimScreen
     @Serializable data object PathProgress : AnimScreen
     @Serializable data object PagerShowcase : AnimScreen
     @Serializable data object MarqueeDemo : AnimScreen
+    @Serializable data object OverlappingImages : AnimScreen
 }
 
 @Composable
@@ -232,19 +231,7 @@ fun AppNavigation(
         entry<AnimScreen.BlurEffects> {
             BlurSample(modifier = Modifier.fillMaxSize().systemBarsPadding())
         }
-        entry<AnimScreen.VerticalCircularList> { PreviewCircularListVertical() }
-        entry<AnimScreen.AlertsList> {
-            GeneralAlertsList(modifier = Modifier.fillMaxSize().systemBarsPadding())
-        }
-        entry<AnimScreen.ProductList> {
-            Box(modifier = Modifier.fillMaxSize().systemBarsPadding()) { ProductListScreen() }
-        }
-        entry<AnimScreen.HorizontalPager> {
-            Box(modifier = Modifier.fillMaxSize().systemBarsPadding()) { LazyRowLikePager() }
-        }
-        entry<AnimScreen.DragReorderList> {
-            Box(modifier = Modifier.fillMaxSize().systemBarsPadding()) { ReOrderList() }
-        }
+        entry<AnimScreen.ListsShowcase> { ListsShowcaseScreen() }
         entry<AnimScreen.PagerShowcase> { PagerShowcaseScreen() }
         entry<AnimScreen.PercentageLayout> {
             Box(modifier = Modifier.fillMaxSize().systemBarsPadding()) { PercentageBaseLayout() }
@@ -271,6 +258,9 @@ fun AppNavigation(
                     text = "This is a long marquee text that scrolls horizontally when it overflows the available space — Jetpack Compose marquee demo.",
                 )
             }
+        }
+        entry<AnimScreen.OverlappingImages> {
+            OverlappingImagesScreen(modifier = Modifier.systemBarsPadding())
         }
     }
 

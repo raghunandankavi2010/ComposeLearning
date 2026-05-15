@@ -1,4 +1,3 @@
-/*
 package com.example.composelearning.lists
 
 import androidx.compose.animation.animateColorAsState
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
@@ -20,7 +20,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.SwipeToDismiss
+import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberSwipeToDismissBoxState
@@ -36,12 +36,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 
 
 @Composable
 fun SwipetoDismiss() {
-    val viewModel = MyViewModel()
+    val viewModel: MyViewModel = viewModel()
     TutorialContent(viewModel)
 }
 
@@ -55,13 +56,13 @@ private fun TutorialContent(viewModel: MyViewModel) {
             Text(text = "Generate User List")
         }
 
-        val usersList = viewModel.listFlow.collectAsStateWithLifecycle()
-        val list = usersList.value.toList()
+        val usersList by viewModel.listFlow.collectAsStateWithLifecycle()
+        val list = usersList.toList()
         LazyColumn {
 
-            items(list.size, key = { index -> list[index].id }) { user ->
+            itemsIndexed(list, key = { _, user -> user.id }) { index, user ->
 
-                val currentItem by rememberUpdatedState(user)
+                val currentItem by rememberUpdatedState(index)
 
                 val dismissState = rememberSwipeToDismissBoxState(
                     confirmValueChange = { dismissValue ->
@@ -81,14 +82,12 @@ private fun TutorialContent(viewModel: MyViewModel) {
                         }
                     }
                 )
-                SwipeToDismiss(
+                SwipeToDismissBox(
                     state = dismissState,
                     modifier = Modifier.padding(vertical = 4.dp),
-                    directions = setOf(SwipeToDismissBoxValue.StartToEnd, SwipeToDismissBoxValue.EndToStart),
+                    backgroundContent = {
 
-                    background = {
-
-                        val direction = dismissState.dismissDirection ?: return@SwipeToDismiss
+                        val direction = dismissState.dismissDirection
 
                         val color by animateColorAsState(
 
@@ -130,25 +129,25 @@ private fun TutorialContent(viewModel: MyViewModel) {
                                 modifier = Modifier.scale(scale)
                             )
                         }
-                    },
-                    dismissContent = {
-                        Card(
-                            modifier = Modifier.fillMaxWidth(),
-                            elevation = CardDefaults.cardElevation(
-                                0.dp, pressedElevation = animateDpAsState(
-                                    if (dismissState.dismissDirection != null) 4.dp else 0.dp,
-                                    label = ""
-                                ).value, 0.dp, 0.dp, 0.dp, 0.dp
-                            )
-                        ) {
-
-                            Text(modifier = Modifier.height(80.dp),
-                                text= list[currentItem].name,
-                                fontWeight = FontWeight.Bold)
-
-                        }
                     }
-                )
+                ) {
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        elevation = CardDefaults.cardElevation(
+                            defaultElevation = 0.dp,
+                            pressedElevation = animateDpAsState(
+                                if (dismissState.dismissDirection != SwipeToDismissBoxValue.Settled) 4.dp else 0.dp,
+                                label = ""
+                            ).value
+                        )
+                    ) {
+
+                        Text(modifier = Modifier.height(80.dp),
+                            text= user.name,
+                            fontWeight = FontWeight.Bold)
+
+                    }
+                }
             }
         }
     }
@@ -157,25 +156,22 @@ private fun TutorialContent(viewModel: MyViewModel) {
 
 class MyViewModel : ViewModel() {
     private var userList = mutableStateListOf<User>()
-    var listFlow = MutableStateFlow(userList)
+    var listFlow = MutableStateFlow<List<User>>(userList)
 
     fun newList() {
-        val mutableList = mutableStateListOf<User>()
+        userList.clear()
         for (i in 0..10) {
-            mutableList.add(User(i, "User$i"))
+            userList.add(User(i, "User$i"))
         }
-
-        userList = mutableList
-        listFlow.value = mutableList
+        listFlow.value = userList.toList()
     }
 
     fun removeItem(index: Int) {
-        userList.remove(userList[index])
+        if (index in userList.indices) {
+            userList.removeAt(index)
+            listFlow.value = userList.toList()
+        }
     }
 }
 
 data class User(val id: Int, val name: String)
-
-
-
-*/
