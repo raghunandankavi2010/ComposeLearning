@@ -33,6 +33,11 @@ data class AnimationCategory(
 fun MainHomeScreen(navigator: Navigator) {
     val categories = listOf(
         AnimationCategory(
+            "Image Processing (CPU + GPU)",
+            "Instagram-style filter strip: greyscale, sepia, vintage S-curve LUT, cinematic teal/orange, polaroid fade, noir, cyberpunk. AGSL shader on GPU, parallel coroutine pipeline on CPU — toggle and compare.",
+            AnimScreen.ImageProcessing,
+        ),
+        AnimationCategory(
             "Sort Animations",
             "Tabbed hub: bubble, quick, insertion, selection, shell, merge, heap, and Timsort — same 32 shuffled hue columns, animated reorder, off-thread vs main-thread benchmark per algorithm.",
             AnimScreen.SortAnimation,
