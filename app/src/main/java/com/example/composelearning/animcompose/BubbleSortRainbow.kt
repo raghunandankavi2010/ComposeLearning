@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -27,7 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
@@ -49,9 +49,6 @@ private const val PLACEMENT_ANIM_MS = 320
  */
 @Composable
 fun BubbleSortRainbow(modifier: Modifier = Modifier) {
-    val screenWidthDp = LocalConfiguration.current.screenWidthDp
-    val columnWidthDp = (screenWidthDp.toFloat() / COLUMN_COUNT).dp
-
     // Bumping `generation` triggers a fresh shuffle and a new sort pass.
     var generation by remember { mutableIntStateOf(0) }
 
@@ -85,7 +82,7 @@ fun BubbleSortRainbow(modifier: Modifier = Modifier) {
         status = "Sorted ✓  Tap anywhere to reshuffle."
     }
 
-    Box(
+    BoxWithConstraints(
         modifier = modifier
             .fillMaxSize()
             .background(Color.Black)
@@ -93,6 +90,8 @@ fun BubbleSortRainbow(modifier: Modifier = Modifier) {
                 detectTapGestures { generation += 1 }
             },
     ) {
+        val columnWidthDp = maxWidth / COLUMN_COUNT
+
         LazyRow(
             // Black background on the outer Box bleeds edge-to-edge behind the system bars,
             // but the rainbow itself stays within the safe area so no column gets clipped.
