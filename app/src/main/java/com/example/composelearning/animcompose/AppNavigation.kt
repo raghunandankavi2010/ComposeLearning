@@ -115,6 +115,7 @@ import kotlinx.serialization.Serializable
     @Serializable data object OverlappingImages : AnimScreen
     @Serializable data object NetflixLogo : AnimScreen
     @Serializable data object AnmolNetflix : AnimScreen
+    @Serializable data object BubbleSortRainbow : AnimScreen
 }
 
 @Composable
@@ -261,6 +262,7 @@ fun AppNavigation(
         }
         entry<AnimScreen.NetflixLogo> { NetflixLogoAnimation() }
         entry<AnimScreen.AnmolNetflix> { AnmolNetflixIntroAnimation() }
+        entry<AnimScreen.BubbleSortRainbow> { BubbleSortRainbow() }
     }
 
     NavDisplay(

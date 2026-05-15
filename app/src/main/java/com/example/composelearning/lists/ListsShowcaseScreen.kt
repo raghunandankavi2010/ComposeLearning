@@ -3,7 +3,7 @@ package com.example.composelearning.lists
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.Tab
@@ -40,7 +40,7 @@ fun ListsShowcaseScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .statusBarsPadding(),
+            .systemBarsPadding(),
     ) {
         PrimaryScrollableTabRow(selectedTabIndex = selected, edgePadding = 0.dp) {
             TABS.forEachIndexed { index, label ->
