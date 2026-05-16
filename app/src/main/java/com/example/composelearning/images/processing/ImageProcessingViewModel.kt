@@ -11,7 +11,6 @@ import androidx.annotation.DrawableRes
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.composelearning.R
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
@@ -124,9 +123,7 @@ class ImageProcessingViewModel(application: Application) : AndroidViewModel(appl
         _ui.update { it.copy(isProcessingCpu = true) }
         cpuJob = viewModelScope.launch {
             val start = System.nanoTime()
-            val out = withContext(Dispatchers.Default) {
-                applyFilterCpu(src, _filter.value, _params.value)
-            }
+            val out = applyFilterCpu(src, _filter.value, _params.value)
             val elapsed = (System.nanoTime() - start) / 1_000_000L
             _ui.update {
                 it.copy(cpuOutput = out, isProcessingCpu = false, lastCpuDurationMs = elapsed)
@@ -182,21 +179,29 @@ class ImageProcessingViewModel(application: Application) : AndroidViewModel(appl
 
 // =================================================================================================
 // CPU pipeline. Runs exactly the same math as the AGSL shader, but in Kotlin, on Dispatchers.Default
-// with the bitmap chunked across cores. We pull pixels into one IntArray (one contiguous copy off
-// the heap) then split the row range across N coroutines — each one writes into its own slice of
-// the same array so we never touch shared state during the hot loop.
+// — the dispatcher whose thread pool is sized to availableProcessors(), so it's the one tuned for
+// CPU-bound work. We pull pixels into one IntArray (one contiguous copy off the heap), then split
+// the row range across N parallel coroutines that each write into their own non-overlapping slice
+// of the same array — zero cross-thread synchronization in the hot loop.
+//
+// `withContext(Dispatchers.Default)` is the one and only dispatcher switch: the inner coroutineScope
+// and launches inherit it, so we don't pay for repeated dispatch hops.
 // =================================================================================================
 
 suspend fun applyFilterCpu(
     src: Bitmap,
     filter: ImageFilter,
     params: FilterParams,
-): Bitmap = coroutineScope {
+): Bitmap = withContext(Dispatchers.Default) {
     val spec = filterSpec(filter)
     val width = src.width
     val height = src.height
-    val pixels = IntArray(width * height)
-    src.getPixels(pixels, 0, width, 0, 0, width, height)
+    val srcPixels = IntArray(width * height)
+    src.getPixels(srcPixels, 0, width, 0, 0, width, height)
+
+    // Convolution and pixelate read neighbour pixels, so we cannot modify in-place — give them a
+    // separate output buffer. Pure color filters keep the single-buffer fast path (no extra alloc).
+    val outPixels = if (spec.hasKernel || spec.hasPixelate) IntArray(width * height) else srcPixels
 
     val centerX = width * 0.5f
     val centerY = height * 0.5f
@@ -205,54 +210,43 @@ suspend fun applyFilterCpu(
     val cores = Runtime.getRuntime().availableProcessors().coerceIn(2, 8)
     val rowsPerJob = (height + cores - 1) / cores
 
-    processChunked(
-        rowsPerJob = rowsPerJob,
-        cores = cores,
-        height = height,
-        scope = this,
-    ) { rowStart, rowEnd ->
-        processStrip(
-            pixels = pixels,
-            rowStart = rowStart,
-            rowEnd = rowEnd,
-            width = width,
-            spec = spec,
-            params = params,
-            centerX = centerX,
-            centerY = centerY,
-            halfDiag = halfDiag,
-        )
+    coroutineScope {
+        var rowStart = 0
+        while (rowStart < height) {
+            val rowEnd = (rowStart + rowsPerJob).coerceAtMost(height)
+            val s = rowStart
+            val e = rowEnd
+            launch {
+                processStrip(
+                    srcPixels = srcPixels,
+                    outPixels = outPixels,
+                    rowStart = s,
+                    rowEnd = e,
+                    width = width,
+                    height = height,
+                    spec = spec,
+                    params = params,
+                    centerX = centerX,
+                    centerY = centerY,
+                    halfDiag = halfDiag,
+                )
+            }
+            rowStart = rowEnd
+        }
     }
 
     val out = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-    out.setPixels(pixels, 0, width, 0, 0, width, height)
+    out.setPixels(outPixels, 0, width, 0, 0, width, height)
     out
 }
 
-private suspend inline fun processChunked(
-    rowsPerJob: Int,
-    cores: Int,
-    height: Int,
-    scope: CoroutineScope,
-    crossinline block: suspend (Int, Int) -> Unit,
-) {
-    val jobs = ArrayList<Job>(cores)
-    var rowStart = 0
-    while (rowStart < height) {
-        val rowEnd = (rowStart + rowsPerJob).coerceAtMost(height)
-        val s = rowStart
-        val e = rowEnd
-        jobs += scope.launch(Dispatchers.Default) { block(s, e) }
-        rowStart = rowEnd
-    }
-    jobs.forEach { it.join() }
-}
-
 private fun processStrip(
-    pixels: IntArray,
+    srcPixels: IntArray,
+    outPixels: IntArray,
     rowStart: Int,
     rowEnd: Int,
     width: Int,
+    height: Int,
     spec: FilterSpec,
     params: FilterParams,
     centerX: Float,
@@ -274,17 +268,77 @@ private fun processStrip(
     val saturation = params.saturation
     val vignette = params.vignette
     val vignetteEnabled = vignette > 0.001f
+    val inv255 = 1f / 255f
+    val maxX = width - 1
+    val maxY = height - 1
+
+    val hasKernel = spec.hasKernel
+    val kernel = spec.kernel
+    val kOff = spec.kernelOffset
+    val pixelateBlock = spec.pixelateBlock
+    val hasPixelate = spec.hasPixelate
+
+    // 3x3 kernel coefficients unpacked when active.
+    val k00 = if (hasKernel) kernel!![0] else 0f; val k01 = if (hasKernel) kernel!![1] else 0f; val k02 = if (hasKernel) kernel!![2] else 0f
+    val k10 = if (hasKernel) kernel!![3] else 0f; val k11 = if (hasKernel) kernel!![4] else 0f; val k12 = if (hasKernel) kernel!![5] else 0f
+    val k20 = if (hasKernel) kernel!![6] else 0f; val k21 = if (hasKernel) kernel!![7] else 0f; val k22 = if (hasKernel) kernel!![8] else 0f
 
     for (y in rowStart until rowEnd) {
         val rowOffset = y * width
         val dy = y - centerY
         for (x in 0 until width) {
             val i = rowOffset + x
-            val orig = pixels[i]
+
+            // The "original" pixel — kept aside for the intensity blend regardless of which
+            // stages run, so the strength slider always fades back to the untouched source.
+            val orig = srcPixels[i]
             val a = orig.ushr(24) and 0xff
-            val srcR = ((orig shr 16) and 0xff) * (1f / 255f)
-            val srcG = ((orig shr 8) and 0xff) * (1f / 255f)
-            val srcB = (orig and 0xff) * (1f / 255f)
+            val origR = ((orig shr 16) and 0xff) * inv255
+            val origG = ((orig shr 8) and 0xff) * inv255
+            val origB = (orig and 0xff) * inv255
+
+            // 0a) Pixelate: snap the sample coord to the block grid (block-centre sampling so
+            // adjacent blocks share a representative pixel rather than the top-left corner).
+            val sx: Int
+            val sy: Int
+            if (hasPixelate) {
+                val pb = pixelateBlock.toInt().coerceAtLeast(1)
+                sx = ((x / pb) * pb + pb / 2).coerceIn(0, maxX)
+                sy = ((y / pb) * pb + pb / 2).coerceIn(0, maxY)
+            } else { sx = x; sy = y }
+
+            // 0b) Convolution: 3x3 weighted sum of the source neighbourhood around (sx, sy),
+            // with edge-clamped neighbour coords. Skipped when there is no kernel.
+            var srcR: Float; var srcG: Float; var srcB: Float
+            if (hasKernel) {
+                val y0 = (sy - 1).coerceAtLeast(0) * width
+                val y1 = sy * width
+                val y2 = (sy + 1).coerceAtMost(maxY) * width
+                val x0 = (sx - 1).coerceAtLeast(0)
+                val x2 = (sx + 1).coerceAtMost(maxX)
+                val p00 = srcPixels[y0 + x0]; val p01 = srcPixels[y0 + sx]; val p02 = srcPixels[y0 + x2]
+                val p10 = srcPixels[y1 + x0]; val p11 = srcPixels[y1 + sx]; val p12 = srcPixels[y1 + x2]
+                val p20 = srcPixels[y2 + x0]; val p21 = srcPixels[y2 + sx]; val p22 = srcPixels[y2 + x2]
+                val rSum = ((p00 shr 16) and 0xff) * k00 + ((p01 shr 16) and 0xff) * k01 + ((p02 shr 16) and 0xff) * k02 +
+                    ((p10 shr 16) and 0xff) * k10 + ((p11 shr 16) and 0xff) * k11 + ((p12 shr 16) and 0xff) * k12 +
+                    ((p20 shr 16) and 0xff) * k20 + ((p21 shr 16) and 0xff) * k21 + ((p22 shr 16) and 0xff) * k22
+                val gSum = ((p00 shr 8) and 0xff) * k00 + ((p01 shr 8) and 0xff) * k01 + ((p02 shr 8) and 0xff) * k02 +
+                    ((p10 shr 8) and 0xff) * k10 + ((p11 shr 8) and 0xff) * k11 + ((p12 shr 8) and 0xff) * k12 +
+                    ((p20 shr 8) and 0xff) * k20 + ((p21 shr 8) and 0xff) * k21 + ((p22 shr 8) and 0xff) * k22
+                val bSum = (p00 and 0xff) * k00 + (p01 and 0xff) * k01 + (p02 and 0xff) * k02 +
+                    (p10 and 0xff) * k10 + (p11 and 0xff) * k11 + (p12 and 0xff) * k12 +
+                    (p20 and 0xff) * k20 + (p21 and 0xff) * k21 + (p22 and 0xff) * k22
+                srcR = (rSum * inv255 + kOff).coerceIn(0f, 1f)
+                srcG = (gSum * inv255 + kOff).coerceIn(0f, 1f)
+                srcB = (bSum * inv255 + kOff).coerceIn(0f, 1f)
+            } else if (hasPixelate) {
+                val p = srcPixels[sy * width + sx]
+                srcR = ((p shr 16) and 0xff) * inv255
+                srcG = ((p shr 8) and 0xff) * inv255
+                srcB = (p and 0xff) * inv255
+            } else {
+                srcR = origR; srcG = origG; srcB = origB
+            }
 
             // 1) color matrix.
             var r = (m0 * srcR + m1 * srcG + m2 * srcB + o0).coerceIn(0f, 1f)
@@ -293,9 +347,9 @@ private fun processStrip(
 
             // 2) LUT (per-channel tone curve).
             if (hasLut) {
-                r = lutR!![(r * 255f).toInt()] * (1f / 255f)
-                g = lutG!![(g * 255f).toInt()] * (1f / 255f)
-                b = lutB!![(b * 255f).toInt()] * (1f / 255f)
+                r = lutR!![(r * 255f).toInt()] * inv255
+                g = lutG!![(g * 255f).toInt()] * inv255
+                b = lutB!![(b * 255f).toInt()] * inv255
             }
 
             // 3) brightness / contrast.
@@ -319,15 +373,15 @@ private fun processStrip(
                 r *= v; g *= v; b *= v
             }
 
-            // 6) intensity blend.
-            r = srcR + (r - srcR) * intensity
-            g = srcG + (g - srcG) * intensity
-            b = srcB + (b - srcB) * intensity
+            // 6) intensity blend back with the *original* untouched pixel.
+            r = origR + (r - origR) * intensity
+            g = origG + (g - origG) * intensity
+            b = origB + (b - origB) * intensity
 
             val rr = (r.coerceIn(0f, 1f) * 255f).toInt()
             val gg = (g.coerceIn(0f, 1f) * 255f).toInt()
             val bb = (b.coerceIn(0f, 1f) * 255f).toInt()
-            pixels[i] = (a shl 24) or (rr shl 16) or (gg shl 8) or bb
+            outPixels[i] = (a shl 24) or (rr shl 16) or (gg shl 8) or bb
         }
     }
 }
@@ -351,4 +405,18 @@ fun defaultParamsFor(filter: ImageFilter): FilterParams = when (filter) {
     ImageFilter.Noir -> FilterParams(saturation = 0f, contrast = 1.3f, vignette = 0.7f)
     ImageFilter.Fade -> FilterParams(saturation = 0.9f, contrast = 0.85f)
     ImageFilter.Cyberpunk -> FilterParams(saturation = 1.3f, contrast = 1.2f, vignette = 0.4f)
+    // Posterize: bump contrast slightly so the bands read more clearly. No vignette — quantized
+    // colors already feel poster-y.
+    ImageFilter.Posterize -> FilterParams(saturation = 1.1f, contrast = 1.1f)
+    // Sharpen: dial intensity back so the high-pass kernel doesn't over-crunch out of the box —
+    // the user can crank it up.
+    ImageFilter.Sharpen -> FilterParams(intensity = 0.6f)
+    // Emboss: monochromatic by nature — drop saturation so any residual color from the kernel
+    // offset doesn't muddy the relief.
+    ImageFilter.Emboss -> FilterParams(saturation = 0f, contrast = 1.1f)
+    // Edge: full strength makes sense for an edge map; reduced saturation so it reads like
+    // line-art rather than a colored gradient.
+    ImageFilter.Edge -> FilterParams(saturation = 0.4f, contrast = 1.2f)
+    // Pixelate: no extra tweaks — the mosaic does all the talking.
+    ImageFilter.Pixelate -> FilterParams()
 }

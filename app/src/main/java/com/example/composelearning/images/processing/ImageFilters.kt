@@ -38,20 +38,37 @@ enum class ImageFilter(val label: String) {
     Noir("Noir"),
     Fade("Fade"),
     Cyberpunk("Cyberpunk"),
+    // RenderScript-era "complex" filters, reimagined as AGSL stages on GPU + Default-dispatched
+    // parallel coroutines on CPU. Posterize is a LUT; Sharpen/Emboss/Edge use a 3x3 convolution
+    // stage (the AGSL equivalent of ScriptIntrinsicConvolve3x3); Pixelate is a sample-coord trick.
+    Posterize("Posterize"),
+    Sharpen("Sharpen"),
+    Emboss("Emboss"),
+    Edge("Edge"),
+    Pixelate("Pixelate"),
 }
 
 // One immutable description of a filter's math. Lives in memory, passed to both pipelines.
 // `mat` is row-major 3x4 — three output channels (R,G,B), four inputs (R,G,B,A).
 // `offset` is the constant added after the matrix multiply (per output channel).
 // `lutR/G/B` are 256-entry tone curves; null means "leave the channel alone".
+// `kernel` is a 3x3 row-major convolution kernel — null means "skip the neighborhood read".
+// `kernelOffset` is added to each channel after convolution (e.g., 0.5 for emboss so flat
+// regions land on mid-grey).
+// `pixelateBlock` snaps the sample coord to a block grid before any other stage; 0 = off.
 data class FilterSpec(
     val mat: FloatArray,
     val offset: FloatArray,
     val lutR: IntArray?,
     val lutG: IntArray?,
     val lutB: IntArray?,
+    val kernel: FloatArray? = null,
+    val kernelOffset: Float = 0f,
+    val pixelateBlock: Float = 0f,
 ) {
     val hasLut: Boolean get() = lutR != null && lutG != null && lutB != null
+    val hasKernel: Boolean get() = kernel != null
+    val hasPixelate: Boolean get() = pixelateBlock > 0f
 }
 
 private val IDENTITY_MAT = floatArrayOf(
@@ -197,7 +214,72 @@ fun filterSpec(filter: ImageFilter): FilterSpec = when (filter) {
         lutG = neonLut(channel = 1),
         lutB = neonLut(channel = 2),
     )
+
+    // Posterize: quantize each channel to N levels via a step LUT. Pure LUT, no shader change,
+    // no convolution — the same code path Greyscale-via-LUT would take.
+    ImageFilter.Posterize -> FilterSpec(
+        mat = IDENTITY_MAT,
+        offset = ZERO_OFFSET,
+        lutR = posterizeLut(levels = 6),
+        lutG = posterizeLut(levels = 6),
+        lutB = posterizeLut(levels = 6),
+    )
+
+    // Sharpen: classic 3x3 high-pass kernel (sum = 1, so flat areas keep their brightness).
+    // The kernel that Rebecca's slides 59-61 show, applied to all three channels.
+    ImageFilter.Sharpen -> FilterSpec(
+        mat = IDENTITY_MAT,
+        offset = ZERO_OFFSET,
+        lutR = null, lutG = null, lutB = null,
+        kernel = SHARPEN_KERNEL,
+    )
+
+    // Emboss: directional gradient (sum = 0). The 0.5 offset lifts flat regions to mid-grey
+    // so the relief effect reads correctly — without it everything would clip to black.
+    ImageFilter.Emboss -> FilterSpec(
+        mat = IDENTITY_MAT,
+        offset = ZERO_OFFSET,
+        lutR = null, lutG = null, lutB = null,
+        kernel = EMBOSS_KERNEL,
+        kernelOffset = 0.5f,
+    )
+
+    // Edge: 4-neighbour Laplacian (sum = 0). Flat areas → black, gradients → bright. The
+    // simpler cousin of Sobel — single kernel, no per-direction magnitude calc.
+    ImageFilter.Edge -> FilterSpec(
+        mat = IDENTITY_MAT,
+        offset = ZERO_OFFSET,
+        lutR = null, lutG = null, lutB = null,
+        kernel = LAPLACIAN_KERNEL,
+    )
+
+    // Pixelate: 12-pixel block mosaic. Snaps the sample coord to the block centre before
+    // anything else runs — every pixel inside a block reads the same source pixel.
+    ImageFilter.Pixelate -> FilterSpec(
+        mat = IDENTITY_MAT,
+        offset = ZERO_OFFSET,
+        lutR = null, lutG = null, lutB = null,
+        pixelateBlock = 12f,
+    )
 }
+
+private val SHARPEN_KERNEL = floatArrayOf(
+    0f, -1f, 0f,
+    -1f, 5f, -1f,
+    0f, -1f, 0f,
+)
+
+private val EMBOSS_KERNEL = floatArrayOf(
+    -2f, -1f, 0f,
+    -1f, 0f, 1f,
+    0f, 1f, 2f,
+)
+
+private val LAPLACIAN_KERNEL = floatArrayOf(
+    0f, -1f, 0f,
+    -1f, 4f, -1f,
+    0f, -1f, 0f,
+)
 
 // =================================================================================================
 // LUT generators. Each returns a 256-entry array indexed 0..255. The math is straightforward —
@@ -234,6 +316,17 @@ private fun tealOrangeLut(channel: Int): IntArray = IntArray(256) { i ->
         else -> x * 0.55f + shadow * 0.45f                  // B: pull shadows cool
     }
     (out.coerceIn(0f, 1f) * 255f).toInt()
+}
+
+// Posterize: quantize to N evenly-spaced output levels. With levels=6 the 256-entry table holds
+// six plateaus, each ~42 entries wide — gradients become visible bands. The +127 in the divide
+// is just half-step rounding so the bands sit symmetrically around mid-grey.
+private fun posterizeLut(levels: Int): IntArray {
+    val maxLvl = (levels - 1).coerceAtLeast(1)
+    return IntArray(256) { i ->
+        val q = (i * maxLvl + 127) / 255
+        (q * 255 / maxLvl).coerceIn(0, 255)
+    }
 }
 
 // Neon palette for cyberpunk. Magenta highlights, cyan shadows, with a small sine bend
@@ -301,8 +394,43 @@ val FILTER_SHADER: String = """
     uniform float4 matRow2;       // B-out
     uniform float3 matOffset;     // constant added per output channel
 
+    uniform float pixelateBlock;  // > 1 = snap the sample coord to a block grid; 0 = off
+    uniform float useKernel;      // 0 or 1: enable the 3x3 convolution stage
+    uniform float3 kRow0;         // 3x3 kernel rows (row-major). Used only when useKernel > 0.5.
+    uniform float3 kRow1;
+    uniform float3 kRow2;
+    uniform float kernelOffset;   // constant added per channel after convolution (e.g. 0.5 emboss)
+
     half4 main(float2 fragCoord) {
-        half4 src = content.eval(fragCoord);
+        // Original pixel at this position — kept for the final intensity blend so the slider
+        // smoothly fades back to the untouched image regardless of which stages ran.
+        half4 origSrc = content.eval(fragCoord);
+
+        // 0a) Pixelate: every pixel inside a block reads the block-centre sample, producing a
+        // chunky mosaic. The same coord is used by the convolution stage so the two compose.
+        float2 sampleCoord = fragCoord;
+        if (pixelateBlock > 1.0) {
+            sampleCoord = (floor(fragCoord / pixelateBlock) + float2(0.5)) * pixelateBlock;
+        }
+
+        half4 src = content.eval(sampleCoord);
+
+        // 0b) 3x3 convolution. Branching on a uniform is free here — every fragment in a draw
+        // takes the same branch, so there's no warp divergence. AGSL's content.eval() does the
+        // clamping at the image edges for us via RenderEffect's default sampler.
+        if (useKernel > 0.5) {
+            half3 acc = half3(0.0);
+            acc += half3(content.eval(sampleCoord + float2(-1.0, -1.0)).rgb) * half(kRow0.x);
+            acc += half3(content.eval(sampleCoord + float2( 0.0, -1.0)).rgb) * half(kRow0.y);
+            acc += half3(content.eval(sampleCoord + float2( 1.0, -1.0)).rgb) * half(kRow0.z);
+            acc += half3(content.eval(sampleCoord + float2(-1.0,  0.0)).rgb) * half(kRow1.x);
+            acc += half3(src.rgb)                                            * half(kRow1.y);
+            acc += half3(content.eval(sampleCoord + float2( 1.0,  0.0)).rgb) * half(kRow1.z);
+            acc += half3(content.eval(sampleCoord + float2(-1.0,  1.0)).rgb) * half(kRow2.x);
+            acc += half3(content.eval(sampleCoord + float2( 0.0,  1.0)).rgb) * half(kRow2.y);
+            acc += half3(content.eval(sampleCoord + float2( 1.0,  1.0)).rgb) * half(kRow2.z);
+            src = half4(clamp(acc + half3(kernelOffset), half3(0.0), half3(1.0)), src.a);
+        }
 
         // 1) Color matrix: each output channel is a dot product of the input RGBA with one row.
         //    The matrix uniforms are float for setFloatUniform compatibility across API levels.
@@ -339,9 +467,10 @@ val FILTER_SHADER: String = """
             m *= v;
         }
 
-        // 6) Intensity blend back with the source so each preset has a 0..1 strength.
-        half3 outRgb = mix(src.rgb, m, half(intensity));
-        return half4(outRgb, src.a);
+        // 6) Intensity blend back with the *original* (pre-pixelate, pre-convolution) source so
+        // each preset has a clean 0..1 strength slider.
+        half3 outRgb = mix(origSrc.rgb, m, half(intensity));
+        return half4(outRgb, origSrc.a);
     }
 """.trimIndent()
 
@@ -354,14 +483,30 @@ fun thumbnailGradient(filter: ImageFilter): IntArray {
     val size = 64
     val pixels = IntArray(size * size)
     val spec = filterSpec(filter)
+    val block = if (spec.hasPixelate) spec.pixelateBlock.toInt().coerceAtLeast(1) else 1
     for (y in 0 until size) {
         for (x in 0 until size) {
-            // Sample a smooth hue/value gradient as a stand-in for "a photo".
-            val u = x / (size - 1f)
-            val v = y / (size - 1f)
-            val r = u
-            val g = (0.5f + 0.5f * sin(u * 6.28f + v * 3.14f))
-            val b = 1f - v
+            // Pixelate stage: snap (x,y) to a block grid before sampling the gradient.
+            val sx = if (block > 1) (x / block) * block + block / 2 else x
+            val sy = if (block > 1) (y / block) * block + block / 2 else y
+            var (r, g, b) = gradientSample(sx, sy, size)
+            // Convolution stage: same kernel logic as the shader and the CPU strip, applied to
+            // a 3x3 patch of the synthetic gradient. The smooth gradient produces visible relief
+            // for Emboss / Edge in the chip preview.
+            if (spec.hasKernel) {
+                val k = spec.kernel!!
+                var rr = 0f; var gg = 0f; var bb = 0f
+                for (kdy in -1..1) {
+                    for (kdx in -1..1) {
+                        val (nr, ng, nb) = gradientSample(sx + kdx, sy + kdy, size)
+                        val w = k[(kdy + 1) * 3 + (kdx + 1)]
+                        rr += nr * w; gg += ng * w; bb += nb * w
+                    }
+                }
+                r = (rr + spec.kernelOffset).coerceIn(0f, 1f)
+                g = (gg + spec.kernelOffset).coerceIn(0f, 1f)
+                b = (bb + spec.kernelOffset).coerceIn(0f, 1f)
+            }
             val (fr, fg, fb) = applySpecForSwatch(spec, r, g, b)
             val rr = (fr.coerceIn(0f, 1f) * 255).toInt()
             val gg = (fg.coerceIn(0f, 1f) * 255).toInt()
@@ -370,6 +515,15 @@ fun thumbnailGradient(filter: ImageFilter): IntArray {
         }
     }
     return pixels
+}
+
+private fun gradientSample(sx: Int, sy: Int, size: Int): Triple<Float, Float, Float> {
+    val u = sx.coerceIn(0, size - 1) / (size - 1f)
+    val v = sy.coerceIn(0, size - 1) / (size - 1f)
+    val r = u
+    val g = (0.5f + 0.5f * sin(u * 6.28f + v * 3.14f))
+    val b = 1f - v
+    return Triple(r, g, b)
 }
 
 const val THUMBNAIL_SIZE: Int = 64

@@ -235,6 +235,19 @@ private fun GpuPreview(
                 shader.setFloatUniform("saturation", p.saturation)
                 shader.setFloatUniform("vignette", p.vignette)
                 shader.setFloatUniform("resolution", size.width, size.height)
+                // Convolution stage uniforms. The kernel rows default to (0,0,0) when unused —
+                // the shader gates them with `useKernel` so the eight neighbour samples are
+                // skipped entirely on the no-kernel fast path.
+                val k = spec.kernel
+                shader.setFloatUniform("useKernel", if (spec.hasKernel) 1f else 0f)
+                shader.setFloatUniform("kRow0",
+                    k?.get(0) ?: 0f, k?.get(1) ?: 0f, k?.get(2) ?: 0f)
+                shader.setFloatUniform("kRow1",
+                    k?.get(3) ?: 0f, k?.get(4) ?: 0f, k?.get(5) ?: 0f)
+                shader.setFloatUniform("kRow2",
+                    k?.get(6) ?: 0f, k?.get(7) ?: 0f, k?.get(8) ?: 0f)
+                shader.setFloatUniform("kernelOffset", spec.kernelOffset)
+                shader.setFloatUniform("pixelateBlock", spec.pixelateBlock)
                 renderEffect = RenderEffect
                     .createRuntimeShaderEffect(shader, "content")
                     .asComposeRenderEffect()
