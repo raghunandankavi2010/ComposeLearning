@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import com.example.composelearning.lists.InstagramCarouselPreview
 import com.example.composelearning.lists.InstagramCarouselPreview2
 
-private val TABS = listOf("Instagram", "Instagram v2", "Pager", "Pager v2")
+private val TABS = listOf("3D", "Instagram", "Instagram v2", "Pager", "Pager v2")
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,10 +40,11 @@ fun PagerShowcaseScreen() {
         }
         Box(modifier = Modifier.fillMaxSize()) {
             when (selected) {
-                0 -> InstagramCarouselPreview()
-                1 -> InstagramCarouselPreview2()
-                2 -> PagerDemo(modifier = Modifier.fillMaxSize())
-                3 -> Pager2()
+                0 -> ThreeDCarousel(modifier = Modifier.fillMaxSize())
+                1 -> InstagramCarouselPreview()
+                2 -> InstagramCarouselPreview2()
+                3 -> PagerDemo(modifier = Modifier.fillMaxSize())
+                4 -> Pager2()
             }
         }
     }

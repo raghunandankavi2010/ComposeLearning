@@ -117,6 +117,7 @@ import kotlinx.serialization.Serializable
     @Serializable data object AnmolNetflix : AnimScreen
     @Serializable data object SortAnimation : AnimScreen
     @Serializable data object ImageProcessing : AnimScreen
+    @Serializable data object SaveActivity : AnimScreen
 }
 
 @Composable
@@ -266,6 +267,7 @@ fun AppNavigation(
         entry<AnimScreen.ImageProcessing> {
             ImageProcessingScreen(onBack = { navigator.goBack() })
         }
+        entry<AnimScreen.SaveActivity> { SaveActivityScreen() }
     }
 
     NavDisplay(

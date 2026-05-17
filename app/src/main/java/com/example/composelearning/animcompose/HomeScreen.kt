@@ -33,6 +33,11 @@ data class AnimationCategory(
 fun MainHomeScreen(navigator: Navigator) {
     val categories = listOf(
         AnimationCategory(
+            "Strava Save Activity",
+            "Pill button morphs to circular loader, arc sweeps 360°, then point-sample lerps into a checkmark — color shifts orange→green with a spring pop",
+            AnimScreen.SaveActivity,
+        ),
+        AnimationCategory(
             "Image Processing (CPU + GPU)",
             "Instagram-style filter strip: greyscale, sepia, vintage S-curve LUT, cinematic teal/orange, polaroid fade, noir, cyberpunk. AGSL shader on GPU, parallel coroutine pipeline on CPU — toggle and compare.",
             AnimScreen.ImageProcessing,
