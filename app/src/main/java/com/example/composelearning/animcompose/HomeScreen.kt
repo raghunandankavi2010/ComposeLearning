@@ -19,10 +19,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+// @Immutable lets the Compose compiler skip CategoryCard whenever the AnimationCategory inputs
+// are equal across recomposition. Without it, the data class is treated as "stable but unknown"
+// and every card re-runs whenever the parent recomposes.
+@Immutable
 data class AnimationCategory(
     val title: String,
     val description: String,
@@ -32,7 +38,10 @@ data class AnimationCategory(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainHomeScreen(navigator: Navigator) {
-    val categories = listOf(
+    // remember holds the 60+ AnimationCategory instances across recompositions; otherwise the
+    // whole list is reallocated every time MainHomeScreen recomposes (e.g. on nav state changes),
+    // which invalidates every card because the instances are new objects.
+    val categories = remember { listOf(
         AnimationCategory(
             "Strava Save Activity",
             "Pill button morphs to circular loader, arc sweeps 360°, then point-sample lerps into a checkmark — color shifts orange→green with a spring pop",
@@ -363,7 +372,7 @@ fun MainHomeScreen(navigator: Navigator) {
             "File delete Animation",
             AnimScreen.FileDeleteAnimation
         )
-    )
+    ) }
 
     Scaffold(
         topBar = {
@@ -385,7 +394,10 @@ fun MainHomeScreen(navigator: Navigator) {
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(categories) { category ->
+            items(
+                items = categories,
+                key = { it.title },
+            ) { category ->
                 CategoryCard(
                     title = category.title,
                     description = category.description,

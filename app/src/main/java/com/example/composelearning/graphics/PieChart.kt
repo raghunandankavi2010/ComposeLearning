@@ -6,7 +6,7 @@ import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -42,8 +42,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composelearning.R
 import com.example.composelearning.customshapes.dpToPx
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.ui.input.pointer.pointerInput
+import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.math.sqrt
 
 @Composable
 fun PieChartPreview(
@@ -107,14 +111,16 @@ fun PieChart(
     resetDismiss: (Boolean) -> Unit
 ) {
 
-    BoxWithConstraints(
+    Box(
         modifier = modifier.clickable(enabled = false) {
 
         },
         contentAlignment = Alignment.Center,
     ) {
 
-        val width = constraints.maxWidth.toFloat()
+        // Was BoxWithConstraints to read maxWidth — but the value was unused, so we paid for
+        // an extra subcomposition + measure pass per recomposition for nothing. Plain Box is
+        // fine here; the Canvas inside fillMaxWidth + aspectRatio sizes itself.
 
         val innerRadius = 74.dp.dpToPx()
         val outerRadius = 128.dp.dpToPx()
@@ -160,7 +166,12 @@ fun PieChart(
         val coEfficientLarge = (360f - smallDataAngle) / largeDataSum
 
         var currentAngle = 0f
-        val currentSweepAngle = animatableInitialSweepAngle.value
+        // Don't read animatableInitialSweepAngle.value here — that would subscribe THIS
+        // composition to every frame of the 1500ms sweep animation, recomposing the entire
+        // PieChart + PieChartImpl 60 times per second. Instead we pass a State<Float> down and
+        // let the Canvas DrawScope read it inside its draw lambda; only the draw layer
+        // invalidates, composition stays still.
+        val sweepState = animatableInitialSweepAngle.asState()
 
         val chartDataList = remember(data) {
             data.map {
@@ -238,55 +249,62 @@ fun PieChart(
         val chartModifier = Modifier
             .fillMaxWidth()
             .aspectRatio(1f)
-//            .pointerInput(Unit) {
-//                detectTapGestures(
-//                    onTap = { position: Offset ->
-//                        val xPos = size.center.x - position.x
-//                        val yPos = size.center.y - position.y
-//                        val length = sqrt(xPos * xPos + yPos * yPos)
-//                        val isTouched = length in innerRadius..radius
-//
-//                        if (isTouched) {
-//                            var touchAngle =
-//                                (-startAngle + 180f + atan2(
-//                                    yPos,
-//                                    xPos
-//                                ) * 180 / Math.PI) % 360f
-//
-//                            if (touchAngle < 0) {
-//                                touchAngle += 360f
-//                            }
-//
-//                            chartDataList.forEachIndexed { index, chartData ->
-//                                val range = chartData.range
-//                                val isTouchInArcSegment = touchAngle in range
-//                                if (chartData.isSelected) {
-//                                    chartData.isSelected = false
-//                                    resetDismiss(false)
-//                                } else {
-//                                    chartData.isSelected = isTouchInArcSegment
-//
-//                                    if (isTouchInArcSegment) {
-//                                        onClick?.invoke(
-//                                            ChartData(
-//                                                color = chartData.color,
-//                                                data = chartData.data
-//                                            ), index
-//                                        )
-//
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
-//                )
-//            }
+            .pointerInput(chartDataList) {
+                detectTapGestures(
+                    onTap = { position: Offset ->
+                        // Vector from canvas centre to touch point. The original code reversed the
+                        // signs (centre - touch); we keep it because the +180° offset below was
+                        // calibrated against that convention, so flipping back would invert which
+                        // segment lights up.
+                        val xPos = size.center.x - position.x
+                        val yPos = size.center.y - position.y
+                        val length = sqrt(xPos * xPos + yPos * yPos)
+                        // Touch must land on the ring (between inner hole and outer arc edge).
+                        // Originally compared against an undefined `radius` — outerRadius is the
+                        // actual edge of the drawn arcs.
+                        val isTouched = length in innerRadius..outerRadius
+
+                        if (isTouched) {
+                            var touchAngle =
+                                (-startAngle + 180f + atan2(
+                                    yPos,
+                                    xPos
+                                ) * 180 / Math.PI) % 360f
+
+                            if (touchAngle < 0) {
+                                touchAngle += 360f
+                            }
+
+                            val angleF = touchAngle.toFloat()
+                            chartDataList.forEachIndexed { index, chartData ->
+                                val range = chartData.range
+                                val isTouchInArcSegment = angleF in range
+                                if (chartData.isSelected) {
+                                    chartData.isSelected = false
+                                    resetDismiss(false)
+                                } else {
+                                    chartData.isSelected = isTouchInArcSegment
+                                    if (isTouchInArcSegment) {
+                                        onClick?.invoke(
+                                            ChartData(
+                                                color = chartData.color,
+                                                data = chartData.data,
+                                            ),
+                                            index,
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                )
+            }
 
         PieChartImpl(
             modifier = chartModifier,
             chartDataList = chartDataList,
             textMeasureResults = textMeasureResults,
-            currentSweepAngle = currentSweepAngle,
+            sweepState = sweepState,
             chartStartAngle = startAngle,
             chartEndAngle = chartEndAngle,
             outerRadius = outerRadius,
@@ -299,15 +317,18 @@ fun PieChart(
 Column(modifier = Modifier.align(Alignment.Center),
     horizontalAlignment = Alignment.CenterHorizontally){
 
+    // Theme-aware so the centre labels stay legible in both light and dark mode. The previous
+    // hard-coded near-black colours rendered invisible against the dark surface.
+    val onSurface = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
+
     Text(
         text = "Total expense",
-// en/Desktop/Body/XXS
         style = TextStyle(
             fontSize = 12.sp,
             lineHeight = 16.sp,
             fontFamily = FontFamily(Font(R.font.jio_type_medium)),
             fontWeight = FontWeight(500),
-            color = Color(0xA6000000),
+            color = onSurface.copy(alpha = 0.65f),
             textAlign = TextAlign.Center,
             )
     )
@@ -320,7 +341,7 @@ Column(modifier = Modifier.align(Alignment.Center),
             lineHeight = 28.sp,
             fontFamily = FontFamily(Font(R.font.jio_type_black)),
             fontWeight = FontWeight(900),
-            color = Color(0xFF0D0D0E),
+            color = onSurface,
             textAlign = TextAlign.Center,
         )
     )
@@ -335,7 +356,7 @@ private fun PieChartImpl(
     modifier: Modifier = Modifier,
     chartDataList: List<AnimatedChartData>,
     textMeasureResults: List<TextLayoutResult>,
-    currentSweepAngle: Float,
+    sweepState: androidx.compose.runtime.State<Float>,
     chartStartAngle: Float,
     chartEndAngle: Float,
     outerRadius: Float,
@@ -354,6 +375,11 @@ private fun PieChartImpl(
     val pointerTip = rememberVectorPainter(image = pointerVector)
 
     Canvas(modifier = modifier) {
+
+        // Read the animated sweep here, inside the DrawScope. The subscription is captured by
+        // the draw layer rather than the surrounding composition, so the animation frames only
+        // invalidate the draw — they don't recompose PieChart or PieChartImpl.
+        val currentSweepAngle = sweepState.value
 
         val width = size.width
         var startAngle = chartStartAngle
@@ -380,18 +406,15 @@ private fun PieChartImpl(
             val textMeasureResult = textMeasureResults[index]
             val textSize = textMeasureResult.size
 
-            val currentStrokeWidth = outerStrokeWidth
-
-            val arcWidth = outerStrokeWidth
-
-
-            /*if (chartData.isSelected && !dimissToolTip)  {
-                // Increase arc width for the first arc
-                outerStrokeWidth + 50f // You can adjust the value as needed
+            // Selected segments draw with a fatter stroke so the user gets immediate visual
+            // feedback on tap. The inner edge of the arc is fixed at innerRadius (set by topLeft
+            // and size below), so the extra width pushes the OUTER edge further out — the
+            // selected slice "pops" outward without overlapping the centre text.
+            val arcWidth = if (chartData.isSelected && !dimissToolTip) {
+                outerStrokeWidth + 16.dp.toPx()
             } else {
-                // Keep the same arc width for other arcs
                 outerStrokeWidth
-            }*/
+            }
 
             if (startAngle <= currentSweepAngle) {
 
@@ -425,15 +448,22 @@ private fun PieChartImpl(
                 )
                 if (drawText && currentSweepAngle == chartEndAngle) {
                     val textCenter = textSize.center
+                    // Anchor the label at the radial midpoint of THIS slice's actual arcWidth
+                    // (not the constant outerStrokeWidth) so the percent text stays visually
+                    // centred when a selected slice pops outward. Without this, the label sits
+                    // near the inner edge of the wider arc and reads as "cut off".
+                    val labelRadius = innerRadius + arcWidth / 2f
+                    val rawX = -textCenter.x + center.x + labelRadius * cos(angleInRadians)
+                    val rawY = -textCenter.y + center.y + labelRadius * sin(angleInRadians)
+                    // Defensive clamp — Canvas already clips draws to its bounds, but coercing
+                    // the topLeft keeps the entire glyph inside the canvas rect instead of having
+                    // its right/bottom edge cropped.
+                    val clampedX = rawX.coerceIn(0f, (size.width - textSize.width).coerceAtLeast(0f))
+                    val clampedY = rawY.coerceIn(0f, (size.height - textSize.height).coerceAtLeast(0f))
                     drawText(
                         textLayoutResult = textMeasureResult,
                         color = Color(0xFF141414),
-                        topLeft = Offset(
-                            -textCenter.x + center.x
-                                    + (innerRadius + currentStrokeWidth / 2) * cos(angleInRadians),
-                            -textCenter.y + center.y
-                                    + (innerRadius + currentStrokeWidth / 2) * sin(angleInRadians)
-                        )
+                        topLeft = Offset(clampedX, clampedY),
                     )
                 }
 

@@ -12,7 +12,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.dp import com.example.composelearning.customshapes.TicketComposable
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 
@@ -23,7 +23,8 @@ fun LinesShapesArcsScreen() {
         "Primitives",
         "Fill vs Stroke",
         "Gradients",
-        "Audio Visualizer"
+        "Audio Visualizer",
+        "Ticket"
     )
 
     Column(
@@ -55,6 +56,7 @@ fun LinesShapesArcsScreen() {
                 1 -> FillStrokeDemo()
                 2 -> GradientsDemo()
                 3 -> AudioVisualizerDemo()
+                4 -> TicketDemo()
             }
         }
     }
@@ -239,6 +241,20 @@ fun GradientsDemo() {
             topLeft = Offset(140.dp.toPx(), 120.dp.toPx()),
             size = rectSize
         )
+    }
+}
+
+@Composable
+fun TicketDemo() {
+    // Hosts the existing TicketComposable — uses arcTo'd Path + custom Shape so the rounded
+    // corners are concave (notched), with a dashed midline separating the stub from the body.
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        contentAlignment = androidx.compose.ui.Alignment.Center,
+    ) {
+        TicketComposable(modifier = Modifier)
     }
 }
 

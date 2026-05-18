@@ -1,5 +1,6 @@
 package com.example.composelearning.animcompose
 
+import android.os.Parcelable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -45,9 +46,12 @@ import com.example.composelearning.shaders.ShadersHubScreen
 import com.example.composelearning.clocks.TimeRangeKnobScreen
 import com.example.composelearning.shadows.ShadowsShowcaseScreen
 import com.example.composelearning.tutorial.ui.TutorialScreen
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
-@Serializable sealed interface AnimScreen : NavKey {
+@Serializable
+@Parcelize
+sealed interface AnimScreen : NavKey, Parcelable {
     @Serializable data object DrawScale: AnimScreen
     @Serializable data object Home : AnimScreen
     @Serializable data object MathBasics : AnimScreen
