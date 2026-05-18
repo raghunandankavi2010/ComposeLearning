@@ -4,14 +4,19 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.Alignment
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -42,7 +47,9 @@ import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-private const val DAYS_PER_PAGE = 6
+// Tuned so each page holds roughly a fortnight of data; combined with the wider pageWidth below
+// this leaves enough horizontal room per day for the "EEE" + "MMM d" label stack to read cleanly.
+private const val DAYS_PER_PAGE = 12
 
 /**
  * Continuous line chart that pages through fitness data backwards in time.
@@ -73,9 +80,9 @@ private const val DAYS_PER_PAGE = 6
 fun FitnessLineChart(
     modifier: Modifier = Modifier,
     daysPerPage: Int = DAYS_PER_PAGE,
-    pageWidth: Dp = 260.dp,
+    pageWidth: Dp = 420.dp,
     pageHeight: Dp = 220.dp,
-    initialPages: Int = 3,
+    initialPages: Int = 5,
     theme: ChartTheme = ChartDefaults.theme(),
 ) {
     val pages = remember { mutableStateOf<List<List<FitnessDay>>>(emptyList()) }
@@ -181,6 +188,7 @@ fun FitnessLineChart(
     )
 
     Column(modifier) {
+      Box(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.fillMaxWidth(),
         ) {
@@ -233,6 +241,20 @@ fun FitnessLineChart(
             }
             }
         }
+        // Older-page lazy-load indicator. With reverseLayout = true the older pages stack on the
+        // left, so the spinner appears on the left edge of the chart while the next chunk is
+        // fetched from FitnessRepository.loadDays.
+        if (loading.value) {
+            CircularProgressIndicator(
+                strokeWidth = 2.dp,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = 8.dp)
+                    .size(22.dp),
+            )
+        }
+      }
     }
 }
 
