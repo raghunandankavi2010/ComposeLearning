@@ -43,6 +43,11 @@ fun MainHomeScreen(navigator: Navigator) {
     // which invalidates every card because the instances are new objects.
     val categories = remember { listOf(
         AnimationCategory(
+            "Per-item ViewModels (Compose)",
+            "Google's recommended pattern: scope a ViewModel to one list item or pager page. LazyColumn (resets on scroll) + HorizontalPager (retained via hoisted provider) + the screen-level anti-pattern.",
+            AnimScreen.PerItemViewModel,
+        ),
+        AnimationCategory(
             "Strava Save Activity",
             "Pill button morphs to circular loader, arc sweeps 360°, then point-sample lerps into a checkmark — color shifts orange→green with a spring pop",
             AnimScreen.SaveActivity,

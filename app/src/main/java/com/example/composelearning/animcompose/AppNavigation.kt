@@ -30,6 +30,7 @@ import com.example.composelearning.images.OverlappingImagesScreen
 import com.example.composelearning.images.processing.ImageProcessingScreen
 import com.example.composelearning.lists.ListsShowcaseScreen
 import com.example.composelearning.pager.PagerShowcaseScreen
+import com.example.composelearning.peritemvm.PerItemViewModelShowcaseScreen
 import com.example.composelearning.textfields.MarqueeText
 import com.example.composelearning.charts.BarChartShowcaseScreen
 import com.example.composelearning.charts.BezierShowcaseScreen
@@ -126,6 +127,7 @@ sealed interface AnimScreen : NavKey, Parcelable {
     @Serializable data object ImageProcessing : AnimScreen
     @Serializable data object SaveActivity : AnimScreen
     @Serializable data object ZoomableImage : AnimScreen
+    @Serializable data object PerItemViewModel : AnimScreen
 }
 
 @Composable
@@ -278,6 +280,7 @@ fun AppNavigation(
         }
         entry<AnimScreen.SaveActivity> { SaveActivityScreen() }
         entry<AnimScreen.ZoomableImage> { ZoomableImageScreen(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.PerItemViewModel> { PerItemViewModelShowcaseScreen() }
     }
 
     NavDisplay(
