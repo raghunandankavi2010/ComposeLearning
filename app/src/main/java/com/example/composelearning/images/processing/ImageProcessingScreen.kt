@@ -31,13 +31,11 @@ import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -61,9 +59,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 // =================================================================================================
 // Image-processing screen. One photo, a strip of TikTok / Instagram-style filter presets, and live
-// sliders for intensity / brightness / contrast / saturation / vignette. Toggle between the GPU
-// pipeline (AGSL shader as a RenderEffect — runs at display refresh rate) and the CPU pipeline
-// (Kotlin per-pixel loop, parallelized across cores with coroutines — slower, useful for export).
+// sliders for intensity / brightness / contrast / saturation / vignette. The pipeline is AGSL on
+// the GPU as a RenderEffect — runs at display refresh rate with zero per-frame allocation.
 // =================================================================================================
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,7 +75,6 @@ fun ImageProcessingScreen(
     // slider drags invalidate the layer only — the screen composable itself does not recompose
     // at 60Hz.
     val paramsState = viewModel.params.collectAsStateWithLifecycle()
-    val mode by viewModel.mode.collectAsStateWithLifecycle()
 
     val photoPicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
@@ -107,6 +103,9 @@ fun ImageProcessingScreen(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White,
+                    actionIconContentColor = Color.White,
                 ),
             )
         },
@@ -118,23 +117,13 @@ fun ImageProcessingScreen(
         ) {
             PreviewArea(
                 bitmap = ui.sourceBitmap,
-                cpuOutput = ui.cpuOutput,
                 isLoadingSource = ui.isLoadingSource,
-                isProcessingCpu = ui.isProcessingCpu,
-                cpuDurationMs = ui.lastCpuDurationMs,
-                mode = mode,
                 filter = filter,
                 paramsState = paramsState,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp),
-            )
-
-            ModeToggle(
-                mode = mode,
-                onChange = viewModel::onModeChanged,
-                modifier = Modifier.padding(horizontal = 16.dp),
             )
 
             FilterStrip(
@@ -154,11 +143,7 @@ fun ImageProcessingScreen(
 @Composable
 private fun PreviewArea(
     bitmap: Bitmap?,
-    cpuOutput: Bitmap?,
     isLoadingSource: Boolean,
-    isProcessingCpu: Boolean,
-    cpuDurationMs: Long?,
-    mode: ProcessingMode,
     filter: ImageFilter,
     paramsState: State<FilterParams>,
     modifier: Modifier = Modifier,
@@ -172,15 +157,10 @@ private fun PreviewArea(
         when {
             isLoadingSource -> CircularProgressIndicator()
             bitmap == null -> Text("Pick an image to filter")
-            mode == ProcessingMode.Gpu -> GpuPreview(
+            else -> GpuPreview(
                 bitmap = bitmap,
                 filter = filter,
                 paramsState = paramsState,
-            )
-            else -> CpuPreview(
-                output = cpuOutput ?: bitmap,
-                isProcessing = isProcessingCpu,
-                durationMs = cpuDurationMs,
             )
         }
     }
@@ -253,63 +233,6 @@ private fun GpuPreview(
                     .asComposeRenderEffect()
             },
     )
-}
-
-@Composable
-private fun CpuPreview(output: Bitmap, isProcessing: Boolean, durationMs: Long?) {
-    val image = remember(output) { output.asImageBitmap() }
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Image(
-            bitmap = image,
-            contentDescription = null,
-            contentScale = ContentScale.Fit,
-            modifier = Modifier.fillMaxSize(),
-        )
-        if (isProcessing) {
-            CircularProgressIndicator()
-        }
-        if (durationMs != null && !isProcessing) {
-            Surface(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(8.dp),
-                shape = RoundedCornerShape(12.dp),
-                color = Color.Black.copy(alpha = 0.55f),
-            ) {
-                Text(
-                    text = "CPU ${durationMs}ms",
-                    color = Color.White,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun ModeToggle(
-    mode: ProcessingMode,
-    onChange: (ProcessingMode) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        FilterChip(
-            selected = mode == ProcessingMode.Gpu,
-            onClick = { onChange(ProcessingMode.Gpu) },
-            label = { Text("GPU (AGSL)") },
-        )
-        FilterChip(
-            selected = mode == ProcessingMode.Cpu,
-            onClick = { onChange(ProcessingMode.Cpu) },
-            label = { Text("CPU (coroutines)") },
-        )
-    }
 }
 
 @Composable

@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.composelearning.graphics.PieChartPreview
 import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,6 +52,9 @@ fun FitnessLineChartScreen(onBack: () -> Unit) {
                 title = { Text("Fitness — Daily Steps") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White,
+                    actionIconContentColor = Color.White,
                 ),
             )
         }
@@ -139,6 +143,9 @@ fun BarChartShowcaseScreen(onBack: () -> Unit) {
                 title = { Text("Bar Chart") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White,
+                    actionIconContentColor = Color.White,
                 ),
             )
         }
@@ -197,6 +204,9 @@ fun DonutChartShowcaseScreen(onBack: () -> Unit) {
                 title = { Text("Donut Chart") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White,
+                    actionIconContentColor = Color.White,
                 ),
             )
         }
@@ -215,6 +225,39 @@ fun DonutChartShowcaseScreen(onBack: () -> Unit) {
             )
             Spacer(Modifier.height(24.dp))
             DonutLegend(slices = slices)
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PieChartShowcaseScreen(onBack: () -> Unit) {
+    Scaffold(
+        modifier = Modifier.systemBarsPadding(),
+        topBar = {
+            TopAppBar(
+                title = { Text("Pie Chart") },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White,
+                    actionIconContentColor = Color.White,
+                ),
+            )
+        }
+    ) { padding ->
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(16.dp)
+        ) {
+            Text("Expense split (variable-width slices)", style = MaterialTheme.typography.titleMedium)
+            Spacer(Modifier.height(8.dp))
+            // Existing PieChartPreview owns its data, animation, and click handling; the showcase
+            // just supplies a host with a TopAppBar so it slots into the navigation graph alongside
+            // the bar/donut/candle screens.
+            PieChartPreview(onClick = { _, _ -> })
         }
     }
 }
@@ -243,6 +286,9 @@ fun CandleChartShowcaseScreen(onBack: () -> Unit) {
                 title = { Text("Candle Chart") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White,
+                    actionIconContentColor = Color.White,
                 ),
             )
         }
@@ -283,6 +329,9 @@ fun TemperatureShowcaseScreen(onBack: () -> Unit) {
                 title = { Text("Thermometer & Temperature") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White,
+                    actionIconContentColor = Color.White,
                 ),
             )
         }
@@ -369,6 +418,9 @@ fun BezierShowcaseScreen(onBack: () -> Unit) {
                 title = { Text("Bezier Curves") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White,
+                    actionIconContentColor = Color.White,
                 ),
             )
         }
@@ -407,6 +459,9 @@ fun SpeedometerNavScreen(onBack: () -> Unit) {
                 title = { Text("Speedometer Showcase") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White,
+                    actionIconContentColor = Color.White,
                 ),
             )
         }

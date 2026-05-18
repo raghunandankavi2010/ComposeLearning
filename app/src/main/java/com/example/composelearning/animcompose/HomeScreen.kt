@@ -20,6 +20,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 data class AnimationCategory(
@@ -38,8 +39,13 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.SaveActivity,
         ),
         AnimationCategory(
-            "Image Processing (CPU + GPU)",
-            "Instagram-style filter strip: greyscale, sepia, vintage S-curve LUT, cinematic teal/orange, polaroid fade, noir, cyberpunk. AGSL shader on GPU, parallel coroutine pipeline on CPU — toggle and compare.",
+            "Zoomable Image",
+            "Pinch-to-zoom and pan with rememberTransformableState — double-tap to reset, clamped scale, graphicsLayer for recomposition-free transforms",
+            AnimScreen.ZoomableImage,
+        ),
+        AnimationCategory(
+            "Image Processing (AGSL)",
+            "Instagram-style filter strip: greyscale, sepia, vintage S-curve LUT, cinematic teal/orange, polaroid fade, noir, cyberpunk — all rendered as an AGSL RuntimeShader RenderEffect at display refresh rate.",
             AnimScreen.ImageProcessing,
         ),
         AnimationCategory(
@@ -151,6 +157,11 @@ fun MainHomeScreen(navigator: Navigator) {
             "Donut Chart",
             "Animated sweep, center slot, tap-to-select segment, legend",
             AnimScreen.DonutChartDemo
+        ),
+        AnimationCategory(
+            "Pie Chart",
+            "Variable-width slices with min-arc rule for small values, animated sweep-in, percentage labels, center total",
+            AnimScreen.PieChartDemo
         ),
         AnimationCategory(
             "Candle Chart",
@@ -360,7 +371,9 @@ fun MainHomeScreen(navigator: Navigator) {
                 title = { Text("Jetpack Compose Animations") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    titleContentColor = Color.White,
+                    navigationIconContentColor = Color.White,
+                    actionIconContentColor = Color.White,
                 )
             )
         }

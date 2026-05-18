@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.composelearning.ValueBasedAnimationsScreen
 import com.example.composelearning.anim.AnimatedBalanceDemo
+import com.example.composelearning.anim.ZoomableImageScreen
 import com.example.composelearning.PercentageBaseLayout
 import com.example.composelearning.anim.BiometricDemoPanel
 import com.example.composelearning.anim.ButtonAnimationTest
@@ -33,6 +34,7 @@ import com.example.composelearning.charts.BarChartShowcaseScreen
 import com.example.composelearning.charts.BezierShowcaseScreen
 import com.example.composelearning.charts.CandleChartShowcaseScreen
 import com.example.composelearning.charts.DonutChartShowcaseScreen
+import com.example.composelearning.charts.PieChartShowcaseScreen
 import com.example.composelearning.charts.FitnessLineChartScreen
 import com.example.composelearning.charts.SpeedometerNavScreen
 import com.example.composelearning.charts.TemperatureShowcaseScreen
@@ -96,6 +98,7 @@ import kotlinx.serialization.Serializable
     @Serializable data object FitnessLineChart : AnimScreen
     @Serializable data object BarChartDemo : AnimScreen
     @Serializable data object DonutChartDemo : AnimScreen
+    @Serializable data object PieChartDemo : AnimScreen
     @Serializable data object CandleChartDemo : AnimScreen
     @Serializable data object TemperatureGaugeDemo : AnimScreen
     @Serializable data object ShaderDemos : AnimScreen
@@ -118,6 +121,7 @@ import kotlinx.serialization.Serializable
     @Serializable data object SortAnimation : AnimScreen
     @Serializable data object ImageProcessing : AnimScreen
     @Serializable data object SaveActivity : AnimScreen
+    @Serializable data object ZoomableImage : AnimScreen
 }
 
 @Composable
@@ -197,6 +201,7 @@ fun AppNavigation(
         entry<AnimScreen.FitnessLineChart> { FitnessLineChartScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.BarChartDemo> { BarChartShowcaseScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.DonutChartDemo> { DonutChartShowcaseScreen(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.PieChartDemo> { PieChartShowcaseScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.CandleChartDemo> { CandleChartShowcaseScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.TemperatureGaugeDemo> { TemperatureShowcaseScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.ShaderDemos> { ShadersHubScreen() }
@@ -268,6 +273,7 @@ fun AppNavigation(
             ImageProcessingScreen(onBack = { navigator.goBack() })
         }
         entry<AnimScreen.SaveActivity> { SaveActivityScreen() }
+        entry<AnimScreen.ZoomableImage> { ZoomableImageScreen(onBack = { navigator.goBack() }) }
     }
 
     NavDisplay(

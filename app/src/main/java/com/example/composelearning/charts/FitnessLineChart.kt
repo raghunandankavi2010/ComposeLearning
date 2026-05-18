@@ -1,25 +1,26 @@
 package com.example.composelearning.charts
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.util.lerp
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -31,8 +32,10 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.flow.distinctUntilChanged
 import java.text.NumberFormat
 import java.time.LocalDate
@@ -109,25 +112,84 @@ fun FitnessLineChart(
             }
     }
 
-    val (yMin, yMax) = remember(pages.value) {
-        val all = pages.value.flatten()
-        if (all.isEmpty()) 0f to 1f else {
-            val lo = all.minOf { it.steps }.toFloat()
-            val hi = all.maxOf { it.steps }.toFloat()
-            // Pad the range so the curve doesn't graze the top/bottom edges.
-            val pad = (hi - lo).coerceAtLeast(1f) * 0.15f
-            (lo - pad).coerceAtLeast(0f) to (hi + pad)
+    // Per-page Y range. Each page gets its own (min, max) padded the same way as before — so a
+    // calm week reads "calm" (axis caps just above its peak) while a heavy week's axis grows to
+    // accommodate the spike. The Y axis then animates between these ranges as the user scrolls,
+    // matching the old Google Fit weekly chart behaviour.
+    val pageYRanges = remember(pages.value) {
+        pages.value.map { page ->
+            if (page.isEmpty()) 0f to 1f
+            else {
+                val lo = page.minOf { it.steps }.toFloat()
+                val hi = page.maxOf { it.steps }.toFloat()
+                val pad = (hi - lo).coerceAtLeast(1f) * 0.15f
+                (lo - pad).coerceAtLeast(0f) to (hi + pad)
+            }
         }
     }
 
+    // Fractional page index = where the scroll has dragged us between adjacent pages. Reading
+    // layoutInfo through derivedStateOf scopes recomposition to "the float actually changed",
+    // not every frame the snapshot reads anything else.
+    val scrollPageFloat by remember(pageYRanges) {
+        derivedStateOf {
+            val info = listState.layoutInfo
+            val first = info.visibleItemsInfo.firstOrNull() ?: return@derivedStateOf 0f
+            val slot = first.size.coerceAtLeast(1)
+            first.index + (-first.offset.toFloat() / slot)
+        }
+    }
+
+    // Interpolate the Y range linearly between the floor and ceiling pages by the fractional
+    // offset. Combined with animateFloatAsState below, this gives the smooth "axis rising as the
+    // peak day comes into view" feel of the old Google Fit chart.
+    val (targetYMin, targetYMax) = run {
+        if (pageYRanges.isEmpty()) {
+            0f to 1f
+        } else {
+            val frac = scrollPageFloat.coerceIn(0f, pageYRanges.lastIndex.toFloat())
+            val lower = frac.toInt().coerceIn(0, pageYRanges.lastIndex)
+            val upper = (lower + 1).coerceAtMost(pageYRanges.lastIndex)
+            val t = (frac - lower).coerceIn(0f, 1f)
+            val lo = lerp(pageYRanges[lower].first, pageYRanges[upper].first, t)
+            val hi = lerp(pageYRanges[lower].second, pageYRanges[upper].second, t)
+            lo to hi
+        }
+    }
+
+    // Spring on the resolved bounds. While the finger is dragging, scrollPageFloat updates the
+    // target continuously and the spring tracks it; on release the spring keeps the axis smooth
+    // through the fling settle. Medium-low stiffness is the closest match to Google Fit's feel
+    // — quick enough to follow the swipe, slow enough that the labels don't jitter.
+    val yMin by animateFloatAsState(
+        targetValue = targetYMin,
+        animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+        label = "fitness-yMin",
+    )
+    val yMax by animateFloatAsState(
+        targetValue = targetYMax,
+        animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+        label = "fitness-yMax",
+    )
+
     Column(modifier) {
-        FitnessHeader(loading = loading.value, theme = theme)
-        Spacer(Modifier.height(8.dp))
-        LazyRow(
-            state = listState,
-            reverseLayout = true,
+        Row(
             modifier = Modifier.fillMaxWidth(),
         ) {
+            // Persistent Y-axis on the left edge of the screen. It reads the same animated
+            // yMin/yMax the pages do, so its tick labels rise/fall in sync with the chart as
+            // the user scrolls between pages.
+            YAxisColumn(
+                yMin = yMin,
+                yMax = yMax,
+                height = pageHeight,
+                theme = theme,
+            )
+            LazyRow(
+                state = listState,
+                reverseLayout = true,
+                modifier = Modifier.weight(1f),
+            ) {
             items(
                 count = pages.value.size,
                 key = { it },
@@ -161,26 +223,70 @@ fun FitnessLineChart(
                     isLatestPage = pageIndex == 0,
                 )
             }
+            }
         }
     }
 }
 
 @Composable
-private fun FitnessHeader(loading: Boolean, theme: ChartTheme) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
+private fun YAxisColumn(
+    yMin: Float,
+    yMax: Float,
+    height: Dp,
+    theme: ChartTheme,
+) {
+    val measurer = rememberTextMeasurer()
+    // Matches FitnessPage's vertical padding/inset so the tick rows align with the chart's grid.
+    Canvas(
+        modifier = Modifier
+            .width(46.dp)
+            .height(height)
+            .padding(vertical = 8.dp),
     ) {
-        Text("Daily steps — scroll left to load older days", style = theme.titleStyle)
-        Spacer(Modifier.weight(1f))
-        if (loading) {
-            CircularProgressIndicator(
-                strokeWidth = 2.dp,
-                modifier = Modifier.width(16.dp).height(16.dp),
-                color = MaterialTheme.colorScheme.primary,
+        val plotTop = 12.dp.toPx()
+        val plotBottom = size.height - 36.dp.toPx()
+        // Raw animated range — labels and positions move smoothly with the spring instead of
+        // snapping to niceTicks rounded values that read as "static" between pages with similar
+        // peaks.
+        val yRange = AxisRange(yMin, yMax)
+        val ticks = fitnessYTicks(yMin, yMax, 4)
+        // Right-edge baseline visually anchors the labels to the chart panel.
+        drawLine(
+            color = theme.axisColor,
+            start = Offset(size.width, plotTop),
+            end = Offset(size.width, plotBottom),
+            strokeWidth = theme.axisLineWidth.toPx(),
+        )
+        ticks.forEach { v ->
+            val y = lerpRange(v, yRange, plotBottom..plotTop)
+            val label = formatSteps(v)
+            val layout = measurer.measure(
+                label,
+                style = theme.axisLabelStyle.copy(fontSize = 11.sp, fontWeight = FontWeight.Medium),
+            )
+            drawText(
+                textLayoutResult = layout,
+                topLeft = Offset(
+                    size.width - layout.size.width - 6.dp.toPx(),
+                    y - layout.size.height / 2f,
+                ),
             )
         }
     }
+}
+
+// Evenly-spaced ticks drawn from the raw animated range. Pages and the Y-axis column share this
+// so the gridlines and the labels are guaranteed to line up frame-by-frame as yMin/yMax animate.
+internal fun fitnessYTicks(yMin: Float, yMax: Float, segments: Int = 4): List<Float> {
+    if (yMax - yMin < 0.001f) return listOf(yMin)
+    val step = (yMax - yMin) / segments
+    return (0..segments).map { yMin + step * it }
+}
+
+private fun formatSteps(v: Float): String = when {
+    v < 1000f -> v.toInt().toString()
+    v < 10000f -> "%.1fk".format(v / 1000f)
+    else -> "${(v / 1000f).toInt()}k"
 }
 
 @Composable
@@ -222,9 +328,9 @@ private fun FitnessPage(
         )
         val slotWidth = plot.width / n
 
-        // Y range
-        val yRange = AxisRange(yMin, yMax).autoNice(4)
-        val ticks = niceTicks(yRange, 4)
+        // Raw animated Y range — match YAxisColumn exactly so labels and gridlines stay aligned.
+        val yRange = AxisRange(yMin, yMax)
+        val ticks = fitnessYTicks(yMin, yMax, 4)
         ticks.forEach { v ->
             val y = lerpRange(v, yRange, plot.bottom..plot.top)
             drawLine(
@@ -234,6 +340,27 @@ private fun FitnessPage(
                 strokeWidth = theme.gridLineWidth.toPx(),
             )
         }
+
+        // Vertical grid lines — one per day slot. Lighter than the Y grid so the horizontal
+        // rows remain the primary read while the columns still anchor each day visually.
+        for (i in 0 until n) {
+            val xCol = plot.left + slotWidth * (i + 0.5f)
+            drawLine(
+                color = theme.gridColor.copy(alpha = 0.35f),
+                start = Offset(xCol, plot.top),
+                end = Offset(xCol, plot.bottom),
+                strokeWidth = theme.gridLineWidth.toPx() * 0.6f,
+            )
+        }
+
+        // X-axis baseline along the bottom of the plot. Drawn before the line/area so the data
+        // sits on top of the axis rather than getting half-covered by it.
+        drawLine(
+            color = theme.axisColor,
+            start = Offset(plot.left, plot.bottom),
+            end = Offset(plot.right, plot.bottom),
+            strokeWidth = theme.axisLineWidth.toPx(),
+        )
 
         // Slot k has center at (k + 0.5) * slotWidth. Slot -1 is the day immediately LEFT of slot 0
         // (just outside this canvas); slot N is the day immediately RIGHT of slot N-1.
@@ -297,18 +424,38 @@ private fun FitnessPage(
             drawCircle(theme.surface, radius = 4.dp.toPx(), center = Offset(x, y))
             drawCircle(primaryColor, radius = 2.5.dp.toPx(), center = Offset(x, y))
 
+            // Small downward tick mark under each slot — sits between the X baseline and the
+            // day label so the axis reads like a proper categorical scale.
+            drawLine(
+                color = theme.axisColor,
+                start = Offset(x, plot.bottom),
+                end = Offset(x, plot.bottom + 4.dp.toPx()),
+                strokeWidth = theme.axisLineWidth.toPx(),
+            )
+
             val date = LocalDate.now().minusDays(d.dayOffset.toLong())
             val dayLabel = date.format(dayFormatter)
             val dateLabel = date.format(dateFormatter)
-            val dayLayout = measurer.measure(dayLabel, style = theme.axisLabelStyle)
-            val dateLayout = measurer.measure(dateLabel, style = theme.axisLabelStyle.copy(color = theme.axisLabelStyle.color.copy(alpha = 0.6f)))
+            // Bumped sizes so the X-axis day labels read at a glance instead of dissolving into
+            // the chart background. Day-of-week is the primary label, date is the subdued caption.
+            val dayLayout = measurer.measure(
+                dayLabel,
+                style = theme.axisLabelStyle.copy(fontSize = 12.sp, fontWeight = FontWeight.SemiBold),
+            )
+            val dateLayout = measurer.measure(
+                dateLabel,
+                style = theme.axisLabelStyle.copy(
+                    fontSize = 10.sp,
+                    color = theme.axisLabelStyle.color.copy(alpha = 0.7f),
+                ),
+            )
             drawText(
                 textLayoutResult = dayLayout,
-                topLeft = Offset(x - dayLayout.size.width / 2f, plot.bottom + 4.dp.toPx()),
+                topLeft = Offset(x - dayLayout.size.width / 2f, plot.bottom + 8.dp.toPx()),
             )
             drawText(
                 textLayoutResult = dateLayout,
-                topLeft = Offset(x - dateLayout.size.width / 2f, plot.bottom + 4.dp.toPx() + dayLayout.size.height),
+                topLeft = Offset(x - dateLayout.size.width / 2f, plot.bottom + 8.dp.toPx() + dayLayout.size.height),
             )
         }
 
