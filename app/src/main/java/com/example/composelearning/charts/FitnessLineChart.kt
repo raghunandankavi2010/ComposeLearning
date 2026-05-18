@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.font.FontWeight
@@ -117,11 +118,18 @@ fun FitnessLineChart(
     // accommodate the spike. The Y axis then animates between these ranges as the user scrolls,
     // matching the old Google Fit weekly chart behaviour.
     val pageYRanges = remember(pages.value) {
-        pages.value.map { page ->
-            if (page.isEmpty()) 0f to 1f
+        pages.value.mapIndexed { index, page ->
+            // Each page renders its own days PLUS up to two days from each adjacent page (as
+            // leftExtras/rightExtras for cubic curve continuity). The Y range must include those
+            // neighbour days too, otherwise an unusually low/high neighbour will plot outside the
+            // page's plot rect — visible as a curve segment dipping below the X axis.
+            val left = pages.value.getOrNull(index + 1)?.take(2).orEmpty()
+            val right = pages.value.getOrNull(index - 1)?.takeLast(2).orEmpty()
+            val combined = page + left + right
+            if (combined.isEmpty()) 0f to 1f
             else {
-                val lo = page.minOf { it.steps }.toFloat()
-                val hi = page.maxOf { it.steps }.toFloat()
+                val lo = combined.minOf { it.steps }.toFloat()
+                val hi = combined.maxOf { it.steps }.toFloat()
                 val pad = (hi - lo).coerceAtLeast(1f) * 0.15f
                 (lo - pad).coerceAtLeast(0f) to (hi + pad)
             }
@@ -392,30 +400,39 @@ private fun FitnessPage(
 
         val path = buildLinePath(extendedPoints, LineSmoothing.Cubic)
 
-        // No explicit clipRect — Compose's Canvas clips draws to its bounds, so the portion of the
-        // curve that extends to slots -1, -2, N, N+1 is naturally trimmed to the visible page. The
-        // matching half-segments rendered by adjacent pages complete the curve across joins.
+        // Compose's Canvas clips draws to its bounds horizontally, but vertically the curve can
+        // overshoot plot.top / plot.bottom (cubic interpolation through low-value neighbours, or a
+        // brief mismatch while the shared yRange is animating between two pages). Clip the area
+        // and line to the plot rect so any overshoot disappears into the axis rather than visibly
+        // spilling into the X-axis label zone.
         val areaPath = Path().apply {
             addPath(path)
             closeAreaPath(this, extendedPoints, plot.bottom)
         }
-        drawPath(
-            path = areaPath,
-            brush = Brush.verticalGradient(
-                colors = listOf(primaryColor.copy(alpha = 0.35f), primaryColor.copy(alpha = 0f)),
-                startY = plot.top,
-                endY = plot.bottom,
-            ),
-        )
-        drawPath(
-            path = path,
-            color = primaryColor,
-            style = Stroke(
-                width = 2.5.dp.toPx(),
-                cap = StrokeCap.Round,
-                join = StrokeJoin.Round,
-            ),
-        )
+        clipRect(
+            left = plot.left,
+            top = plot.top,
+            right = plot.right,
+            bottom = plot.bottom,
+        ) {
+            drawPath(
+                path = areaPath,
+                brush = Brush.verticalGradient(
+                    colors = listOf(primaryColor.copy(alpha = 0.35f), primaryColor.copy(alpha = 0f)),
+                    startY = plot.top,
+                    endY = plot.bottom,
+                ),
+            )
+            drawPath(
+                path = path,
+                color = primaryColor,
+                style = Stroke(
+                    width = 2.5.dp.toPx(),
+                    cap = StrokeCap.Round,
+                    join = StrokeJoin.Round,
+                ),
+            )
+        }
 
         // Dots + day labels
         daysVisual.forEachIndexed { i, d ->
