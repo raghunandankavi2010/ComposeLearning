@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -149,8 +150,7 @@ fun PhotoDetailScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .systemBarsPadding(),
+                .background(MaterialTheme.colorScheme.background),
         ) {
             Box(
                 modifier = Modifier
@@ -165,6 +165,7 @@ fun PhotoDetailScreen(
                 IconButton(
                     onClick = onBack,
                     modifier = Modifier
+                        .statusBarsPadding()
                         .padding(12.dp)
                         .clip(CircleShape)
                         .background(Color.Black.copy(alpha = 0.25f)),
@@ -306,7 +307,8 @@ fun ArticleDetailScreen(
                     IconButton(
                         onClick = onBack,
                         modifier = Modifier
-                            .padding(top = 24.dp, start = 12.dp)
+                            .statusBarsPadding()
+                            .padding(12.dp)
                             .clip(CircleShape)
                             .background(Color.Black.copy(alpha = 0.25f)),
                     ) {
