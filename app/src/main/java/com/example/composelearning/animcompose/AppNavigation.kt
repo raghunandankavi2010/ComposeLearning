@@ -30,6 +30,7 @@ import com.example.composelearning.images.OverlappingImagesScreen
 import com.example.composelearning.images.processing.ImageProcessingScreen
 import com.example.composelearning.lists.ListsShowcaseScreen
 import com.example.composelearning.pager.PagerShowcaseScreen
+import com.example.composelearning.pager.TopRightFanCarouselScreen
 import com.example.composelearning.peritemvm.PerItemViewModelShowcaseScreen
 import com.example.composelearning.progess.SmoothProgressBarScreen
 import com.example.composelearning.flight.FlightSeatScreen
@@ -132,6 +133,7 @@ sealed interface AnimScreen : NavKey, Parcelable {
     @Serializable data object PerItemViewModel : AnimScreen
     @Serializable data object SmoothProgress : AnimScreen
     @Serializable data object FlightSeat : AnimScreen
+    @Serializable data object FanCarousel : AnimScreen
 }
 
 @Composable
@@ -287,6 +289,7 @@ fun AppNavigation(
         entry<AnimScreen.PerItemViewModel> { PerItemViewModelShowcaseScreen() }
         entry<AnimScreen.SmoothProgress> { SmoothProgressBarScreen() }
         entry<AnimScreen.FlightSeat> { FlightSeatScreen() }
+        entry<AnimScreen.FanCarousel> { TopRightFanCarouselScreen() }
     }
 
     NavDisplay(

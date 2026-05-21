@@ -43,6 +43,11 @@ fun MainHomeScreen(navigator: Navigator) {
     // which invalidates every card because the instances are new objects.
     val categories = remember { listOf(
         AnimationCategory(
+            "Top-Right Fan Carousel",
+            "Stacked-card carousel — front card centered, others fanned toward the top-right with decreasing scale, alpha and rotation. Drag-to-dismiss; back cards slot forward as you drag.",
+            AnimScreen.FanCarousel,
+        ),
+        AnimationCategory(
             "FlightSeat (Compose port)",
             "Port of ldoublem/FlightSeat — top-down plane with first/business/economy/tail sections, tap-to-select seats, live count, side minimap. Redrawn with Compose primitives (no bitmaps).",
             AnimScreen.FlightSeat,
