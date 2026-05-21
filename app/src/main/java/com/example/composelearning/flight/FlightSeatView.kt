@@ -215,7 +215,7 @@ private data class SectionLayout(
     val name: String,
     val rect: Rect,
     val seats: List<SeatHit>,
-    val galleyAbove: GalleyRow,
+    val galleyAbove: GalleyRow?,
 )
 
 /** Three side-by-side galley boxes (WC | WiFi center | WC) between cabin sections. */
@@ -227,7 +227,8 @@ private data class GalleyRow(
 
 private data class PlaneLayout(
     val canvasSize: Size,
-    val bodyPath: Path,
+    val outerBody: Path,        // pale-blue halo around the cabin
+    val cabin: Path,            // the white cabin capsule, drawn on top
     val leftWing: Path,
     val rightWing: Path,
     val leftPylons: List<Path>,
@@ -235,6 +236,8 @@ private data class PlaneLayout(
     val leftTailWing: Path,
     val rightTailWing: Path,
     val verticalFin: Path,
+    val cockpitWindow: Path,    // tiny pill at top of cabin
+    val cockpitArrow: Path,     // chevron inside the cockpit window
     val bodyRect: Rect,
     val sections: List<SectionLayout>,
 )
@@ -249,47 +252,99 @@ private fun computePlaneLayout(
     val h = canvasSize.height
     val midX = w / 2f
 
-    // --- Fuselage: smooth capsule with gradual nose taper, no separate neck ---
-    val bodyHalfW = w * 0.080f
-    val bodyTop = h * 0.060f      // tip of nose
-    val bodyBottom = h * 0.905f   // where tail starts narrowing into fin
-    val shoulderY = h * 0.155f    // body reaches full width here
-    val hipY = h * 0.84f          // body still full width here
-    val tailHalfW = bodyHalfW * 0.55f
+    // --- Two-layer fuselage:
+    //  - outerBody: pale-blue silhouette. Rounded nose, parallel sides, then TAPERS into a
+    //    narrower tail cone that extends BELOW the cabin. The vertical fin extends below this.
+    //  - cabin: a smaller white capsule sitting inside the outer body, only as long as the seat
+    //    area (does NOT extend into the tail cone). This gives the back-of-plane its natural
+    //    tapered "airliner" look.
+    val bodyHalfW = w * 0.090f         // full body half-width
+    val bodyConeHalfW = bodyHalfW * 0.32f // tail cone half-width (narrow end)
+    val cabinHalfW = w * 0.076f        // white cabin half-width
+    val bodyTop = h * 0.050f           // tip of nose
+    val bodyShoulderY = h * 0.135f     // body reaches full width here
+    val bodyNarrowStartY = h * 0.815f  // outer body starts narrowing into tail cone
+    val bodyConeEndY = h * 0.915f      // bottom of the tail cone (rounded)
+    val cabinTop = h * 0.072f
+    val cabinBottom = h * 0.840f       // cabin ends well above the tail cone
+    val finBottomY = h * 0.985f
 
-    val bodyRect = Rect(midX - bodyHalfW, shoulderY, midX + bodyHalfW, hipY)
+    val bodyRect = Rect(midX - cabinHalfW, cabinTop, midX + cabinHalfW, cabinBottom)
 
-    val bodyPath = Path().apply {
+    // Outer body silhouette — single continuous path with tapered tail cone
+    val outerBody = Path().apply {
         // Start at nose tip — clockwise
         moveTo(midX, bodyTop)
+        // Curve out to right shoulder
         cubicTo(
-            midX + bodyHalfW * 0.55f, bodyTop + (shoulderY - bodyTop) * 0.25f,
-            midX + bodyHalfW * 0.95f, bodyTop + (shoulderY - bodyTop) * 0.65f,
-            midX + bodyHalfW, shoulderY,
+            midX + bodyHalfW * 0.55f, bodyTop + (bodyShoulderY - bodyTop) * 0.25f,
+            midX + bodyHalfW * 0.95f, bodyTop + (bodyShoulderY - bodyTop) * 0.65f,
+            midX + bodyHalfW, bodyShoulderY,
         )
-        lineTo(midX + bodyHalfW, hipY)
+        // Straight down right side to where the tail cone starts
+        lineTo(midX + bodyHalfW, bodyNarrowStartY)
+        // Smoothly narrow from full body width into the tail cone
         cubicTo(
-            midX + bodyHalfW * 0.95f, hipY + (bodyBottom - hipY) * 0.40f,
-            midX + bodyHalfW * 0.85f, bodyBottom - 4f,
-            midX + tailHalfW, bodyBottom,
+            midX + bodyHalfW, bodyNarrowStartY + (bodyConeEndY - bodyNarrowStartY) * 0.40f,
+            midX + bodyConeHalfW * 1.7f, bodyConeEndY - bodyConeHalfW * 1.3f,
+            midX + bodyConeHalfW, bodyConeEndY - bodyConeHalfW * 0.4f,
         )
-        // Across bottom (tail will draw the rest of the fin shape)
-        lineTo(midX - tailHalfW, bodyBottom)
-        cubicTo(
-            midX - bodyHalfW * 0.85f, bodyBottom - 4f,
-            midX - bodyHalfW * 0.95f, hipY + (bodyBottom - hipY) * 0.40f,
-            midX - bodyHalfW, hipY,
+        // Round the bottom of the tail cone
+        quadraticTo(midX + bodyConeHalfW, bodyConeEndY, midX, bodyConeEndY)
+        // Mirror back up the left side
+        quadraticTo(
+            midX - bodyConeHalfW, bodyConeEndY,
+            midX - bodyConeHalfW, bodyConeEndY - bodyConeHalfW * 0.4f,
         )
-        lineTo(midX - bodyHalfW, shoulderY)
         cubicTo(
-            midX - bodyHalfW * 0.95f, bodyTop + (shoulderY - bodyTop) * 0.65f,
-            midX - bodyHalfW * 0.55f, bodyTop + (shoulderY - bodyTop) * 0.25f,
+            midX - bodyConeHalfW * 1.7f, bodyConeEndY - bodyConeHalfW * 1.3f,
+            midX - bodyHalfW, bodyNarrowStartY + (bodyConeEndY - bodyNarrowStartY) * 0.40f,
+            midX - bodyHalfW, bodyNarrowStartY,
+        )
+        lineTo(midX - bodyHalfW, bodyShoulderY)
+        cubicTo(
+            midX - bodyHalfW * 0.95f, bodyTop + (bodyShoulderY - bodyTop) * 0.65f,
+            midX - bodyHalfW * 0.55f, bodyTop + (bodyShoulderY - bodyTop) * 0.25f,
             midX, bodyTop,
         )
         close()
     }
 
+    // Inner white cabin — a clean rounded capsule covering only the seating area.
+    val cabin = Path().apply {
+        addRoundRect(
+            androidx.compose.ui.geometry.RoundRect(
+                midX - cabinHalfW, cabinTop, midX + cabinHalfW, cabinBottom,
+                cornerRadius = CornerRadius(cabinHalfW, cabinHalfW),
+            ),
+        )
+    }
+
+    // Cockpit window — small pill at the top of the cabin, with a chevron pointing up.
+    val cockpitWidth = cabinHalfW * 1.05f
+    val cockpitHeight = cabinHalfW * 0.95f
+    val cockpitCx = midX
+    val cockpitCy = cabinTop + cockpitHeight * 0.55f
+    val cockpitWindow = Path().apply {
+        addRoundRect(
+            androidx.compose.ui.geometry.RoundRect(
+                cockpitCx - cockpitWidth / 2f, cockpitCy - cockpitHeight / 2f,
+                cockpitCx + cockpitWidth / 2f, cockpitCy + cockpitHeight / 2f,
+                cornerRadius = CornerRadius(cockpitHeight / 2f, cockpitHeight / 2f),
+            ),
+        )
+    }
+    val cockpitArrow = Path().apply {
+        val ah = cockpitHeight * 0.32f
+        val aw = cockpitWidth * 0.28f
+        // Chevron pointing up: ^
+        moveTo(cockpitCx - aw, cockpitCy + ah * 0.35f)
+        lineTo(cockpitCx, cockpitCy - ah * 0.55f)
+        lineTo(cockpitCx + aw, cockpitCy + ah * 0.35f)
+    }
+
     // --- Main wings: cranked trailing edge, sharp tips ---
+    // Wing roots attach at the OUTER body edges so they emerge from the pale-blue halo.
     val wingRootTopY = h * 0.38f
     val wingRootBottomY = h * 0.50f
     val wingTipX = w * 0.99f
@@ -298,22 +353,19 @@ private fun computePlaneLayout(
     val wingTrailingY = h * 0.65f
 
     val rightWing = Path().apply {
-        moveTo(midX + bodyHalfW * 0.35f, wingRootTopY)
-        // Leading edge — straight to sharp tip
+        moveTo(midX + bodyHalfW, wingRootTopY)
         lineTo(wingTipX, wingTipY)
-        // Tip — tiny curve so it isn't an infinitely sharp pixel
         quadraticTo(wingTipX + 4f, wingTipY + 5f, wingTipX - 4f, wingTipY + 6f)
-        // Trailing edge — cranked: out to (wingTrailingX, wingTrailingY) then back to root
         lineTo(wingTrailingX, wingTrailingY)
-        lineTo(midX + bodyHalfW * 0.35f, wingRootBottomY)
+        lineTo(midX + bodyHalfW, wingRootBottomY)
         close()
     }
     val leftWing = Path().apply {
-        moveTo(midX - bodyHalfW * 0.35f, wingRootTopY)
+        moveTo(midX - bodyHalfW, wingRootTopY)
         lineTo(w - wingTipX, wingTipY)
         quadraticTo(w - wingTipX - 4f, wingTipY + 5f, w - wingTipX + 4f, wingTipY + 6f)
         lineTo(w - wingTrailingX, wingTrailingY)
-        lineTo(midX - bodyHalfW * 0.35f, wingRootBottomY)
+        lineTo(midX - bodyHalfW, wingRootBottomY)
         close()
     }
 
@@ -344,35 +396,38 @@ private fun computePlaneLayout(
         pylonAt(c.x, c.y, tipDx = pylonW * 0.35f)
     }
 
-    // --- Tail wings: smaller swept triangles with the same cranked shape ---
-    val tailWingRootTopY = h * 0.83f
-    val tailWingRootBottomY = h * 0.88f
+    // --- Tail wings: smaller swept triangles. Roots stay on the full-width portion of the
+    // outer body, just above where it begins to narrow into the cone. Drawing order ensures
+    // the outer body path covers the inner edge of these triangles, so the joint is seamless.
+    val tailWingRootTopY = h * 0.735f
+    val tailWingRootBottomY = h * 0.810f
     val tailWingTipX = w * 0.78f
-    val tailWingTipY = h * 0.93f
-    val tailWingTrailingX = w * 0.70f
-    val tailWingTrailingY = h * 0.92f
+    val tailWingTipY = h * 0.880f
+    val tailWingTrailingX = w * 0.68f
+    val tailWingTrailingY = h * 0.870f
     val rightTailWing = Path().apply {
-        moveTo(midX + bodyHalfW * 0.30f, tailWingRootTopY)
+        moveTo(midX + bodyHalfW, tailWingRootTopY)
         lineTo(tailWingTipX, tailWingTipY)
         quadraticTo(tailWingTipX + 3f, tailWingTipY + 3f, tailWingTipX - 3f, tailWingTipY + 4f)
         lineTo(tailWingTrailingX, tailWingTrailingY)
-        lineTo(midX + bodyHalfW * 0.30f, tailWingRootBottomY)
+        lineTo(midX + bodyHalfW, tailWingRootBottomY)
         close()
     }
     val leftTailWing = Path().apply {
-        moveTo(midX - bodyHalfW * 0.30f, tailWingRootTopY)
+        moveTo(midX - bodyHalfW, tailWingRootTopY)
         lineTo(w - tailWingTipX, tailWingTipY)
         quadraticTo(w - tailWingTipX - 3f, tailWingTipY + 3f, w - tailWingTipX + 3f, tailWingTipY + 4f)
         lineTo(w - tailWingTrailingX, tailWingTrailingY)
-        lineTo(midX - bodyHalfW * 0.30f, tailWingRootBottomY)
+        lineTo(midX - bodyHalfW, tailWingRootBottomY)
         close()
     }
 
-    // --- Vertical fin: sharp downward-pointing triangle below the tail wings ---
+    // --- Vertical fin: sharp downward triangle that extends from below the tail cone.
+    // The outer body's rounded cone tip is at (midX, bodyConeEndY); the fin starts a bit
+    // above so it merges seamlessly into the cone.
     val verticalFin = Path().apply {
-        val finTopY = bodyBottom - 4f
-        val finBottomY = h * 0.985f
-        val finHalfW = bodyHalfW * 0.55f
+        val finTopY = bodyConeEndY - bodyConeHalfW * 0.4f
+        val finHalfW = bodyConeHalfW * 0.95f
         moveTo(midX - finHalfW, finTopY)
         lineTo(midX + finHalfW, finTopY)
         lineTo(midX, finBottomY)
@@ -380,23 +435,56 @@ private fun computePlaneLayout(
     }
 
     // --- Cabin: galley rows + section seat grids inside body ---
-    val galleyH = h * 0.026f
-    val cabinTop = shoulderY + bodyHalfW * 0.7f
-    val cabinBottom = hipY - bodyHalfW * 0.3f
+    // Layout strategy: galleys only appear BETWEEN sections (not before the first). Each
+    // between-section gap reserves a fixed band for the galley plus margins, so seats and
+    // galleys never overlap.
+    val galleyBoxH = h * 0.040f
+    val galleyMargin = h * 0.006f
+    val numInterGalleys = sections.size - 1
+    val verticalReservedForGalleys =
+        numInterGalleys * (galleyBoxH + 2 * galleyMargin) +
+            2 * galleyMargin // small top/bottom breathing room
+
+    // Seats/galleys live inside the white cabin (not the outer body). Reserve space below the
+    // cockpit window for the cabin contents.
+    val cabinContentTop = cockpitCy + cockpitHeight / 2f + galleyMargin * 2
+    val cabinContentBottom = cabinBottom - cabinHalfW * 0.85f
     val totalRows = sections.sumOf { it.rows }
-    val rowH = (cabinBottom - cabinTop - galleyH * (sections.size + 1)) / totalRows
+    val rowH = ((cabinContentBottom - cabinContentTop - verticalReservedForGalleys) / totalRows)
+        .coerceAtLeast(1f)
 
     val maxCols = sections.maxOf { it.columnGroups.sum() }
-    val maxAisles = sections.first { it.columnGroups.sum() == maxCols }.columnGroups.size - 1
-    val cabinW = bodyHalfW * 2f * 0.84f
+    val cabinW = cabinHalfW * 2f * 0.86f
     val seatSize = cabinW / (maxCols + 0.7f)
     val seatGap = seatSize * 0.10f
     val aisleGap = seatSize * 0.45f
 
-    var y = cabinTop + galleyH
-    val sectionLayouts = sections.map { section ->
+    fun buildGalleyRow(top: Float): GalleyRow {
+        val sideW = cabinHalfW * 0.50f
+        val centerW = cabinHalfW * 0.78f
+        val gap = cabinHalfW * 0.08f
+        val totalW = sideW * 2 + centerW + gap * 2
+        val gStartX = midX - totalW / 2f
+        return GalleyRow(
+            left = Rect(gStartX, top, gStartX + sideW, top + galleyBoxH),
+            center = Rect(gStartX + sideW + gap, top,
+                gStartX + sideW + gap + centerW, top + galleyBoxH),
+            right = Rect(gStartX + sideW + gap + centerW + gap, top,
+                gStartX + sideW + gap + centerW + gap + sideW, top + galleyBoxH),
+        )
+    }
+
+    var y = cabinContentTop + galleyMargin
+    val sectionLayouts = sections.mapIndexed { idx, section ->
+        val galleyAbove: GalleyRow? = if (idx > 0) {
+            val galleyTop = y + galleyMargin
+            val row = buildGalleyRow(galleyTop)
+            y = galleyTop + galleyBoxH + galleyMargin
+            row
+        } else null
+
         val sectionH = section.rows * rowH
-        val sectionRect = Rect(midX - bodyHalfW * 0.9f, y, midX + bodyHalfW * 0.9f, y + sectionH)
+        val sectionRect = Rect(midX - cabinHalfW * 0.95f, y, midX + cabinHalfW * 0.95f, y + sectionH)
         val seats = mutableListOf<SeatHit>()
         val totalCols = section.columnGroups.sum()
         val numAisles = section.columnGroups.size - 1
@@ -421,31 +509,18 @@ private fun computePlaneLayout(
             }
         }
 
-        // Galley row above this section: three boxes (WC | WiFi | WC)
-        val galleyBoxH = galleyH * 1.6f
-        val galleyTop = y - galleyBoxH - 2f
-        val sideW = bodyHalfW * 0.45f
-        val centerW = bodyHalfW * 0.75f
-        val gap = bodyHalfW * 0.07f
-        val totalW = sideW * 2 + centerW + gap * 2
-        val gStartX = midX - totalW / 2f
-        val left = Rect(gStartX, galleyTop, gStartX + sideW, galleyTop + galleyBoxH)
-        val center = Rect(left.right + gap, galleyTop,
-            left.right + gap + centerW, galleyTop + galleyBoxH)
-        val right = Rect(center.right + gap, galleyTop,
-            center.right + gap + sideW, galleyTop + galleyBoxH)
-
         SectionLayout(
             name = section.name,
             rect = sectionRect,
             seats = seats,
-            galleyAbove = GalleyRow(left, center, right),
-        ).also { y = sectionRect.bottom + galleyH }
+            galleyAbove = galleyAbove,
+        ).also { y = sectionRect.bottom }
     }
 
     return PlaneLayout(
         canvasSize = canvasSize,
-        bodyPath = bodyPath,
+        outerBody = outerBody,
+        cabin = cabin,
         leftWing = leftWing,
         rightWing = rightWing,
         leftPylons = leftPylons,
@@ -453,6 +528,8 @@ private fun computePlaneLayout(
         leftTailWing = leftTailWing,
         rightTailWing = rightTailWing,
         verticalFin = verticalFin,
+        cockpitWindow = cockpitWindow,
+        cockpitArrow = cockpitArrow,
         bodyRect = bodyRect,
         sections = sectionLayouts,
     )
@@ -461,19 +538,25 @@ private fun computePlaneLayout(
 // ---------- Drawing ----------
 
 private fun DrawScope.drawPlane(plane: PlaneLayout, colors: FlightSeatColors) {
-    // Wings (back layer)
+    // Back-to-front, all pale-blue except engines and the white cabin:
     drawPath(plane.leftWing, colors.planeWing)
     drawPath(plane.rightWing, colors.planeWing)
-    // Engine pylons on top of wings
     plane.leftPylons.forEach { drawPath(it, colors.engine) }
     plane.rightPylons.forEach { drawPath(it, colors.engine) }
-    // Tail wings
     drawPath(plane.leftTailWing, colors.planeWing)
     drawPath(plane.rightTailWing, colors.planeWing)
-    // Vertical fin sticks down past the body bottom
     drawPath(plane.verticalFin, colors.planeWing)
-    // Body — drawn last so it covers the wing roots cleanly
-    drawPath(plane.bodyPath, colors.planeBody)
+    // Outer body (pale-blue halo) — covers the wing/tail-wing roots so they look attached
+    drawPath(plane.outerBody, colors.planeWing)
+    // Inner cabin (white) — drawn on top of outer body, creating the halo effect
+    drawPath(plane.cabin, colors.planeBody)
+    // Cockpit window pill + chevron arrow
+    drawPath(plane.cockpitWindow, colors.planeWing)
+    drawPath(
+        plane.cockpitArrow,
+        colors.galleyText,
+        style = Stroke(width = 2f, cap = androidx.compose.ui.graphics.StrokeCap.Round),
+    )
 }
 
 private fun DrawScope.drawCabin(
@@ -482,7 +565,7 @@ private fun DrawScope.drawCabin(
     colors: FlightSeatColors,
 ) {
     plane.sections.forEach { section ->
-        drawGalleyRow(section.galleyAbove, colors)
+        section.galleyAbove?.let { drawGalleyRow(it, colors) }
         section.seats.forEach { hit ->
             val s = state.stateFor(hit.key)
             drawSeat(hit.rect, s, hit.key, colors)
