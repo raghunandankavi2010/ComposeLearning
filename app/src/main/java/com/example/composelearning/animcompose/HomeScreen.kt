@@ -43,6 +43,16 @@ fun MainHomeScreen(navigator: Navigator) {
     // which invalidates every card because the instances are new objects.
     val categories = remember { listOf(
         AnimationCategory(
+            "FlightSeat (Compose port)",
+            "Port of ldoublem/FlightSeat — top-down plane with first/business/economy/tail sections, tap-to-select seats, live count, side minimap. Redrawn with Compose primitives (no bitmaps).",
+            AnimScreen.FlightSeat,
+        ),
+        AnimationCategory(
+            "SmoothProgressBar (Compose port)",
+            "Port of castorflex/SmoothProgressBar — indeterminate horizontal sections sliding with cycling colors, accelerate-easing widths, mirror/reverse modes.",
+            AnimScreen.SmoothProgress,
+        ),
+        AnimationCategory(
             "Per-item ViewModels (Compose)",
             "Google's recommended pattern: scope a ViewModel to one list item or pager page. LazyColumn (resets on scroll) + HorizontalPager (retained via hoisted provider) + the screen-level anti-pattern.",
             AnimScreen.PerItemViewModel,
