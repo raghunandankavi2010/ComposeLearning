@@ -43,6 +43,11 @@ fun MainHomeScreen(navigator: Navigator) {
     // which invalidates every card because the instances are new objects.
     val categories = remember { listOf(
         AnimationCategory(
+            "Nav3 — Tabs + Shared Elements",
+            "Single NavDisplay with per-tab back stacks (Photos / Articles / Profile). Bottom bar hides on detail screens. SharedTransitionLayout + LocalNavAnimatedContentScope drives list↔detail transitions.",
+            AnimScreen.TabsSample,
+        ),
+        AnimationCategory(
             "Top-Right Fan Carousel",
             "Stacked-card carousel — front card centered, others fanned toward the top-right with decreasing scale, alpha and rotation. Drag-to-dismiss; back cards slot forward as you drag.",
             AnimScreen.FanCarousel,

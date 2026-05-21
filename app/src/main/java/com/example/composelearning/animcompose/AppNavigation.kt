@@ -31,6 +31,7 @@ import com.example.composelearning.images.processing.ImageProcessingScreen
 import com.example.composelearning.lists.ListsShowcaseScreen
 import com.example.composelearning.pager.PagerShowcaseScreen
 import com.example.composelearning.pager.TopRightFanCarouselScreen
+import com.example.composelearning.tabs.TabsSampleNavigation
 import com.example.composelearning.peritemvm.PerItemViewModelShowcaseScreen
 import com.example.composelearning.progess.SmoothProgressBarScreen
 import com.example.composelearning.flight.FlightSeatScreen
@@ -134,6 +135,7 @@ sealed interface AnimScreen : NavKey, Parcelable {
     @Serializable data object SmoothProgress : AnimScreen
     @Serializable data object FlightSeat : AnimScreen
     @Serializable data object FanCarousel : AnimScreen
+    @Serializable data object TabsSample : AnimScreen
 }
 
 @Composable
@@ -290,6 +292,7 @@ fun AppNavigation(
         entry<AnimScreen.SmoothProgress> { SmoothProgressBarScreen() }
         entry<AnimScreen.FlightSeat> { FlightSeatScreen() }
         entry<AnimScreen.FanCarousel> { TopRightFanCarouselScreen() }
+        entry<AnimScreen.TabsSample> { TabsSampleNavigation() }
     }
 
     NavDisplay(
