@@ -94,7 +94,6 @@ sealed interface AnimScreen : NavKey, Parcelable {
     @Serializable data object YouTubeStyle : AnimScreen
     @Serializable data object CircleMenu : AnimScreen
     @Serializable data object ChatApp : AnimScreen
-    @Serializable data object SineWavePath : AnimScreen
     @Serializable data object SimpleNav : AnimScreen
     @Serializable data object BottomSheet : AnimScreen
     @Serializable data object Spotlight : AnimScreen
@@ -126,7 +125,6 @@ sealed interface AnimScreen : NavKey, Parcelable {
     @Serializable data object TimeRangeKnob : AnimScreen
     @Serializable data object BiometricDemo : AnimScreen
     @Serializable data object ButtonAnimation : AnimScreen
-    @Serializable data object SinWaveCanvas : AnimScreen
     @Serializable data object CalendarPicker : AnimScreen
     @Serializable data object BlurEffects : AnimScreen
     @Serializable data object ListsShowcase : AnimScreen
@@ -189,7 +187,6 @@ fun AppNavigation(
         entry<AnimScreen.CircleMenu> { CircularMenuScreenWithFullAnimation() }
         
         entry<AnimScreen.ChatApp> { ChatAppNavigation() }
-        entry<AnimScreen.SineWavePath> { TutorialContent() }
         entry<AnimScreen.SimpleNav> { SimpleAppNavigation() }
         entry<AnimScreen.BottomSheet> { BottomSheet() }
         entry<AnimScreen.Spotlight> { SpotlightDemoScreen(onFinish = { navigator.goBack() }) }
@@ -244,12 +241,6 @@ fun AppNavigation(
                 modifier = Modifier.fillMaxSize().systemBarsPadding(),
                 contentAlignment = Alignment.Center,
             ) { ButtonAnimationTest() }
-        }
-        entry<AnimScreen.SinWaveCanvas> {
-            Box(
-                modifier = Modifier.fillMaxSize().systemBarsPadding(),
-                contentAlignment = Alignment.Center,
-            ) { SinWave() }
         }
         entry<AnimScreen.CalendarPicker> {
             CalendarScreen(

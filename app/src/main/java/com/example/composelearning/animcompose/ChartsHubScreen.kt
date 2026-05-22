@@ -92,7 +92,7 @@ fun ChartsHubScreen() {
 
 @Composable
 private fun WavesTabContent() {
-    val tabs = listOf("Sine Wave Sample", "Canvas Sin Wave")
+    val tabs = listOf("Sine Wave Sample", "Sin Wave Path", "Canvas Sin Wave")
     var selectedSubTab by remember { mutableIntStateOf(0) }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -108,7 +108,8 @@ private fun WavesTabContent() {
         Box(modifier = Modifier.fillMaxSize()) {
             when (selectedSubTab) {
                 0 -> SineWaveSample(onBack = {})
-                1 -> SinWave()
+                1 -> TutorialContent()
+                2 -> SinWave()
             }
         }
     }

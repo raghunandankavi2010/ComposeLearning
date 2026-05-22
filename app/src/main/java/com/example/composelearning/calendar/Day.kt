@@ -194,12 +194,7 @@ internal fun Day(
                 Color(0xFF02522A)
             }
 
-        if (
-            (day.month == calendarState.selectedStartDate?.month
-                    && day.dayOfMonth == calendarState.selectedStartDate?.dayOfMonth)
-            || (day.month == calendarState.selectedEndDate?.month
-                    && day.dayOfMonth == calendarState.selectedEndDate?.dayOfMonth)
-        ) {
+        if (day == calendarState.selectedStartDate || day == calendarState.selectedEndDate) {
             Box(
                 modifier = Modifier
                     .size(48.dp)

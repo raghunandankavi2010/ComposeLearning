@@ -23,10 +23,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import com.example.composelearning.calendar.model.CalendarState
 import com.example.composelearning.calendar.model.CalendarState.Companion.DAYS_IN_WEEK
 import com.example.composelearning.calendar.model.CalendarUiState
@@ -34,16 +30,18 @@ import com.example.composelearning.calendar.model.Week
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import java.time.LocalDate
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun WeekSelectionPill(
     week: Week,
@@ -84,16 +82,20 @@ fun WeekSelectionPill(
 
             val translationX = if (state.animateDirection?.isBackwards() == true) -size else 0f
 
-            translate(translationX) {
+            val isLeftHighlighted = state.isLeftHighlighted(currentWeekStart, week.yearMonth)
+            val isRightHighlighted = state.isRightHighlighted(currentWeekStart, week.yearMonth)
 
-                drawRoundRect(
-                    color = pillColor,
-                    topLeft = offset,
-                    size = Size(size, widthPerDayPx),
-                    cornerRadius = CornerRadius(cornerRadiusPx)
+            translate(translationX) {
+                drawStartAndEndRoundedRectangles(
+                    offset = offset,
+                    size = size,
+                    cornerRadiusPx = cornerRadiusPx,
+                    widthPerDayPx = widthPerDayPx,
+                    pillColor = pillColor,
+                    isLeftHighlighted = isLeftHighlighted,
+                    isRightHighlighted = isRightHighlighted
                 )
             }
-
         }
     )
 }
@@ -180,12 +182,25 @@ private fun normalize(
 }
 
 
-private fun Canvas.drawStartAndEndRoundedRectangles(
+private fun DrawScope.drawStartAndEndRoundedRectangles(
     offset: Offset,
     size: Float,
     cornerRadiusPx: Float,
     widthPerDayPx: Float,
-    pillColor: Color
+    pillColor: Color,
+    isLeftHighlighted: Boolean,
+    isRightHighlighted: Boolean
 ) {
-
+    val path = Path().apply {
+        addRoundRect(
+            RoundRect(
+                rect = Rect(offset, Size(size, widthPerDayPx)),
+                topLeft = if (isLeftHighlighted) CornerRadius.Zero else CornerRadius(cornerRadiusPx),
+                bottomLeft = if (isLeftHighlighted) CornerRadius.Zero else CornerRadius(cornerRadiusPx),
+                topRight = if (isRightHighlighted) CornerRadius.Zero else CornerRadius(cornerRadiusPx),
+                bottomRight = if (isRightHighlighted) CornerRadius.Zero else CornerRadius(cornerRadiusPx)
+            )
+        )
+    }
+    drawPath(path, color = pillColor)
 }

@@ -125,13 +125,15 @@ data class CalendarUiState(
     @RequiresApi(Build.VERSION_CODES.O)
     fun isLeftHighlighted(beginningWeek: LocalDate?, month: YearMonth): Boolean {
         return if (beginningWeek != null) {
-            if (month.month.value != beginningWeek.month.value) {
-                false
-            } else {
-                val beginningWeekSelected = isDateInSelectedPeriod(beginningWeek)
-                val lastDayPreviousWeek = beginningWeek.minusDays(1)
-                isDateInSelectedPeriod(lastDayPreviousWeek) && beginningWeekSelected
+            var firstSelectedInMonth: LocalDate? = null
+            for (i in 0 until 7) {
+                val date = beginningWeek.plusDays(i.toLong())
+                if (date.month == month.month && isDateInSelectedPeriod(date)) {
+                    firstSelectedInMonth = date
+                    break
+                }
             }
+            firstSelectedInMonth != null && isDateInSelectedPeriod(firstSelectedInMonth.minusDays(1))
         } else {
             false
         }
@@ -142,15 +144,16 @@ data class CalendarUiState(
         beginningWeek: LocalDate?,
         month: YearMonth
     ): Boolean {
-        val lastDayOfTheWeek = beginningWeek?.plusDays(6)
-        return if (lastDayOfTheWeek != null) {
-            if (month.month.value != lastDayOfTheWeek.month.value) {
-                false
-            } else {
-                val lastDayOfTheWeekSelected = isDateInSelectedPeriod(lastDayOfTheWeek)
-                val firstDayNextWeek = lastDayOfTheWeek.plusDays(1)
-                isDateInSelectedPeriod(firstDayNextWeek) && lastDayOfTheWeekSelected
+        return if (beginningWeek != null) {
+            var lastSelectedInMonth: LocalDate? = null
+            for (i in 6 downTo 0) {
+                val date = beginningWeek.plusDays(i.toLong())
+                if (date.month == month.month && isDateInSelectedPeriod(date)) {
+                    lastSelectedInMonth = date
+                    break
+                }
             }
+            lastSelectedInMonth != null && isDateInSelectedPeriod(lastSelectedInMonth.plusDays(1))
         } else {
             false
         }

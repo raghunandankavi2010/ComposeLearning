@@ -213,11 +213,6 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.StaggeredGrid
         ),
         AnimationCategory(
-            "Sine Wave Path",
-            "Animating segments of a mathematical sine wave",
-            AnimScreen.SineWavePath
-        ),
-        AnimationCategory(
             "Circular Reveal",
             "Expanding circular path reveal (WhatsApp style)",
             AnimScreen.CircularReveal
