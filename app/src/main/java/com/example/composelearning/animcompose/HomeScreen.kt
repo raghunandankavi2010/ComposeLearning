@@ -1,23 +1,9 @@
 package com.example.composelearning.animcompose
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
@@ -25,9 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
-// @Immutable lets the Compose compiler skip CategoryCard whenever the AnimationCategory inputs
-// are equal across recomposition. Without it, the data class is treated as "stable but unknown"
-// and every card re-runs whenever the parent recomposes.
 @Immutable
 data class AnimationCategory(
     val title: String,
@@ -38,63 +21,75 @@ data class AnimationCategory(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainHomeScreen(navigator: Navigator) {
-    // remember holds the 60+ AnimationCategory instances across recompositions; otherwise the
-    // whole list is reallocated every time MainHomeScreen recomposes (e.g. on nav state changes),
-    // which invalidates every card because the instances are new objects.
     val categories = remember { listOf(
         AnimationCategory(
+            "Particle Hub",
+            "Consolidated particle systems: 3D Explosion, Continuous Stream, Realistic Physics, and Fireworks.",
+            AnimScreen.ParticleHub,
+        ),
+        AnimationCategory(
+            "Charts & Waves Hub",
+            "Consolidated charting showcase: Line, Bar, Donut, Pie, Candle, Speedometer, Temperature, and Sine Waves.",
+            AnimScreen.ChartsHub,
+        ),
+        AnimationCategory(
+            "Canvas Basics Hub",
+            "Consolidated fundamental drawing concepts: Math, Drawing primitives, Paths, Bitmaps, Canvas State, and Gestures.",
+            AnimScreen.CanvasBasicsHub,
+        ),
+        AnimationCategory(
             "Nav3 — Tabs + Shared Elements",
-            "Single NavDisplay with per-tab back stacks (Photos / Articles / Profile). Bottom bar hides on detail screens. SharedTransitionLayout + LocalNavAnimatedContentScope drives list↔detail transitions.",
+            "Single NavDisplay with per-tab back stacks (Photos / Articles / Profile). Bottom bar hides on detail screens.",
             AnimScreen.TabsSample,
         ),
         AnimationCategory(
             "Top-Right Fan Carousel",
-            "Stacked-card carousel — front card centered, others fanned toward the top-right with decreasing scale, alpha and rotation. Drag-to-dismiss; back cards slot forward as you drag.",
+            "Stacked-card carousel — front card centered, others fanned toward the top-right. Drag-to-dismiss.",
             AnimScreen.FanCarousel,
         ),
         AnimationCategory(
             "FlightSeat (Compose port)",
-            "Port of ldoublem/FlightSeat — top-down plane with first/business/economy/tail sections, tap-to-select seats, live count, side minimap. Redrawn with Compose primitives (no bitmaps).",
+            "Port of ldoublem/FlightSeat — top-down plane with tap-to-select seats, live count, side minimap.",
             AnimScreen.FlightSeat,
         ),
         AnimationCategory(
             "SmoothProgressBar (Compose port)",
-            "Port of castorflex/SmoothProgressBar — indeterminate horizontal sections sliding with cycling colors, accelerate-easing widths, mirror/reverse modes.",
+            "Port of castorflex/SmoothProgressBar — indeterminate horizontal sections sliding with cycling colors.",
             AnimScreen.SmoothProgress,
         ),
         AnimationCategory(
             "Per-item ViewModels (Compose)",
-            "Google's recommended pattern: scope a ViewModel to one list item or pager page. LazyColumn (resets on scroll) + HorizontalPager (retained via hoisted provider) + the screen-level anti-pattern.",
+            "Scope a ViewModel to one list item or pager page. LazyColumn + HorizontalPager demo.",
             AnimScreen.PerItemViewModel,
         ),
         AnimationCategory(
             "Strava Save Activity",
-            "Pill button morphs to circular loader, arc sweeps 360°, then point-sample lerps into a checkmark — color shifts orange→green with a spring pop",
+            "Pill button morphs to circular loader, then point-sample lerps into a checkmark.",
             AnimScreen.SaveActivity,
         ),
         AnimationCategory(
             "Zoomable Image",
-            "Pinch-to-zoom and pan with rememberTransformableState — double-tap to reset, clamped scale, graphicsLayer for recomposition-free transforms",
+            "Pinch-to-zoom and pan with rememberTransformableState — double-tap to reset.",
             AnimScreen.ZoomableImage,
         ),
         AnimationCategory(
             "Image Processing (AGSL)",
-            "Instagram-style filter strip: greyscale, sepia, vintage S-curve LUT, cinematic teal/orange, polaroid fade, noir, cyberpunk — all rendered as an AGSL RuntimeShader RenderEffect at display refresh rate.",
+            "Instagram-style filters rendered as an AGSL RuntimeShader RenderEffect.",
             AnimScreen.ImageProcessing,
         ),
         AnimationCategory(
             "Sort Animations",
-            "Tabbed hub: bubble, quick, insertion, selection, shell, merge, heap, and Timsort — same 32 shuffled hue columns, animated reorder, off-thread vs main-thread benchmark per algorithm.",
+            "Tabbed hub: bubble, quick, insertion, selection, shell, merge, heap, and Timsort.",
             AnimScreen.SortAnimation,
         ),
         AnimationCategory(
-            "Netflix — Shape redraw (mine)",
+            "Netflix — Shape redraw",
             "Path + clipPath + gradient sweep. Clean geometry, ~120 LOC. Tap to replay.",
             AnimScreen.NetflixLogo,
         ),
         AnimationCategory(
             "Netflix — Paint redraw (Anmol port)",
-            "Port of @anmolverma's compose-animation-examples: 31 gradient strips per stroke + 28 colour sparkles + 6 parallel keyframe tracks. Painterly fidelity.",
+            "Port of @anmolverma's compose-animation-examples: 31 gradient strips + parallel keyframe tracks.",
             AnimScreen.AnmolNetflix,
         ),
         AnimationCategory(
@@ -113,23 +108,18 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.ButtonAnimation,
         ),
         AnimationCategory(
-            "Sine Wave (Canvas)",
-            "Pure Canvas sine wave animation",
-            AnimScreen.SinWaveCanvas,
-        ),
-        AnimationCategory(
             "Blur Effects",
             "Modifier.blur and Haze frosted-glass demos",
             AnimScreen.BlurEffects,
         ),
         AnimationCategory(
             "Lists Showcase",
-            "12 tabbed list demos: alerts, products, sticky, reorder, swipe, staggered, news, calendar, circular ↕/↔, LazyRow, number picker",
+            "12 tabbed list demos: alerts, products, sticky, reorder, swipe, staggered, news, circular.",
             AnimScreen.ListsShowcase,
         ),
         AnimationCategory(
             "Pager & Carousel Showcase",
-            "Tabbed showcase: Instagram coverflow, Instagram v2, HorizontalPager demo, custom-Layout pager",
+            "Tabbed showcase: Instagram coverflow, Instagram v2, HorizontalPager demo.",
             AnimScreen.PagerShowcase,
         ),
         AnimationCategory(
@@ -154,63 +144,23 @@ fun MainHomeScreen(navigator: Navigator) {
         ),
         AnimationCategory(
             "Time Range Knob",
-            "Circular 24h dial with two draggable knobs — drag to set bedtime and wake-up; screen morphs between day and night themes",
+            "Circular 24h dial with two draggable knobs — drag to set bedtime and wake-up.",
             AnimScreen.TimeRangeKnob
         ),
         AnimationCategory(
             "Shadow Playground",
-            "Every Compose shadow: elevation, colored ambient/spot, dropShadow, innerShadow, brush, neumorphism, press-to-lift",
+            "Every Compose shadow: elevation, colored ambient/spot, dropShadow, innerShadow, brush.",
             AnimScreen.ShadowsPlayground
         ),
         AnimationCategory(
             "Tutorial Overlay",
-            "Coach-mark walkthrough on a LazyColumn — auto-scrolls to off-screen targets, animated cutout, callout card",
+            "Coach-mark walkthrough on a LazyColumn — auto-scrolls to off-screen targets.",
             AnimScreen.TutorialOverlay
         ),
         AnimationCategory(
             "AGSL Shader Demos",
             "Blur, frosted glass, mesh gradient, shimmer, liquid button, film grain",
             AnimScreen.ShaderDemos
-        ),
-        AnimationCategory(
-            "Speedometer",
-            "Arc speedometer with animated needle and color thresholds",
-            AnimScreen.Speedometer
-        ),
-        AnimationCategory(
-            "Fitness — Continuous Line Chart",
-            "Paged line chart, scroll left to load older days. RecyclerView-decorator style.",
-            AnimScreen.FitnessLineChart
-        ),
-        AnimationCategory(
-            "Bar Chart",
-            "Grouped + stacked, gradient bars, tap to select",
-            AnimScreen.BarChartDemo
-        ),
-        AnimationCategory(
-            "Donut Chart",
-            "Animated sweep, center slot, tap-to-select segment, legend",
-            AnimScreen.DonutChartDemo
-        ),
-        AnimationCategory(
-            "Pie Chart",
-            "Variable-width slices with min-arc rule for small values, animated sweep-in, percentage labels, center total",
-            AnimScreen.PieChartDemo
-        ),
-        AnimationCategory(
-            "Candle Chart",
-            "OHLC bars with wicks, volume strip, animated entry",
-            AnimScreen.CandleChartDemo
-        ),
-        AnimationCategory(
-            "Thermometer & Temperature",
-            "Gauge, Material thermometer, and animated medical thermometer — tabbed",
-            AnimScreen.TemperatureGaugeDemo
-        ),
-        AnimationCategory(
-            "Bezier Curves",
-            "Deep dive + interactive Explorer (quadratic, cubic, Figma → Compose) — tabbed",
-            AnimScreen.BezierCurves
         ),
         AnimationCategory(
             "Product Shared Elements",
@@ -256,21 +206,6 @@ fun MainHomeScreen(navigator: Navigator) {
             "YouTube Style Screen",
             "Complex layout with custom concave shapes and nested scrolling",
             AnimScreen.YouTubeStyle
-        ),
-        AnimationCategory(
-            "Particle Explosion",
-            "Continuous stream of particles with scaling and alpha",
-            AnimScreen.ParticleExplosion
-        ),
-        AnimationCategory(
-            "Realistic Physics Explosion",
-            "Gravity and drag based particle system",
-            AnimScreen.RealisticExplosion
-        ),
-        AnimationCategory(
-            "Sparkling 3D Explosion",
-            "Improved 3D physics with air resistance, depth projection, and bloom effects.",
-            AnimScreen.ParticleExplosion3D
         ),
         AnimationCategory(
             "Staggered Grid Animation",
@@ -328,41 +263,6 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.April2026Features
         ),
         AnimationCategory(
-            "Math Basics",
-            "Coordinate systems, vectors, trigonometry",
-            AnimScreen.MathBasics
-        ),
-        AnimationCategory(
-            "Drawing Fundamentals",
-            "Canvas, DrawScope, coordinate systems",
-            AnimScreen.DrawingFundamentals
-        ),
-        AnimationCategory(
-            "Lines, Shapes & Arcs",
-            "Primitives and basic shapes",
-            AnimScreen.LinesShapesArcs
-        ),
-        AnimationCategory(
-            "Paths & Complex Shapes",
-            "Bezier curves and custom paths",
-            AnimScreen.PathsComplexShapes
-        ),
-        AnimationCategory(
-            "Images & Bitmaps",
-            "Working with images on canvas",
-            AnimScreen.ImagesBitmaps
-        ),
-        AnimationCategory(
-            "Canvas State",
-            "Save/restore, transformations",
-            AnimScreen.CanvasState
-        ),
-        AnimationCategory(
-            "Touch & Gestures",
-            "Drag, pinch, multi-touch",
-            AnimScreen.TouchGestures
-        ),
-        AnimationCategory(
             "Animation Basics",
             "Value-based and infinite animations",
             AnimScreen.AnimationBasics
@@ -411,8 +311,6 @@ fun MainHomeScreen(navigator: Navigator) {
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White,
-                    actionIconContentColor = Color.White,
                 )
             )
         }

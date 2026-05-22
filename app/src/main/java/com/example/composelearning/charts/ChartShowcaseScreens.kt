@@ -1,39 +1,10 @@
 package com.example.composelearning.charts
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,29 +23,29 @@ fun FitnessLineChartScreen(onBack: () -> Unit) {
                 title = { Text("Fitness — Daily Steps") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White,
-                    actionIconContentColor = Color.White,
+                    titleContentColor = Color.White
                 ),
             )
         }
     ) { padding ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(vertical = 16.dp)
-        ) {
-            Text(
-                text = "Scroll horizontally to load older history.",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(horizontal = 16.dp),
-            )
-            Spacer(Modifier.height(12.dp))
-            FitnessLineChart()
-            Spacer(Modifier.height(24.dp))
-            ExampleLineChartCard()
-        }
+        LineChartContent(Modifier.padding(padding))
+    }
+}
+
+@Composable
+fun LineChartContent(modifier: Modifier = Modifier) {
+    Column(
+        modifier.fillMaxSize().padding(vertical = 16.dp)
+    ) {
+        Text(
+            text = "Scroll horizontally to load older history.",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(horizontal = 16.dp),
+        )
+        Spacer(Modifier.height(12.dp))
+        FitnessLineChart()
+        Spacer(Modifier.height(24.dp))
+        ExampleLineChartCard()
     }
 }
 
@@ -107,14 +78,8 @@ private fun ExampleLineChartCard() {
                 series = series,
                 modifier = Modifier.fillMaxWidth().height(220.dp),
                 spec = LineChartSpec(
-                    xAxis = ChartAxis(
-                        tickCount = 6,
-                        labelFormatter = { "${it.toInt()}h" },
-                    ),
-                    yAxis = ChartAxis(
-                        tickCount = 4,
-                        labelFormatter = { "${it.toInt()}" },
-                    ),
+                    xAxis = ChartAxis(tickCount = 6, labelFormatter = { "${it.toInt()}h" }),
+                    yAxis = ChartAxis(tickCount = 4, labelFormatter = { "${it.toInt()}" }),
                 ),
             )
         }
@@ -124,6 +89,24 @@ private fun ExampleLineChartCard() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BarChartShowcaseScreen(onBack: () -> Unit) {
+    Scaffold(
+        modifier = Modifier.systemBarsPadding(),
+        topBar = {
+            TopAppBar(
+                title = { Text("Bar Chart") },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = Color.White
+                ),
+            )
+        }
+    ) { padding ->
+        BarChartContent(Modifier.padding(padding))
+    }
+}
+
+@Composable
+fun BarChartContent(modifier: Modifier = Modifier) {
     var mode by remember { mutableStateOf(BarMode.Grouped) }
     val entries = remember {
         listOf(
@@ -136,59 +119,54 @@ fun BarChartShowcaseScreen(onBack: () -> Unit) {
             BarEntry("Sun", listOf(4800f, 3100f, 2500f)),
         )
     }
-    Scaffold(
-        modifier = Modifier.systemBarsPadding(),
-        topBar = {
-            TopAppBar(
-                title = { Text("Bar Chart") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White,
-                    actionIconContentColor = Color.White,
-                ),
+    Column(modifier.fillMaxSize().padding(16.dp)) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            FilterChip(
+                selected = mode == BarMode.Grouped,
+                onClick = { mode = BarMode.Grouped },
+                label = { Text("Grouped") },
+            )
+            Spacer(Modifier.width(8.dp))
+            FilterChip(
+                selected = mode == BarMode.Stacked,
+                onClick = { mode = BarMode.Stacked },
+                label = { Text("Stacked") },
             )
         }
-    ) { padding ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp)
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                FilterChip(
-                    selected = mode == BarMode.Grouped,
-                    onClick = { mode = BarMode.Grouped },
-                    label = { Text("Grouped") },
-                )
-                Spacer(Modifier.width(8.dp))
-                FilterChip(
-                    selected = mode == BarMode.Stacked,
-                    onClick = { mode = BarMode.Stacked },
-                    label = { Text("Stacked") },
-                )
-            }
-            Spacer(Modifier.height(16.dp))
-            BarChart(
-                entries = entries,
-                seriesLabels = listOf("Steps", "Calories", "Active min"),
-                modifier = Modifier.fillMaxWidth().height(280.dp),
-                spec = BarChartSpec(
-                    mode = mode,
-                    yAxis = ChartAxis(
-                        tickCount = 4,
-                        labelFormatter = { "${(it / 1000).toInt()}k" },
-                    ),
-                ),
-            )
-        }
+        Spacer(Modifier.height(16.dp))
+        BarChart(
+            entries = entries,
+            seriesLabels = listOf("Steps", "Calories", "Active min"),
+            modifier = Modifier.fillMaxWidth().height(280.dp),
+            spec = BarChartSpec(
+                mode = mode,
+                yAxis = ChartAxis(tickCount = 4, labelFormatter = { "${(it / 1000).toInt()}k" }),
+            ),
+        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DonutChartShowcaseScreen(onBack: () -> Unit) {
+    Scaffold(
+        modifier = Modifier.systemBarsPadding(),
+        topBar = {
+            TopAppBar(
+                title = { Text("Donut Chart") },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = Color.White
+                ),
+            )
+        }
+    ) { padding ->
+        DonutChartContent(Modifier.padding(padding))
+    }
+}
+
+@Composable
+fun DonutChartContent(modifier: Modifier = Modifier) {
     val slices = remember {
         listOf(
             DonutSlice("Running", 42f),
@@ -197,35 +175,15 @@ fun DonutChartShowcaseScreen(onBack: () -> Unit) {
             DonutSlice("Strength", 10f),
         )
     }
-    Scaffold(
-        modifier = Modifier.systemBarsPadding(),
-        topBar = {
-            TopAppBar(
-                title = { Text("Donut Chart") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White,
-                    actionIconContentColor = Color.White,
-                ),
-            )
-        }
-    ) { padding ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp)
-        ) {
-            Text("Weekly activity breakdown", style = MaterialTheme.typography.titleMedium)
-            Spacer(Modifier.height(16.dp))
-            DonutChart(
-                slices = slices,
-                modifier = Modifier.fillMaxWidth().aspectRatio(1f),
-            )
-            Spacer(Modifier.height(24.dp))
-            DonutLegend(slices = slices)
-        }
+    Column(modifier.fillMaxSize().padding(16.dp)) {
+        Text("Weekly activity breakdown", style = MaterialTheme.typography.titleMedium)
+        Spacer(Modifier.height(16.dp))
+        DonutChart(
+            slices = slices,
+            modifier = Modifier.fillMaxWidth().aspectRatio(1f),
+        )
+        Spacer(Modifier.height(24.dp))
+        DonutLegend(slices = slices)
     }
 }
 
@@ -239,32 +197,45 @@ fun PieChartShowcaseScreen(onBack: () -> Unit) {
                 title = { Text("Pie Chart") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White,
-                    actionIconContentColor = Color.White,
+                    titleContentColor = Color.White
                 ),
             )
         }
     ) { padding ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp)
-        ) {
-            Text("Expense split (variable-width slices)", style = MaterialTheme.typography.titleMedium)
-            Spacer(Modifier.height(8.dp))
-            // Existing PieChartPreview owns its data, animation, and click handling; the showcase
-            // just supplies a host with a TopAppBar so it slots into the navigation graph alongside
-            // the bar/donut/candle screens.
-            PieChartPreview(onClick = { _, _ -> })
-        }
+        PieChartContent(Modifier.padding(padding))
+    }
+}
+
+@Composable
+fun PieChartContent(modifier: Modifier = Modifier) {
+    Column(modifier.fillMaxSize().padding(16.dp)) {
+        Text("Expense split (variable-width slices)", style = MaterialTheme.typography.titleMedium)
+        Spacer(Modifier.height(8.dp))
+        PieChartPreview(onClick = { _, _ -> })
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CandleChartShowcaseScreen(onBack: () -> Unit) {
+    Scaffold(
+        modifier = Modifier.systemBarsPadding(),
+        topBar = {
+            TopAppBar(
+                title = { Text("Candle Chart") },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = Color.White
+                ),
+            )
+        }
+    ) { padding ->
+        CandleChartContent(Modifier.padding(padding))
+    }
+}
+
+@Composable
+fun CandleChartContent(modifier: Modifier = Modifier) {
     val candles = remember {
         val rng = Random(42)
         var price = 145f
@@ -279,49 +250,23 @@ fun CandleChartShowcaseScreen(onBack: () -> Unit) {
             Candle("D${i + 1}", open, high, low, close, volume)
         }
     }
-    Scaffold(
-        modifier = Modifier.systemBarsPadding(),
-        topBar = {
-            TopAppBar(
-                title = { Text("Candle Chart") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White,
-                    actionIconContentColor = Color.White,
-                ),
-            )
-        }
-    ) { padding ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp)
-        ) {
-            Text("ACME stock — last 40 days", style = MaterialTheme.typography.titleMedium)
-            Spacer(Modifier.height(16.dp))
-            CandleChart(
-                candles = candles,
-                modifier = Modifier.fillMaxWidth().height(360.dp),
-                spec = CandleChartSpec(
-                    showVolume = true,
-                    yAxis = ChartAxis(
-                        tickCount = 5,
-                        labelFormatter = { "$${"%.0f".format(it)}" },
-                    ),
-                ),
-            )
-        }
+    Column(modifier.fillMaxSize().padding(16.dp)) {
+        Text("ACME stock — last 40 days", style = MaterialTheme.typography.titleMedium)
+        Spacer(Modifier.height(16.dp))
+        CandleChart(
+            candles = candles,
+            modifier = Modifier.fillMaxWidth().height(360.dp),
+            spec = CandleChartSpec(
+                showVolume = true,
+                yAxis = ChartAxis(tickCount = 5, labelFormatter = { "$${"%.0f".format(it)}" }),
+            ),
+        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TemperatureShowcaseScreen(onBack: () -> Unit) {
-    val tabs = listOf("Gauge", "Thermometer V2", "Animation")
-    var selectedTab by remember { mutableStateOf(0) }
-
     Scaffold(
         modifier = Modifier.systemBarsPadding(),
         topBar = {
@@ -329,32 +274,34 @@ fun TemperatureShowcaseScreen(onBack: () -> Unit) {
                 title = { Text("Thermometer & Temperature") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White,
-                    actionIconContentColor = Color.White,
+                    titleContentColor = Color.White
                 ),
             )
         }
     ) { padding ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(padding)
-        ) {
-            TabRow(selectedTabIndex = selectedTab) {
-                tabs.forEachIndexed { index, title ->
-                    Tab(
-                        selected = selectedTab == index,
-                        onClick = { selectedTab = index },
-                        text = { Text(title) },
-                    )
-                }
+        TemperatureContent(Modifier.padding(padding))
+    }
+}
+
+@Composable
+fun TemperatureContent(modifier: Modifier = Modifier) {
+    val tabs = listOf("Gauge", "Thermometer V2", "Animation")
+    var selectedTab by remember { mutableIntStateOf(0) }
+
+    Column(modifier.fillMaxSize()) {
+        SecondaryTabRow(selectedTabIndex = selectedTab) {
+            tabs.forEachIndexed { index, title ->
+                Tab(
+                    selected = selectedTab == index,
+                    onClick = { selectedTab = index },
+                    text = { Text(title) },
+                )
             }
-            when (selectedTab) {
-                0 -> TemperatureGaugeTab()
-                1 -> ThermometerV2Tab()
-                else -> com.example.composelearning.animcompose.ThermometerAnimation()
-            }
+        }
+        when (selectedTab) {
+            0 -> TemperatureGaugeTab()
+            1 -> ThermometerV2Tab()
+            else -> com.example.composelearning.animcompose.ThermometerAnimation()
         }
     }
 }
@@ -408,9 +355,6 @@ private fun ThermometerV2Tab() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BezierShowcaseScreen(onBack: () -> Unit) {
-    val tabs = listOf("Deep Dive", "Explorer")
-    var selectedTab by remember { mutableStateOf(0) }
-
     Scaffold(
         modifier = Modifier.systemBarsPadding(),
         topBar = {
@@ -418,33 +362,35 @@ fun BezierShowcaseScreen(onBack: () -> Unit) {
                 title = { Text("Bezier Curves") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White,
-                    actionIconContentColor = Color.White,
+                    titleContentColor = Color.White
                 ),
             )
         }
     ) { padding ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(padding)
-        ) {
-            TabRow(selectedTabIndex = selectedTab) {
-                tabs.forEachIndexed { index, title ->
-                    Tab(
-                        selected = selectedTab == index,
-                        onClick = { selectedTab = index },
-                        text = { Text(title) },
-                    )
-                }
-            }
-            when (selectedTab) {
-                0 -> com.example.composelearning.graphics.BezierCurveSampleContent(
-                    modifier = Modifier.fillMaxSize(),
+        BezierContent(Modifier.padding(padding))
+    }
+}
+
+@Composable
+fun BezierContent(modifier: Modifier = Modifier) {
+    val tabs = listOf("Deep Dive", "Explorer")
+    var selectedTab by remember { mutableIntStateOf(0) }
+
+    Column(modifier.fillMaxSize()) {
+        SecondaryTabRow(selectedTabIndex = selectedTab) {
+            tabs.forEachIndexed { index, title ->
+                Tab(
+                    selected = selectedTab == index,
+                    onClick = { selectedTab = index },
+                    text = { Text(title) },
                 )
-                else -> com.example.composelearning.animcompose.BezierCurveExplorerScreen()
             }
+        }
+        when (selectedTab) {
+            0 -> com.example.composelearning.graphics.BezierCurveSampleContent(
+                modifier = Modifier.fillMaxSize(),
+            )
+            else -> com.example.composelearning.animcompose.BezierCurveExplorerScreen()
         }
     }
 }
@@ -459,70 +405,72 @@ fun SpeedometerNavScreen(onBack: () -> Unit) {
                 title = { Text("Speedometer Showcase") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White,
-                    actionIconContentColor = Color.White,
+                    titleContentColor = Color.White
                 ),
             )
         }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp),
-        ) {
-            SpeedometerSection(title = "Speedometer1 — slider + animation") {
-                com.example.composelearning.speedometer.SpeedometerScreen()
+        SpeedometerContent(Modifier.padding(padding))
+    }
+}
+
+@Composable
+fun SpeedometerContent(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
+    ) {
+        SpeedometerSection(title = "Speedometer1 — slider + animation") {
+            com.example.composelearning.speedometer.SpeedometerScreen()
+        }
+        SpeedometerSection(title = "Speedometer — markers, pointer, color tiers") {
+            var progress by remember { mutableIntStateOf(72) }
+            Column {
+                com.example.composelearning.speedometer.Speedometer(progress = progress)
+                Spacer(Modifier.height(8.dp))
+                SpeedometerProgressChips(
+                    options = listOf(0, 25, 50, 75, 100),
+                    selected = progress,
+                    onSelect = { progress = it },
+                )
             }
-            SpeedometerSection(title = "Speedometer — markers, pointer, color tiers") {
-                var progress by remember { mutableStateOf(72) }
-                Column {
-                    com.example.composelearning.speedometer.Speedometer(progress = progress)
-                    Spacer(Modifier.height(8.dp))
-                    SpeedometerProgressChips(
-                        options = listOf(0, 25, 50, 75, 100),
-                        selected = progress,
-                        onSelect = { progress = it },
-                    )
-                }
+        }
+        SpeedometerSection(title = "SpeedometerTry — vector pointer, half-arc") {
+            var progress by remember { mutableIntStateOf(40) }
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                com.example.composelearning.speedometer.SpeedometerTry(progress = progress)
+                Spacer(Modifier.height(8.dp))
+                SpeedometerProgressChips(
+                    options = listOf(0, 25, 50, 75, 100),
+                    selected = progress,
+                    onSelect = { progress = it },
+                )
             }
-            SpeedometerSection(title = "SpeedometerTry — vector pointer, half-arc") {
-                var progress by remember { mutableStateOf(40) }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    com.example.composelearning.speedometer.SpeedometerTry(progress = progress)
-                    Spacer(Modifier.height(8.dp))
-                    SpeedometerProgressChips(
-                        options = listOf(0, 25, 50, 75, 100),
-                        selected = progress,
-                        onSelect = { progress = it },
-                    )
-                }
+        }
+        SpeedometerSection(title = "Speedometer2 — vector arc + animated needle") {
+            var progress by remember { mutableIntStateOf(65) }
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                com.example.composelearning.speedometer.Speedometer2(progress = progress)
+                Spacer(Modifier.height(8.dp))
+                SpeedometerProgressChips(
+                    options = listOf(0, 25, 50, 75, 100),
+                    selected = progress,
+                    onSelect = { progress = it },
+                )
             }
-            SpeedometerSection(title = "Speedometer2 — vector arc + animated needle") {
-                var progress by remember { mutableStateOf(65) }
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    com.example.composelearning.speedometer.Speedometer2(progress = progress)
-                    Spacer(Modifier.height(8.dp))
-                    SpeedometerProgressChips(
-                        options = listOf(0, 25, 50, 75, 100),
-                        selected = progress,
-                        onSelect = { progress = it },
-                    )
-                }
-            }
-            SpeedometerSection(title = "Speedometer3 — multi-segment polar path") {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    com.example.composelearning.speedometer.Speedometer3(
-                        redProgress = 25,
-                        yellowProgress = 25,
-                        greenProgress = 25,
-                        blueProgress = 25,
-                        progress = 75,
-                    )
-                }
+        }
+        SpeedometerSection(title = "Speedometer3 — multi-segment polar path") {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                com.example.composelearning.speedometer.Speedometer3(
+                    redProgress = 25,
+                    yellowProgress = 25,
+                    greenProgress = 25,
+                    blueProgress = 25,
+                    progress = 75,
+                )
             }
         }
     }

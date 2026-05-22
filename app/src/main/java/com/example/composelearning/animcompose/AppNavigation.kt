@@ -52,14 +52,7 @@ import com.example.composelearning.peritemvm.PerItemViewModelShowcaseScreen
 import com.example.composelearning.progess.SmoothProgressBarScreen
 import com.example.composelearning.flight.FlightSeatScreen
 import com.example.composelearning.textfields.MarqueeText
-import com.example.composelearning.charts.BarChartShowcaseScreen
-import com.example.composelearning.charts.BezierShowcaseScreen
-import com.example.composelearning.charts.CandleChartShowcaseScreen
-import com.example.composelearning.charts.DonutChartShowcaseScreen
-import com.example.composelearning.charts.PieChartShowcaseScreen
-import com.example.composelearning.charts.FitnessLineChartScreen
-import com.example.composelearning.charts.SpeedometerNavScreen
-import com.example.composelearning.charts.TemperatureShowcaseScreen
+import com.example.composelearning.charts.*
 import com.example.composelearning.customlayout.CustomPagerSample
 import com.example.composelearning.graphics.DrawScaleOnTouch
 import com.example.composelearning.graphics.SineWaveSample
@@ -75,6 +68,7 @@ import kotlinx.serialization.Serializable
 sealed interface AnimScreen : NavKey, Parcelable {
     @Serializable data object DrawScale: AnimScreen
     @Serializable data object Home : AnimScreen
+    @Serializable data object CanvasBasicsHub : AnimScreen
     @Serializable data object MathBasics : AnimScreen
     @Serializable data object DrawingFundamentals : AnimScreen
     @Serializable data object LinesShapesArcs : AnimScreen
@@ -109,9 +103,8 @@ sealed interface AnimScreen : NavKey, Parcelable {
     @Serializable data object FluidTabs : AnimScreen
     @Serializable data object DraggableSheet : AnimScreen
     @Serializable data object StaggeredGrid : AnimScreen
-    @Serializable data object ParticleExplosion : AnimScreen
-    @Serializable data object RealisticExplosion : AnimScreen
-    @Serializable data object ParticleExplosion3D : AnimScreen
+    @Serializable data object ParticleHub : AnimScreen
+    @Serializable data object ChartsHub : AnimScreen
     @Serializable data object SensorCard : AnimScreen
     @Serializable data object GradientProgress : AnimScreen
     @Serializable data object CircularReveal : AnimScreen
@@ -167,6 +160,7 @@ fun AppNavigation(
 
     val entryProvider: (NavKey) -> NavEntry<out NavKey> = entryProvider {
         entry<AnimScreen.Home> { MainHomeScreen(navigator) }
+        entry<AnimScreen.CanvasBasicsHub> { CanvasBasicsHubScreen() }
         entry<AnimScreen.MathBasics> { MathBasicsScreen() }
         entry<AnimScreen.DrawingFundamentals> { DrawingFundamentalsScreen() }
         entry<AnimScreen.LinesShapesArcs> { LinesShapesArcsScreen() }
@@ -211,9 +205,8 @@ fun AppNavigation(
         entry<AnimScreen.FluidTabs> { FluidTabBarShowcase() }
         entry<AnimScreen.DraggableSheet> { DraggableSheetRight() }
         entry<AnimScreen.StaggeredGrid> { StaggeredGridDemo() }
-        entry<AnimScreen.ParticleExplosion> { ParticleExplosionScreen() }
-        entry<AnimScreen.RealisticExplosion> { RealisticExplosionScreen() }
-        entry<AnimScreen.ParticleExplosion3D> { ParticleExpExplosion3D() }
+        entry<AnimScreen.ParticleHub> { ParticleAnimationsHubScreen() }
+        entry<AnimScreen.ChartsHub> { ChartsHubScreen() }
         entry<AnimScreen.SensorCard> { 
             Box(
                 modifier = Modifier.fillMaxSize().systemBarsPadding(),

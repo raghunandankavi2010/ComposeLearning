@@ -21,20 +21,11 @@ package com.example.composelearning.animcompose
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.withFrameNanos
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -48,22 +39,13 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.isActive
 import kotlin.math.PI
 import kotlin.math.cos
+import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.random.Random
 
 // ====================================================================================
-// Particle3D DATA CLASS
+// Particle3D DATA CLASS (Optimized)
 // ====================================================================================
-/**
- * Represents a single particle in 3D space.
- *
- * PHYSICS EXPLAINED:
- * - Position (posX, posY, posZ) is updated every frame using its velocity.
- * - Velocity (velX, velY, velZ) is influenced by gravity and air resistance (drag).
- * - The simulation uses Euler Integration:
- *      velocity = velocity + acceleration * time
- *      position = position + velocity * time
- */
 class Particle3D(
     val originX: Float,
     val originY: Float,
@@ -74,233 +56,188 @@ class Particle3D(
     val color: Color,
     val maxLifeMillis: Float,
     val gravityScale: Float = 1f,
-    val drag: Float = 0.98f // Simulates air resistance (momentum loss per frame)
+    val drag: Float = 0.98f 
 ) {
     var ageMillis: Float = 0f
     var isAlive: Boolean = true
 
-    // Current relative 3D position (offset from origin)
     var posX: Float = 0f
     var posY: Float = 0f
     var posZ: Float = 0f
 
-    // Projected 2D screen coordinates and size (calculated during projection)
     var screenX: Float = originX
     var screenY: Float = originY
     var currentSize: Float = baseSize
     var currentAlpha: Float = 1f
-    var currentScale: Float = 1f
 
-    // Random phase offset (0 to 2PI) for the sparkle animation's sine wave
-    // This ensures particles don't all twinkle in perfect sync.
     val sparkleOffset = Random.nextFloat() * PI.toFloat()
 }
 
 // ====================================================================================
-// EXPLOSION SYSTEM STATE
+// EXPLOSION SYSTEM
 // ====================================================================================
 class ExplosionSystem(
-    val particles: MutableList<Particle3D> = mutableStateListOf(),
-    val gravity: Float = 980f,      // Earth-like gravity magnitude (pixels/sec^2)
-    val focalLength: Float = 800f   // Distance from camera to screen (controls perspective intensity)
+    val particles: MutableList<Particle3D> = mutableListOf(), 
+    val gravity: Float = 980f,
+    val focalLength: Float = 800f,
+    val globalDrag: Float = 0.98f
 ) {
+    var totalAliveParticles = 0
+        private set
+
     companion object {
-        /**
-         * Creates a burst of particles using spherical distribution.
-         */
-        fun createExplosion(
-            originX: Float,
-            originY: Float,
-            count: Int = 150,
-            gravity: Float = 980f,
-            focalLength: Float = 800f
-        ): ExplosionSystem {
-            val system = ExplosionSystem(gravity = gravity, focalLength = focalLength)
-
+        fun createExplosion(originX: Float, originY: Float): ExplosionSystem {
+            val system = ExplosionSystem()
+            val count = 180
             repeat(count) {
-                // MATH: Spherically uniform random distribution
-                // 1. Azimuth (horizontal angle around the Y-axis): Range [0, 2π]
                 val azimuth = Random.nextDouble(0.0, 2.0 * PI).toFloat()
-                // 2. Elevation (vertical angle from the X-Z plane): Range [-π/2, π/2]
                 val elevation = Random.nextDouble(-PI / 2.0, PI / 2.0).toFloat()
-
-                // Speed magnitude: Random value between 200 and 800 units/second
                 val speed = Random.nextFloat() * 600f + 200f
 
-                // MATH: Spherical to Cartesian conversion
-                // x = speed * cos(elevation) * cos(azimuth)
-                // y = speed * sin(elevation)
-                // z = speed * cos(elevation) * sin(azimuth)
                 val vx = speed * cos(elevation) * cos(azimuth)
-                // Note: -200f is an "upward" initial impulse (screen -Y is up)
                 val vy = speed * sin(elevation) - 200f 
                 val vz = speed * cos(elevation) * sin(azimuth)
 
-                // Variance in size and lifetime
-                val baseSize = Random.nextFloat() * 4f + 2f
-                val maxLife = Random.nextFloat() * 1200f + 1000f
-                val gravityScale = Random.nextFloat() * 0.5f + 0.75f
-
-                val color = when (Random.nextInt(6)) {
-                    0 -> Color(0xFFFF5722) // Deep Orange
-                    1 -> Color(0xFFFF9800) // Orange
-                    2 -> Color(0xFFFFEB3B) // Yellow
-                    3 -> Color(0xFFF44336) // Red
-                    4 -> Color(0xFFFFFFFF) // White (Hot core)
-                    else -> Color(0xFFFF7043)
-                }
-
                 system.particles.add(
                     Particle3D(
-                        originX = originX,
-                        originY = originY,
-                        velX = vx,
-                        velY = vy,
-                        velZ = vz,
-                        baseSize = baseSize,
-                        color = color,
-                        maxLifeMillis = maxLife,
-                        gravityScale = gravityScale
+                        originX = originX, originY = originY,
+                        velX = vx, velY = vy, velZ = vz,
+                        baseSize = Random.nextFloat() * 4f + 2f,
+                        color = getRandomColor(),
+                        maxLifeMillis = Random.nextFloat() * 1200f + 1000f,
+                        gravityScale = Random.nextFloat() * 0.5f + 0.75f,
+                        drag = system.globalDrag
                     )
                 )
             }
+            system.totalAliveParticles = count
             return system
+        }
+
+        private fun getRandomColor(): Color = when (Random.nextInt(6)) {
+            0 -> Color(0xFFFF5722) 
+            1 -> Color(0xFFFF9800) 
+            2 -> Color(0xFFFFEB3B) 
+            3 -> Color(0xFFF44336) 
+            4 -> Color(0xFFFFFFFF) 
+            else -> Color(0xFFFF7043)
         }
     }
 
-    /**
-     * Advances the simulation.
-     * @param deltaMillis elapsed time since the previous frame in milliseconds.
-     */
     fun update(deltaMillis: Float) {
-        // MATH: Convert milliseconds to seconds for physics units (units/sec)
         val dtSeconds = deltaMillis / 1000f
+        
+        // MATH FIX: Time-corrected drag
+        val timeFactor = deltaMillis / 16.666f
+        val adjustedDrag = globalDrag.toDouble().pow(timeFactor.toDouble()).toFloat()
 
-        particles.forEach { p ->
-            if (!p.isAlive) return@forEach
+        var aliveCount = 0
+        for (i in particles.indices) {
+            val p = particles[i]
+            if (!p.isAlive) continue
 
             p.ageMillis += deltaMillis
             if (p.ageMillis >= p.maxLifeMillis) {
                 p.isAlive = false
-                return@forEach
+                continue
             }
 
-            // --- 1. PHYSICS UPDATE (Euler Integration) ---
-            
-            // a. Update Velocity with Gravity: v = v0 + a * dt
-            // gravityScale allows particles to fall at slightly different rates.
+            aliveCount++
+
             p.velY += (gravity * p.gravityScale) * dtSeconds
+            p.velX *= adjustedDrag
+            p.velY *= adjustedDrag
+            p.velZ *= adjustedDrag
 
-            // b. Apply Air Resistance (Drag): v = v * drag_coefficient
-            // Simple model where particle loses a percentage of speed every frame.
-            p.velX *= p.drag
-            p.velY *= p.drag
-            p.velZ *= p.drag
-
-            // c. Update Position: s = s + v * dt
             p.posX += p.velX * dtSeconds
             p.posY += p.velY * dtSeconds
             p.posZ += p.velZ * dtSeconds
 
-            // --- 2. 3D TO 2D PERSPECTIVE PROJECTION ---
-            
-            // MATH: Projection Scale Formula
-            // scale = focalLength / (focalLength + depth)
-            // As depth (posZ) increases, the scale factor decreases, pushing coordinates
-            // closer to the origin and shrinking the object size.
             val scale = focalLength / (focalLength + p.posZ)
-            p.currentScale = scale
-            
-            // Map 3D position to 2D screen coordinates:
-            // screen_coord = origin + (relative_pos * scale)
             p.screenX = p.originX + p.posX * scale
             p.screenY = p.originY + p.posY * scale
-            
-            // Adjust visual size based on depth
             p.currentSize = p.baseSize * scale
 
-            // --- 3. VISUAL EFFECTS MATH ---
-
-            // Normalize age into a ratio [0.0, 1.0]
             val lifeRatio = p.ageMillis / p.maxLifeMillis
-            
-            // MATH: Sparkle Oscillation
-            // We use a sine wave to flicker the alpha: alpha = sin(time * freq + phase) * amp + base
-            // freq = 0.05, phase = sparkleOffset, amp = 0.2, base = 0.8 (flicker between 0.6 and 1.0)
             val flicker = (sin(p.ageMillis * 0.05f + p.sparkleOffset) * 0.2f + 0.8f)
-            
-            // MATH: Alpha Fade Calculation
-            // Constant alpha (1.0) for the first 60% of life, then linear decay to 0.0.
-            // Decay formula: 1 - ((current - start) / range)
             p.currentAlpha = (if (lifeRatio < 0.6f) 1f else 1f - ((lifeRatio - 0.6f) / 0.4f)) * flicker
-            p.currentAlpha = p.currentAlpha.coerceIn(0f, 1f)
         }
+        totalAliveParticles = aliveCount
     }
 
-    fun isComplete(): Boolean = particles.all { !it.isAlive }
+    fun isComplete(): Boolean = totalAliveParticles == 0
 }
 
 @Composable
 fun ParticleExpExplosion3D(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
     val explosions = remember { mutableStateListOf<ExplosionSystem>() }
-    val fpsCounter = remember { mutableFloatStateOf(0f) }
-    val particleCount = remember { mutableIntStateOf(0) }
+    val fpsCounter = remember { mutableIntStateOf(0) }
+    val activeParticlesCount = remember { mutableIntStateOf(0) }
 
     LaunchedEffect(Unit) {
         var lastFrameTime = 0L
-        var fpsFrameCount = 0
-        var fpsElapsedTime = 0L
+        var frames = 0
+        var elapsed = 0L
 
         while (isActive) {
             val frameTime = withFrameNanos { it }
             if (lastFrameTime != 0L) {
-                // MATH: Delta time in ms = (currentNanos - lastNanos) / 1,000,000
-                val deltaMillis = (frameTime - lastFrameTime) / 1_000_000f
+                val deltaNanos = frameTime - lastFrameTime
+                val deltaMillis = deltaNanos / 1_000_000f
 
-                // FPS Logic: count frames over a 500ms window
-                fpsFrameCount++
-                fpsElapsedTime += (frameTime - lastFrameTime)
-                if (fpsElapsedTime >= 500_000_000L) {
-                    fpsCounter.floatValue = fpsFrameCount * 2f // frames * (1s / 0.5s)
-                    fpsFrameCount = 0
-                    fpsElapsedTime = 0L
+                frames++
+                elapsed += deltaNanos
+                if (elapsed >= 500_000_000L) {
+                    fpsCounter.intValue = (frames * 2)
+                    frames = 0
+                    elapsed = 0
                 }
 
-                explosions.forEach { it.update(deltaMillis) }
-                explosions.removeAll { it.isComplete() }
-                particleCount.intValue = explosions.sumOf { it.particles.count { p -> p.isAlive } }
+                var currentTotal = 0
+                for (i in explosions.indices) {
+                    val system = explosions[i]
+                    system.update(deltaMillis)
+                    currentTotal += system.totalAliveParticles
+                }
+                
+                if (explosions.any { it.isComplete() }) {
+                    explosions.removeAll { it.isComplete() }
+                }
+                
+                activeParticlesCount.intValue = currentTotal
             }
             lastFrameTime = frameTime
         }
     }
 
-    Box(modifier = modifier.fillMaxSize().background(Color(0xFF050505))) {
-        Canvas(
-            modifier = Modifier
-                .fillMaxSize()
-                .pointerInput(Unit) {
-                    detectTapGestures { offset ->
-                        // Add a new system at the tap location (x, y)
-                        explosions.add(ExplosionSystem.createExplosion(offset.x, offset.y))
-                    }
-                }
-        ) {
-            explosions.forEach { system ->
-                system.particles.forEach { p ->
-                    if (p.isAlive) {
-                        drawParticle(p)
-                    }
+    Box(modifier = modifier.fillMaxSize().background(Color.Black)) {
+        Canvas(modifier = Modifier.fillMaxSize().pointerInput(Unit) {
+            detectTapGestures { offset ->
+                explosions.add(ExplosionSystem.createExplosion(offset.x, offset.y))
+            }
+        }) {
+            for (i in explosions.indices) {
+                val pList = explosions[i].particles
+                for (j in pList.indices) {
+                    val p = pList[j]
+                    if (p.isAlive) drawParticle(p)
                 }
             }
         }
 
-        ExplosionHUD(fpsCounter.floatValue, particleCount.intValue, explosions.size)
-
-        if (explosions.isEmpty()) {
+        ExplosionHUD(
+            fpsCounter.intValue, 
+            activeParticlesCount.intValue, 
+            explosions.size,
+            modifier = Modifier.padding(contentPadding)
+        )
+        
+        if (activeParticlesCount.intValue == 0 && explosions.isEmpty()) {
             Text(
-                text = "Tap to Spark\n\u2728 3D Physics \u2728",
+                text = "Tap to Spark\n✨ 3D Physics (Optimized) ✨",
                 color = Color.White.copy(alpha = 0.6f),
                 fontSize = 18.sp,
                 modifier = Modifier.align(Alignment.Center),
@@ -312,47 +249,50 @@ fun ParticleExpExplosion3D(
 
 private fun DrawScope.drawParticle(p: Particle3D) {
     val alpha = p.currentAlpha
-    val size = p.currentSize
+    if (alpha <= 0.01f) return
+
     val center = Offset(p.screenX, p.screenY)
-
-    // VISUAL MATH: Multi-layer Glow
-    // We use BlendMode.Screen for additive blending (simulates light emission).
     
-    // 1. Soft Outer Glow (3x radius, 20% alpha)
     drawCircle(
-        color = p.color.copy(alpha = alpha * 0.2f),
-        radius = size * 3f,
+        color = p.color,
+        radius = p.currentSize * 3f,
         center = center,
+        alpha = alpha * 0.2f,
         blendMode = BlendMode.Screen
     )
     
-    // 2. Core (1x radius, full alpha)
     drawCircle(
-        color = p.color.copy(alpha = alpha),
-        radius = size,
+        color = p.color,
+        radius = p.currentSize,
         center = center,
+        alpha = alpha,
         blendMode = BlendMode.Screen
     )
 
-    // 3. Hot highlight (0.4x radius, white, visible only when bright)
     if (alpha > 0.8f) {
         drawCircle(
-            color = Color.White.copy(alpha = alpha * 0.5f),
-            radius = size * 0.4f,
-            center = center
+            color = Color.White,
+            radius = p.currentSize * 0.4f,
+            center = center,
+            alpha = alpha * 0.5f
         )
     }
 }
 
 @Composable
-private fun ExplosionHUD(fps: Float, particles: Int, systems: Int) {
-    Column(modifier = Modifier.padding(16.dp)) {
+private fun ExplosionHUD(
+    fps: Int, 
+    particles: Int, 
+    systems: Int,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier.padding(16.dp)) {
         Card(
             colors = CardDefaults.cardColors(containerColor = Color.Black.copy(alpha = 0.4f)),
             shape = androidx.compose.foundation.shape.RoundedCornerShape(4.dp)
         ) {
             Column(modifier = Modifier.padding(8.dp)) {
-                Text("FPS: ${fps.toInt()}", color = Color.Green, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                Text("FPS: $fps", color = if (fps >= 60) Color.Cyan else Color.Green, fontSize = 12.sp, fontWeight = FontWeight.Bold)
                 Text("Particles: $particles", color = Color.White, fontSize = 10.sp)
                 Text("Systems: $systems", color = Color.White, fontSize = 10.sp)
             }
