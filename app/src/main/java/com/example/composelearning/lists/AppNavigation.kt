@@ -27,7 +27,6 @@ fun AppNavigation() {
         startDestination = Routes.LIST_GRAPH
     ) {
         // --- The List Navigation Graph ---
-        // The ViewModel will be scoped to this graph
         navigation(
             startDestination = Routes.LIST_SCREEN,
             route = Routes.LIST_GRAPH

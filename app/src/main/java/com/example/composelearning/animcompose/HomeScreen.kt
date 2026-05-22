@@ -268,6 +268,11 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.RealisticExplosion
         ),
         AnimationCategory(
+            "Sparkling 3D Explosion",
+            "Improved 3D physics with air resistance, depth projection, and bloom effects.",
+            AnimScreen.ParticleExplosion3D
+        ),
+        AnimationCategory(
             "Staggered Grid Animation",
             "Grid items appearing with delayed entrance",
             AnimScreen.StaggeredGrid
