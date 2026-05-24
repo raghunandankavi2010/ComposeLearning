@@ -187,6 +187,7 @@ fun AppNavigation(
         entry<AnimScreen.SineWave> { SineWaveSample(onBack = { navigator.goBack() }) }
         entry<AnimScreen.CustomPager> { CustomPagerSample(onBack = { navigator.goBack() }) }
         entry<AnimScreen.SquigglySpans> { SquigglySpanSample(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.SquigglySlider> { SquigglySliderSample(onBack = { navigator.goBack() }) }
         entry<AnimScreen.DrawScale> { DrawScaleOnTouch(onBack = { navigator.goBack() }) }
         entry<AnimScreen.YouTubeStyle> { YouTubeScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.CircleMenu> { CircularMenuScreenWithFullAnimation() }

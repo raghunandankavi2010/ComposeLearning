@@ -301,6 +301,11 @@ fun MainHomeScreen(navigator: Navigator) {
             "Squiggly Spans Math",
             "Understanding animated squiggly underlines via Sine waves",
             AnimScreen.SquigglySpans
+        ),
+        AnimationCategory(
+            "Squiggly Slider",
+            "A custom slider that follows a sine wave path",
+            AnimScreen.SquigglySlider
         )
     ) }
 
