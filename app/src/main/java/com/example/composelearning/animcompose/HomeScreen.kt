@@ -296,6 +296,11 @@ fun MainHomeScreen(navigator: Navigator) {
             "File Delete animation",
             "File delete Animation",
             AnimScreen.FileDeleteAnimation
+        ),
+        AnimationCategory(
+            "Squiggly Spans Math",
+            "Understanding animated squiggly underlines via Sine waves",
+            AnimScreen.SquigglySpans
         )
     ) }
 

@@ -56,6 +56,8 @@ import com.example.composelearning.charts.*
 import com.example.composelearning.customlayout.CustomPagerSample
 import com.example.composelearning.graphics.DrawScaleOnTouch
 import com.example.composelearning.graphics.SineWaveSample
+import com.example.composelearning.textstyling.SquigglySpanSample
+import com.example.composelearning.sliders.SquigglySliderSample
 import com.example.composelearning.shaders.ShadersHubScreen
 import com.example.composelearning.clocks.TimeRangeKnobScreen
 import com.example.composelearning.shadows.ShadowsShowcaseScreen
@@ -91,6 +93,9 @@ sealed interface AnimScreen : NavKey, Parcelable {
     @Serializable data object BezierCurves : AnimScreen
     @Serializable data object SineWave : AnimScreen
     @Serializable data object CustomPager : AnimScreen
+    @Serializable data object SquigglySpans : AnimScreen
+    @Serializable data object SquigglySlider : AnimScreen
+    @Serializable data object InboxRecyclerView : AnimScreen
     @Serializable data object YouTubeStyle : AnimScreen
     @Serializable data object CircleMenu : AnimScreen
     @Serializable data object ChatApp : AnimScreen
@@ -181,11 +186,10 @@ fun AppNavigation(
         entry<AnimScreen.BezierCurves> { BezierShowcaseScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.SineWave> { SineWaveSample(onBack = { navigator.goBack() }) }
         entry<AnimScreen.CustomPager> { CustomPagerSample(onBack = { navigator.goBack() }) }
-
+        entry<AnimScreen.SquigglySpans> { SquigglySpanSample(onBack = { navigator.goBack() }) }
         entry<AnimScreen.DrawScale> { DrawScaleOnTouch(onBack = { navigator.goBack() }) }
         entry<AnimScreen.YouTubeStyle> { YouTubeScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.CircleMenu> { CircularMenuScreenWithFullAnimation() }
-        
         entry<AnimScreen.ChatApp> { ChatAppNavigation() }
         entry<AnimScreen.SimpleNav> { SimpleAppNavigation() }
         entry<AnimScreen.BottomSheet> { BottomSheet() }
