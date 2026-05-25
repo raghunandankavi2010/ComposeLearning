@@ -304,7 +304,7 @@ fun MainHomeScreen(navigator: Navigator) {
         ),
         AnimationCategory(
             "Squiggly Slider",
-            "A custom slider that follows a sine wave path",
+            "Material Expressive style slider with a wavy animated progress track.",
             AnimScreen.SquigglySlider
         )
     ) }

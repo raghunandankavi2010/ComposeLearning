@@ -18,9 +18,7 @@ package com.example.composelearning.sliders
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -33,8 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,16 +41,17 @@ import kotlin.math.PI
 import kotlin.math.sin
 
 /**
- * A custom Slider implementation that uses a Sine Wave as its track.
- * This demonstrates how to break away from standard "straight line" UI components.
+ * A custom Slider implementation that mimics the Material Expressive Squiggly Slider.
+ * The inactive track is straight, while the active progress part is wavy and animated.
+ * It uses the standard Material 3 Slider with a custom track and thumb.
  */
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SquigglySliderSample(onBack: () -> Unit) {
-    var sliderValue by remember { mutableFloatStateOf(0.3f) }
-    var amplitude by remember { mutableFloatStateOf(10f) }
-    var wavelength by remember { mutableFloatStateOf(40f) }
+    var sliderValue by remember { mutableFloatStateOf(0.4f) }
+    var amplitude by remember { mutableFloatStateOf(4f) }
+    var wavelength by remember { mutableFloatStateOf(20f) }
 
     Scaffold(
         topBar = {
@@ -75,7 +74,7 @@ fun SquigglySliderSample(onBack: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                "Custom Path Slider",
+                "Material Expressive Squiggly",
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -85,7 +84,7 @@ fun SquigglySliderSample(onBack: () -> Unit) {
                 color = MaterialTheme.colorScheme.primary
             )
 
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = Modifier.height(64.dp))
 
             // THE SQUIGGLY SLIDER
             SquigglySlider(
@@ -95,10 +94,10 @@ fun SquigglySliderSample(onBack: () -> Unit) {
                 wavelength = wavelength,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp)
+                    .padding(horizontal = 16.dp)
             )
 
-            Spacer(modifier = Modifier.height(64.dp))
+            Spacer(modifier = Modifier.height(80.dp))
 
             // Controls to customize the squiggle
             Card(
@@ -108,19 +107,20 @@ fun SquigglySliderSample(onBack: () -> Unit) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text("Design Parameters", fontWeight = FontWeight.Bold)
                     
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("Amplitude (Wiggle Height): ${amplitude.toInt()}dp", fontSize = 12.sp)
-                    Slider(value = amplitude, onValueChange = { amplitude = it }, valueRange = 0f..30f)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text("Squiggle Amplitude: ${amplitude.toInt()}dp", fontSize = 12.sp)
+                    Slider(value = amplitude, onValueChange = { amplitude = it }, valueRange = 0f..15f)
 
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text("Wavelength (Wiggle Frequency): ${wavelength.toInt()}dp", fontSize = 12.sp)
-                    Slider(value = wavelength, onValueChange = { wavelength = it }, valueRange = 10f..100f)
+                    Text("Squiggle Wavelength: ${wavelength.toInt()}dp", fontSize = 12.sp)
+                    Slider(value = wavelength, onValueChange = { wavelength = it }, valueRange = 10f..60f)
                 }
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SquigglySlider(
     value: Float,
@@ -131,68 +131,77 @@ fun SquigglySlider(
     activeColor: Color = MaterialTheme.colorScheme.primary,
     inactiveColor: Color = MaterialTheme.colorScheme.outlineVariant
 ) {
-    Box(
-        modifier = modifier
-            .pointerInput(Unit) {
-                detectTapGestures { offset ->
-                    onValueChange((offset.x / size.width).coerceIn(0f, 1f))
+    val infiniteTransition = rememberInfiniteTransition(label = "SquigglyTransition")
+    val phase by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 2f * PI.toFloat(),
+        animationSpec = infiniteRepeatable(
+            animation = tween(1000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "SquigglyPhase"
+    )
+
+    val interactionSource = remember { MutableInteractionSource() }
+
+    Slider(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier,
+        interactionSource = interactionSource,
+        track = {
+            Canvas(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            ) {
+                val width = size.width
+                val centerY = size.height / 2
+                
+                val ampPx = amplitude.dp.toPx()
+                val wavePx = wavelength.dp.toPx()
+                val piFloat = PI.toFloat()
+
+                // 1. Draw the Inactive Track (Full Width, Straight)
+                drawLine(
+                    color = inactiveColor,
+                    start = Offset(0f, centerY),
+                    end = Offset(width, centerY),
+                    strokeWidth = 4.dp.toPx(),
+                    cap = StrokeCap.Round
+                )
+
+                // 2. Draw the Active Track (Up to slider value, Wavy)
+                val activePath = Path()
+                val limitX = width * value
+                var x = 0f
+                activePath.moveTo(0f, centerY + ampPx * sin(phase))
+                while (x <= limitX) {
+                    val y = centerY + ampPx * sin((2f * piFloat * x / wavePx) + phase)
+                    activePath.lineTo(x, y)
+                    x += 2f
                 }
-            }
-            .pointerInput(Unit) {
-                detectDragGestures { change, _ ->
-                    onValueChange((change.position.x / size.width).coerceIn(0f, 1f))
+                
+                // Ensure it ends exactly at thumb position
+                if (limitX > 0f) {
+                   activePath.lineTo(limitX, centerY + ampPx * sin((2f * piFloat * limitX / wavePx) + phase))
                 }
-            }
-    ) {
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            val width = size.width
-            val height = size.height
-            val centerY = height / 2
-            
-            val ampPx = amplitude.dp.toPx()
-            val wavePx = wavelength.dp.toPx()
 
-            // 1. Draw the Inactive Track (Full Width)
-            val inactivePath = Path()
-            var x = 0f
-            inactivePath.moveTo(0f, centerY + ampPx * sin(0f))
-            while (x <= width) {
-                x += 2f
-                val y = centerY + ampPx * sin(2 * PI.toFloat() * x / wavePx)
-                inactivePath.lineTo(x, y)
+                drawPath(
+                    path = activePath,
+                    color = activeColor,
+                    style = Stroke(width = 6.dp.toPx(), cap = StrokeCap.Round)
+                )
             }
-            drawPath(inactivePath, inactiveColor, style = Stroke(width = 4.dp.toPx()))
-
-            // 2. Draw the Active Track (Up to slider value)
-            val activePath = Path()
-            val limitX = width * value
-            x = 0f
-            activePath.moveTo(0f, centerY + ampPx * sin(0f))
-            while (x <= limitX) {
-                x += 2f
-                val y = centerY + ampPx * sin(2 * PI.toFloat() * x / wavePx)
-                activePath.lineTo(x, y)
-            }
-            drawPath(activePath, activeColor, style = Stroke(width = 6.dp.toPx()))
-
-            // 3. Draw the Thumb (The dot)
-            val thumbX = width * value
-            val thumbY = centerY + ampPx * sin(2 * PI.toFloat() * thumbX / wavePx)
-            
-            // Outer white glow
-            drawCircle(
-                color = Color.White,
-                radius = 12.dp.toPx(),
-                center = Offset(thumbX, thumbY)
-            )
-            // Inner color
-            drawCircle(
-                color = activeColor,
-                radius = 10.dp.toPx(),
-                center = Offset(thumbX, thumbY)
+        },
+        thumb = {
+            // Material 3 default thumb
+            androidx.compose.material3.SliderDefaults.Thumb(
+                interactionSource = interactionSource,
+                colors = androidx.compose.material3.SliderDefaults.colors(thumbColor = activeColor)
             )
         }
-    }
+    )
 }
 
 @Preview(showBackground = true)
