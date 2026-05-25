@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.composelearning.LocalAnimationsEnabled
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 import kotlin.math.cos
@@ -49,9 +50,11 @@ fun ContinuousParticleStream(
     var currentTime by remember { mutableStateOf(0L) }
     var relativeStartTime by remember { mutableStateOf<Long?>(null) }
 
+    val animationsEnabled = LocalAnimationsEnabled.current
 
     // --- A. Animation Timing Loop ---
-    LaunchedEffect(Unit) {
+    LaunchedEffect(animationsEnabled) {
+        if (!animationsEnabled) return@LaunchedEffect
         while (true) {
             withFrameMillis { frameTimeMillis ->
                 if (relativeStartTime == null) {
@@ -63,8 +66,8 @@ fun ContinuousParticleStream(
     }
 
     // --- B. Particle Generation Loop ---
-    LaunchedEffect(relativeStartTime) {
-        if (relativeStartTime == null) return@LaunchedEffect
+    LaunchedEffect(relativeStartTime, animationsEnabled) {
+        if (relativeStartTime == null || !animationsEnabled) return@LaunchedEffect
 
         while (true) {
             // ... (particle creation logic remains the same)
@@ -202,8 +205,11 @@ fun ContinuousExplosionSystem() {
     var currentTime by remember { mutableLongStateOf(0L) }
     var appStartTime by remember { mutableStateOf<Long?>(null) }
 
+    val animationsEnabled = LocalAnimationsEnabled.current
+
     // 1. ANIMATION TICKER: Drives the clock for physics calculations
-    LaunchedEffect(Unit) {
+    LaunchedEffect(animationsEnabled) {
+        if (!animationsEnabled) return@LaunchedEffect
         while (true) {
             withFrameMillis { frameTime ->
                 if (appStartTime == null) appStartTime = frameTime
@@ -213,7 +219,8 @@ fun ContinuousExplosionSystem() {
     }
 
     // 2. SPAWN LOOP: Creates new bursts or individual particles
-    LaunchedEffect(Unit) {
+    LaunchedEffect(animationsEnabled) {
+        if (!animationsEnabled) return@LaunchedEffect
         while (true) {
             // Spawn a burst of particles at once
             val burstSize = Random.nextInt(5, 15)

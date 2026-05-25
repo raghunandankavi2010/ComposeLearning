@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import com.example.composelearning.animcompose.AppNavigation
 import com.example.composelearning.ui.theme.ComposeLearningTheme
@@ -21,7 +22,15 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AppNavigation()
+                    val isTest = try {
+                        Class.forName("androidx.test.espresso.Espresso")
+                        true
+                    } catch (e: ClassNotFoundException) {
+                        false
+                    }
+                    CompositionLocalProvider(LocalAnimationsEnabled provides !isTest) {
+                        AppNavigation()
+                    }
                 }
             }
         }

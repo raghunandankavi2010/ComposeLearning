@@ -31,6 +31,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.composelearning.LocalAnimationsEnabled
+import androidx.compose.runtime.mutableStateOf
 
 
 /**
@@ -52,22 +54,28 @@ fun GradientArcCircularProgressBar(
     durationMillis: Int = 2000,
     arcAngle: Float = 270f // The angle of the arc
 ) {
-    // Create an infinite transition to drive the animation
-    val infiniteTransition = rememberInfiniteTransition(label = "infinite_arc_transition")
+    val animationsEnabled = LocalAnimationsEnabled.current
 
-    // Animate a rotation angle from 0f to 360f and repeat indefinitely
-    val rotationAngle by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = durationMillis,
-                easing = LinearEasing
+    // Create an infinite transition to drive the animation
+    val rotationAngle = if (animationsEnabled) {
+        val infiniteTransition = rememberInfiniteTransition(label = "infinite_arc_transition")
+
+        // Animate a rotation angle from 0f to 360f and repeat indefinitely
+        infiniteTransition.animateFloat(
+            initialValue = 0f,
+            targetValue = 360f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(
+                    durationMillis = durationMillis,
+                    easing = LinearEasing
+                ),
+                repeatMode = RepeatMode.Restart
             ),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "rotation_angle"
-    )
+            label = "rotation_angle"
+        ).value
+    } else {
+        0f
+    }
 
     // Create a sweep gradient brush. The gradient will be applied along the arc.
     val brush = remember {

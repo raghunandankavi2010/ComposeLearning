@@ -23,6 +23,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.composelearning.LocalAnimationsEnabled
 import kotlin.math.*
 import kotlin.random.Random
 
@@ -275,6 +276,10 @@ class FireworksSystem {
 
 @Composable
 fun FireworksBackground(modifier: Modifier = Modifier) {
+    if (!LocalAnimationsEnabled.current) {
+        Box(modifier.fillMaxSize())
+        return
+    }
     val fireworksSystem = remember { FireworksSystem() }
     var lastFrameTime by remember { mutableLongStateOf(System.nanoTime()) }
 
@@ -409,16 +414,21 @@ fun AnimatedCircleLayer(
     isSpinning: Boolean,
     modifier: Modifier = Modifier
 ) {
+    val animationsEnabled = LocalAnimationsEnabled.current
     val rotation by animateFloatAsState(
         targetValue = if (isSpinning) 180f else 0f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = 1500,
-                easing = LinearEasing,
-                delayMillis = layer.delay
-            ),
-            repeatMode = RepeatMode.Restart
-        ),
+        animationSpec = if (animationsEnabled) {
+            infiniteRepeatable(
+                animation = tween(
+                    durationMillis = 1500,
+                    easing = LinearEasing,
+                    delayMillis = layer.delay
+                ),
+                repeatMode = RepeatMode.Restart
+            )
+        } else {
+            tween(0)
+        },
         label = "rotation_${layer.diameter}"
     )
 
@@ -455,6 +465,7 @@ fun ChristmasTree(
     isSpinning: Boolean,
     modifier: Modifier = Modifier
 ) {
+    val animationsEnabled = LocalAnimationsEnabled.current
     // Color definitions matching SwiftUI
     val coral = Color(0xFFFF7E79)
     val peach = Color(0xFFFFD479)
@@ -482,26 +493,34 @@ fun ChristmasTree(
 
     // Hue rotation animation
     val infiniteTransition = rememberInfiniteTransition(label = "tree")
-    val hueRotation by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 150f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 2000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "hueRotation"
-    )
+    val hueRotation by if (animationsEnabled) {
+        infiniteTransition.animateFloat(
+            initialValue = 0f,
+            targetValue = 150f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 2000, easing = LinearEasing),
+                repeatMode = RepeatMode.Reverse
+            ),
+            label = "hueRotation"
+        )
+    } else {
+        remember { mutableStateOf(0f) }
+    }
 
     // Scale animation
-    val scale by infiniteTransition.animateFloat(
-        initialValue = 1.4f,
-        targetValue = 1.6f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 2000, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "scale"
-    )
+    val scale by if (animationsEnabled) {
+        infiniteTransition.animateFloat(
+            initialValue = 1.4f,
+            targetValue = 1.6f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 2000, easing = LinearEasing),
+                repeatMode = RepeatMode.Reverse
+            ),
+            label = "scale"
+        )
+    } else {
+        remember { mutableStateOf(1.5f) }
+    }
 
     Box(
         modifier = modifier

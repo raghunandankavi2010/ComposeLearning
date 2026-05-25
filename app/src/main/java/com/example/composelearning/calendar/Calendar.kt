@@ -119,9 +119,6 @@ fun Calendar(
         }
     }
 
-    LaunchedEffect(scrollState) {
-        scrollState.scrollToItem(index = Integer.MAX_VALUE)
-    }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)

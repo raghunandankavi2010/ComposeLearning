@@ -50,6 +50,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.example.composelearning.LocalAnimationsEnabled
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -78,8 +79,10 @@ fun BiometricRecognitionAnimation(
     val scanFreqHz = 0.75f          // vertical scan cycles per second
     val pulseAmp = 0.04f            // +/- 4%
 
-    LaunchedEffect(state) {
-        if (state != BiometricState.Scanning) return@LaunchedEffect
+    val animationsEnabled = LocalAnimationsEnabled.current
+
+    LaunchedEffect(state, animationsEnabled) {
+        if (state != BiometricState.Scanning || !animationsEnabled) return@LaunchedEffect
         var lastNanos = 0L
         withFrameNanos { lastNanos = it }
         var pulsePhase = 0f

@@ -36,6 +36,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.composelearning.LocalAnimationsEnabled
 import kotlinx.coroutines.isActive
 import kotlin.math.PI
 import kotlin.math.cos
@@ -177,7 +178,10 @@ fun ParticleExpExplosion3D(
     val fpsCounter = remember { mutableIntStateOf(0) }
     val activeParticlesCount = remember { mutableIntStateOf(0) }
 
-    LaunchedEffect(Unit) {
+    val animationsEnabled = LocalAnimationsEnabled.current
+
+    LaunchedEffect(animationsEnabled) {
+        if (!animationsEnabled) return@LaunchedEffect
         var lastFrameTime = 0L
         var frames = 0
         var elapsed = 0L

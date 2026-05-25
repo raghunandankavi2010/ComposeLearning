@@ -4,10 +4,13 @@ import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 
 class Ref(var value: Int)
+
+val LocalAnimationsEnabled = staticCompositionLocalOf { true }
 
 // Note the inline function below which ensures that this function is essentially
 // copied at the call site to ensure that its logging only recompositions from the

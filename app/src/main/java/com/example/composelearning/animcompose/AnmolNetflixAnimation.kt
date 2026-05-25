@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.compose.ui.zIndex
+import com.example.composelearning.LocalAnimationsEnabled
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -88,7 +89,10 @@ private fun NetflixIntroN(modifier: Modifier) {
     val brushMovingBrush2 = remember { Animatable(0f) }
     val brushMovingBrush3 = remember { Animatable(0f) }
 
-    LaunchedEffect(Unit) {
+    val animationsEnabled = LocalAnimationsEnabled.current
+
+    LaunchedEffect(animationsEnabled) {
+        if (!animationsEnabled) return@LaunchedEffect
         launch {
             zoomInNetflixBox.animateTo(
                 targetValue = 16f,

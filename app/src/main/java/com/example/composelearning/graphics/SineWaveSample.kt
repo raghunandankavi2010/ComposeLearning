@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.composelearning.LocalAnimationsEnabled
 import kotlin.math.PI
 import kotlin.math.sin
 
@@ -45,16 +46,21 @@ fun SineWaveSample(onBack: () -> Unit) {
     var frequency by remember { mutableFloatStateOf(1f) }
     var dotProgress by remember { mutableFloatStateOf(0.5f) }
     
+    val animationsEnabled = LocalAnimationsEnabled.current
     val infiniteTransition = rememberInfiniteTransition(label = "SineWaveTransition")
-    val phase by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 2f * PI.toFloat(),
-        animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "PhaseAnimation"
-    )
+    val phase by if (animationsEnabled) {
+        infiniteTransition.animateFloat(
+            initialValue = 0f,
+            targetValue = 2f * PI.toFloat(),
+            animationSpec = infiniteRepeatable(
+                animation = tween(2000, easing = LinearEasing),
+                repeatMode = RepeatMode.Restart
+            ),
+            label = "PhaseAnimation"
+        )
+    } else {
+        remember { mutableFloatStateOf(0f) }
+    }
 
     Scaffold(
         topBar = {

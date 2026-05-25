@@ -37,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.composelearning.LocalAnimationsEnabled
 import kotlin.math.PI
 import kotlin.math.sin
 
@@ -131,16 +132,21 @@ fun SquigglySlider(
     activeColor: Color = MaterialTheme.colorScheme.primary,
     inactiveColor: Color = MaterialTheme.colorScheme.outlineVariant
 ) {
+    val animationsEnabled = LocalAnimationsEnabled.current
     val infiniteTransition = rememberInfiniteTransition(label = "SquigglyTransition")
-    val phase by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 2f * PI.toFloat(),
-        animationSpec = infiniteRepeatable(
-            animation = tween(1000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "SquigglyPhase"
-    )
+    val phase by if (animationsEnabled) {
+        infiniteTransition.animateFloat(
+            initialValue = 0f,
+            targetValue = 2f * PI.toFloat(),
+            animationSpec = infiniteRepeatable(
+                animation = tween(1000, easing = LinearEasing),
+                repeatMode = RepeatMode.Restart
+            ),
+            label = "SquigglyPhase"
+        )
+    } else {
+        remember { mutableStateOf(0f) }
+    }
 
     val interactionSource = remember { MutableInteractionSource() }
 

@@ -35,6 +35,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.ui.unit.sp
+import com.example.composelearning.LocalAnimationsEnabled
 import kotlinx.coroutines.delay
 
 
@@ -119,14 +120,17 @@ fun AnimatedBorderButton() {
         }
 
         // Manage animation steps
-        LaunchedEffect(Unit) {
+        val animationsEnabled = LocalAnimationsEnabled.current
+
+        LaunchedEffect(animationsEnabled) {
+            if (!animationsEnabled) return@LaunchedEffect
             // Start gray animation on initial composition
             targetValue = 100f
             isAnimationRunning = true
         }
         // Switch animation
-        LaunchedEffect(isAnimationRunning) {
-            if (!isAnimationRunning) {
+        LaunchedEffect(isAnimationRunning, animationsEnabled) {
+            if (animationsEnabled && !isAnimationRunning) {
                 if (isGrayAnimating) {
                     isGrayAnimating = false
                     targetValue = 100f // Start orange animation after gray finishes
@@ -229,8 +233,9 @@ fun BorderProgressBar() {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        LaunchedEffect(isAnimationRunning) {
-            if(!isAnimationRunning){
+        val animationsEnabled = LocalAnimationsEnabled.current
+        LaunchedEffect(isAnimationRunning, animationsEnabled) {
+            if(animationsEnabled && !isAnimationRunning){
                 targetValue = 0f
             }
         }

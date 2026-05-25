@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.composelearning.LocalAnimationsEnabled
 import kotlin.math.abs
 
 /**
@@ -48,7 +49,10 @@ fun SmoothProgressBar(
     var offset by remember { mutableFloatStateOf(0f) }
     var colorIndex by remember { mutableIntStateOf(0) }
 
-    LaunchedEffect(speed, sectionsCount, colors.size) {
+    val animationsEnabled = LocalAnimationsEnabled.current
+
+    LaunchedEffect(speed, sectionsCount, colors.size, animationsEnabled) {
+        if (!animationsEnabled) return@LaunchedEffect
         var lastFrameNanos = 0L
         while (true) {
             val now = withFrameNanos { it }
