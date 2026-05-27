@@ -16,14 +16,17 @@
 
 package com.example.composelearning.animcompose
 
+import android.content.Intent
 import android.os.Parcelable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -60,6 +63,7 @@ import com.example.composelearning.textstyling.SquigglySpanSample
 import com.example.composelearning.sliders.SquigglySliderSample
 import com.example.composelearning.shaders.ShadersHubScreen
 import com.example.composelearning.clocks.TimeRangeKnobScreen
+import com.example.composelearning.googlecalendar.ui.GoogleCalendarActivity
 import com.example.composelearning.shadows.ShadowsShowcaseScreen
 import com.example.composelearning.tutorial.ui.TutorialScreen
 import kotlinx.parcelize.Parcelize
@@ -149,6 +153,7 @@ sealed interface AnimScreen : NavKey, Parcelable {
     @Serializable data object FlightSeat : AnimScreen
     @Serializable data object FanCarousel : AnimScreen
     @Serializable data object TabsSample : AnimScreen
+    @Serializable data object GoogleCalendar : AnimScreen
 }
 
 @Composable
@@ -300,6 +305,13 @@ fun AppNavigation(
         entry<AnimScreen.FlightSeat> { FlightSeatScreen() }
         entry<AnimScreen.FanCarousel> { TopRightFanCarouselScreen() }
         entry<AnimScreen.TabsSample> { TabsSampleNavigation() }
+        entry<AnimScreen.GoogleCalendar> {
+            val context = LocalContext.current
+            LaunchedEffect(Unit) {
+                context.startActivity(Intent(context, GoogleCalendarActivity::class.java))
+            }
+            navigator.goBack()
+        }
     }
 
     NavDisplay(

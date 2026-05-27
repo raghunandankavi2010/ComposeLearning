@@ -306,6 +306,11 @@ fun MainHomeScreen(navigator: Navigator) {
             "Squiggly Slider",
             "Material Expressive style slider with a wavy animated progress track.",
             AnimScreen.SquigglySlider
+        ),
+        AnimationCategory(
+            "Google Calendar Clone",
+            "Full-featured calendar with schedule, day, and week views. Collapsible month toolbar, overlapping event layout, CalendarProvider integration.",
+            AnimScreen.GoogleCalendar
         )
     ) }
 

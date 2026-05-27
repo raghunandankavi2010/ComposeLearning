@@ -1,0 +1,97 @@
+package com.example.composelearning.googlecalendar.ui
+
+import android.Manifest
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
+import com.example.composelearning.googlecalendar.data.CalendarRepositoryImpl
+import com.example.composelearning.googlecalendar.domain.usecase.GetEventsUseCase
+import com.example.composelearning.googlecalendar.ui.viewmodel.GoogleCalendarViewModel
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
+
+class GoogleCalendarActivity : ComponentActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
+
+        val repository = CalendarRepositoryImpl(contentResolver)
+        val getEventsUseCase = GetEventsUseCase(repository)
+        val factory = GoogleCalendarViewModel.Factory(getEventsUseCase)
+        val viewModel = ViewModelProvider(this, factory)[GoogleCalendarViewModel::class.java]
+
+        setContent {
+            MaterialTheme {
+                Surface(modifier = Modifier.fillMaxSize()) {
+                    CalendarWithPermission(viewModel = viewModel)
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+private fun CalendarWithPermission(viewModel: GoogleCalendarViewModel) {
+    val calendarPermission = rememberPermissionState(Manifest.permission.READ_CALENDAR)
+
+    if (calendarPermission.status.isGranted) {
+        LaunchedEffect(Unit) {
+            viewModel.loadEvents()
+        }
+        GoogleCalendarScreen(viewModel = viewModel)
+    } else {
+        PermissionRequest(
+            showRationale = calendarPermission.status.shouldShowRationale,
+            onRequestPermission = { calendarPermission.launchPermissionRequest() }
+        )
+    }
+}
+
+@Composable
+private fun PermissionRequest(
+    showRationale: Boolean,
+    onRequestPermission: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(32.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = if (showRationale)
+                "Calendar permission is needed to display your events. Please grant it to continue."
+            else
+                "This app needs access to your calendar to show events.",
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(onClick = onRequestPermission) {
+            Text("Grant Calendar Permission")
+        }
+    }
+}
