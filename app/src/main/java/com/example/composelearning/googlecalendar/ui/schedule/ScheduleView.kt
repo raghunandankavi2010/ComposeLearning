@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
@@ -77,9 +78,12 @@ fun ScheduleView(
     LaunchedEffect(internalScrollTarget) {
         internalScrollTarget?.let { date ->
             dateToIndex[date]?.let { idx ->
-                isProgrammaticScroll = true
-                listState.animateScrollToItem(idx)
-                isProgrammaticScroll = false
+                try {
+                    isProgrammaticScroll = true
+                    listState.animateScrollToItem(idx)
+                } finally {
+                    isProgrammaticScroll = false
+                }
             }
             internalScrollTarget = null
         }
@@ -89,15 +93,26 @@ fun ScheduleView(
     LaunchedEffect(scrollToDate) {
         scrollToDate?.let { date ->
             dateToIndex[date]?.let { idx ->
-                isProgrammaticScroll = true
-                listState.animateScrollToItem(idx)
-                isProgrammaticScroll = false
+                try {
+                    isProgrammaticScroll = true
+                    listState.animateScrollToItem(idx)
+                } finally {
+                    isProgrammaticScroll = false
+                }
             }
             onScrollConsumed()
         }
     }
 
     // ── 4. Scroll observation: visible date + collapse / expand ──────
+    // rememberUpdatedState keeps these values fresh inside the long-lived
+    // LaunchedEffect(listState) coroutine — without it the closure captures
+    // the initial value and never sees updates.
+    val latestScheduleItems by rememberUpdatedState(scheduleItems)
+    val latestToolbarExpanded by rememberUpdatedState(isToolbarExpanded)
+    val latestOnScrolledToDate by rememberUpdatedState(onScrolledToDate)
+    val latestOnToolbarExpandedChanged by rememberUpdatedState(onToolbarExpandedChanged)
+
     LaunchedEffect(listState) {
         var prevIndex = listState.firstVisibleItemIndex
         var prevOffset = listState.firstVisibleItemScrollOffset
@@ -113,12 +128,12 @@ fun ScheduleView(
         }.collect { snap ->
             // ─ Update visible date (only for user scrolls) ─
             if (!isProgrammaticScroll &&
-                snap.firstVisibleItemIndex in scheduleItems.indices
+                snap.firstVisibleItemIndex in latestScheduleItems.indices
             ) {
-                val date = scheduleItems[snap.firstVisibleItemIndex].date
+                val date = latestScheduleItems[snap.firstVisibleItemIndex].date
                 if (date != lastReportedDate) {
                     lastReportedDate = date
-                    onScrolledToDate(date)
+                    latestOnScrolledToDate(date)
                 }
             }
 
@@ -129,10 +144,10 @@ fun ScheduleView(
                             (snap.firstVisibleItemIndex == prevIndex &&
                                     snap.firstVisibleItemScrollOffset > prevOffset)
 
-                if (scrollingDown && isToolbarExpanded) {
-                    onToolbarExpandedChanged(false)
-                } else if (!scrollingDown && !isToolbarExpanded) {
-                    onToolbarExpandedChanged(true)
+                if (scrollingDown && latestToolbarExpanded) {
+                    latestOnToolbarExpandedChanged(false)
+                } else if (!scrollingDown && !latestToolbarExpanded) {
+                    latestOnToolbarExpandedChanged(true)
                 }
             }
 

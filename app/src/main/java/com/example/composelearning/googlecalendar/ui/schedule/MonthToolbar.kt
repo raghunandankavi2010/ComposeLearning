@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,6 +64,9 @@ fun MonthToolbar(
     val baseMonth = remember { YearMonth.now() }
     val pagerState = rememberPagerState(initialPage = MONTH_CENTER_PAGE) { MONTH_PAGE_COUNT }
 
+    // Keep currentMonth fresh for the long-lived pager LaunchedEffect
+    val latestMonth by rememberUpdatedState(currentMonth)
+
     // ── Sync pager ← currentMonth (driven by event-list scroll) ─────
     LaunchedEffect(currentMonth) {
         val diff = monthDiff(baseMonth, currentMonth)
@@ -78,7 +82,7 @@ fun MonthToolbar(
             .distinctUntilChanged()
             .collect { page ->
                 val month = baseMonth.plusMonths((page - MONTH_CENTER_PAGE).toLong())
-                if (month != currentMonth) onMonthSwiped(month)
+                if (month != latestMonth) onMonthSwiped(month)
             }
     }
 
