@@ -48,6 +48,7 @@ import com.example.composelearning.graphics.BorderProgressBar
 import com.example.composelearning.images.OverlappingImagesScreen
 import com.example.composelearning.images.processing.ImageProcessingScreen
 import com.example.composelearning.lists.ListsShowcaseScreen
+import com.example.composelearning.pager.ArcCarouselScreen
 import com.example.composelearning.pager.PagerShowcaseScreen
 import com.example.composelearning.pager.TopRightFanCarouselScreen
 import com.example.composelearning.tabs.TabsSampleNavigation
@@ -152,6 +153,7 @@ sealed interface AnimScreen : NavKey, Parcelable {
     @Serializable data object SmoothProgress : AnimScreen
     @Serializable data object FlightSeat : AnimScreen
     @Serializable data object FanCarousel : AnimScreen
+    @Serializable data object ArcCarousel : AnimScreen
     @Serializable data object TabsSample : AnimScreen
     @Serializable data object GoogleCalendar : AnimScreen
 }
@@ -304,6 +306,7 @@ fun AppNavigation(
         entry<AnimScreen.SmoothProgress> { SmoothProgressBarScreen() }
         entry<AnimScreen.FlightSeat> { FlightSeatScreen() }
         entry<AnimScreen.FanCarousel> { TopRightFanCarouselScreen() }
+        entry<AnimScreen.ArcCarousel> { ArcCarouselScreen() }
         entry<AnimScreen.TabsSample> { TabsSampleNavigation() }
         entry<AnimScreen.GoogleCalendar> {
             val context = LocalContext.current

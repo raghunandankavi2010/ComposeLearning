@@ -48,6 +48,11 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.FanCarousel,
         ),
         AnimationCategory(
+            "Arc Carousel (Swiggy Instamart)",
+            "LazyRow + snap fling laid out along a dome curve at the bottom — center item raised and highlighted in a circle.",
+            AnimScreen.ArcCarousel,
+        ),
+        AnimationCategory(
             "FlightSeat (Compose port)",
             "Port of ldoublem/FlightSeat — top-down plane with tap-to-select seats, live count, side minimap.",
             AnimScreen.FlightSeat,
