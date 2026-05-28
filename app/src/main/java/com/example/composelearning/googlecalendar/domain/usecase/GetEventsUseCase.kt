@@ -23,6 +23,10 @@ class GetEventsUseCase(
         return repository.getEventsForDay(date)
     }
 
+    suspend fun addEvent(event: CalendarEvent): CalendarEvent {
+        return repository.addEvent(event)
+    }
+
     /**
      * Returns events grouped by date for the schedule view.
      * Each date key maps to the list of events occurring on that date.

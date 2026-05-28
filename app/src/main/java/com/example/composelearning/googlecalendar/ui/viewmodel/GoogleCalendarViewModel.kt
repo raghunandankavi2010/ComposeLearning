@@ -3,6 +3,7 @@ package com.example.composelearning.googlecalendar.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.composelearning.googlecalendar.domain.model.CalendarEvent
 import com.example.composelearning.googlecalendar.domain.usecase.GetEventsUseCase
 import com.example.composelearning.googlecalendar.ui.state.CalendarUiState
 import com.example.composelearning.googlecalendar.ui.state.ViewMode
@@ -65,6 +66,15 @@ class GoogleCalendarViewModel(
     fun loadEvents() {
         loadEventsForCurrentView()
         loadMonthDots(_uiState.value.currentMonth)
+    }
+
+    fun addEvent(event: CalendarEvent) {
+        viewModelScope.launch {
+            getEventsUseCase.addEvent(event)
+            // Refresh everything so the new event appears in Schedule, Day, Week and dot view.
+            loadEventsForCurrentView()
+            loadMonthDots(_uiState.value.currentMonth)
+        }
     }
 
     private fun loadEventsForCurrentView() {

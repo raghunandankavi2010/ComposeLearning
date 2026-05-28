@@ -29,13 +29,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import com.example.composelearning.googlecalendar.data.CalendarRepositoryImpl
 import com.example.composelearning.googlecalendar.domain.usecase.GetEventsUseCase
+import com.example.composelearning.googlecalendar.ui.addevent.AddEventScreen
 import com.example.composelearning.googlecalendar.ui.settings.SettingsScreen
 import com.example.composelearning.googlecalendar.ui.viewmodel.GoogleCalendarViewModel
 import com.example.composelearning.ui.theme.GoogleCalendarTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.accompanist.permissions.shouldShowRationale
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
 class GoogleCalendarActivity : ComponentActivity() {
 
@@ -52,19 +51,28 @@ class GoogleCalendarActivity : ComponentActivity() {
             val systemDark = isSystemInDarkTheme()
             var darkTheme by rememberSaveable { mutableStateOf(systemDark) }
             var showSettings by rememberSaveable { mutableStateOf(false) }
+            var showAddEvent by rememberSaveable { mutableStateOf(false) }
 
             GoogleCalendarTheme(darkTheme = darkTheme) {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    if (showSettings) {
-                        SettingsScreen(
+                    when {
+                        showSettings -> SettingsScreen(
                             darkTheme = darkTheme,
                             onDarkThemeToggle = { darkTheme = it },
                             onBack = { showSettings = false }
                         )
-                    } else {
-                        CalendarWithPermission(
+                        showAddEvent -> AddEventScreen(
+                            initialDate = viewModel.uiState.value.selectedDate,
+                            onSave = { newEvent ->
+                                viewModel.addEvent(newEvent)
+                                showAddEvent = false
+                            },
+                            onCancel = { showAddEvent = false }
+                        )
+                        else -> CalendarWithPermission(
                             viewModel = viewModel,
-                            onOpenSettings = { showSettings = true }
+                            onOpenSettings = { showSettings = true },
+                            onAddEvent = { showAddEvent = true }
                         )
                     }
                 }
@@ -77,19 +85,26 @@ class GoogleCalendarActivity : ComponentActivity() {
 @Composable
 private fun CalendarWithPermission(
     viewModel: GoogleCalendarViewModel,
-    onOpenSettings: () -> Unit
+    onOpenSettings: () -> Unit,
+    onAddEvent: () -> Unit
 ) {
-    val calendarPermission = rememberPermissionState(Manifest.permission.READ_CALENDAR)
+    val permissions = rememberMultiplePermissionsState(
+        listOf(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR)
+    )
 
-    if (calendarPermission.status.isGranted) {
+    if (permissions.allPermissionsGranted) {
         LaunchedEffect(Unit) {
             viewModel.loadEvents()
         }
-        GoogleCalendarScreen(viewModel = viewModel, onOpenSettings = onOpenSettings)
+        GoogleCalendarScreen(
+            viewModel = viewModel,
+            onOpenSettings = onOpenSettings,
+            onAddEvent = onAddEvent
+        )
     } else {
         PermissionRequest(
-            showRationale = calendarPermission.status.shouldShowRationale,
-            onRequestPermission = { calendarPermission.launchPermissionRequest() }
+            showRationale = permissions.shouldShowRationale,
+            onRequestPermission = { permissions.launchMultiplePermissionRequest() }
         )
     }
 }

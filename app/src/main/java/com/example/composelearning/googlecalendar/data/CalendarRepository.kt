@@ -6,4 +6,5 @@ import java.time.LocalDate
 interface CalendarRepository {
     suspend fun getEvents(startDate: LocalDate, endDate: LocalDate): List<CalendarEvent>
     suspend fun getEventsForDay(date: LocalDate): List<CalendarEvent>
+    suspend fun addEvent(event: CalendarEvent): CalendarEvent
 }

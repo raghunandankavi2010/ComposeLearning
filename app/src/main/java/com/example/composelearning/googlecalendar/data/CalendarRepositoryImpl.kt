@@ -2,6 +2,7 @@ package com.example.composelearning.googlecalendar.data
 
 import android.content.ContentResolver
 import android.content.ContentUris
+import android.content.ContentValues
 import android.database.Cursor
 import android.provider.CalendarContract
 import androidx.compose.ui.graphics.Color
@@ -14,10 +15,12 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
+import java.util.TimeZone
 
 class CalendarRepositoryImpl(
     private val contentResolver: ContentResolver
 ) : CalendarRepository {
+
 
     companion object {
         private val INSTANCE_PROJECTION = arrayOf(
@@ -88,6 +91,60 @@ class CalendarRepositoryImpl(
 
     override suspend fun getEventsForDay(date: LocalDate): List<CalendarEvent> {
         return getEvents(date, date)
+    }
+
+    override suspend fun addEvent(event: CalendarEvent): CalendarEvent = withContext(Dispatchers.IO) {
+        val calendarId = findWritableCalendarId()
+            ?: error("No writable calendar found on this device")
+
+        val zone = ZoneId.systemDefault()
+        val startMillis = event.startTime.atZone(zone).toInstant().toEpochMilli()
+        val endMillis = event.endTime.atZone(zone).toInstant().toEpochMilli()
+
+        val values = ContentValues().apply {
+            put(CalendarContract.Events.CALENDAR_ID, calendarId)
+            put(CalendarContract.Events.TITLE, event.title)
+            put(CalendarContract.Events.DTSTART, startMillis)
+            put(CalendarContract.Events.DTEND, endMillis)
+            put(CalendarContract.Events.ALL_DAY, if (event.isAllDay) 1 else 0)
+            put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().id)
+            if (event.description.isNotBlank()) {
+                put(CalendarContract.Events.DESCRIPTION, event.description)
+            }
+            if (event.location.isNotBlank()) {
+                put(CalendarContract.Events.EVENT_LOCATION, event.location)
+            }
+        }
+
+        val uri = contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
+            ?: error("Failed to insert event")
+        val newId = ContentUris.parseId(uri)
+        event.copy(id = newId)
+    }
+
+    private fun findWritableCalendarId(): Long? {
+        val projection = arrayOf(
+            CalendarContract.Calendars._ID,
+            CalendarContract.Calendars.CALENDAR_ACCESS_LEVEL,
+            CalendarContract.Calendars.VISIBLE
+        )
+        // Owner or contributor access is required to insert events.
+        val selection = "${CalendarContract.Calendars.CALENDAR_ACCESS_LEVEL} >= ?"
+        val args = arrayOf(CalendarContract.Calendars.CAL_ACCESS_CONTRIBUTOR.toString())
+
+        var cursor: Cursor? = null
+        return try {
+            cursor = contentResolver.query(
+                CalendarContract.Calendars.CONTENT_URI,
+                projection,
+                selection,
+                args,
+                "${CalendarContract.Calendars.IS_PRIMARY} DESC, ${CalendarContract.Calendars._ID} ASC"
+            )
+            if (cursor != null && cursor.moveToFirst()) cursor.getLong(0) else null
+        } finally {
+            cursor?.close()
+        }
     }
 
     private fun cursorToEntity(cursor: Cursor): CalendarEventEntity {
