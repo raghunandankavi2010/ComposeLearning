@@ -3,7 +3,9 @@ package com.example.composelearning.googlecalendar.ui
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ViewList
@@ -12,6 +14,7 @@ import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material.icons.filled.CalendarViewDay
 import androidx.compose.material.icons.filled.CalendarViewWeek
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Today
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
@@ -20,17 +23,25 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.composelearning.googlecalendar.ui.day.DayView
 import com.example.composelearning.googlecalendar.ui.schedule.ScheduleView
@@ -44,6 +55,7 @@ import java.time.LocalDate
 @Composable
 fun GoogleCalendarScreen(
     viewModel: GoogleCalendarViewModel,
+    onOpenSettings: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -55,6 +67,9 @@ fun GoogleCalendarScreen(
     // Scroll target for the Schedule view (set by the Today button)
     var scheduleScrollTarget by remember { mutableStateOf<LocalDate?>(null) }
 
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+
     val titleText = when (uiState.viewMode) {
         ViewMode.SCHEDULE -> DateUtils.formatMonthYear(uiState.currentMonth)
         ViewMode.DAY -> DateUtils.formatDayMonth(uiState.selectedDate)
@@ -65,6 +80,30 @@ fun GoogleCalendarScreen(
         }
     }
 
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet {
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    text = "Calendar",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(horizontal = 28.dp, vertical = 16.dp),
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                NavigationDrawerItem(
+                    icon = { Icon(Icons.Default.Settings, contentDescription = null) },
+                    label = { Text("Settings") },
+                    selected = false,
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        onOpenSettings()
+                    },
+                    modifier = Modifier.padding(horizontal = 12.dp)
+                )
+            }
+        }
+    ) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -95,7 +134,9 @@ fun GoogleCalendarScreen(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { /* drawer toggle */ }) {
+                    IconButton(onClick = {
+                        scope.launch { drawerState.open() }
+                    }) {
                         Icon(Icons.Default.Menu, contentDescription = "Menu")
                     }
                 },
@@ -198,5 +239,6 @@ fun GoogleCalendarScreen(
                 }
             }
         }
+    }
     }
 }

@@ -11,19 +11,27 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import com.example.composelearning.googlecalendar.data.CalendarRepositoryImpl
 import com.example.composelearning.googlecalendar.domain.usecase.GetEventsUseCase
+import com.example.composelearning.googlecalendar.ui.settings.SettingsScreen
 import com.example.composelearning.googlecalendar.ui.viewmodel.GoogleCalendarViewModel
+import com.example.composelearning.ui.theme.GoogleCalendarTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -41,9 +49,24 @@ class GoogleCalendarActivity : ComponentActivity() {
         val viewModel = ViewModelProvider(this, factory)[GoogleCalendarViewModel::class.java]
 
         setContent {
-            MaterialTheme {
+            val systemDark = isSystemInDarkTheme()
+            var darkTheme by rememberSaveable { mutableStateOf(systemDark) }
+            var showSettings by rememberSaveable { mutableStateOf(false) }
+
+            GoogleCalendarTheme(darkTheme = darkTheme) {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    CalendarWithPermission(viewModel = viewModel)
+                    if (showSettings) {
+                        SettingsScreen(
+                            darkTheme = darkTheme,
+                            onDarkThemeToggle = { darkTheme = it },
+                            onBack = { showSettings = false }
+                        )
+                    } else {
+                        CalendarWithPermission(
+                            viewModel = viewModel,
+                            onOpenSettings = { showSettings = true }
+                        )
+                    }
                 }
             }
         }
@@ -52,14 +75,17 @@ class GoogleCalendarActivity : ComponentActivity() {
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-private fun CalendarWithPermission(viewModel: GoogleCalendarViewModel) {
+private fun CalendarWithPermission(
+    viewModel: GoogleCalendarViewModel,
+    onOpenSettings: () -> Unit
+) {
     val calendarPermission = rememberPermissionState(Manifest.permission.READ_CALENDAR)
 
     if (calendarPermission.status.isGranted) {
         LaunchedEffect(Unit) {
             viewModel.loadEvents()
         }
-        GoogleCalendarScreen(viewModel = viewModel)
+        GoogleCalendarScreen(viewModel = viewModel, onOpenSettings = onOpenSettings)
     } else {
         PermissionRequest(
             showRationale = calendarPermission.status.shouldShowRationale,

@@ -51,3 +51,44 @@ fun ComposeLearningTheme(
 val Black900 = Color(0xFF121212) // Example dark grey
 val Black700 = Color(0xFF282828) // Example slightly lighter dark grey
 val White800 = Color(0xFFCCCCCC) // Example off-white
+
+private val GoogleCalendarLightColors = lightColorScheme(
+    primary = GCalBlue,
+    onPrimary = Color.White,
+    primaryContainer = GCalBlueDark,
+    onPrimaryContainer = Color.White,
+    background = GCalBackgroundLight,
+    onBackground = GCalOnSurfaceLight,
+    surface = GCalSurfaceLight,
+    onSurface = GCalOnSurfaceLight,
+    surfaceVariant = GCalBackgroundLight,
+    onSurfaceVariant = GCalOnSurfaceVariantLight,
+    outline = GCalOutlineLight,
+)
+
+private val GoogleCalendarDarkColors = darkColorScheme(
+    primary = GCalBlueLight,
+    onPrimary = GCalOnSurfaceLight,
+    primaryContainer = GCalBlueDark,
+    onPrimaryContainer = Color.White,
+    background = GCalBackgroundDark,
+    onBackground = GCalOnSurfaceDark,
+    surface = GCalSurfaceDark,
+    onSurface = GCalOnSurfaceDark,
+    surfaceVariant = GCalSurfaceDark,
+    onSurfaceVariant = GCalOnSurfaceVariantDark,
+    outline = GCalOutlineDark,
+)
+
+@Composable
+fun GoogleCalendarTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    MaterialTheme(
+        colorScheme = if (darkTheme) GoogleCalendarDarkColors else GoogleCalendarLightColors,
+        typography = Typography,
+        shapes = Shapes,
+        content = content
+    )
+}

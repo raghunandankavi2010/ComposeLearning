@@ -30,18 +30,22 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.example.composelearning.calendar.model.CalendarState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.dp
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -64,19 +68,23 @@ fun CalendarScreen(
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CalendarContent(
     calendarState: CalendarState,
     onDayClicked: (LocalDate) -> Unit,
     onBackPressed: () -> Unit
 ) {
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     Scaffold(
-        modifier = Modifier.windowInsetsPadding(
-            WindowInsets.navigationBars.only(WindowInsetsSides.Start + WindowInsetsSides.End)
-        ),
+        modifier = Modifier
+            .windowInsetsPadding(
+                WindowInsets.navigationBars.only(WindowInsetsSides.Start + WindowInsetsSides.End)
+            )
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         containerColor = Color.White,
         topBar = {
-            CalendarTopAppBar(calendarState, onBackPressed)
+            CalendarTopAppBar(calendarState, onBackPressed, scrollBehavior)
         }
     ) { contentPadding ->
         Calendar(
@@ -90,9 +98,16 @@ private fun CalendarContent(
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CalendarTopAppBar(calendarState: CalendarState, onBackPressed: () -> Unit) {
+private fun CalendarTopAppBar(
+    calendarState: CalendarState,
+    onBackPressed: () -> Unit,
+    scrollBehavior: androidx.compose.material3.TopAppBarScrollBehavior
+) {
     val calendarUiState = calendarState.calendarUiState.value
-    Column {
+    val isScrolled = scrollBehavior.state.contentOffset < -1f
+    val elevation = if (isScrolled) 4.dp else 0.dp
+
+    Column(modifier = Modifier.shadow(elevation)) {
         Spacer(
             modifier = Modifier
                 .windowInsetsTopHeight(WindowInsets.statusBars)
@@ -112,11 +127,16 @@ private fun CalendarTopAppBar(calendarState: CalendarState, onBackPressed: () ->
             navigationIcon = {
                 IconButton(onClick = { onBackPressed() }) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = " Back",
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back",
                     )
                 }
             },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = Color.White,
+                scrolledContainerColor = Color.White,
+            ),
+            scrollBehavior = scrollBehavior,
         )
     }
 }

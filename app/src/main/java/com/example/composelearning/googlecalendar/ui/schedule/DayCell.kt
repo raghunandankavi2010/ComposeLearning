@@ -39,18 +39,15 @@ fun DayCell(
     val isInMonth = DateUtils.isSameMonth(date, currentMonth)
 
     val textColor = when {
-        isSelected && isToday -> Color.White
-        isSelected -> Color.White
-        isToday -> MaterialTheme.colorScheme.primary
+        isToday -> Color.White
         isInMonth -> MaterialTheme.colorScheme.onSurface
         else -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
     }
 
-    val backgroundColor = when {
-        isSelected && isToday -> MaterialTheme.colorScheme.primary
-        isSelected -> MaterialTheme.colorScheme.onSurface
-        isToday -> Color.Transparent
-        else -> Color.Transparent
+    val backgroundColor = if (isToday) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        Color.Transparent
     }
 
     Column(
@@ -71,7 +68,7 @@ fun DayCell(
                 text = DateUtils.formatDayNumber(date),
                 color = textColor,
                 fontSize = 13.sp,
-                fontWeight = if (isToday || isSelected) FontWeight.Bold else FontWeight.Normal,
+                fontWeight = if (isToday) FontWeight.Bold else FontWeight.Normal,
                 textAlign = TextAlign.Center
             )
         }
@@ -88,10 +85,7 @@ fun DayCell(
                         modifier = Modifier
                             .size(4.dp)
                             .clip(CircleShape)
-                            .background(
-                                if (isSelected) Color.White.copy(alpha = 0.7f)
-                                else MaterialTheme.colorScheme.primary
-                            )
+                            .background(MaterialTheme.colorScheme.primary)
                     )
                 }
             }

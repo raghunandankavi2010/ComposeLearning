@@ -19,6 +19,7 @@ package com.example.composelearning.calendar
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
@@ -187,8 +188,11 @@ internal fun Day(
         onClickLabel = "select"
     ) {
 
+        val today = LocalDate.now()
+        val isToday = day == today
+
         val color =
-            if (day.month.value == LocalDateTime.now().monthValue && day.dayOfMonth > LocalDate.now().dayOfMonth) {
+            if (day.month.value == LocalDateTime.now().monthValue && day.dayOfMonth > today.dayOfMonth) {
                 Color(0xFF02522A).copy(alpha = 0.5f)
             } else {
                 Color(0xFF02522A)
@@ -205,7 +209,6 @@ internal fun Day(
                     modifier = Modifier
                         .fillMaxSize()
                         .wrapContentSize(Alignment.Center)
-                        // Parent will handle semantics
                         .clearAndSetSemantics {},
                     text = day.dayOfMonth.toString(),
                     style = TextStyle(
@@ -217,12 +220,33 @@ internal fun Day(
                     color = Color.White
                 )
             }
+        } else if (isToday) {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .border(2.dp, Color(0xFF03753C), CircleShape)
+            ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .wrapContentSize(Alignment.Center)
+                        .clearAndSetSemantics {},
+                    text = day.dayOfMonth.toString(),
+                    style = TextStyle(
+                        fontSize = 16.sp,
+                        lineHeight = 24.sp,
+                        fontFamily = FontFamily(Font(R.font.jio_type_medium)),
+                        fontWeight = FontWeight(700),
+                    ),
+                    color = Color(0xFF03753C)
+                )
+            }
         } else {
             Text(
                 modifier = Modifier
                     .fillMaxSize()
                     .wrapContentSize(Alignment.Center)
-                    // Parent will handle semantics
                     .clearAndSetSemantics {},
                 text = day.dayOfMonth.toString(),
                 style = TextStyle(
