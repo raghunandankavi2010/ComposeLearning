@@ -313,6 +313,16 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.SquigglySlider
         ),
         AnimationCategory(
+            "Passkeys Demo",
+            "Modern passwordless authentication using FIDO2 and Credential Manager.",
+            AnimScreen.Passkeys
+        ),
+        AnimationCategory(
+            "Arc List Navigation",
+            "Interactive circular layout with drag-to-spin physics",
+            AnimScreen.ArcList
+        ),
+        AnimationCategory(
             "Google Calendar Clone",
             "Full-featured calendar with schedule, day, and week views. Collapsible month toolbar, overlapping event layout, CalendarProvider integration.",
             AnimScreen.GoogleCalendar

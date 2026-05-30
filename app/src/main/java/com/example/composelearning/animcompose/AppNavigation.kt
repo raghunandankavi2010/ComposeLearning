@@ -58,6 +58,8 @@ import com.example.composelearning.flight.FlightSeatScreen
 import com.example.composelearning.textfields.MarqueeText
 import com.example.composelearning.charts.*
 import com.example.composelearning.customlayout.CustomPagerSample
+import com.example.composelearning.customlayout.ArcListSample
+import com.example.composelearning.permissions.PasskeySample
 import com.example.composelearning.graphics.DrawScaleOnTouch
 import com.example.composelearning.graphics.SineWaveSample
 import com.example.composelearning.textstyling.SquigglySpanSample
@@ -98,7 +100,9 @@ sealed interface AnimScreen : NavKey, Parcelable {
     @Serializable data object BezierCurves : AnimScreen
     @Serializable data object SineWave : AnimScreen
     @Serializable data object CustomPager : AnimScreen
+    @Serializable data object ArcList : AnimScreen
     @Serializable data object SquigglySpans : AnimScreen
+    @Serializable data object Passkeys : AnimScreen
     @Serializable data object SquigglySlider : AnimScreen
     @Serializable data object InboxRecyclerView : AnimScreen
     @Serializable data object YouTubeStyle : AnimScreen
@@ -193,7 +197,9 @@ fun AppNavigation(
         entry<AnimScreen.BezierCurves> { BezierShowcaseScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.SineWave> { SineWaveSample(onBack = { navigator.goBack() }) }
         entry<AnimScreen.CustomPager> { CustomPagerSample(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.ArcList> { ArcListSample(onBack = { navigator.goBack() }) }
         entry<AnimScreen.SquigglySpans> { SquigglySpanSample(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.Passkeys> { PasskeySample(onBack = { navigator.goBack() }) }
         entry<AnimScreen.SquigglySlider> { SquigglySliderSample(onBack = { navigator.goBack() }) }
         entry<AnimScreen.DrawScale> { DrawScaleOnTouch(onBack = { navigator.goBack() }) }
         entry<AnimScreen.YouTubeStyle> { YouTubeScreen(onBack = { navigator.goBack() }) }
@@ -306,7 +312,7 @@ fun AppNavigation(
         entry<AnimScreen.SmoothProgress> { SmoothProgressBarScreen() }
         entry<AnimScreen.FlightSeat> { FlightSeatScreen() }
         entry<AnimScreen.FanCarousel> { TopRightFanCarouselScreen() }
-        entry<AnimScreen.ArcCarousel> { ArcCarouselScreen() }
+        entry<AnimScreen.ArcCarousel> { ArcCarouselScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.TabsSample> { TabsSampleNavigation() }
         entry<AnimScreen.GoogleCalendar> {
             val context = LocalContext.current
