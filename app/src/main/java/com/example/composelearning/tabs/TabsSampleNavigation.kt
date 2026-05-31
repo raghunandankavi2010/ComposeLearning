@@ -53,7 +53,7 @@ fun TabsSampleNavigation() {
 
     SharedTransitionLayout {
         val sharedScope = this
-        val provider: (NavKey) -> NavEntry<out NavKey> = entryProvider {
+        val provider: (NavKey) -> NavEntry<NavKey> = entryProvider {
             entry<TabsScreen.Photos> { PhotosTabScreen(navigator, sharedScope) }
             entry<TabsScreen.Articles> { ArticlesTabScreen(navigator, sharedScope) }
             entry<TabsScreen.Profile> { ProfileTabScreen(navigator) }
@@ -94,7 +94,7 @@ fun TabsSampleNavigation() {
             @Suppress("UNCHECKED_CAST")
             NavDisplay(
                 modifier = Modifier.padding(padding),
-                entries = navState.toEntries(provider as (NavKey) -> NavEntry<NavKey>),
+                entries = navState.toEntries(provider),
                 onBack = { navigator.goBack() },
             )
         }

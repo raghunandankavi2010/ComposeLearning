@@ -65,6 +65,7 @@ import com.example.composelearning.graphics.SineWaveSample
 import com.example.composelearning.textstyling.SquigglySpanSample
 import com.example.composelearning.sliders.SquigglySliderSample
 import com.example.composelearning.shaders.ShadersHubScreen
+import com.example.composelearning.shaders.FluidSpringShaderScreen
 import com.example.composelearning.clocks.TimeRangeKnobScreen
 import com.example.composelearning.googlecalendar.ui.GoogleCalendarActivity
 import com.example.composelearning.shadows.ShadowsShowcaseScreen
@@ -160,6 +161,7 @@ sealed interface AnimScreen : NavKey, Parcelable {
     @Serializable data object ArcCarousel : AnimScreen
     @Serializable data object TabsSample : AnimScreen
     @Serializable data object GoogleCalendar : AnimScreen
+    @Serializable data object FluidSpring : AnimScreen
 }
 
 @Composable
@@ -172,7 +174,7 @@ fun AppNavigation(
     )
     val navigator = remember { Navigator(navigationState) }
 
-    val entryProvider: (NavKey) -> NavEntry<out NavKey> = entryProvider {
+    val entryProvider: (NavKey) -> NavEntry<NavKey> = entryProvider {
         entry<AnimScreen.Home> { MainHomeScreen(navigator) }
         entry<AnimScreen.CanvasBasicsHub> { CanvasBasicsHubScreen() }
         entry<AnimScreen.MathBasics> { MathBasicsScreen() }
@@ -321,11 +323,13 @@ fun AppNavigation(
             }
             navigator.goBack()
         }
+        entry<AnimScreen.FluidSpring> { FluidSpringShaderScreen(onBack = { navigator.goBack() }) }
+
     }
 
     NavDisplay(
         modifier = modifier,
-        entries = navigationState.toEntries(entryProvider as (NavKey) -> NavEntry<NavKey>),
+        entries = navigationState.toEntries(entryProvider),
         onBack = { navigator.goBack() }
     )
 }

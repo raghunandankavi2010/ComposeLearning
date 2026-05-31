@@ -93,6 +93,8 @@ private enum class ShaderDemo(val title: String, val subtitle: String) {
     Shimmer("Shimmer skeleton", "Diagonal sweep for loading placeholders"),
     LiquidButton("Liquid button", "Touch-driven ripple distortion"),
     FilmGrain("Film grain overlay", "Animated noise on top of any content"),
+    Spiral("Spiral shader", "Dynamic polar coordinate spiral"),
+    FluidSpring("Fluid Spring (Masterclass)", "Euler physics + Thin-film interference"),
 }
 
 @Composable
@@ -150,6 +152,8 @@ fun ShadersHubScreen() {
                         ShaderDemo.Shimmer -> ShimmerSkeletonDemo()
                         ShaderDemo.LiquidButton -> LiquidButtonDemo()
                         ShaderDemo.FilmGrain -> FilmGrainDemo()
+                        ShaderDemo.Spiral -> SpiralShaderScreen()
+                        ShaderDemo.FluidSpring -> FluidSpringShaderScreen(onBack = { current = null })
                     }
                 }
             }
