@@ -18,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -169,6 +170,35 @@ fun SmoothProgressBarScreen() {
                     maxSweepAngle = 180f,
                     strokeWidth = 5.dp,
                     size = 56.dp,
+                )
+            }
+        }
+
+        Text(
+            text = "PremiumCircularProgressIndicator",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(top = 12.dp),
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+        ) {
+            CircularDemo("Default") {
+                PremiumCircularProgressIndicator()
+            }
+            CircularDemo("Thick") {
+                PremiumCircularProgressIndicator(
+                    strokeWidth = 12.dp,
+                    modifier = Modifier.size(64.dp)
+                )
+            }
+            CircularDemo("Custom Brush") {
+                PremiumCircularProgressIndicator(
+                    brush = Brush.sweepGradient(
+                        listOf(Color.Red, Color.Yellow, Color.Red)
+                    ),
+                    modifier = Modifier.size(56.dp)
                 )
             }
         }
