@@ -41,7 +41,6 @@ import kotlin.math.floor
 fun PremiumCircularProgressIndicator(
     modifier: Modifier = Modifier,
     strokeWidth: Dp = 8.dp,
-    trackColor: Color = Color.LightGray.copy(alpha = 0.2f),
     brush: Brush = Brush.sweepGradient(
         0.0f to Color(0xFF6A11CB),
         0.45f to Color(0xFF2575FC),
@@ -62,7 +61,10 @@ fun PremiumCircularProgressIndicator(
     var tailAngle by remember { mutableFloatStateOf(0f) }
     var sweep by remember { mutableFloatStateOf(minSweep) }
 
-    LaunchedEffect(animationsEnabled, rotationPeriodMillis, cyclePeriodMillis) {
+    LaunchedEffect(
+        animationsEnabled,
+        rotationPeriodMillis,
+        cyclePeriodMillis) {
         if (!animationsEnabled) return@LaunchedEffect
         var startNanos = 0L
         while (true) {
@@ -109,13 +111,6 @@ fun PremiumCircularProgressIndicator(
         val arcSize = size.minDimension - strokeWidthPx
         val topLeft = Offset(strokeWidthPx / 2, strokeWidthPx / 2)
 
-        // A. Draw the Static Track
-        drawCircle(
-            color = trackColor,
-            style = Stroke(width = strokeWidthPx),
-            radius = arcSize / 2,
-            center = center
-        )
 
         // B. Draw the Progress Arc
         drawArc(
@@ -157,7 +152,6 @@ fun PreviewProgressDark() {
         PremiumCircularProgressIndicator(
             modifier = Modifier.size(100.dp),
             strokeWidth = 12.dp,
-            trackColor = Color.White.copy(alpha = 0.1f),
             brush = Brush.sweepGradient(
                 listOf(Color(0xFFFF00D4), Color(0xFF00DDFF), Color(0xFFFF00D4))
             )
