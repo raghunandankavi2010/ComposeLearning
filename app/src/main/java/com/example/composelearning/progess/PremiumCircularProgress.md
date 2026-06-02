@@ -5,57 +5,71 @@ A high-performance, fluid indeterminate circular loader built with Jetpack Compo
 ## Architecture
 
 ### 1. Performance
-- **Zero Recomposition**: The component reads `animationProgress` and `globalRotation` strictly inside the `Canvas` DrawScope. This bypasses the Compose recomposition phase, ensuring the UI thread is free for layout and other tasks. Only the drawing phase is invalidated at 60/120fps.
-- **Infinite Transition**: Leverages `rememberInfiniteTransition` to synchronize the global spin and the elastic sweep.
+- **Zero Recomposition**: The component reads `rotation`, `tailAngle`, and `sweep` strictly inside the `Canvas` DrawScope. This bypasses the Compose recomposition phase, ensuring the UI thread is free for layout and other tasks. Only the drawing phase is invalidated at 60/120fps.
+- **Single Frame Clock**: Instead of two independent `infiniteRepeatable` transitions, the loader is driven by one continuously-accumulating clock inside a `LaunchedEffect` + `withFrameNanos` loop (the same technique as `SmoothProgressBar`). This is what makes the motion seamless — see [Continuity](#4-continuity-no-restart).
+- **Respects `LocalAnimationsEnabled`**: When animations are disabled (e.g. in tests), the frame loop exits early and the arc stays static.
 
 ### 2. Mathematics
 
-The loader uses two distinct animations working in tandem:
+The loader composes two motions, both derived from the same `elapsedMs` clock:
 
 #### Global Rotation
-- **Range**: 0° to 360°
-- **Duration**: 2000ms
-- **Easing**: `LinearEasing`
+- **Range**: 0° to 360° (wrapped via `% 360`)
+- **Period**: `rotationPeriodMillis` (default 2000ms)
+- **Easing**: Linear (constant angular velocity)
 - **Purpose**: Provides the base continuous spinning motion.
+- **Formula**: `rotation = (elapsedMs / rotationPeriodMillis * 360) % 360`
 
-- **Final Angle Calculation**:
-    - **Base Angle (`-90f`)**: Sets the starting position to the top of the circle (12 o'clock).
-    - **`rotation`**: Constant angular velocity (360° every 2 seconds) applied to the entire system.
-    - **`startOffset`**: The "Tail Chase" offset. In Phase 2, this value increases as the sweep decreases, shifting the start of the arc forward to create the contraction effect.
-    - **Formula**: `finalStartAngle = -90f + rotation + startOffset`
+#### Grow / Shrink (Head & Tail) Cycle
+- **Period**: `cyclePeriodMillis` (default 1200ms)
+- **Easing**: `FastOutSlowInEasing` (gives the elastic "momentum" feel)
+- The cycle position is `p ∈ [0, 1)` and the number of fully completed cycles is `completed = floor(elapsedMs / cyclePeriodMillis)`.
+
+The arc is described by a **tail** (start angle) and a **sweep** (length). `stretch = maxSweep - minSweep = 240°`.
+
+- **Expansion (`p < 0.5`)** — the head races forward, tail anchored:
+    - `headDelta = FastOutSlowInEasing.transform(p * 2) * stretch`
+    - `tailDelta = 0`
+- **Contraction (`p ≥ 0.5`)** — the head holds, the tail catches up:
+    - `headDelta = stretch`
+    - `tailDelta = FastOutSlowInEasing.transform((p - 0.5) * 2) * stretch`
+
+Final angle state:
+- `sweep = minSweep + headDelta - tailDelta`
+- `tailAngle = (completed * stretch + tailDelta) % 360`
+- `finalStartAngle = -90f + rotation + tailAngle`
+
+The `* 2` and `0.5` phase-split mean each phase is mapped from its half-window back onto a full `0..1` range, so growth reaches 100% exactly at the cycle midpoint and contraction completes exactly at the end.
 
 #### Visual Math Reference
 
 ![Visualization Progress](../../../../../../../../visualization_progress.jpeg)
 
-| Phase | Progress | Local $p$ | Sweep Angle | Start Offset | Visual Action |
+| Phase | Local $p$ | headDelta | tailDelta | Sweep Angle | Visual Action |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Start** | 0.0 | 0.0 | $30^\circ$ | $0^\circ$ | Small segment at start position. |
-| **Mid-Expand** | 0.25 | 0.5 | $150^\circ$ | $0^\circ$ | Segment growing forward. |
-| **Peak** | 0.5 | 1.0 | $270^\circ$ | $0^\circ$ | Maximum length reached. |
-| **Mid-Contract** | 0.75 | 0.5 | $150^\circ$ | $120^\circ$ | Tail moving forward, shrinking segment. |
-| **End** | 1.0 | 1.0 | $30^\circ$ | $240^\circ$ | Back to minimum size, tail caught up. |
-- **Range**: 0.0 to 1.0 (normalized)
-- **Duration**: 1200ms
-- **Easing**: `FastOutSlowInEasing`
-- **Phase Normalization**:
-    - **`0.5f` (Timeline Splitting)**: Divides the animation cycle into two equal windows. This ensures visual symmetry and a rhythmic pulse, where growth and contraction happen at the same relative speed.
-    - **`2` (Scaling Factor)**: Because each phase occupies only half ($0.5$) of the total $0..1$ timeline, we multiply by $2$ to map that sub-window back to a full $0..1$ range ($p$). 
-    - **Normalization Math**: $\text{Scaling Factor} = \frac{\text{Target Range Max}}{\text{Current Window Max}} = \frac{1.0}{0.5} = \mathbf{2}$.
-    - **Benefit**: This allows the drawing equations to reach $100\%$ completion (full expansion or full contraction) exactly at the midpoint of the total animation duration.
-- **Logic**:
-    - **Expansion Phase (Progress 0.0 → 0.5)**: 
-        - `p = progress * 2`
-        - `sweep = minSweep + (maxSweep - minSweep) * p`
-        - The "head" of the arc moves forward while the "tail" stays anchored.
-    - **Contraction Phase (Progress 0.5 → 1.0)**:
-        - `p = (progress - 0.5) * 2`
-        - `sweep = maxSweep - (maxSweep - minSweep) * p`
-        - `startOffset = (maxSweep - minSweep) * p`
-        - The "tail" accelerates forward to catch up with the "head", reducing the sweep length back to minimum.
+| **Start** | 0.0 | $0^\circ$ | $0^\circ$ | $30^\circ$ | Small segment at start position. |
+| **Mid-Expand** | 0.25 | $120^\circ$ | $0^\circ$ | $150^\circ$ | Head racing forward, growing. |
+| **Peak** | 0.5 | $240^\circ$ | $0^\circ$ | $270^\circ$ | Maximum length reached. |
+| **Mid-Contract** | 0.75 | $240^\circ$ | $120^\circ$ | $150^\circ$ | Head holds, tail catching up, shrinking. |
+| **End** | 1.0 | $240^\circ$ | $240^\circ$ | $30^\circ$ | Back to minimum size, tail caught up. |
+
+So `sweep` breathes **30° → 270° → 30°** every cycle: expand, then contract.
 
 ### 3. Coordinate Orientation
 The base angle is offset by **-90 degrees**. This ensures that the progress arc's expansion begins exactly at the 12 o'clock position, which is the standard expectation for circular indicators.
+
+### 4. Continuity (No "Restart")
+
+The earlier version ran the rotation and the grow/shrink driver as **two separate** `infiniteRepeatable` transitions. The grow/shrink driver used `RepeatMode.Restart`, so at the end of every cycle its progress snapped `1f → 0f`, which yanked the arc's tail **~240° backwards** in a single frame. Because the two periods (2000ms vs 1200ms) never aligned, this snap landed in a different place each loop — the visible "restart every cycle".
+
+The fix is the `completed * stretch` term in `tailAngle`. Within a cycle `tailDelta` ramps `0 → stretch`; at the seam it resets to `0`, but `completed` simultaneously increments by 1, adding exactly `stretch` back. The two cancel, so the tail angle is **continuous across the seam**:
+
+```
+end of cycle N:   completed = N,   tailDelta → 240   ⇒ N*240 + 240 = (N+1)*240
+start of cycle N+1: completed = N+1, tailDelta = 0    ⇒ (N+1)*240 + 0 = (N+1)*240   ✓
+```
+
+The head is continuous for the same reason (`head = tailAngle + sweep`). The result keeps the breathing expand/contract motion while removing the backward jump. (`tailAngle` is taken `% 360` and `elapsedMs` is a `Double` so the accumulation stays precise over long runs.)
 
 ## Specifications
 
@@ -65,6 +79,8 @@ The base angle is offset by **-90 degrees**. This ensures that the progress arc'
 | `strokeWidth` | `Dp` | `8.dp` | Thickness of the track and progress arc. |
 | `trackColor` | `Color` | `LightGray 20%` | Color of the background static circle. |
 | `brush` | `Brush` | `SweepGradient` | A gradient brush applied to the progress arc. |
+| `rotationPeriodMillis` | `Int` | `2000` | Time for one full base rotation (360°). |
+| `cyclePeriodMillis` | `Int` | `1200` | Time for one full grow + shrink breathing cycle. |
 
 ## Implementation Details
 
