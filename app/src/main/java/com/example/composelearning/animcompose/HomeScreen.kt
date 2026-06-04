@@ -188,6 +188,26 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.PathMorph
         ),
         AnimationCategory(
+            "Apple Activity Rings",
+            "Three concentric rings fill (some past 100%) with rounded caps and an end-cap shadow. Tap to replay.",
+            AnimScreen.ActivityRings
+        ),
+        AnimationCategory(
+            "Fold Card (pinch)",
+            "Pinch vertically to bend a card in half in 3D — two faces fold about the crease with perspective + shading.",
+            AnimScreen.FoldCard
+        ),
+        AnimationCategory(
+            "iPod Click Wheel",
+            "Drag around the wheel to scroll/highlight songs; center button selects. Rotary angular-delta scrolling.",
+            AnimScreen.IpodWheel
+        ),
+        AnimationCategory(
+            "Clear To-Do (pinch-create)",
+            "Pinch two rows apart to unfold a 'Create a new Task' row in the gap; release past threshold to insert.",
+            AnimScreen.ClearTodo
+        ),
+        AnimationCategory(
             "Product Shared Elements",
             "Cinema-style transitions between product list and details",
             AnimScreen.SharedElementProduct

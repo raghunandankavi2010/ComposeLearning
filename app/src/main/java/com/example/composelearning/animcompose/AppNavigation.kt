@@ -58,6 +58,10 @@ import com.example.composelearning.riveo.presentation.RiveoScreen
 import com.example.composelearning.wallet.presentation.WalletScreen
 import com.example.composelearning.breathing.presentation.BreathingScreen
 import com.example.composelearning.pathmorph.presentation.PathMorphScreen
+import com.example.composelearning.applerings.presentation.ActivityRingsScreen
+import com.example.composelearning.foldcard.presentation.FoldCardScreen
+import com.example.composelearning.ipodwheel.presentation.IpodScreen
+import com.example.composelearning.cleartodo.presentation.ClearScreen
 import com.example.composelearning.flight.FlightSeatScreen
 import com.example.composelearning.textfields.MarqueeText
 import com.example.composelearning.charts.*
@@ -170,6 +174,10 @@ sealed interface AnimScreen : NavKey, Parcelable {
     @Serializable data object WalletStack : AnimScreen
     @Serializable data object Breathing : AnimScreen
     @Serializable data object PathMorph : AnimScreen
+    @Serializable data object ActivityRings : AnimScreen
+    @Serializable data object FoldCard : AnimScreen
+    @Serializable data object IpodWheel : AnimScreen
+    @Serializable data object ClearTodo : AnimScreen
 }
 
 @Composable
@@ -336,6 +344,10 @@ fun AppNavigation(
         entry<AnimScreen.WalletStack> { WalletScreen() }
         entry<AnimScreen.Breathing> { BreathingScreen() }
         entry<AnimScreen.PathMorph> { PathMorphScreen() }
+        entry<AnimScreen.ActivityRings> { ActivityRingsScreen() }
+        entry<AnimScreen.FoldCard> { FoldCardScreen() }
+        entry<AnimScreen.IpodWheel> { IpodScreen() }
+        entry<AnimScreen.ClearTodo> { ClearScreen() }
 
     }
 
