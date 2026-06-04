@@ -203,6 +203,37 @@ fun SmoothProgressBarScreen() {
             }
         }
 
+        Text(
+            text = "TriColorCircularProgressIndicator (3 solid segments)",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(top = 12.dp),
+        )
+        Text(
+            text = "Same premium head/tail motion, but the progress arc is split into 3 equal sections (e.g. 75° → 25° each), each with its own solid color instead of a gradient.",
+            style = MaterialTheme.typography.bodyMedium,
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+        ) {
+            CircularDemo("Default") {
+                TriColorCircularProgressIndicator()
+            }
+            CircularDemo("Thick") {
+                TriColorCircularProgressIndicator(
+                    strokeWidth = 12.dp,
+                    modifier = Modifier.size(64.dp)
+                )
+            }
+            CircularDemo("Custom colors") {
+                TriColorCircularProgressIndicator(
+                    colors = listOf(Color.Red, Color(0xFFFFBB33), Color(0xFF99CC00)),
+                    modifier = Modifier.size(56.dp)
+                )
+            }
+        }
+
         Spacer(Modifier.height(24.dp))
     }
 }
