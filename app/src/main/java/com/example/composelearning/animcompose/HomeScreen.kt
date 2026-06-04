@@ -173,6 +173,21 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.RiveoPageCurl
         ),
         AnimationCategory(
+            "Apple Wallet — Collapsing Cards",
+            "Scroll-driven sticky card stack — cards pile at the top with scale & fade. Port of wcandillon's Wallet.",
+            AnimScreen.WalletStack
+        ),
+        AnimationCategory(
+            "Breathing (Headspace)",
+            "Tap to play/pause — layered wavy gradient, an organic morphing blob, and a parametric play↔pause morph.",
+            AnimScreen.Breathing
+        ),
+        AnimationCategory(
+            "SVG Path Morphing",
+            "Drag a slider to morph phone silhouettes across eras via per-coordinate SVG path interpolation.",
+            AnimScreen.PathMorph
+        ),
+        AnimationCategory(
             "Product Shared Elements",
             "Cinema-style transitions between product list and details",
             AnimScreen.SharedElementProduct
