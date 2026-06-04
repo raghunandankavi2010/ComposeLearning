@@ -54,6 +54,7 @@ import com.example.composelearning.pager.TopRightFanCarouselScreen
 import com.example.composelearning.tabs.TabsSampleNavigation
 import com.example.composelearning.peritemvm.PerItemViewModelShowcaseScreen
 import com.example.composelearning.progess.SmoothProgressBarScreen
+import com.example.composelearning.riveo.presentation.RiveoScreen
 import com.example.composelearning.flight.FlightSeatScreen
 import com.example.composelearning.textfields.MarqueeText
 import com.example.composelearning.charts.*
@@ -162,6 +163,7 @@ sealed interface AnimScreen : NavKey, Parcelable {
     @Serializable data object TabsSample : AnimScreen
     @Serializable data object GoogleCalendar : AnimScreen
     @Serializable data object FluidSpring : AnimScreen
+    @Serializable data object RiveoPageCurl : AnimScreen
 }
 
 @Composable
@@ -324,6 +326,7 @@ fun AppNavigation(
             navigator.goBack()
         }
         entry<AnimScreen.FluidSpring> { FluidSpringShaderScreen(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.RiveoPageCurl> { RiveoScreen() }
 
     }
 

@@ -168,6 +168,11 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.ShaderDemos
         ),
         AnimationCategory(
+            "Riveo — Page Curl (AGSL)",
+            "Port of wcandillon's Skia page curl — drag a card to peel the page over a cylinder; springs back on release.",
+            AnimScreen.RiveoPageCurl
+        ),
+        AnimationCategory(
             "Product Shared Elements",
             "Cinema-style transitions between product list and details",
             AnimScreen.SharedElementProduct
