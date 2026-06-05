@@ -23,6 +23,11 @@ data class AnimationCategory(
 fun MainHomeScreen(navigator: Navigator) {
     val categories = remember { listOf(
         AnimationCategory(
+            "Spinning Wheel",
+            "Spinning wheel",
+            AnimScreen.SpinningWheel,
+        ),
+        AnimationCategory(
             "Particle Hub",
             "Consolidated particle systems: 3D Explosion, Continuous Stream, Realistic Physics, and Fireworks.",
             AnimScreen.ParticleHub,

@@ -76,7 +76,9 @@ import com.example.composelearning.shaders.ShadersHubScreen
 import com.example.composelearning.shaders.FluidSpringShaderScreen
 import com.example.composelearning.clocks.TimeRangeKnobScreen
 import com.example.composelearning.googlecalendar.ui.GoogleCalendarActivity
+import com.example.composelearning.shaders.SpiralShaderScreen
 import com.example.composelearning.shadows.ShadowsShowcaseScreen
+import com.example.composelearning.spinningwheel.SpinningWheelRoute
 import com.example.composelearning.tutorial.ui.TutorialScreen
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
@@ -131,6 +133,9 @@ sealed interface AnimScreen : NavKey, Parcelable {
     @Serializable data object GradientProgress : AnimScreen
     @Serializable data object CircularReveal : AnimScreen
     @Serializable data object PulsatingCircles : AnimScreen
+
+    @Serializable data object SpinningWheel: AnimScreen {
+    }
     @Serializable data object BouncingBall : AnimScreen
     @Serializable data object MultiColorProgress : AnimScreen
     @Serializable data object SharedElementProduct : AnimScreen
@@ -192,6 +197,7 @@ fun AppNavigation(
 
     val entryProvider: (NavKey) -> NavEntry<NavKey> = entryProvider {
         entry<AnimScreen.Home> { MainHomeScreen(navigator) }
+        entry<AnimScreen.SpinningWheel> { SpinningWheelRoute() }
         entry<AnimScreen.CanvasBasicsHub> { CanvasBasicsHubScreen() }
         entry<AnimScreen.MathBasics> { MathBasicsScreen() }
         entry<AnimScreen.DrawingFundamentals> { DrawingFundamentalsScreen() }
