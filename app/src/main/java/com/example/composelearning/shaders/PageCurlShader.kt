@@ -58,80 +58,80 @@ fun PageCurlShaderScreen() {
     var isDragging by remember { mutableStateOf(false) }
 
     val shaderCode = """
-        uniform vec2 u_resolution;
-        uniform vec2 u_click;
-        uniform vec2 u_drag;
+        uniform float2 u_resolution;
+        uniform float2 u_mouse; // Current drag position (dragPos)
+        uniform float2 u_drag_start; // Initial touch point (clickPos)
         uniform shader u_front_tex;
         uniform shader u_back_tex;
         
         const float PI = 3.14159265359;
-        const float RADIUS = 0.12; // Cylinder radius
+        const float RADIUS = 0.1; 
+
+        // Helper to convert our aspect-corrected space back to 0..1 UV for sampling
+        float2 sampleUV(float2 p, float asp) {
+            return p * float2(1.0 / asp, 1.0);
+        }
 
         half4 main(float2 fragCoord) {
             float aspect = u_resolution.x / u_resolution.y;
-            vec2 uv = fragCoord / u_resolution;
+
+            // Map all coordinates to a space where Y is 0..1 and X is 0..aspect
+            float2 uv = (fragCoord / u_resolution.xy) * float2(aspect, 1.0);
+            float2 mouse = (u_mouse / u_resolution.xy) * float2(aspect, 1.0);
+            float2 dragStart = (u_drag_start / u_resolution.xy) * float2(aspect, 1.0);
             
-            // Normalize interaction points to UV space with aspect correction
-            vec2 click = u_click / u_resolution;
-            vec2 drag = u_drag / u_resolution;
+            // 1. Calculate the fold orientation (mouseDir)
+            // It uses the vector between the start and current point, but absolute-values the start
+            // to find a stable anchor point (origin).
+            float2 mouseDir = normalize(abs(dragStart) - mouse);
             
-            // Vector from start to current drag
-            vec2 dragVec = drag - click;
-            float dragLen = length(dragVec);
-            
-            if (dragLen < 0.01) {
-                return u_front_tex.eval(fragCoord);
+            // 2. Calculate the Origin
+            // This anchors the fold to the screen edge based on the drag direction
+            float2 origin = clamp(mouse - mouseDir * mouse.x / mouseDir.x, 0.0, 1.0);
+            if (mouseDir.x < 0.0) {
+                 // Adjust origin if dragging in the other direction
+                 origin = clamp(mouse - mouseDir * (mouse.x - aspect) / mouseDir.x, 0.0, aspect);
             }
 
-            vec2 mouseDir = normalize(dragVec);
+            // 3. Calculate distance from mouse to origin (the "fold depth")
+            float mouseDist = length(mouse - origin);
             
-            // The "Origin" of the fold is calculated to align with the drag
-            // In this version, we treat the click as the anchor and the drag as the pull
-            // The fold line is perpendicular to mouseDir.
-            
-            // Project fragment onto the drag vector
-            // Dist 0 is at the fold line.
-            float mouseDist = dragLen; 
-            float proj = dot(uv - click, mouseDir);
+            // 4. Project fragment onto the curl axis
+            float proj = dot(uv - origin, mouseDir);
             float dist = proj - mouseDist;
-
-            vec2 linePoint = uv - dist * mouseDir;
             
+            float2 linePoint = uv - dist * mouseDir;
+
             if (dist > RADIUS) {
-                // Next Page (Below the curl)
-                // We add a shadow based on distance to the curl
-                half4 col = u_back_tex.eval(fragCoord);
+                // Next Page (Revealed underneath)
+                half4 col = u_back_tex.eval(sampleUV(uv, aspect) * u_resolution);
+                // Shadow based on distance from the cylinder
                 float shadow = pow(clamp(dist - RADIUS, 0.0, 1.0) * 1.5, 0.2);
                 return half4(col.rgb * shadow, col.a);
-            } 
+            }
             else if (dist >= 0.0) {
-                // The Cylinder (The Curl)
+                // The Cylinder Surface
                 float theta = asin(dist / RADIUS);
+                float2 p2 = linePoint + mouseDir * (PI - theta) * RADIUS;
+                float2 p1 = linePoint + mouseDir * theta * RADIUS;
                 
-                // Unroll the cylinder to find where this pixel maps on the flat page
-                vec2 p2 = linePoint + mouseDir * (PI - theta) * RADIUS; // Back of the page
-                vec2 p1 = linePoint + mouseDir * theta * RADIUS;        // Front of the page
-                
-                // If the back-mapped UV is in bounds, show the back side
-                if (p2.x <= 1.0 && p2.y <= 1.0 && p2.x >= 0.0 && p2.y >= 0.0) {
-                    half4 col = u_front_tex.eval(p2 * u_resolution);
-                    // Light drop-off for realism
+                // Back of the page check
+                if (p2.x <= aspect && p2.y <= 1.0 && p2.x >= 0.0 && p2.y >= 0.0) {
+                    half4 col = u_front_tex.eval(sampleUV(p2, aspect) * u_resolution);
                     float lighting = pow(clamp((RADIUS - dist) / RADIUS, 0.0, 1.0), 0.2);
-                    // Add a specular highlight at the cylinder peak
-                    float highlight = exp(-pow(dist - RADIUS * 0.5, 2.0) * 1000.0) * 0.15;
-                    return half4(col.rgb * lighting + highlight, col.a);
+                    return half4(col.rgb * lighting, col.a);
                 } else {
-                    // Otherwise show the front side
-                    return u_front_tex.eval(p1 * u_resolution);
+                    // Front side
+                    return u_front_tex.eval(sampleUV(p1, aspect) * u_resolution);
                 }
-            } 
+            }
             else {
-                // The Flipped Page (Now laying flat on top)
-                vec2 p = linePoint + mouseDir * (abs(dist) + PI * RADIUS);
-                if (p.x <= 1.0 && p.y <= 1.0 && p.x >= 0.0 && p.y >= 0.0) {
-                    return u_front_tex.eval(p * u_resolution);
+                // The Flipped Flat Page
+                float2 p = linePoint + mouseDir * (abs(dist) + PI * RADIUS);
+                if (p.x <= aspect && p.y <= 1.0 && p.x >= 0.0 && p.y >= 0.0) {
+                    return u_front_tex.eval(sampleUV(p, aspect) * u_resolution);
                 } else {
-                    return u_back_tex.eval(fragCoord);
+                    return u_front_tex.eval(sampleUV(uv, aspect) * u_resolution);
                 }
             }
         }
@@ -164,8 +164,8 @@ fun PageCurlShaderScreen() {
                 }
                 .drawWithCache {
                     runtimeShader.setFloatUniform("u_resolution", size.width, size.height)
-                    runtimeShader.setFloatUniform("u_click", clickPos.x, clickPos.y)
-                    runtimeShader.setFloatUniform("u_drag", dragPos.x, dragPos.y)
+                    runtimeShader.setFloatUniform("u_mouse", dragPos.x, dragPos.y)
+                    runtimeShader.setFloatUniform("u_drag_start", clickPos.x, clickPos.y)
                     runtimeShader.setInputShader("u_front_tex", frontShader)
                     runtimeShader.setInputShader("u_back_tex", backShader)
 
