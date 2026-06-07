@@ -1,8 +1,6 @@
 package com.example.composelearning.shaders
 
-import android.graphics.RenderEffect as AndroidRenderEffect
 import android.graphics.RuntimeShader
-import android.graphics.Shader as AndroidShader
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
@@ -27,20 +25,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -75,6 +70,8 @@ import coil.compose.AsyncImage
 import com.example.composelearning.sliders.Slider
 import org.intellij.lang.annotations.Language
 import kotlin.math.roundToInt
+import android.graphics.RenderEffect as AndroidRenderEffect
+import android.graphics.Shader as AndroidShader
 
 
 // =================================================================================================
@@ -95,6 +92,7 @@ private enum class ShaderDemo(val title: String, val subtitle: String) {
     FilmGrain("Film grain overlay", "Animated noise on top of any content"),
     Spiral("Spiral shader", "Dynamic polar coordinate spiral"),
     FluidSpring("Fluid Spring (Masterclass)", "Euler physics + Thin-film interference"),
+    PageCurl("Page Curl", "Cylindrical fold simulation with two textures"),
 }
 
 @Composable
@@ -154,6 +152,7 @@ fun ShadersHubScreen() {
                         ShaderDemo.FilmGrain -> FilmGrainDemo()
                         ShaderDemo.Spiral -> SpiralShaderScreen()
                         ShaderDemo.FluidSpring -> FluidSpringShaderScreen(onBack = { current = null })
+                        ShaderDemo.PageCurl -> PageCurlShaderScreen()
                     }
                 }
             }
