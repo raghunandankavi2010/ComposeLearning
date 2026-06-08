@@ -78,6 +78,7 @@ import com.example.composelearning.clocks.TimeRangeKnobScreen
 import com.example.composelearning.googlecalendar.ui.GoogleCalendarActivity
 import com.example.composelearning.shaders.SpiralShaderScreen
 import com.example.composelearning.shadows.ShadowsShowcaseScreen
+import com.example.composelearning.protobufdemo.ProtobufDemoRoute
 import com.example.composelearning.spinningwheel.SpinningWheelRoute
 import com.example.composelearning.tutorial.ui.TutorialScreen
 import kotlinx.parcelize.Parcelize
@@ -184,6 +185,7 @@ sealed interface AnimScreen : NavKey, Parcelable {
     @Serializable data object IpodWheel : AnimScreen
     @Serializable data object ClearTodo : AnimScreen
     @Serializable data object GoogleCalling : AnimScreen
+    @Serializable data object ProtobufDemo : AnimScreen
 }
 
 @Composable
@@ -356,6 +358,7 @@ fun AppNavigation(
         entry<AnimScreen.IpodWheel> { IpodScreen() }
         entry<AnimScreen.ClearTodo> { ClearScreen() }
         entry<AnimScreen.GoogleCalling> { GoogleCallingRoute(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.ProtobufDemo> { ProtobufDemoRoute(onBack = { navigator.goBack() }) }
 
     }
 

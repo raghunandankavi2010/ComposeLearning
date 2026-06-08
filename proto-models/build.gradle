@@ -1,0 +1,27 @@
+// Plain JVM library that owns the .proto schema and the classes generated from it.
+// Keeping protobuf code generation in a non-Android module means the Android
+// Gradle Plugin never has to interoperate with the protobuf plugin — both the
+// :app (Android) and :server (desktop JVM) modules just depend on the generated
+// Java that lands here.
+plugins {
+    id 'java-library'
+    alias(libs.plugins.protobuf)
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+dependencies {
+    // 'api' so that consumers (:app, :server) also get the protobuf runtime on
+    // their compile + runtime classpath — the generated classes need it.
+    api libs.protobuf.java
+}
+
+protobuf {
+    // The protoc compiler binary is downloaded automatically for the host OS.
+    protoc {
+        artifact = "com.google.protobuf:protoc:${libs.versions.protobuf.get()}"
+    }
+}

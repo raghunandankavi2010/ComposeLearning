@@ -1,0 +1,26 @@
+// Desktop (plain JVM) application that serves protobuf bytes over HTTP.
+// Run it with:  ./gradlew :server:run
+plugins {
+    alias(libs.plugins.kotlin.jvm)
+    id 'application'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+kotlin {
+    jvmToolchain(21)
+}
+
+application {
+    // The Kotlin file ServerMain.kt compiles to the class ServerMainKt.
+    mainClass = 'com.example.composelearning.server.ServerMainKt'
+}
+
+dependencies {
+    // Brings in the generated Contact / ContactList classes AND the protobuf
+    // runtime (declared 'api' in :proto-models).
+    implementation project(':proto-models')
+}

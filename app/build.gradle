@@ -80,6 +80,11 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 
     implementation(libs.kotlinx.serialization.json)
+
+    // Protobuf demo: shared generated messages + HTTP client to fetch the bytes
+    implementation(project(':proto-models'))
+    implementation(libs.okhttp)
+
     implementation(libs.coil.compose)
     implementation(libs.haze)
     implementation(libs.haze.materials)

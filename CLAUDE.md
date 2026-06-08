@@ -13,17 +13,52 @@ A Jetpack Compose learning project containing various UI experiments and samples
 - **Version catalog**: `gradle/libs.versions.toml`
 
 ## Project Structure
-Single `app` module. Features organized as packages:
+Modules: `:app` (Android), plus `:proto-models` (java-library holding the shared `.proto` schema + protoc-generated classes) and `:server` (Kotlin JVM desktop server) that power the Protobuf demo. See [PROTOBUF.md](PROTOBUF.md).
+
+Features in `:app` are organized as packages under `app/src/main/java/com/example/composelearning/`:
 ```
-app/src/main/java/com/example/composelearning/
+├── anim/               # New Year's Eve fireworks, basic animations
+├── animcompose/        # Core navigation (AppNavigation.kt, HomeScreen.kt) and hub screens
+├── applerings/         # Apple Activity Rings clone (Clean Architecture: domain/presentation)
+├── breathing/          # Headspace-style breathing animation
 ├── calendar/           # Date range picker calendar
-├── googlecalendar/     # Google Calendar clone (NEW)
-├── anim/               # Animation samples
-├── tabs/               # Tab navigation samples
+├── charts/             # Line, Bar, Pie, Donut, Candle, Speedometer charts
+├── cleartodo/          # Clear To-Do pinch-to-create interaction
+├── clocks/             # Time Range Knob / 24h dial
+├── customlayout/       # Custom Pager and Arc List layouts
+├── customshapes/       # Ticket shapes and other custom geometry
 ├── dropdown/           # Dropdown menu samples
-├── modifiers/          # Modifier order demos
-└── ...                 # Other standalone samples
+├── flight/             # Flight seat selection UI
+├── foldcard/           # 3D folding card animation
+├── googlecalendar/     # Google Calendar clone with schedule/week views
+├── graphics/           # Shaders, Path progress, Blur effects, Draw scale
+├── images/             # Overlapping avatars, Image processing (AGSL)
+├── ipodwheel/          # iPod Click Wheel interaction
+├── lists/              # Comprehensive list demos (Swipe, Reorder, Staggered)
+├── modifiers/          # Modifier order and custom modifier demos
+├── pager/              # Arc carousel, Fan carousel, Instagram-style pagers
+├── pathmorph/          # SVG Path morphing (Phone silhouettes)
+├── peritemvm/          # Scoping ViewModels to individual list items
+├── permissions/        # Passkeys and Accompanist permissions demos
+├── riveo/              # Riveo-style page curl (AGSL)
+├── shaders/            # AGSL Shimmer, Liquid, Spiral, Fluid spring shaders
+├── shadows/            # Shadow playground (Inner, Drop, Colored)
+├── sliders/            # Squiggly material slider
+├── speedometer/        # Speedometer gauge components
+├── spinningwheel/      # Spinning wheel / Fortune wheel
+├── tabs/               # Fluid tabs and navigation samples
+├── textfields/         # Marquee text and text styling
+├── tutorial/           # Spotlight/Coach-mark walkthrough overlay
+└── wallet/             # Apple Wallet collapsing card stack
 ```
+
+### Key Files
+- `MainActivity.kt`: Entry point using Navigation 3
+- `animcompose/AppNavigation.kt`: Central navigation graph and route definitions
+- `animcompose/HomeScreen.kt`: Main feature list and category definitions
+- `gradle/libs.versions.toml`: Version catalog for all dependencies
+- `build.gradle` (root) & `app/build.gradle`: Gradle configuration (Groovy)
+
 
 ## Architecture Conventions
 - **MVVM**: ViewModel + Compose screens

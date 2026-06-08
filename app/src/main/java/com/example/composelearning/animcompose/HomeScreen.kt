@@ -213,6 +213,11 @@ fun MainHomeScreen(navigator: Navigator) {
             AnimScreen.ClearTodo
         ),
         AnimationCategory(
+            "Protobuf over HTTP",
+            "Fetch a contact list from a local desktop server encoded as Protocol Buffers; decode it with generated classes. Run ./gradlew :server:run first.",
+            AnimScreen.ProtobufDemo
+        ),
+        AnimationCategory(
             "Product Shared Elements",
             "Cinema-style transitions between product list and details",
             AnimScreen.SharedElementProduct
