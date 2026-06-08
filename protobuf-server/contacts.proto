@@ -1,0 +1,48 @@
+
+// Protocol Buffers schema (proto3).
+//
+// This single file is the SHARED CONTRACT between the desktop server and the
+// Android client. Both modules depend on :proto-models, so both compile against
+// the exact same generated classes — there is no way for them to disagree about
+// the shape of the data on the wire.
+//
+// To regenerate the Java classes after editing this file:
+//   ./gradlew :proto-models:generateProto
+syntax = "proto3";
+
+package composelearning;
+
+// ---- Java code-generation options -----------------------------------------
+// java_multiple_files=true emits one top-level class per message/enum
+// (Contact, Role, ContactList) instead of nesting them inside one wrapper class.
+option java_package = "com.example.composelearning.proto";
+option java_multiple_files = true;
+
+// An enum. On the wire an enum is just a varint (its number), NOT the name —
+// this is part of why protobuf is so compact. The 0 value is required by proto3
+// and acts as the "unset/default" value.
+enum Role {
+  ROLE_UNSPECIFIED = 0;
+  ENGINEER = 1;
+  DESIGNER = 2;
+  MANAGER = 3;
+}
+
+// A single record. Every field has a unique TAG NUMBER (= 1, = 2, ...).
+// Those numbers — not the field names — are what gets written to the bytes,
+// which is why renaming a field never breaks compatibility but reusing a number
+// does. Numbers 1–15 use a 1-byte tag, so give them to your most common fields.
+message Contact {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+  string phone = 4;
+  Role role = 5;
+  bool active = 6;
+}
+
+// A "repeated" field is a list. The server fills this with many Contacts and
+// serializes the whole thing to a compact byte array in one call.
+message ContactList {
+  repeated Contact contacts = 1;
+}

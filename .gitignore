@@ -84,3 +84,12 @@ lint/outputs/
 lint/tmp/
 # lint/reports/
 .idea/
+
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
