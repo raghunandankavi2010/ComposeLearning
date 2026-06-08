@@ -1,4 +1,4 @@
-package com.example.composelearning.progess
+package com.example.composelearning.progress
 
 /*
  * Copyright 2022 The Android Open Source Project
@@ -851,5 +851,3 @@ private const val HeadAndTailDelayDuration = HeadAndTailAnimationDuration
 
 // The easing for the head and tail jump
 private val CircularEasing = CubicBezierEasing(0.4f, 0f, 0.2f, 1f)
-
-

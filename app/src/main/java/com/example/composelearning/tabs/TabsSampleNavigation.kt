@@ -25,8 +25,8 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import com.example.composelearning.animcompose.Navigator
-import com.example.composelearning.animcompose.rememberNavigationState
-import com.example.composelearning.animcompose.toEntries
+import com.example.composelearning.rememberNavigationState
+import com.example.composelearning.toEntries
 
 /**
  * Single-NavHost tabbed navigation sample (Google's recommended Nav3 pattern):

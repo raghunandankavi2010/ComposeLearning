@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import com.example.composelearning.LogCompositions
+import com.example.composelearning.util.LogCompositions
 import com.example.composelearning.R
 import kotlinx.coroutines.launch
 import kotlin.math.PI

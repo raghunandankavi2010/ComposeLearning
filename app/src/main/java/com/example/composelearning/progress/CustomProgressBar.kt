@@ -1,4 +1,4 @@
-package com.example.composelearning.progess
+package com.example.composelearning.progress
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween

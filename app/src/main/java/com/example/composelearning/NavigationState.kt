@@ -1,4 +1,4 @@
-package com.example.composelearning.animcompose
+package com.example.composelearning
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState

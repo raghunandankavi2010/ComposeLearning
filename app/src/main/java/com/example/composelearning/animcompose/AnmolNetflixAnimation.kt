@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.compose.ui.zIndex
-import com.example.composelearning.LocalAnimationsEnabled
+import com.example.composelearning.util.LocalAnimationsEnabled
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 

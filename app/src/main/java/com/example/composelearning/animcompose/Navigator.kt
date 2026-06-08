@@ -1,6 +1,7 @@
 package com.example.composelearning.animcompose
 
 import androidx.navigation3.runtime.NavKey
+import com.example.composelearning.NavigationState
 
 /**
  * Handles navigation events (forward and back) by updating the navigation state.

@@ -35,7 +35,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.ui.unit.sp
-import com.example.composelearning.LocalAnimationsEnabled
+import com.example.composelearning.util.LocalAnimationsEnabled
 import kotlinx.coroutines.delay
 
 

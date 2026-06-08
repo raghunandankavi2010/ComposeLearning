@@ -1,4 +1,4 @@
-package com.example.composelearning.sotry
+package com.example.composelearning.story
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
@@ -110,7 +110,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.example.composelearning.LogCompositions
+import com.example.composelearning.util.LogCompositions
 import com.example.composelearning.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -1103,44 +1103,6 @@ fun SOBlur() {
 @Composable
 fun Float.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
 
-@OptIn(ExperimentalFoundationApi::class)
-//@Composable
-//fun MyScreen() {
-//    val list = (1..100).map { it.toString() }
-//    val lazyListState = rememberLazyListState()
-//    val firstVisibleItemIndex by remember { derivedStateOf { lazyListState.firstVisibleItemScrollOffset } }
-//
-//    Column {
-//
-//        if (firstVisibleItemIndex > 0) {
-//
-//            Box(modifier = Modifier
-//                .height(58.dp)
-//                .fillMaxWidth()
-//                .background(Color.Green))
-//
-//        }
-//        LazyColumn(state = lazyListState) {
-//            item {
-//                Box(modifier = Modifier
-//                    .height(300.dp)
-//                    .fillMaxWidth()
-//                    .background(Color.Red))
-//            }
-//            items(list) { item ->
-//                Text(
-//                    text = item,
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .height(50.dp)
-//                        .background(Color.Blue)
-//                )
-//            }
-//        }
-//    }
-//}
-
-
 @Composable
 fun MyScreen() {
     val list = (1..100).map { it.toString() }
@@ -1199,4 +1161,3 @@ fun DpToPixels(dpValue: Dp): Float {
     val density = LocalDensity.current
     return with(density) { dpValue.toPx() }
 }
-

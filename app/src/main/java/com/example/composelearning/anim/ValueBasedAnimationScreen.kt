@@ -1,4 +1,4 @@
-package com.example.composelearning
+package com.example.composelearning.anim
 
 
 import androidx.compose.animation.animateColorAsState
@@ -159,12 +159,12 @@ fun KeyframeAnimationDemo() {
         targetValue = if (isAnimating) 1f else 0f,
         animationSpec = keyframes {
             durationMillis = 3000
-            0f at 0 with LinearEasing
-            0.3f at 500 with FastOutSlowInEasing
-            0.8f at 1000 with LinearOutSlowInEasing
-            0.6f at 1500 with FastOutSlowInEasing
-            1.2f at 2200 with LinearEasing
-            1f at 3000 with FastOutSlowInEasing
+            0f at 0 using LinearEasing
+            0.3f at 500 using FastOutSlowInEasing
+            0.8f at 1000 using LinearOutSlowInEasing
+            0.6f at 1500 using FastOutSlowInEasing
+            1.2f at 2200 using LinearEasing
+            1f at 3000 using FastOutSlowInEasing
         },
         label = "keyframe_animation"
     )
@@ -185,11 +185,11 @@ fun KeyframeAnimationDemo() {
         targetValue = if (isAnimating) 360f else 0f,
         animationSpec = keyframes {
             durationMillis = 3000
-            0f at 0 with LinearEasing
-            90f at 800 with OvershootInterpolator().toEasing()
-            180f at 1600 with AnticipateInterpolator().toEasing()
-            270f at 2400 with BounceInterpolator().toEasing()
-            360f at 3000 with LinearEasing
+            0f at 0 using LinearEasing
+            90f at 800 using OvershootInterpolator().toEasing()
+            180f at 1600 using AnticipateInterpolator().toEasing()
+            270f at 2400 using BounceInterpolator().toEasing()
+            360f at 3000 using LinearEasing
         },
         label = "keyframe_rotation"
     )
@@ -264,7 +264,7 @@ fun KeyframeAnimationDemo() {
 
 @Composable
 fun CustomCurveAnimationDemo() {
-    var selectedCurve by remember { mutableStateOf(0) }
+    var selectedCurve by remember { mutableIntStateOf(0) }
     var isAnimating by remember { mutableStateOf(false) }
     val density = LocalDensity.current
 

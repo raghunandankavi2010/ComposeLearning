@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.composelearning.LocalAnimationsEnabled
+import com.example.composelearning.util.LocalAnimationsEnabled
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 import kotlin.math.cos

@@ -31,7 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.composelearning.LocalAnimationsEnabled
+import com.example.composelearning.util.LocalAnimationsEnabled
 import androidx.compose.runtime.mutableStateOf
 
 

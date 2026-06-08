@@ -1,4 +1,4 @@
-package com.example.composelearning
+package com.example.composelearning.util
 
 import android.util.Log
 import androidx.compose.runtime.Composable
@@ -7,6 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import com.example.composelearning.BuildConfig
 
 class Ref(var value: Int)
 

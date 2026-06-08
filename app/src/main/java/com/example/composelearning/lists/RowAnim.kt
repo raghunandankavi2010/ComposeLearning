@@ -58,7 +58,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.composelearning.LogCompositions
+import com.example.composelearning.util.LogCompositions
 import com.example.composelearning.R
 import kotlin.math.roundToInt
 

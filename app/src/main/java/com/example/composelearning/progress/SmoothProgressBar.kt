@@ -1,4 +1,4 @@
-package com.example.composelearning.progess
+package com.example.composelearning.progress
 
 import androidx.compose.animation.core.Easing
 import androidx.compose.foundation.Canvas
@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.composelearning.LocalAnimationsEnabled
+import com.example.composelearning.util.LocalAnimationsEnabled
 import kotlin.math.abs
 
 /**

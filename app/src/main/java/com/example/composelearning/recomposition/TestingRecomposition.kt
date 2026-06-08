@@ -1,5 +1,6 @@
 package com.example.composelearning
 
+import com.example.composelearning.util.LogCompositions
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image

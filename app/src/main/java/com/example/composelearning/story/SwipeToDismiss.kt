@@ -1,4 +1,4 @@
-package com.example.composelearning.sotry
+package com.example.composelearning.story
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState

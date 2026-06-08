@@ -23,10 +23,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.composelearning.LogCompositions
+import com.example.composelearning.util.LogCompositions
 import com.example.composelearning.R
 import com.example.composelearning.pager.TabRowDefaults.tabIndicatorOffset
-import com.example.composelearning.sotry.CustomButton
+import com.example.composelearning.story.CustomButton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 

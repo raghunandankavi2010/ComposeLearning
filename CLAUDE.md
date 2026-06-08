@@ -18,7 +18,7 @@ Modules: `:app` (Android), plus `:proto-models` (java-library holding the shared
 Features in `:app` are organized as packages under `app/src/main/java/com/example/composelearning/`:
 ```
 ├── anim/               # New Year's Eve fireworks, basic animations
-├── animcompose/        # Core navigation (AppNavigation.kt, HomeScreen.kt) and hub screens
+├── animcompose/        # HomeScreen.kt and hub screens (AppNavigation.kt / NavigationState.kt now live in the root package)
 ├── applerings/         # Apple Activity Rings clone (Clean Architecture: domain/presentation)
 ├── breathing/          # Headspace-style breathing animation
 ├── calendar/           # Date range picker calendar
@@ -31,30 +31,35 @@ Features in `:app` are organized as packages under `app/src/main/java/com/exampl
 ├── flight/             # Flight seat selection UI
 ├── foldcard/           # 3D folding card animation
 ├── googlecalendar/     # Google Calendar clone with schedule/week views
+├── gradients/          # Mesh gradient samples
 ├── graphics/           # Shaders, Path progress, Blur effects, Draw scale
 ├── images/             # Overlapping avatars, Image processing (AGSL)
 ├── ipodwheel/          # iPod Click Wheel interaction
+├── layouts/            # Percentage-based custom layout
 ├── lists/              # Comprehensive list demos (Swipe, Reorder, Staggered)
 ├── modifiers/          # Modifier order and custom modifier demos
 ├── pager/              # Arc carousel, Fan carousel, Instagram-style pagers
 ├── pathmorph/          # SVG Path morphing (Phone silhouettes)
 ├── peritemvm/          # Scoping ViewModels to individual list items
 ├── permissions/        # Passkeys and Accompanist permissions demos
+├── progress/           # Progress bar / circular progress samples
 ├── riveo/              # Riveo-style page curl (AGSL)
 ├── shaders/            # AGSL Shimmer, Liquid, Spiral, Fluid spring shaders
 ├── shadows/            # Shadow playground (Inner, Drop, Colored)
 ├── sliders/            # Squiggly material slider
 ├── speedometer/        # Speedometer gauge components
 ├── spinningwheel/      # Spinning wheel / Fortune wheel
+├── story/              # Story-style swipe-to-dismiss experiments
 ├── tabs/               # Fluid tabs and navigation samples
 ├── textfields/         # Marquee text and text styling
 ├── tutorial/           # Spotlight/Coach-mark walkthrough overlay
+├── util/               # Shared utilities (LogCompositions, LocalAnimationsEnabled, convertPxToDp)
 └── wallet/             # Apple Wallet collapsing card stack
 ```
 
 ### Key Files
 - `MainActivity.kt`: Entry point using Navigation 3
-- `animcompose/AppNavigation.kt`: Central navigation graph and route definitions
+- `AppNavigation.kt`: Central navigation graph and route definitions (root package)
 - `animcompose/HomeScreen.kt`: Main feature list and category definitions
 - `gradle/libs.versions.toml`: Version catalog for all dependencies
 - `build.gradle` (root) & `app/build.gradle`: Gradle configuration (Groovy)

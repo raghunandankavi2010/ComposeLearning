@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.composelearning.animcompose
+package com.example.composelearning
 
 import android.content.Intent
 import android.os.Parcelable
@@ -34,10 +34,9 @@ import androidx.navigation3.ui.NavDisplay
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.composelearning.ValueBasedAnimationsScreen
 import com.example.composelearning.anim.AnimatedBalanceDemo
+import com.example.composelearning.anim.ValueBasedAnimationsScreen
 import com.example.composelearning.anim.ZoomableImageScreen
-import com.example.composelearning.PercentageBaseLayout
 import com.example.composelearning.anim.BiometricDemoPanel
 import com.example.composelearning.anim.ButtonAnimationTest
 import com.example.composelearning.calendar.CalendarScreen
@@ -47,13 +46,14 @@ import com.example.composelearning.graphics.BlurSample
 import com.example.composelearning.graphics.BorderProgressBar
 import com.example.composelearning.images.OverlappingImagesScreen
 import com.example.composelearning.images.processing.ImageProcessingScreen
+import com.example.composelearning.layouts.PercentageBaseLayout
 import com.example.composelearning.lists.ListsShowcaseScreen
 import com.example.composelearning.pager.ArcCarouselScreen
 import com.example.composelearning.pager.PagerShowcaseScreen
 import com.example.composelearning.pager.TopRightFanCarouselScreen
 import com.example.composelearning.tabs.TabsSampleNavigation
 import com.example.composelearning.peritemvm.PerItemViewModelShowcaseScreen
-import com.example.composelearning.progess.SmoothProgressBarScreen
+import com.example.composelearning.progress.SmoothProgressBarScreen
 import com.example.composelearning.riveo.presentation.RiveoScreen
 import com.example.composelearning.wallet.presentation.WalletScreen
 import com.example.composelearning.breathing.presentation.BreathingScreen
@@ -76,17 +76,20 @@ import com.example.composelearning.shaders.ShadersHubScreen
 import com.example.composelearning.shaders.FluidSpringShaderScreen
 import com.example.composelearning.clocks.TimeRangeKnobScreen
 import com.example.composelearning.googlecalendar.ui.GoogleCalendarActivity
-import com.example.composelearning.shaders.SpiralShaderScreen
 import com.example.composelearning.shadows.ShadowsShowcaseScreen
 import com.example.composelearning.protobufdemo.ProtobufDemoRoute
 import com.example.composelearning.spinningwheel.SpinningWheelRoute
 import com.example.composelearning.tutorial.ui.TutorialScreen
+import com.example.composelearning.animcompose.Navigator
+import com.example.composelearning.gradients.SineWaveMeshGradientScreen
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
 @Serializable
 @Parcelize
 sealed interface AnimScreen : NavKey, Parcelable {
+
+    @Serializable data object MeshGradient: AnimScreen
     @Serializable data object DrawScale: AnimScreen
     @Serializable data object Home : AnimScreen
     @Serializable data object CanvasBasicsHub : AnimScreen
@@ -192,34 +195,46 @@ sealed interface AnimScreen : NavKey, Parcelable {
 fun AppNavigation(
     modifier: Modifier = Modifier
 ) {
-    val navigationState = rememberNavigationState(
-        startRoute = AnimScreen.Home,
-        topLevelRoutes = setOf(AnimScreen.Home)
-    )
-    val navigator = remember { Navigator(navigationState) }
+    val navigationState: NavigationState =
+        rememberNavigationState(
+            startRoute = AnimScreen.Home,
+            topLevelRoutes = setOf(AnimScreen.Home)
+        )
+    val navigator = remember {
+        Navigator(
+            navigationState
+        )
+    }
 
     val entryProvider: (NavKey) -> NavEntry<NavKey> = entryProvider {
-        entry<AnimScreen.Home> { MainHomeScreen(navigator) }
+        entry<AnimScreen.Home> {
+            com.example.composelearning.animcompose.MainHomeScreen(
+                navigator
+            )
+        }
         entry<AnimScreen.SpinningWheel> { SpinningWheelRoute() }
-        entry<AnimScreen.CanvasBasicsHub> { CanvasBasicsHubScreen() }
-        entry<AnimScreen.MathBasics> { MathBasicsScreen() }
-        entry<AnimScreen.DrawingFundamentals> { DrawingFundamentalsScreen() }
-        entry<AnimScreen.LinesShapesArcs> { LinesShapesArcsScreen() }
-        entry<AnimScreen.PathsComplexShapes> { PathsComplexShapesScreen() }
-        entry<AnimScreen.ImagesBitmaps> { ImagesBitmapsScreen() }
-        entry<AnimScreen.CanvasState> { CanvasStateScreen() }
-        entry<AnimScreen.TouchGestures> { TouchGesturesScreen() }
-        entry<AnimScreen.AnimationBasics> { NewYearsEveFireworksScreen() }
+        entry<AnimScreen.CanvasBasicsHub> { com.example.composelearning.animcompose.CanvasBasicsHubScreen() }
+        entry<AnimScreen.MathBasics> { com.example.composelearning.animcompose.MathBasicsScreen() }
+        entry<AnimScreen.DrawingFundamentals> { com.example.composelearning.animcompose.DrawingFundamentalsScreen() }
+        entry<AnimScreen.LinesShapesArcs> { com.example.composelearning.animcompose.LinesShapesArcsScreen() }
+        entry<AnimScreen.PathsComplexShapes> { com.example.composelearning.animcompose.PathsComplexShapesScreen() }
+        entry<AnimScreen.ImagesBitmaps> { com.example.composelearning.animcompose.ImagesBitmapsScreen() }
+        entry<AnimScreen.CanvasState> { com.example.composelearning.animcompose.CanvasStateScreen() }
+        entry<AnimScreen.TouchGestures> { com.example.composelearning.animcompose.TouchGesturesScreen() }
+        entry<AnimScreen.AnimationBasics> { com.example.composelearning.animcompose.NewYearsEveFireworksScreen() }
         entry<AnimScreen.ValueBasedAnimations> { ValueBasedAnimationsScreen() }
-        entry<AnimScreen.TransitionAnimations> { TransitionAnimationsScreen() }
-        entry<AnimScreen.PhysicsAnimations> { PhysicsAnimationsScreen() }
-        entry<AnimScreen.GameEnvironment> { GameEnvironmentScreen() }
-        entry<AnimScreen.BottleWaveAnimation> { BottleWaveAnimation() }
-        entry<AnimScreen.DatePickerScreen> { PhysicsDatePicker {} }
-        entry<AnimScreen.FileDeleteAnimation> { FileManagerPreview() }
-        entry<AnimScreen.ThermometerAnimation> { ThermometerAnimation() }
-        entry<AnimScreen.StackedCards> { TinderSwipeScreen() }
-        entry<AnimScreen.April2026Features> { April2026FeaturesScreen(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.TransitionAnimations> { com.example.composelearning.animcompose.TransitionAnimationsScreen() }
+        entry<AnimScreen.PhysicsAnimations> { com.example.composelearning.animcompose.PhysicsAnimationsScreen() }
+        entry<AnimScreen.GameEnvironment> { com.example.composelearning.animcompose.GameEnvironmentScreen() }
+        entry<AnimScreen.BottleWaveAnimation> { com.example.composelearning.animcompose.BottleWaveAnimation() }
+        entry<AnimScreen.DatePickerScreen> { com.example.composelearning.animcompose.PhysicsDatePicker {} }
+        entry<AnimScreen.FileDeleteAnimation> { com.example.composelearning.animcompose.FileManagerPreview() }
+        entry<AnimScreen.ThermometerAnimation> { com.example.composelearning.animcompose.ThermometerAnimation() }
+        entry<AnimScreen.StackedCards> { com.example.composelearning.animcompose.TinderSwipeScreen() }
+        entry<AnimScreen.April2026Features> {
+            com.example.composelearning.animcompose.April2026FeaturesScreen(
+                onBack = { navigator.goBack() })
+        }
         entry<AnimScreen.AnimatedBalance> { AnimatedBalanceDemo() }
         entry<AnimScreen.BezierCurves> { BezierShowcaseScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.SineWave> { SineWaveSample(onBack = { navigator.goBack() }) }
@@ -229,41 +244,51 @@ fun AppNavigation(
         entry<AnimScreen.Passkeys> { PasskeySample(onBack = { navigator.goBack() }) }
         entry<AnimScreen.SquigglySlider> { SquigglySliderSample(onBack = { navigator.goBack() }) }
         entry<AnimScreen.DrawScale> { DrawScaleOnTouch(onBack = { navigator.goBack() }) }
-        entry<AnimScreen.YouTubeStyle> { YouTubeScreen(onBack = { navigator.goBack() }) }
-        entry<AnimScreen.CircleMenu> { CircularMenuScreenWithFullAnimation() }
-        entry<AnimScreen.ChatApp> { ChatAppNavigation() }
-        entry<AnimScreen.SimpleNav> { SimpleAppNavigation() }
-        entry<AnimScreen.BottomSheet> { BottomSheet() }
-        entry<AnimScreen.Spotlight> { SpotlightDemoScreen(onFinish = { navigator.goBack() }) }
-        entry<AnimScreen.TextShimmer> { ShimmerTextShowcase() }
+        entry<AnimScreen.YouTubeStyle> {
+            com.example.composelearning.animcompose.YouTubeScreen(
+                onBack = { navigator.goBack() })
+        }
+        entry<AnimScreen.CircleMenu> { com.example.composelearning.animcompose.CircularMenuScreenWithFullAnimation() }
+        entry<AnimScreen.ChatApp> { com.example.composelearning.animcompose.ChatAppNavigation() }
+        entry<AnimScreen.SimpleNav> { com.example.composelearning.animcompose.SimpleAppNavigation() }
+        entry<AnimScreen.BottomSheet> { com.example.composelearning.animcompose.BottomSheet() }
+        entry<AnimScreen.Spotlight> {
+            com.example.composelearning.animcompose.SpotlightDemoScreen(
+                onFinish = { navigator.goBack() })
+        }
+        entry<AnimScreen.TextShimmer> { com.example.composelearning.animcompose.ShimmerTextShowcase() }
         entry<AnimScreen.CardFlip> { 
             Box(
                 modifier = Modifier.fillMaxSize().systemBarsPadding(),
                 contentAlignment = Alignment.Center
             ) {
-                CreditCardFlip() 
+                com.example.composelearning.animcompose.CreditCardFlip()
             }
         }
-        entry<AnimScreen.FluidTabs> { FluidTabBarShowcase() }
-        entry<AnimScreen.DraggableSheet> { DraggableSheetRight() }
-        entry<AnimScreen.StaggeredGrid> { StaggeredGridDemo() }
-        entry<AnimScreen.ParticleHub> { ParticleAnimationsHubScreen() }
-        entry<AnimScreen.ChartsHub> { ChartsHubScreen() }
+        entry<AnimScreen.FluidTabs> { com.example.composelearning.animcompose.FluidTabBarShowcase() }
+        entry<AnimScreen.DraggableSheet> { com.example.composelearning.animcompose.DraggableSheetRight() }
+        entry<AnimScreen.StaggeredGrid> { com.example.composelearning.animcompose.StaggeredGridDemo() }
+        entry<AnimScreen.ParticleHub> { com.example.composelearning.animcompose.ParticleAnimationsHubScreen() }
+        entry<AnimScreen.ChartsHub> { com.example.composelearning.animcompose.ChartsHubScreen() }
         entry<AnimScreen.SensorCard> { 
             Box(
                 modifier = Modifier.fillMaxSize().systemBarsPadding(),
                 contentAlignment = Alignment.Center
             ) {
-                SensorReactiveCard() 
+                com.example.composelearning.animcompose.SensorReactiveCard()
             }
         }
-        entry<AnimScreen.GradientProgress> { MyAwesomeLoadingScreen() }
-        entry<AnimScreen.CircularReveal> { CircularReveal() }
-        entry<AnimScreen.PulsatingCircles> { MapsStylePulsatingCircle() }
-        entry<AnimScreen.BouncingBall> { BouncingBallAnimation() }
-        entry<AnimScreen.MultiColorProgress> { MultiColorIndeterminateCircularProgressBarPreview() }
-        entry<AnimScreen.SharedElementProduct> { ProductScreen(products = sampleProducts) }
-        entry<AnimScreen.SidePanelDemo> { SidePanelDemoScreen() }
+        entry<AnimScreen.GradientProgress> { com.example.composelearning.animcompose.MyAwesomeLoadingScreen() }
+        entry<AnimScreen.CircularReveal> { com.example.composelearning.animcompose.CircularReveal() }
+        entry<AnimScreen.PulsatingCircles> { com.example.composelearning.animcompose.MapsStylePulsatingCircle() }
+        entry<AnimScreen.BouncingBall> { com.example.composelearning.animcompose.BouncingBallAnimation() }
+        entry<AnimScreen.MultiColorProgress> { com.example.composelearning.animcompose.MultiColorIndeterminateCircularProgressBarPreview() }
+        entry<AnimScreen.SharedElementProduct> {
+            com.example.composelearning.animcompose.ProductScreen(
+                products = com.example.composelearning.animcompose.sampleProducts
+            )
+        }
+        entry<AnimScreen.SidePanelDemo> { com.example.composelearning.animcompose.SidePanelDemoScreen() }
         entry<AnimScreen.Speedometer> { SpeedometerNavScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.FitnessLineChart> { FitnessLineChartScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.BarChartDemo> { BarChartShowcaseScreen(onBack = { navigator.goBack() }) }
@@ -327,13 +352,13 @@ fun AppNavigation(
         entry<AnimScreen.OverlappingImages> {
             OverlappingImagesScreen(modifier = Modifier.systemBarsPadding())
         }
-        entry<AnimScreen.NetflixLogo> { NetflixLogoAnimation() }
-        entry<AnimScreen.AnmolNetflix> { AnmolNetflixIntroAnimation() }
-        entry<AnimScreen.SortAnimation> { SortAnimationScreen() }
+        entry<AnimScreen.NetflixLogo> { com.example.composelearning.animcompose.NetflixLogoAnimation() }
+        entry<AnimScreen.AnmolNetflix> { com.example.composelearning.animcompose.AnmolNetflixIntroAnimation() }
+        entry<AnimScreen.SortAnimation> { com.example.composelearning.animcompose.SortAnimationScreen() }
         entry<AnimScreen.ImageProcessing> {
             ImageProcessingScreen(onBack = { navigator.goBack() })
         }
-        entry<AnimScreen.SaveActivity> { SaveActivityScreen() }
+        entry<AnimScreen.SaveActivity> { com.example.composelearning.animcompose.SaveActivityScreen() }
         entry<AnimScreen.ZoomableImage> { ZoomableImageScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.PerItemViewModel> { PerItemViewModelShowcaseScreen() }
         entry<AnimScreen.SmoothProgress> { SmoothProgressBarScreen() }
@@ -357,8 +382,12 @@ fun AppNavigation(
         entry<AnimScreen.FoldCard> { FoldCardScreen() }
         entry<AnimScreen.IpodWheel> { IpodScreen() }
         entry<AnimScreen.ClearTodo> { ClearScreen() }
-        entry<AnimScreen.GoogleCalling> { GoogleCallingRoute(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.GoogleCalling> {
+            com.example.composelearning.animcompose.GoogleCallingRoute(
+                onBack = { navigator.goBack() })
+        }
         entry<AnimScreen.ProtobufDemo> { ProtobufDemoRoute(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.MeshGradient> { SineWaveMeshGradientScreen() }
 
     }
 

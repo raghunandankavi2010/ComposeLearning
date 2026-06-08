@@ -31,7 +31,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
-import com.example.composelearning.LogCompositions
+import com.example.composelearning.util.LogCompositions
 import com.example.composelearning.R
 import com.example.composelearning.customshapes.dpToPx
 

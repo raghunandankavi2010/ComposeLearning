@@ -1,6 +1,6 @@
 package com.example.composelearning
 
-
+import com.example.composelearning.util.LogCompositions
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
