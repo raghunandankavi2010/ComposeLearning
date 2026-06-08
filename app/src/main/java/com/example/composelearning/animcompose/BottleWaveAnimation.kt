@@ -14,11 +14,11 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import kotlin.math.*
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun BottleWaveAnimation() {
@@ -27,9 +27,13 @@ fun BottleWaveAnimation() {
     var waveFrequency by remember { mutableFloatStateOf(3f) }
     var isAnimating by remember { mutableStateOf(false) }
 
-    // Wave movement animation
+    // Wave movement animation.
+    // NOTE: kept as a State and read ONLY inside the Canvas draw scope (see below),
+    // never with `by` in this composable body — otherwise every frame (~60fps)
+    // would recompose the whole screen (Column + Card + sliders) instead of just
+    // redrawing the canvas.
     val infiniteTransition = rememberInfiniteTransition(label = "wave")
-    val waveOffset by infiniteTransition.animateFloat(
+    val waveOffsetState = infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 2f * PI.toFloat(),
         animationSpec = infiniteRepeatable(
@@ -45,11 +49,9 @@ fun BottleWaveAnimation() {
             if (fillLevel >= 1f || fillLevel <= 0f) {
                 isAnimating = false
             }
-            delay(50)
+            delay(50.milliseconds)
         }
     }
-
-    val density = LocalDensity.current
 
     Column(
         modifier = Modifier
@@ -64,10 +66,11 @@ fun BottleWaveAnimation() {
                 .fillMaxWidth()
         ) {
             BottleWithWater(
-                fillLevel = fillLevel,
-                waveOffset = waveOffset,
-                waveAmplitude = with(density) { waveAmplitude.dp.toPx() },
-                waveFrequency = waveFrequency
+                // Pass values as lambdas so they are read in the DRAW phase, not here.
+                fillLevel = { fillLevel },
+                waveOffset = { waveOffsetState.value },
+                waveAmplitudeDp = { waveAmplitude },
+                waveFrequency = { waveFrequency }
             )
         }
 
@@ -162,16 +165,23 @@ fun BottleWaveAnimation() {
 
 @Composable
 fun BottleWithWater(
-    fillLevel: Float,
-    waveOffset: Float,
-    waveAmplitude: Float,
-    waveFrequency: Float
+    fillLevel: () -> Float,
+    waveOffset: () -> Float,
+    waveAmplitudeDp: () -> Float,
+    waveFrequency: () -> Float
 ) {
     Canvas(
         modifier = Modifier
             .fillMaxSize()
             .padding(8.dp)
     ) {
+        // Read the animated/state values HERE, inside the draw phase. A change to any
+        // of them invalidates drawing only — this composable never recomposes for them.
+        val fillLevel = fillLevel()
+        val waveOffset = waveOffset()
+        val waveAmplitude = waveAmplitudeDp().dp.toPx()
+        val waveFrequency = waveFrequency()
+
         val bottleWidth = size.width * 0.35f
         val bottleHeight = size.height * 0.7f
         val neckWidth = bottleWidth * 0.45f
