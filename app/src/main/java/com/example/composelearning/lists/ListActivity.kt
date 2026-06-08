@@ -1,4 +1,4 @@
-package com.example.composelearning
+package com.example.composelearning.lists
 
 import android.app.Activity
 import android.graphics.Color

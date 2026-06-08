@@ -1,4 +1,4 @@
-package com.example.composelearning
+package com.example.composelearning.navigation
 
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi

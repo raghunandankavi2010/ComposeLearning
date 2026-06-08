@@ -1,3 +1,5 @@
+package com.example.composelearning.graphics
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width

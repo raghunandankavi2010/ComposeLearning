@@ -1,4 +1,4 @@
-package com.example.composelearning
+package com.example.composelearning.images
 
 import android.net.Uri
 import androidx.compose.foundation.layout.Column

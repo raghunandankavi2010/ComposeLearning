@@ -1,4 +1,4 @@
-package com.example.composelearning
+package com.example.composelearning.animcompose
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

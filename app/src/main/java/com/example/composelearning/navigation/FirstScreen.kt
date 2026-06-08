@@ -1,4 +1,4 @@
-package com.example.composelearning
+package com.example.composelearning.navigation
 
 import com.example.composelearning.util.LogCompositions
 import androidx.compose.foundation.background

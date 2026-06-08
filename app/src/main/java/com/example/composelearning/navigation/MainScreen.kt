@@ -1,3 +1,5 @@
+package com.example.composelearning.navigation
+
 import android.annotation.SuppressLint
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween

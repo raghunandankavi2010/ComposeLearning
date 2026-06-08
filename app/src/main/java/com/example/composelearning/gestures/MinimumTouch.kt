@@ -1,5 +1,5 @@
 /*
-package com.example.composelearning
+package com.example.composelearning.gestures
 
 
 import androidx.compose.material3.ExperimentalMaterial3Api

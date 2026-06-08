@@ -1,6 +1,5 @@
-package com.example.composelearning
+package com.example.composelearning.recomposition
 
-import com.example.composelearning.util.LogCompositions
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -24,7 +23,7 @@ import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.NavHost
+import com.example.composelearning.R
 
 
 @OptIn(ExperimentalFoundationApi::class)

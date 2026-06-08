@@ -1,5 +1,5 @@
 /*
-package com.example.composelearning
+package com.example.composelearning.navigation
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column

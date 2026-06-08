@@ -128,6 +128,11 @@ fun MainHomeScreen(navigator: Navigator) {
             com.example.composelearning.AnimScreen.ListsShowcase,
         ),
         AnimationCategory(
+            "Animated Entry List",
+            "LazyColumn rows fade + slide onto position as they appear; first batch cascades in (staggered).",
+            com.example.composelearning.AnimScreen.AnimatedListEntry,
+        ),
+        AnimationCategory(
             "Pager & Carousel Showcase",
             "Tabbed showcase: Instagram coverflow, Instagram v2, HorizontalPager demo.",
             com.example.composelearning.AnimScreen.PagerShowcase,

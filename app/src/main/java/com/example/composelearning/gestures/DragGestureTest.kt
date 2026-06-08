@@ -1,4 +1,4 @@
-package com.example.composelearning
+package com.example.composelearning.gestures
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures

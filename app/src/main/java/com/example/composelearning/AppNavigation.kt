@@ -47,6 +47,7 @@ import com.example.composelearning.graphics.BorderProgressBar
 import com.example.composelearning.images.OverlappingImagesScreen
 import com.example.composelearning.images.processing.ImageProcessingScreen
 import com.example.composelearning.layouts.PercentageBaseLayout
+import com.example.composelearning.lists.AnimatedEntryList
 import com.example.composelearning.lists.ListsShowcaseScreen
 import com.example.composelearning.pager.ArcCarouselScreen
 import com.example.composelearning.pager.PagerShowcaseScreen
@@ -160,6 +161,7 @@ sealed interface AnimScreen : NavKey, Parcelable {
     @Serializable data object CalendarPicker : AnimScreen
     @Serializable data object BlurEffects : AnimScreen
     @Serializable data object ListsShowcase : AnimScreen
+    @Serializable data object AnimatedListEntry : AnimScreen
     @Serializable data object PercentageLayout : AnimScreen
     @Serializable data object PathProgress : AnimScreen
     @Serializable data object PagerShowcase : AnimScreen
@@ -322,6 +324,12 @@ fun AppNavigation(
             BlurSample(modifier = Modifier.fillMaxSize().systemBarsPadding())
         }
         entry<AnimScreen.ListsShowcase> { ListsShowcaseScreen() }
+        entry<AnimScreen.AnimatedListEntry> {
+            AnimatedEntryList(
+                items = remember { List(30) { "Animated item #${it + 1}" } },
+                modifier = Modifier.systemBarsPadding(),
+            )
+        }
         entry<AnimScreen.PagerShowcase> { PagerShowcaseScreen() }
         entry<AnimScreen.PercentageLayout> {
             Box(modifier = Modifier.fillMaxSize().systemBarsPadding()) { PercentageBaseLayout() }

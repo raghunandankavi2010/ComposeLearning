@@ -1,4 +1,4 @@
-package com.example.composelearning
+package com.example.composelearning.navigation
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
