@@ -83,6 +83,7 @@ import com.example.composelearning.spinningwheel.SpinningWheelRoute
 import com.example.composelearning.tutorial.ui.TutorialScreen
 import com.example.composelearning.animcompose.Navigator
 import com.example.composelearning.gradients.SineWaveMeshGradientScreen
+import com.example.composelearning.graphics.AnimatingWatchDial
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
@@ -90,6 +91,7 @@ import kotlinx.serialization.Serializable
 @Parcelize
 sealed interface AnimScreen : NavKey, Parcelable {
 
+    @Serializable data object AnimatingWatchDial: AnimScreen
     @Serializable data object MeshGradient: AnimScreen
     @Serializable data object DrawScale: AnimScreen
     @Serializable data object Home : AnimScreen
@@ -396,6 +398,7 @@ fun AppNavigation(
         }
         entry<AnimScreen.ProtobufDemo> { ProtobufDemoRoute(onBack = { navigator.goBack() }) }
         entry<AnimScreen.MeshGradient> { SineWaveMeshGradientScreen() }
+        entry<AnimScreen.AnimatingWatchDial> { AnimatingWatchDial() }
 
     }
 

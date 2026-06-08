@@ -391,6 +391,11 @@ fun MainHomeScreen(navigator: Navigator) {
             "Mesh Gradient",
             "Demo for mesh gradient using compose",
             com.example.composelearning.AnimScreen.MeshGradient
+        ),
+        AnimationCategory(
+            "Analog watch dial",
+            "Analog watch dial",
+            com.example.composelearning.AnimScreen.AnimatingWatchDial
         )
     ) }
 
