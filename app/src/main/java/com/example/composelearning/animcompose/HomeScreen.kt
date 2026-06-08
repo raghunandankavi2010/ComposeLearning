@@ -371,6 +371,11 @@ fun MainHomeScreen(navigator: Navigator) {
             "Google Calendar Clone",
             "Full-featured calendar with schedule, day, and week views. Collapsible month toolbar, overlapping event layout, CalendarProvider integration.",
             AnimScreen.GoogleCalendar
+        ),
+        AnimationCategory(
+            "Google Calling Animation",
+            "Mimics the Google Dialer calling animation with bouncing FAB and sliding/fading arrows.",
+            AnimScreen.GoogleCalling
         )
     ) }
 

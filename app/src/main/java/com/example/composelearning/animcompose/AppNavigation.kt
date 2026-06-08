@@ -183,6 +183,7 @@ sealed interface AnimScreen : NavKey, Parcelable {
     @Serializable data object FoldCard : AnimScreen
     @Serializable data object IpodWheel : AnimScreen
     @Serializable data object ClearTodo : AnimScreen
+    @Serializable data object GoogleCalling : AnimScreen
 }
 
 @Composable
@@ -354,6 +355,7 @@ fun AppNavigation(
         entry<AnimScreen.FoldCard> { FoldCardScreen() }
         entry<AnimScreen.IpodWheel> { IpodScreen() }
         entry<AnimScreen.ClearTodo> { ClearScreen() }
+        entry<AnimScreen.GoogleCalling> { GoogleCallingRoute(onBack = { navigator.goBack() }) }
 
     }
 
