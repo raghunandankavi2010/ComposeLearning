@@ -13,7 +13,7 @@ A Jetpack Compose learning project containing various UI experiments and samples
 - **Version catalog**: `gradle/libs.versions.toml`
 
 ## Project Structure
-Modules: `:app` (Android), plus `:proto-models` (java-library holding the shared `.proto` schema + protoc-generated classes) and `:server` (Kotlin JVM desktop server) that power the Protobuf demo. See [PROTOBUF.md](PROTOBUF.md).
+Modules: `:app` (Android), plus `:proto-models` (java-library holding the shared `.proto` schema + protoc-generated classes) and `:server` (Kotlin JVM desktop server) that power the Protobuf demo. See [PROTOBUF.md](app/src/main/java/com/example/composelearning/protobufdemo/PROTOBUF.md).
 
 Features in `:app` are organized as packages under `app/src/main/java/com/example/composelearning/`:
 ```
