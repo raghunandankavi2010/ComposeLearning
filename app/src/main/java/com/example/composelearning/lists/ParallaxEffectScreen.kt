@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -48,7 +49,9 @@ fun ParallaxListScreen() {
 
     LazyColumn(
         state = lazyListState,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .testTag("parallax_list")
     ) {
         // Parallax Header Item
         item {
@@ -57,6 +60,7 @@ fun ParallaxListScreen() {
                     .fillMaxWidth()
                     .height(300.dp)
                     .clipToBounds() // Keeps the image from bleeding into other items
+                    .testTag("parallax_header")
             ) {
                 // LAYER 1: Background Image
                 AsyncImage(
@@ -67,6 +71,7 @@ fun ParallaxListScreen() {
                         // We scale the image slightly up (e.g., 1.3x) so it has extra "slack"
                         // to move up and down without exposing its edges!
                         .fillMaxSize()
+                        .testTag("parallax_image")
                         .graphicsLayer {
                             translationY = parallaxOffset
                         }
