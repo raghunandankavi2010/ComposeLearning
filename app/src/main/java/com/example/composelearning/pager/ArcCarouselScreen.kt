@@ -39,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -178,10 +179,23 @@ private fun DiagonalArcTab() {
                 .padding(bottom = 32.dp) // Leave room for labels
         ) {
             val listState = rememberLazyListState()
+            // Android honors at most 200dp of gesture-exclusion per screen edge (so apps
+            // can't fully disable the back gesture). Rather than let the OS pick which
+            // 200dp of this full-height carousel to honor, pin that band over the vertical
+            // centre — the row where the cards are actually grabbed/flung.
+            val exclusionBandPx = with(LocalDensity.current) { 200.dp.toPx() }
 
             LazyRow(
                 state = listState,
-                modifier = Modifier.fillMaxSize().systemGestureExclusion(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .systemGestureExclusion { coords ->
+                        val w = coords.size.width.toFloat()
+                        val h = coords.size.height.toFloat()
+                        val band = exclusionBandPx.coerceAtMost(h)
+                        val top = ((h - band) / 2f).coerceAtLeast(0f)
+                        Rect(left = 0f, top = top, right = w, bottom = top + band)
+                    },
                 // Use contentPadding to ensure items don't hit the screen edges immediately
                 contentPadding = PaddingValues(horizontal = 40.dp, vertical = 60.dp),
                 horizontalArrangement = Arrangement.spacedBy(24.dp),
