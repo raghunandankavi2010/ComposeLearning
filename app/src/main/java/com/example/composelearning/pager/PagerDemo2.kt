@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerInputChange
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.input.pointer.util.VelocityTracker
@@ -258,7 +259,7 @@ private class PagerState {
         dragOffset.snapTo(index.toFloat() * (itemDimension + itemSpacing))
     }
 
-    val inputModifier = Modifier.pointerInput(numberOfItems) {
+    val inputModifier = Modifier.systemGestureExclusion().pointerInput(numberOfItems) {
         fun itemIndex(offset: Int): Int = (offset / (itemDimension + itemSpacing)).roundToInt()
             .coerceIn(0, numberOfItems - 1)
 

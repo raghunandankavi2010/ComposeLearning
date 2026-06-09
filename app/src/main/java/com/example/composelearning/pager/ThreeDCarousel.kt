@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -120,7 +121,7 @@ fun ThreeDCarousel(
                 state = pagerState,
                 contentPadding = PaddingValues(horizontal = 72.dp),
                 pageSpacing = (-24).dp,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().systemGestureExclusion(),
             ) { page ->
                 val pageOffset = remember(pagerState.currentPage, pagerState.currentPageOffsetFraction) {
                     (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction

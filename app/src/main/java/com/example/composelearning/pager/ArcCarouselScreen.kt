@@ -25,6 +25,7 @@ import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
@@ -180,7 +181,7 @@ private fun DiagonalArcTab() {
 
             LazyRow(
                 state = listState,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize().systemGestureExclusion(),
                 // Use contentPadding to ensure items don't hit the screen edges immediately
                 contentPadding = PaddingValues(horizontal = 40.dp, vertical = 60.dp),
                 horizontalArrangement = Arrangement.spacedBy(24.dp),
@@ -302,7 +303,7 @@ fun ArcCarousel(
                 flingBehavior = flingBehavior,
                 horizontalArrangement = Arrangement.spacedBy(itemSpacing),
                 contentPadding = PaddingValues(horizontal = sidePadding),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().systemGestureExclusion()
             ) {
                 itemsIndexed(items) { index, item ->
                     ArcItemView(

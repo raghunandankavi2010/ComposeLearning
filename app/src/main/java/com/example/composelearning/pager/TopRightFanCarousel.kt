@@ -6,6 +6,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -114,7 +115,7 @@ fun TopRightFanCarousel(
                     }
                     .let { m ->
                         if (isFront && !isAdvancing) {
-                            m.pointerInput(currentIndex) {
+                            m.systemGestureExclusion().pointerInput(currentIndex) {
                                 detectDragGestures(
                                     onDrag = { change, drag ->
                                         change.consume()

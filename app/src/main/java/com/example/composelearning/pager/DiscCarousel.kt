@@ -6,6 +6,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -119,6 +120,8 @@ fun DiscCarousel(modifier: Modifier = Modifier) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
+                    // Keep the system back/nav edge-swipe from stealing the horizontal drag.
+                    .systemGestureExclusion()
                     .pointerInput(itemCount) {
                         val tracker = VelocityTracker()
                         detectHorizontalDragGestures(

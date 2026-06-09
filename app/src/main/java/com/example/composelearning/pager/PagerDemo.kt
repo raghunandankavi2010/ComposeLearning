@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.PagerSnapDistance
 import androidx.compose.foundation.pager.PagerState
@@ -48,7 +49,7 @@ fun PagerDemo(modifier: Modifier = Modifier) {
 
 
         HorizontalPager(
-            modifier = modifier,
+            modifier = modifier.systemGestureExclusion(),
             state = pagerState,
             flingBehavior = PagerDefaults.flingBehavior(
                 state = pagerState,
@@ -112,7 +113,7 @@ fun PagerDemo3(modifier: Modifier = Modifier) {
 
         val scope = rememberCoroutineScope()
         HorizontalPager(
-            modifier = modifier,
+            modifier = modifier.systemGestureExclusion(),
             state = pagerState,
             flingBehavior = PagerDefaults.flingBehavior(
                 state = pagerState,
