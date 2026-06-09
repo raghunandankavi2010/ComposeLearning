@@ -30,6 +30,7 @@ private val TABS = listOf(
     "Circular ↔",
     "LazyRow",
     "Picker",
+    "Parallax"
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,6 +66,7 @@ fun ListsShowcaseScreen() {
                 9 -> PreviewCircularList()
                 10 -> LazyRowLikePager()
                 11 -> NumberPicker()
+                12 -> ParallaxListScreen()
             }
         }
     }

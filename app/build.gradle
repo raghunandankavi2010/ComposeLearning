@@ -86,6 +86,7 @@ dependencies {
     implementation(libs.okhttp)
 
     implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
     implementation(libs.haze)
     implementation(libs.haze.materials)
     implementation(libs.androidx.media3.exoplayer)

@@ -29,9 +29,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.ImageLoader
-import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
+import coil3.ImageLoader
+import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
+import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import okhttp3.OkHttpClient
 import java.security.cert.X509Certificate
 import javax.net.ssl.SSLContext
@@ -104,11 +105,8 @@ fun ProductListScreen() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                val context = LocalContext.current
-                val imageLoader = initUntrustImageLoader(context)
                 AsyncImage(
                     model = product.imageUrl,
-                    imageLoader = imageLoader,
                     contentDescription = null,
                     modifier = Modifier.size(100.dp),
                     onState = { state ->
@@ -131,34 +129,3 @@ fun ProductListScreen() {
     }
 }
 
-@SuppressLint("CustomX509TrustManager")
-private fun initUntrustImageLoader(context: Context): ImageLoader {
-    // Create a trust manager that does not validate certificate chains
-    val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
-        @SuppressLint("TrustAllX509TrustManager")
-        override fun checkClientTrusted(chain: Array<X509Certificate>, authType: String) {}
-
-        @SuppressLint("TrustAllX509TrustManager")
-        override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {}
-
-        override fun getAcceptedIssuers(): Array<X509Certificate> {
-            return arrayOf()
-        }
-    })
-
-    // Install the all-trusting trust manager
-    val sslContext = SSLContext.getInstance("SSL")
-    sslContext.init(null, trustAllCerts, java.security.SecureRandom())
-
-    // Create an ssl socket factory with our all-trusting manager
-    val sslSocketFactory = sslContext.socketFactory
-
-    val client = OkHttpClient.Builder()
-        .sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager)
-        .hostnameVerifier { _, _ -> true }.build()
-
-
-    return ImageLoader.Builder(context)
-        .okHttpClient(client)
-        .build()
-}

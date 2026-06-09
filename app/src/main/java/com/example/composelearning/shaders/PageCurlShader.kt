@@ -11,17 +11,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Canvas
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import coil.request.SuccessResult
+import coil3.SingletonImageLoader
+import coil3.toBitmap
+import coil3.request.ImageRequest
+import coil3.request.SuccessResult
+import coil3.request.allowHardware
 
 /**
  * AGSL Page Curl Implementation
@@ -41,15 +37,32 @@ fun PageCurlShaderScreen() {
     var frontBitmap by remember { mutableStateOf<Bitmap?>(null) }
     var backBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
+    
     // Fetch bitmaps
-    LaunchedEffect(Unit) {
-        val loader = coil.ImageLoader(context)
-        
-        val frontResult = loader.execute(ImageRequest.Builder(context).data(frontPageUrl).build())
-        if (frontResult is SuccessResult) frontBitmap = frontResult.drawable.let { (it as android.graphics.drawable.BitmapDrawable).bitmap }
-        
-        val backResult = loader.execute(ImageRequest.Builder(context).data(backPageUrl).build())
-        if (backResult is SuccessResult) backBitmap = backResult.drawable.let { (it as android.graphics.drawable.BitmapDrawable).bitmap }
+    LaunchedEffect(frontPageUrl, backPageUrl) {
+        val loader = SingletonImageLoader.get(context)
+
+        // 1. Request the front image
+        val frontRequest = ImageRequest.Builder(context)
+            .data(frontPageUrl)
+            .allowHardware(false) // Required to prevent GPU-only memory locking
+            .build()
+
+        val frontResult = loader.execute(frontRequest)
+        if (frontResult is SuccessResult) {
+            frontBitmap = frontResult.image.toBitmap()
+        }
+
+        // 2. Request the back image
+        val backRequest = ImageRequest.Builder(context)
+            .data(backPageUrl)
+            .allowHardware(false)
+            .build()
+
+        val backResult = loader.execute(backRequest)
+        if (backResult is SuccessResult) {
+            backBitmap = backResult.image.toBitmap()
+        }
     }
 
     // 2. Interaction State

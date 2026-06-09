@@ -20,6 +20,7 @@ import android.content.Intent
 import android.os.Parcelable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,63 +28,69 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import androidx.compose.foundation.layout.padding
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.composelearning.anim.AnimatedBalanceDemo
-import com.example.composelearning.anim.ValueBasedAnimationsScreen
-import com.example.composelearning.anim.ZoomableImageScreen
 import com.example.composelearning.anim.BiometricDemoPanel
 import com.example.composelearning.anim.ButtonAnimationTest
+import com.example.composelearning.anim.ValueBasedAnimationsScreen
+import com.example.composelearning.anim.ZoomableImageScreen
+import com.example.composelearning.animcompose.Navigator
+import com.example.composelearning.applerings.presentation.ActivityRingsScreen
+import com.example.composelearning.breathing.presentation.BreathingScreen
 import com.example.composelearning.calendar.CalendarScreen
 import com.example.composelearning.calendar.CalendarViewModel
+import com.example.composelearning.charts.BarChartShowcaseScreen
+import com.example.composelearning.charts.BezierShowcaseScreen
+import com.example.composelearning.charts.CandleChartShowcaseScreen
+import com.example.composelearning.charts.DonutChartShowcaseScreen
+import com.example.composelearning.charts.FitnessLineChartScreen
+import com.example.composelearning.charts.PieChartShowcaseScreen
+import com.example.composelearning.charts.SpeedometerNavScreen
+import com.example.composelearning.charts.TemperatureShowcaseScreen
+import com.example.composelearning.cleartodo.presentation.ClearScreen
+import com.example.composelearning.clocks.TimeRangeKnobScreen
+import com.example.composelearning.customlayout.ArcListSample
+import com.example.composelearning.customlayout.CustomPagerSample
+import com.example.composelearning.flight.FlightSeatScreen
+import com.example.composelearning.foldcard.presentation.FoldCardScreen
+import com.example.composelearning.googlecalendar.ui.GoogleCalendarActivity
+import com.example.composelearning.gradients.SineWaveMeshGradientScreen
 import com.example.composelearning.graphics.AnimatedBorderButton
+import com.example.composelearning.graphics.AnimatingWatchDial
 import com.example.composelearning.graphics.BlurSample
 import com.example.composelearning.graphics.BorderProgressBar
+import com.example.composelearning.graphics.DrawScaleOnTouch
+import com.example.composelearning.graphics.SineWaveSample
 import com.example.composelearning.images.OverlappingImagesScreen
 import com.example.composelearning.images.processing.ImageProcessingScreen
+import com.example.composelearning.ipodwheel.presentation.IpodScreen
 import com.example.composelearning.layouts.PercentageBaseLayout
 import com.example.composelearning.lists.AnimatedEntryList
 import com.example.composelearning.lists.ListsShowcaseScreen
 import com.example.composelearning.pager.ArcCarouselScreen
 import com.example.composelearning.pager.PagerShowcaseScreen
 import com.example.composelearning.pager.TopRightFanCarouselScreen
-import com.example.composelearning.tabs.TabsSampleNavigation
-import com.example.composelearning.peritemvm.PerItemViewModelShowcaseScreen
-import com.example.composelearning.progress.SmoothProgressBarScreen
-import com.example.composelearning.riveo.presentation.RiveoScreen
-import com.example.composelearning.wallet.presentation.WalletScreen
-import com.example.composelearning.breathing.presentation.BreathingScreen
 import com.example.composelearning.pathmorph.presentation.PathMorphScreen
-import com.example.composelearning.applerings.presentation.ActivityRingsScreen
-import com.example.composelearning.foldcard.presentation.FoldCardScreen
-import com.example.composelearning.ipodwheel.presentation.IpodScreen
-import com.example.composelearning.cleartodo.presentation.ClearScreen
-import com.example.composelearning.flight.FlightSeatScreen
-import com.example.composelearning.textfields.MarqueeText
-import com.example.composelearning.charts.*
-import com.example.composelearning.customlayout.CustomPagerSample
-import com.example.composelearning.customlayout.ArcListSample
+import com.example.composelearning.peritemvm.PerItemViewModelShowcaseScreen
 import com.example.composelearning.permissions.PasskeySample
-import com.example.composelearning.graphics.DrawScaleOnTouch
-import com.example.composelearning.graphics.SineWaveSample
-import com.example.composelearning.textstyling.SquigglySpanSample
-import com.example.composelearning.sliders.SquigglySliderSample
-import com.example.composelearning.shaders.ShadersHubScreen
-import com.example.composelearning.shaders.FluidSpringShaderScreen
-import com.example.composelearning.clocks.TimeRangeKnobScreen
-import com.example.composelearning.googlecalendar.ui.GoogleCalendarActivity
-import com.example.composelearning.shadows.ShadowsShowcaseScreen
+import com.example.composelearning.progress.SmoothProgressBarScreen
 import com.example.composelearning.protobufdemo.ProtobufDemoRoute
+import com.example.composelearning.riveo.presentation.RiveoScreen
+import com.example.composelearning.shaders.FluidSpringShaderScreen
+import com.example.composelearning.shaders.ShadersHubScreen
+import com.example.composelearning.shadows.ShadowsShowcaseScreen
+import com.example.composelearning.sliders.SquigglySliderSample
 import com.example.composelearning.spinningwheel.SpinningWheelRoute
+import com.example.composelearning.tabs.TabsSampleNavigation
+import com.example.composelearning.textfields.MarqueeText
+import com.example.composelearning.textstyling.SquigglySpanSample
 import com.example.composelearning.tutorial.ui.TutorialScreen
-import com.example.composelearning.animcompose.Navigator
-import com.example.composelearning.gradients.SineWaveMeshGradientScreen
-import com.example.composelearning.graphics.AnimatingWatchDial
+import com.example.composelearning.wallet.presentation.WalletScreen
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
@@ -399,7 +406,6 @@ fun AppNavigation(
         entry<AnimScreen.ProtobufDemo> { ProtobufDemoRoute(onBack = { navigator.goBack() }) }
         entry<AnimScreen.MeshGradient> { SineWaveMeshGradientScreen() }
         entry<AnimScreen.AnimatingWatchDial> { AnimatingWatchDial() }
-
     }
 
     NavDisplay(
