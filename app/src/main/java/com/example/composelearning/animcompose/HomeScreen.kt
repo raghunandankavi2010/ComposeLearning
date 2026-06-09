@@ -223,6 +223,11 @@ fun MainHomeScreen(navigator: Navigator) {
             com.example.composelearning.AnimScreen.ProtobufDemo
         ),
         AnimationCategory(
+            "Unique Path Visualizer",
+            "Visualizes the DFS + Backtracking algorithm for finding unique paths in a grid with obstacles.",
+            com.example.composelearning.AnimScreen.UniquePathVisualizer,
+        ),
+        AnimationCategory(
             "Product Shared Elements",
             "Cinema-style transitions between product list and details",
             com.example.composelearning.AnimScreen.SharedElementProduct
@@ -396,7 +401,13 @@ fun MainHomeScreen(navigator: Navigator) {
             "Analog watch dial",
             "Analog watch dial",
             com.example.composelearning.AnimScreen.AnimatingWatchDial
-        )
+        ),
+
+        AnimationCategory(
+            "Cell Loader Animation",
+            "Cell fading animation",
+            com.example.composelearning.AnimScreen.SequentialFadeGridScreen,
+        ),
     ) }
 
     Scaffold(

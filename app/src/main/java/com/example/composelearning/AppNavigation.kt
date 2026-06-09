@@ -40,6 +40,7 @@ import com.example.composelearning.anim.ButtonAnimationTest
 import com.example.composelearning.anim.ValueBasedAnimationsScreen
 import com.example.composelearning.anim.ZoomableImageScreen
 import com.example.composelearning.animcompose.Navigator
+import com.example.composelearning.animcompose.SequentialFadeGrid
 import com.example.composelearning.applerings.presentation.ActivityRingsScreen
 import com.example.composelearning.breathing.presentation.BreathingScreen
 import com.example.composelearning.calendar.CalendarScreen
@@ -97,7 +98,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Parcelize
 sealed interface AnimScreen : NavKey, Parcelable {
-
+    @Serializable data object SequentialFadeGridScreen: AnimScreen
     @Serializable data object AnimatingWatchDial: AnimScreen
     @Serializable data object MeshGradient: AnimScreen
     @Serializable data object DrawScale: AnimScreen
@@ -200,6 +201,8 @@ sealed interface AnimScreen : NavKey, Parcelable {
     @Serializable data object ClearTodo : AnimScreen
     @Serializable data object GoogleCalling : AnimScreen
     @Serializable data object ProtobufDemo : AnimScreen
+    @Serializable data object ParallaxList : AnimScreen
+    @Serializable data object UniquePathVisualizer : AnimScreen
 }
 
 @Composable
@@ -404,8 +407,10 @@ fun AppNavigation(
                 onBack = { navigator.goBack() })
         }
         entry<AnimScreen.ProtobufDemo> { ProtobufDemoRoute(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.UniquePathVisualizer> { com.example.composelearning.dsa.UniquePathsVisualizer(modifier = Modifier.systemBarsPadding()) }
         entry<AnimScreen.MeshGradient> { SineWaveMeshGradientScreen() }
         entry<AnimScreen.AnimatingWatchDial> { AnimatingWatchDial() }
+        entry<AnimScreen.SequentialFadeGridScreen> { SequentialFadeGrid() }
     }
 
     NavDisplay(
