@@ -17,11 +17,10 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import java.util.Locale
+import androidx.compose.ui.platform.LocalLocale
 
 @Composable
 fun ThermometerAnimation() {
@@ -83,7 +82,7 @@ fun ThermometerAnimation() {
                         color = Color(0xFF64748B)
                     )
                     Text(
-                        text = String.format(Locale.getDefault(), "%.1f°C", temperature),
+                        text = String.format(LocalLocale.current.platformLocale, "%.1f°C", temperature),
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.ExtraBold,
                         color = if (temperature > 38f) Color(0xFFEF4444) else Color(0xFF3B82F6)
@@ -148,14 +147,12 @@ fun Thermometer(
         //                              for a seamless join with the bulb fill).
         //   • mercuryColumnTop       — top end of the usable tube section, just below the cap.
         //
-        // Markers span [mercuryColumnBottom .. mercuryColumnTop] so every tick lines up with a
+        // Markers span [mercuryColumnBottom to mercuryColumnTop] so every tick lines up with a
         // value that the mercury can actually reach.
         val tubeTop = 40.dp.toPx()
         val tubeCapBottom = tubeTop + 10.dp.toPx()
-        val mercuryColumnTop = tubeCapBottom
         val mercuryColumnBottom = bulbCenterY - bulbRadius + 6.dp.toPx()
-        val mercuryRange = mercuryColumnBottom - mercuryColumnTop
-        val tubeBottom = bulbCenterY
+        val mercuryRange = mercuryColumnBottom - tubeCapBottom
 
         // 1. Draw Glass Outline (Tube + Bulb)
         val glassPath = Path().apply {
@@ -163,11 +160,11 @@ fun Thermometer(
             addOval(Rect(centerX - bulbRadius, bulbCenterY - bulbRadius, centerX + bulbRadius, bulbCenterY + bulbRadius))
 
             // Tube
-            moveTo(centerX - tubeWidth / 2, tubeBottom)
+            moveTo(centerX - tubeWidth / 2, bulbCenterY)
             lineTo(centerX - tubeWidth / 2, tubeCapBottom)
             quadraticTo(centerX - tubeWidth / 2, tubeTop, centerX, tubeTop)
             quadraticTo(centerX + tubeWidth / 2, tubeTop, centerX + tubeWidth / 2, tubeCapBottom)
-            lineTo(centerX + tubeWidth / 2, tubeBottom)
+            lineTo(centerX + tubeWidth / 2, bulbCenterY)
         }
 
         // Draw Outer Glass Shadow/Effect
@@ -188,7 +185,7 @@ fun Thermometer(
         drawMarkers(
             centerX = centerX,
             tubeWidth = tubeWidth,
-            mercuryTop = mercuryColumnTop,
+            mercuryTop = tubeCapBottom,
             mercuryBottom = mercuryColumnBottom,
             minTemp = minTemp,
             maxTemp = maxTemp

@@ -456,8 +456,6 @@ fun VehicleSpeedometer(
             paths
         }
 
-        val vector = ImageVector.vectorResource(id = R.drawable.pointer_black)
-        val painter = rememberVectorPainter(image = vector)
         val labelStyle = TextStyle(
             color = tickColor,
             fontSize = 10.sp,
@@ -523,26 +521,33 @@ fun VehicleSpeedometer(
                         }
                     }
 
+                    // Creative tapered needle drawn from primitives: a long pointer
+                    // tapering to a sharp tip, with a rounded counterweight tail behind
+                    // the pivot. At rotation 0 it points left (the min value).
                     rotate(
                         progressAnimation.value * (arcDegrees) / maxValue,
-                        pivot = Offset(centerOffset.x, centerOffset.y)
+                        pivot = centerOffset,
                     ) {
-                        translate(
-                            left = centerOffset.x - 111.dp.toPx(),
-                            top = centerOffset.y - 11.dp.toPx()
-                        ) {
-                            with(painter) {
-                                draw(
-                                    size = Size(111.dp.toPx(), 22.dp.toPx()),
-                                    colorFilter = ColorFilter.tint(needleColor),
-                                )
-                            }
+                        val cx = centerOffset.x
+                        val cy = centerOffset.y
+                        val tipLen = outerRadius - 10.dp.toPx()
+                        val tailLen = 24.dp.toPx()
+                        val baseHalf = 9.dp.toPx()
+                        val needle = Path().apply {
+                            moveTo(cx - tipLen, cy)              // sharp tip
+                            lineTo(cx + tailLen, cy - baseHalf)  // back-top (counterweight)
+                            lineTo(cx + tailLen, cy + baseHalf)  // back-bottom
+                            close()
                         }
+                        // Rounded counterweight at the tail.
+                        drawCircle(needleColor, baseHalf, Offset(cx + tailLen, cy))
+                        drawPath(needle, needleColor)
                     }
 
                     // Hub cap that anchors the needle.
-                    drawCircle(needleColor, 15.dp.toPx(), centerOffset)
-                    drawCircle(Color.White, 6.dp.toPx(), centerOffset)
+                    drawCircle(needleColor, 16.dp.toPx(), centerOffset)
+                    drawCircle(Color.White, 8.dp.toPx(), centerOffset)
+                    drawCircle(needleColor, 3.dp.toPx(), centerOffset)
                 }
             }
         )

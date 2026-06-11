@@ -15,29 +15,26 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.composelearning.R
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.round
@@ -80,6 +77,27 @@ fun Modifier.dragIndicatorModifier2(
             }
         )
     }
+}
+
+/**
+ * Custom temperature handle (replaces the old `indicator.xml` vector): a white
+ * vertical pill with a thin green center stripe, centered at [centerX].
+ */
+private fun DrawScope.drawTemperatureHandle(centerX: Float) {
+    val w = 10.dp.toPx()
+    drawRoundRect(
+        color = Color.White,
+        topLeft = Offset(centerX - w / 2f, -3.dp.toPx()),
+        size = Size(w, 56.dp.toPx()),
+        cornerRadius = CornerRadius(w / 2f),
+    )
+    val accentW = 3.dp.toPx()
+    drawRoundRect(
+        color = Color(0xFF169B4A),
+        topLeft = Offset(centerX - accentW / 2f, 8.dp.toPx()),
+        size = Size(accentW, 34.dp.toPx()),
+        cornerRadius = CornerRadius(accentW / 2f),
+    )
 }
 
 fun getHalfOfRange(min: Float, max: Float): Float {
@@ -169,7 +187,7 @@ fun TemperatureChart3(
         val barLeft = padX
         val barRight = size.width - padX
         val barWidth = barRight - barLeft
-        val barTop = 36.dp.toPx()
+        val barTop = 52.dp.toPx() // leaves room for the pin head above the bar
         val barHeight = 38.dp.toPx()
         val barBottom = barTop + barHeight
         val corner = CornerRadius(10.dp.toPx()) // softly rounded, not a full pill
@@ -214,52 +232,43 @@ fun TemperatureChart3(
             }
         }
 
-        // 3) Indicator — white handle through the bar + a colored value badge above it.
+        // 3) Creative indicator — a teardrop "map pin" that points at the value on
+        //    the bar, tinted to the current zone, with the temperature inside its head.
         val value = state.floatValue
         val zoneColor = temperatureColor(value)
-        val handleW = 6.dp.toPx()
-        // Keep the handle fully inset within the bar so it always sits on the
-        // colored track instead of floating off the rounded ends.
-        val indicatorX = xForTemp(value).coerceIn(barLeft + handleW / 2f, barRight - handleW / 2f)
+        val cx = xForTemp(value).coerceIn(barLeft, barRight)
 
-        drawRoundRect(
-            color = Color.White,
-            topLeft = Offset(indicatorX - handleW / 2f, barTop - 4.dp.toPx()),
-            size = Size(handleW, barHeight + 8.dp.toPx()),
-            cornerRadius = CornerRadius(handleW / 2f),
-        )
-        drawCircle(zoneColor, radius = 5.dp.toPx(), center = Offset(indicatorX, barTop + barHeight / 2f))
+        val tipY = barTop + 3.dp.toPx()        // tip dips slightly into the bar
+        val headR = 15.dp.toPx()
+        val headCy = tipY - headR * 2f         // head sits above the bar
 
-        val badgeLayout = textMeasurer.measure("${round(value).toInt()}°", badgeStyle)
-        val badgeH = 24.dp.toPx()
-        val badgeW = badgeLayout.size.width + 20.dp.toPx()
-        val badgeCx = indicatorX.coerceIn(barLeft + badgeW / 2f, barRight - badgeW / 2f)
-        val badgeTop = 2.dp.toPx()
-        drawRoundRect(
-            color = zoneColor,
-            topLeft = Offset(badgeCx - badgeW / 2f, badgeTop),
-            size = Size(badgeW, badgeH),
-            cornerRadius = CornerRadius(badgeH / 3f),
-        )
-        // Pointer triangle from the badge down toward the bar.
-        val triHalf = 5.dp.toPx()
-        val triTopY = badgeTop + badgeH
-        drawPath(
-            Path().apply {
-                moveTo(badgeCx - triHalf, triTopY)
-                lineTo(badgeCx + triHalf, triTopY)
-                lineTo(badgeCx, triTopY + 6.dp.toPx())
-                close()
-            },
-            zoneColor,
-        )
+        val pin = Path().apply {
+            moveTo(cx, tipY)
+            // Line up to the lower-left of the head, sweep around the top, back down to the tip.
+            arcTo(
+                rect = Rect(center = Offset(cx, headCy), radius = headR),
+                startAngleDegrees = 135f,
+                sweepAngleDegrees = 270f,
+                forceMoveTo = false,
+            )
+            close()
+        }
+        // Soft halo so the pin lifts off the background, then fill + white outline.
+        drawCircle(zoneColor.copy(alpha = 0.18f), radius = headR + 4.dp.toPx(), center = Offset(cx, headCy))
+        drawPath(pin, zoneColor)
+        drawPath(pin, Color.White, style = Stroke(width = 2.5.dp.toPx()))
+
+        // Temperature value centered inside the head.
+        val pinLabel = textMeasurer.measure("${round(value).toInt()}°", badgeStyle)
         drawText(
-            textLayoutResult = badgeLayout,
+            textLayoutResult = pinLabel,
             topLeft = Offset(
-                badgeCx - badgeLayout.size.width / 2f,
-                badgeTop + (badgeH - badgeLayout.size.height) / 2f,
+                cx - pinLabel.size.width / 2f,
+                headCy - pinLabel.size.height / 2f,
             ),
         )
+        // Precise contact dot where the pin meets the bar.
+        drawCircle(Color.White, radius = 2.5.dp.toPx(), center = Offset(cx, barTop + barHeight / 2f))
     }
 }
 
@@ -320,9 +329,6 @@ fun TemperatureChart2(
 
     val numTicks = (maxTemp - minTemp) / tickInterval.toInt() + 1
 
-    val vector = ImageVector.vectorResource(id = R.drawable.indicator)
-    val painter = rememberVectorPainter(image = vector)
-
     val textMeasurer = rememberTextMeasurer()
     val state = remember { mutableFloatStateOf(temp.toFloat()) } // Track indicator position
 
@@ -354,16 +360,7 @@ fun TemperatureChart2(
 
         val adjustedLeft = (state.floatValue - minTemp.toFloat()) / (maxTemp.toFloat() - minTemp.toFloat()) * (this.size.width  - cornerRadius.x * 2 )
 
-        translate(
-            left = adjustedLeft - 5.dp.toPx() + radius.dp.toPx(),
-            top = -3.dp.toPx()
-        ) {
-            with(painter) {
-                draw(
-                    size = Size(10.dp.toPx(), 56.dp.toPx())
-                )
-            }
-        }
+        drawTemperatureHandle(centerX = adjustedLeft + radius.dp.toPx())
 
         // Loop through each tick position based on spacing
         for (i in 0 until numTicks) {
@@ -414,9 +411,6 @@ fun TemperatureChart(
 
     val numTicks = (maxTemp - minTemp) / tickInterval.toInt() + 1
 
-    val vector = ImageVector.vectorResource(id = R.drawable.indicator)
-    val painter = rememberVectorPainter(image = vector)
-
     val textMeasurer = rememberTextMeasurer()
 
     val state = remember { mutableFloatStateOf(temp.toFloat()) } // Track indicator position
@@ -438,16 +432,7 @@ fun TemperatureChart(
 
         val adjustedLeft = (state.floatValue - minTemp.toFloat()) / (maxTemp.toFloat() - minTemp.toFloat()) * (this.size.width  - cornerRadius.x * 2 )
 
-        translate(
-            left = adjustedLeft - 5.dp.toPx() + 8.dp.toPx(),
-            top = -3.dp.toPx()
-        ) {
-            with(painter) {
-                draw(
-                    size = Size(10.dp.toPx(), 56.dp.toPx())
-                )
-            }
-        }
+        drawTemperatureHandle(centerX = adjustedLeft + 8.dp.toPx())
 
         // Loop through each tick position based on spacing
         for (i in 0 until numTicks) {

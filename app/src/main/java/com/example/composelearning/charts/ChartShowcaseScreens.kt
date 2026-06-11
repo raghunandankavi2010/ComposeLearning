@@ -326,7 +326,7 @@ private fun TemperatureScaleTab() {
         com.example.composelearning.graphics.TemperatureChart3(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(120.dp),
+                .height(150.dp),
             temp = temp,
             minTemp = -20,
             maxTemp = 40,
