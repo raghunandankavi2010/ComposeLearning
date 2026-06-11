@@ -72,7 +72,9 @@ data class CalendarUiState(
         if (selectedEndDate == null) return false
         if (date.isBefore(selectedStartDate) ||
             date.isAfter(selectedEndDate)
-        ) return false
+        ) {
+            return false
+        }
         return true
     }
 
@@ -93,70 +95,64 @@ data class CalendarUiState(
      * Returns the number of selected days from the start or end of the week, depending on direction.
      */
     @RequiresApi(Build.VERSION_CODES.O)
-    fun selectedStartOffset(currentWeekStartDate: LocalDate, yearMonth: YearMonth): Int {
-        return if (animateDirection == null || animateDirection.isForwards()) {
-            var startDate = currentWeekStartDate
-            var startOffset = 0
-            for (i in 0 until CalendarState.DAYS_IN_WEEK) {
-                if (!isDateInSelectedPeriod(startDate) || startDate.month != yearMonth.month) {
-                    startOffset++
-                } else {
-                    break
-                }
-                startDate = startDate.plusDays(1)
+    fun selectedStartOffset(currentWeekStartDate: LocalDate, yearMonth: YearMonth): Int = if (animateDirection == null || animateDirection.isForwards()) {
+        var startDate = currentWeekStartDate
+        var startOffset = 0
+        for (i in 0 until CalendarState.DAYS_IN_WEEK) {
+            if (!isDateInSelectedPeriod(startDate) || startDate.month != yearMonth.month) {
+                startOffset++
+            } else {
+                break
             }
-            startOffset
-        } else {
-            var startDate = currentWeekStartDate.plusDays(6)
-            var startOffset = 0
-
-            for (i in 0 until CalendarState.DAYS_IN_WEEK) {
-                if (!isDateInSelectedPeriod(startDate) || startDate.month != yearMonth.month) {
-                    startOffset++
-                } else {
-                    break
-                }
-                startDate = startDate.minusDays(1)
-            }
-            7 - startOffset
+            startDate = startDate.plusDays(1)
         }
+        startOffset
+    } else {
+        var startDate = currentWeekStartDate.plusDays(6)
+        var startOffset = 0
+
+        for (i in 0 until CalendarState.DAYS_IN_WEEK) {
+            if (!isDateInSelectedPeriod(startDate) || startDate.month != yearMonth.month) {
+                startOffset++
+            } else {
+                break
+            }
+            startDate = startDate.minusDays(1)
+        }
+        7 - startOffset
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun isLeftHighlighted(beginningWeek: LocalDate?, month: YearMonth): Boolean {
-        return if (beginningWeek != null) {
-            var firstSelectedInMonth: LocalDate? = null
-            for (i in 0 until 7) {
-                val date = beginningWeek.plusDays(i.toLong())
-                if (date.month == month.month && isDateInSelectedPeriod(date)) {
-                    firstSelectedInMonth = date
-                    break
-                }
+    fun isLeftHighlighted(beginningWeek: LocalDate?, month: YearMonth): Boolean = if (beginningWeek != null) {
+        var firstSelectedInMonth: LocalDate? = null
+        for (i in 0 until 7) {
+            val date = beginningWeek.plusDays(i.toLong())
+            if (date.month == month.month && isDateInSelectedPeriod(date)) {
+                firstSelectedInMonth = date
+                break
             }
-            firstSelectedInMonth != null && isDateInSelectedPeriod(firstSelectedInMonth.minusDays(1))
-        } else {
-            false
         }
+        firstSelectedInMonth != null && isDateInSelectedPeriod(firstSelectedInMonth.minusDays(1))
+    } else {
+        false
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun isRightHighlighted(
         beginningWeek: LocalDate?,
         month: YearMonth
-    ): Boolean {
-        return if (beginningWeek != null) {
-            var lastSelectedInMonth: LocalDate? = null
-            for (i in 6 downTo 0) {
-                val date = beginningWeek.plusDays(i.toLong())
-                if (date.month == month.month && isDateInSelectedPeriod(date)) {
-                    lastSelectedInMonth = date
-                    break
-                }
+    ): Boolean = if (beginningWeek != null) {
+        var lastSelectedInMonth: LocalDate? = null
+        for (i in 6 downTo 0) {
+            val date = beginningWeek.plusDays(i.toLong())
+            if (date.month == month.month && isDateInSelectedPeriod(date)) {
+                lastSelectedInMonth = date
+                break
             }
-            lastSelectedInMonth != null && isDateInSelectedPeriod(lastSelectedInMonth.plusDays(1))
-        } else {
-            false
         }
+        lastSelectedInMonth != null && isDateInSelectedPeriod(lastSelectedInMonth.plusDays(1))
+    } else {
+        false
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -228,12 +224,10 @@ data class CalendarUiState(
         }
     }
 
-    fun setDates(newFrom: LocalDate?, newTo: LocalDate?): CalendarUiState {
-        return if (newTo == null) {
-            copy(selectedStartDate = newFrom)
-        } else {
-            copy(selectedStartDate = newFrom, selectedEndDate = newTo)
-        }
+    fun setDates(newFrom: LocalDate?, newTo: LocalDate?): CalendarUiState = if (newTo == null) {
+        copy(selectedStartDate = newFrom)
+    } else {
+        copy(selectedStartDate = newFrom, selectedEndDate = newTo)
     }
 
     companion object {

@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.Alignment
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -24,8 +23,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.util.lerp
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -37,15 +36,16 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.text.drawText
-import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.flow.distinctUntilChanged
+import androidx.compose.ui.util.lerp
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 // Tuned so each page holds roughly a fortnight of data; combined with the wider pageWidth below
 // this leaves enough horizontal room per day for the "EEE" + "MMM d" label stack to read cleanly.
@@ -83,7 +83,7 @@ fun FitnessLineChart(
     pageWidth: Dp = 420.dp,
     pageHeight: Dp = 220.dp,
     initialPages: Int = 5,
-    theme: ChartTheme = ChartDefaults.theme(),
+    theme: ChartTheme = ChartDefaults.theme()
 ) {
     val pages = remember { mutableStateOf<List<List<FitnessDay>>>(emptyList()) }
     val loading = remember { mutableStateOf(false) }
@@ -112,7 +112,7 @@ fun FitnessLineChart(
                     val next = FitnessRepository.loadDays(
                         startOffset = total * daysPerPage,
                         count = daysPerPage,
-                        simulatedDelayMs = 350,
+                        simulatedDelayMs = 350
                     )
                     pages.value = pages.value + listOf(next)
                     loading.value = false
@@ -133,8 +133,9 @@ fun FitnessLineChart(
             val left = pages.value.getOrNull(index + 1)?.take(2).orEmpty()
             val right = pages.value.getOrNull(index - 1)?.takeLast(2).orEmpty()
             val combined = page + left + right
-            if (combined.isEmpty()) 0f to 1f
-            else {
+            if (combined.isEmpty()) {
+                0f to 1f
+            } else {
                 val lo = combined.minOf { it.steps }.toFloat()
                 val hi = combined.maxOf { it.steps }.toFloat()
                 val pad = (hi - lo).coerceAtLeast(1f) * 0.15f
@@ -179,82 +180,82 @@ fun FitnessLineChart(
     val yMin by animateFloatAsState(
         targetValue = targetYMin,
         animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
-        label = "fitness-yMin",
+        label = "fitness-yMin"
     )
     val yMax by animateFloatAsState(
         targetValue = targetYMax,
         animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
-        label = "fitness-yMax",
+        label = "fitness-yMax"
     )
 
     Column(modifier) {
-      Box(modifier = Modifier.fillMaxWidth()) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            // Persistent Y-axis on the left edge of the screen. It reads the same animated
-            // yMin/yMax the pages do, so its tick labels rise/fall in sync with the chart as
-            // the user scrolls between pages.
-            YAxisColumn(
-                yMin = yMin,
-                yMax = yMax,
-                height = pageHeight,
-                theme = theme,
-            )
-            LazyRow(
-                state = listState,
-                reverseLayout = true,
-                modifier = Modifier.weight(1f),
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier.fillMaxWidth()
             ) {
-            items(
-                count = pages.value.size,
-                key = { it },
-            ) { pageIndex ->
-                val current = pages.value[pageIndex]
-                val newer = pages.value.getOrNull(pageIndex - 1)
-                val older = pages.value.getOrNull(pageIndex + 1)
-                // Pass up to TWO neighbour days on each side so the cubic curve's control points
-                // around the page boundary are computed from the same four points in both adjacent
-                // pages — guaranteeing the line tangent matches across the join.
-                //
-                // leftExtras[0] sits at slot -1 (just left of slot 0), leftExtras[1] at slot -2.
-                // Older page is to the LEFT on screen; older's "two newest days" (pageDays.first()
-                // and pageDays[1] in load order) are the days immediately older than this page's
-                // leftmost-displayed day.
-                val leftExtras = older?.take(2).orEmpty()
-                // rightExtras[0] sits at slot N (just right of slot N-1), rightExtras[1] at slot N+1.
-                // Newer page is to the RIGHT; newer's "two oldest days" (pageDays.last() and
-                // pageDays[size-2]) are the days immediately newer than this page's rightmost
-                // displayed day.
-                val rightExtras = newer?.takeLast(2)?.reversed().orEmpty()
-                FitnessPage(
-                    pageDays = current,
-                    leftExtras = leftExtras,
-                    rightExtras = rightExtras,
+                // Persistent Y-axis on the left edge of the screen. It reads the same animated
+                // yMin/yMax the pages do, so its tick labels rise/fall in sync with the chart as
+                // the user scrolls between pages.
+                YAxisColumn(
                     yMin = yMin,
                     yMax = yMax,
-                    width = pageWidth,
                     height = pageHeight,
-                    theme = theme,
-                    isLatestPage = pageIndex == 0,
+                    theme = theme
+                )
+                LazyRow(
+                    state = listState,
+                    reverseLayout = true,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    items(
+                        count = pages.value.size,
+                        key = { it }
+                    ) { pageIndex ->
+                        val current = pages.value[pageIndex]
+                        val newer = pages.value.getOrNull(pageIndex - 1)
+                        val older = pages.value.getOrNull(pageIndex + 1)
+                        // Pass up to TWO neighbour days on each side so the cubic curve's control points
+                        // around the page boundary are computed from the same four points in both adjacent
+                        // pages — guaranteeing the line tangent matches across the join.
+                        //
+                        // leftExtras[0] sits at slot -1 (just left of slot 0), leftExtras[1] at slot -2.
+                        // Older page is to the LEFT on screen; older's "two newest days" (pageDays.first()
+                        // and pageDays[1] in load order) are the days immediately older than this page's
+                        // leftmost-displayed day.
+                        val leftExtras = older?.take(2).orEmpty()
+                        // rightExtras[0] sits at slot N (just right of slot N-1), rightExtras[1] at slot N+1.
+                        // Newer page is to the RIGHT; newer's "two oldest days" (pageDays.last() and
+                        // pageDays[size-2]) are the days immediately newer than this page's rightmost
+                        // displayed day.
+                        val rightExtras = newer?.takeLast(2)?.reversed().orEmpty()
+                        FitnessPage(
+                            pageDays = current,
+                            leftExtras = leftExtras,
+                            rightExtras = rightExtras,
+                            yMin = yMin,
+                            yMax = yMax,
+                            width = pageWidth,
+                            height = pageHeight,
+                            theme = theme,
+                            isLatestPage = pageIndex == 0
+                        )
+                    }
+                }
+            }
+            // Older-page lazy-load indicator. With reverseLayout = true the older pages stack on the
+            // left, so the spinner appears on the left edge of the chart while the next chunk is
+            // fetched from FitnessRepository.loadDays.
+            if (loading.value) {
+                CircularProgressIndicator(
+                    strokeWidth = 2.dp,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .padding(start = 8.dp)
+                        .size(22.dp)
                 )
             }
-            }
         }
-        // Older-page lazy-load indicator. With reverseLayout = true the older pages stack on the
-        // left, so the spinner appears on the left edge of the chart while the next chunk is
-        // fetched from FitnessRepository.loadDays.
-        if (loading.value) {
-            CircularProgressIndicator(
-                strokeWidth = 2.dp,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .padding(start = 8.dp)
-                    .size(22.dp),
-            )
-        }
-      }
     }
 }
 
@@ -263,7 +264,7 @@ private fun YAxisColumn(
     yMin: Float,
     yMax: Float,
     height: Dp,
-    theme: ChartTheme,
+    theme: ChartTheme
 ) {
     val measurer = rememberTextMeasurer()
     // Matches FitnessPage's vertical padding/inset so the tick rows align with the chart's grid.
@@ -271,7 +272,7 @@ private fun YAxisColumn(
         modifier = Modifier
             .width(46.dp)
             .height(height)
-            .padding(vertical = 8.dp),
+            .padding(vertical = 8.dp)
     ) {
         val plotTop = 12.dp.toPx()
         val plotBottom = size.height - 36.dp.toPx()
@@ -285,21 +286,21 @@ private fun YAxisColumn(
             color = theme.axisColor,
             start = Offset(size.width, plotTop),
             end = Offset(size.width, plotBottom),
-            strokeWidth = theme.axisLineWidth.toPx(),
+            strokeWidth = theme.axisLineWidth.toPx()
         )
         ticks.forEach { v ->
             val y = lerpRange(v, yRange, plotBottom..plotTop)
             val label = formatSteps(v)
             val layout = measurer.measure(
                 label,
-                style = theme.axisLabelStyle.copy(fontSize = 11.sp, fontWeight = FontWeight.Medium),
+                style = theme.axisLabelStyle.copy(fontSize = 11.sp, fontWeight = FontWeight.Medium)
             )
             drawText(
                 textLayoutResult = layout,
                 topLeft = Offset(
                     size.width - layout.size.width - 6.dp.toPx(),
-                    y - layout.size.height / 2f,
-                ),
+                    y - layout.size.height / 2f
+                )
             )
         }
     }
@@ -329,7 +330,7 @@ private fun FitnessPage(
     width: Dp,
     height: Dp,
     theme: ChartTheme,
-    isLatestPage: Boolean,
+    isLatestPage: Boolean
 ) {
     val measurer = rememberTextMeasurer()
     val primaryColor = theme.palette.first()
@@ -343,7 +344,7 @@ private fun FitnessPage(
         modifier = Modifier
             .width(width)
             .height(height)
-            .padding(vertical = 8.dp),
+            .padding(vertical = 8.dp)
     ) {
         // Display order: oldest-on-left, newest-on-right. Pages are loaded newest-first so reverse.
         val daysVisual = pageDays.asReversed()
@@ -354,7 +355,7 @@ private fun FitnessPage(
             left = 0f,
             top = 12.dp.toPx(),
             right = size.width,
-            bottom = size.height - 36.dp.toPx(),
+            bottom = size.height - 36.dp.toPx()
         )
         val slotWidth = plot.width / n
 
@@ -367,7 +368,7 @@ private fun FitnessPage(
                 color = theme.gridColor,
                 start = Offset(plot.left, y),
                 end = Offset(plot.right, y),
-                strokeWidth = theme.gridLineWidth.toPx(),
+                strokeWidth = theme.gridLineWidth.toPx()
             )
         }
 
@@ -379,7 +380,7 @@ private fun FitnessPage(
                 color = theme.gridColor.copy(alpha = 0.35f),
                 start = Offset(xCol, plot.top),
                 end = Offset(xCol, plot.bottom),
-                strokeWidth = theme.gridLineWidth.toPx() * 0.6f,
+                strokeWidth = theme.gridLineWidth.toPx() * 0.6f
             )
         }
 
@@ -389,7 +390,7 @@ private fun FitnessPage(
             color = theme.axisColor,
             start = Offset(plot.left, plot.bottom),
             end = Offset(plot.right, plot.bottom),
-            strokeWidth = theme.axisLineWidth.toPx(),
+            strokeWidth = theme.axisLineWidth.toPx()
         )
 
         // Slot k has center at (k + 0.5) * slotWidth. Slot -1 is the day immediately LEFT of slot 0
@@ -435,15 +436,15 @@ private fun FitnessPage(
             left = plot.left,
             top = plot.top,
             right = plot.right,
-            bottom = plot.bottom,
+            bottom = plot.bottom
         ) {
             drawPath(
                 path = areaPath,
                 brush = Brush.verticalGradient(
                     colors = listOf(primaryColor.copy(alpha = 0.35f), primaryColor.copy(alpha = 0f)),
                     startY = plot.top,
-                    endY = plot.bottom,
-                ),
+                    endY = plot.bottom
+                )
             )
             drawPath(
                 path = path,
@@ -451,8 +452,8 @@ private fun FitnessPage(
                 style = Stroke(
                     width = 2.5.dp.toPx(),
                     cap = StrokeCap.Round,
-                    join = StrokeJoin.Round,
-                ),
+                    join = StrokeJoin.Round
+                )
             )
         }
 
@@ -469,7 +470,7 @@ private fun FitnessPage(
                 color = theme.axisColor,
                 start = Offset(x, plot.bottom),
                 end = Offset(x, plot.bottom + 4.dp.toPx()),
-                strokeWidth = theme.axisLineWidth.toPx(),
+                strokeWidth = theme.axisLineWidth.toPx()
             )
 
             val date = LocalDate.now().minusDays(d.dayOffset.toLong())
@@ -479,22 +480,22 @@ private fun FitnessPage(
             // the chart background. Day-of-week is the primary label, date is the subdued caption.
             val dayLayout = measurer.measure(
                 dayLabel,
-                style = theme.axisLabelStyle.copy(fontSize = 12.sp, fontWeight = FontWeight.SemiBold),
+                style = theme.axisLabelStyle.copy(fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
             )
             val dateLayout = measurer.measure(
                 dateLabel,
                 style = theme.axisLabelStyle.copy(
                     fontSize = 10.sp,
-                    color = theme.axisLabelStyle.color.copy(alpha = 0.7f),
-                ),
+                    color = theme.axisLabelStyle.color.copy(alpha = 0.7f)
+                )
             )
             drawText(
                 textLayoutResult = dayLayout,
-                topLeft = Offset(x - dayLayout.size.width / 2f, plot.bottom + 8.dp.toPx()),
+                topLeft = Offset(x - dayLayout.size.width / 2f, plot.bottom + 8.dp.toPx())
             )
             drawText(
                 textLayoutResult = dateLayout,
-                topLeft = Offset(x - dateLayout.size.width / 2f, plot.bottom + 8.dp.toPx() + dayLayout.size.height),
+                topLeft = Offset(x - dateLayout.size.width / 2f, plot.bottom + 8.dp.toPx() + dayLayout.size.height)
             )
         }
 
@@ -514,12 +515,12 @@ private fun FitnessPage(
                     color = theme.tooltipBackground,
                     topLeft = Offset(rx, ry),
                     size = Size(w, h),
-                    cornerRadius = CornerRadius(4.dp.toPx()),
+                    cornerRadius = CornerRadius(4.dp.toPx())
                 )
                 drawText(
                     textLayoutResult = layout,
                     color = theme.tooltipContent,
-                    topLeft = Offset(rx + (w - layout.size.width) / 2f, ry + (h - layout.size.height) / 2f),
+                    topLeft = Offset(rx + (w - layout.size.width) / 2f, ry + (h - layout.size.height) / 2f)
                 )
             }
         }

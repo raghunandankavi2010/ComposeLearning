@@ -52,7 +52,7 @@ import kotlin.math.sin
 fun SquigglySpanSample(onBack: () -> Unit) {
     var amplitude by remember { mutableFloatStateOf(3f) }
     var wavelength by remember { mutableFloatStateOf(10f) }
-    
+
     val infiniteTransition = rememberInfiniteTransition(label = "SquiggleTransition")
     val phase by infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -102,7 +102,7 @@ fun SquigglySpanSample(onBack: () -> Unit) {
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
-            
+
             Spacer(modifier = Modifier.height(24.dp))
 
             // Text with dynamic squiggle decoration
@@ -115,7 +115,7 @@ fun SquigglySpanSample(onBack: () -> Unit) {
                     .fillMaxWidth()
                     .drawBehind {
                         val layout = textLayoutResult ?: return@drawBehind
-                        
+
                         // Find all annotations with tag "squiggly"
                         annotatedText.getStringAnnotations("squiggly", 0, annotatedText.length)
                             .forEach { annotation ->
@@ -138,12 +138,12 @@ fun SquigglySpanSample(onBack: () -> Unit) {
             MathExplanation()
 
             Spacer(modifier = Modifier.height(24.dp))
-            
+
             Text("Adjust the Math Parameters:", fontWeight = FontWeight.Bold)
-            
+
             Text("Amplitude (Height): ${amplitude.toInt()}")
             Slider(value = amplitude, onValueChange = { amplitude = it }, valueRange = 1f..10f)
-            
+
             Text("Wavelength (Width of one curve): ${wavelength.toInt()}")
             Slider(value = wavelength, onValueChange = { wavelength = it }, valueRange = 5f..50f)
         }
@@ -176,7 +176,7 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawSquiggleForRang
 
         val startX = layout.getHorizontalPosition(lineStart, usePrimaryDirection = true)
         val endX = layout.getHorizontalPosition(lineEnd, usePrimaryDirection = true)
-        
+
         // The Y position is at the baseline of the current line
         // We add a small offset so it's clearly an "underline"
         val yBase = layout.getLineBottom(lineIndex) - 2.dp.toPx()
@@ -184,7 +184,7 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawSquiggleForRang
         // Draw the segment
         var currentX = startX
         squigglePath.moveTo(currentX, yBase + amplitude * sin(2 * PI.toFloat() * currentX / wavelength + phase))
-        
+
         while (currentX <= endX) {
             currentX += 1f // Small step for smoothness
             val y = yBase + amplitude * sin(2 * PI.toFloat() * currentX / wavelength + phase)
@@ -208,14 +208,14 @@ fun MathExplanation() {
         Column(modifier = Modifier.padding(16.dp)) {
             Text("How Annotated Squiggles Work", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             Text(
                 "Instead of drawing across the whole component, we use the `TextLayoutResult` to find the exact coordinates of specific character ranges.",
                 style = MaterialTheme.typography.bodyMedium
             )
-            
+
             Spacer(modifier = Modifier.height(12.dp))
-            
+
             Text("The logic flow:", fontWeight = FontWeight.SemiBold)
             Text(
                 "1. Loop through `getStringAnnotations` to find specific parts.\n" +

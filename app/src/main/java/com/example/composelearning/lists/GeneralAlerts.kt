@@ -42,10 +42,7 @@ import com.example.composelearning.R
 import com.example.composelearning.ui.theme.AppFontFamilyBold
 import com.example.composelearning.ui.theme.AppFontFamilyMedium
 
-data class ListData(val time: String, val type: String, val content: String, val id: Int) {
-
-}
-
+data class ListData(val time: String, val type: String, val content: String, val id: Int)
 
 fun getListData(): MutableList<ListData> {
     val list = mutableListOf<ListData>()
@@ -193,4 +190,3 @@ fun GeneralAlerts(
 
     }
 }
-

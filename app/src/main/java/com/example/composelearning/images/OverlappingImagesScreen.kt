@@ -40,7 +40,7 @@ private val AVATARS = listOf(
     AvatarItem(R.drawable.ic_launcher_background, Color(0xFFA7F3D0)),
     AvatarItem(R.drawable.ic_launcher_background, Color(0xFFC4B5FD)),
     AvatarItem(R.drawable.ic_launcher_background, Color(0xFFFDE68A)),
-    AvatarItem(R.drawable.ic_launcher_background, Color(0xFF93C5FD)),
+    AvatarItem(R.drawable.ic_launcher_background, Color(0xFF93C5FD))
 )
 
 @Composable
@@ -51,18 +51,18 @@ fun OverlappingImagesScreen(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 24.dp, vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         Header()
 
         AvatarStack(
             overlapFactor = overlap,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
         )
 
         ExtendedAvatarStack(
             overlapFactor = overlap,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
         )
 
         ContextRow(overlap)
@@ -70,7 +70,7 @@ fun OverlappingImagesScreen(modifier: Modifier = Modifier) {
         Slider(
             value = overlap,
             onValueChange = { overlap = it },
-            valueRange = 0.15f..1f,
+            valueRange = 0.15f..1f
         )
     }
 }
@@ -81,14 +81,14 @@ private fun Header() {
         Text(
             text = "Overlapping images",
             style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.SemiBold,
+            fontWeight = FontWeight.SemiBold
         )
         Spacer(Modifier.height(4.dp))
         Text(
             text = "Custom Layout that horizontally stacks children with a configurable overlap. " +
                 "Drag the slider to change the overlap factor.",
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -100,7 +100,7 @@ private fun AvatarStack(overlapFactor: Float, modifier: Modifier = Modifier) {
             .clip(RoundedCornerShape(24.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(20.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         OverlappingRow(overlapFactor = overlapFactor) {
             AVATARS.forEach { item ->
@@ -111,7 +111,7 @@ private fun AvatarStack(overlapFactor: Float, modifier: Modifier = Modifier) {
         Text(
             text = "+12",
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -123,13 +123,13 @@ private fun ExtendedAvatarStack(overlapFactor: Float, modifier: Modifier = Modif
             .clip(RoundedCornerShape(24.dp))
             .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.45f))
             .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
             text = "Today's reviewers",
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = MaterialTheme.colorScheme.onSurface
         )
         OverlappingRow(overlapFactor = overlapFactor) {
             (AVATARS + AVATARS.take(2)).forEach { item ->
@@ -139,7 +139,7 @@ private fun ExtendedAvatarStack(overlapFactor: Float, modifier: Modifier = Modif
         Text(
             text = "Liked by Tomato, Droid and 5 others",
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -149,17 +149,17 @@ private fun ContextRow(overlap: Float) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = "Overlap factor",
             style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Text(
             text = "${"%.0f".format(overlap * 100)}%",
             style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
+            fontWeight = FontWeight.SemiBold
         )
     }
 }
@@ -172,7 +172,7 @@ private fun Avatar(drawable: Int, ring: Color, size: Int = 56) {
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.surface)
             .border(width = 3.dp, color = ring, shape = CircleShape),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Image(
             painter = painterResource(drawable),
@@ -180,7 +180,7 @@ private fun Avatar(drawable: Int, ring: Color, size: Int = 56) {
             modifier = Modifier
                 .size((size - 6).dp)
                 .clip(CircleShape),
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.Crop
         )
     }
 }

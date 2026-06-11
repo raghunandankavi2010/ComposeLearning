@@ -55,12 +55,12 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.isActive
 import kotlin.math.cos
 import kotlin.math.ln
 import kotlin.math.min
 import kotlin.math.sin
 import kotlin.math.sqrt
+import kotlinx.coroutines.isActive
 
 /**
  * Real-world astronomical properties of a planet.
@@ -76,7 +76,7 @@ data class PlanetConfig(
     val orbitalPeriodYears: Float,
     val relativeSize: Float,
     val color: Color,
-    val hasRings: Boolean = false,
+    val hasRings: Boolean = false
 )
 
 private val Planets = listOf(
@@ -87,7 +87,7 @@ private val Planets = listOf(
     PlanetConfig("Jupiter", 5.20f, 11.86f, 11.21f, Color(0xFFD8A47F)),
     PlanetConfig("Saturn", 9.58f, 29.45f, 9.45f, Color(0xFFF5D76E), hasRings = true),
     PlanetConfig("Uranus", 19.22f, 84.02f, 4.01f, Color(0xFF7DE2D1)),
-    PlanetConfig("Neptune", 30.05f, 164.79f, 3.88f, Color(0xFF5C7CFA)),
+    PlanetConfig("Neptune", 30.05f, 164.79f, 3.88f, Color(0xFF5C7CFA))
 )
 
 private const val OUTERMOST_ORBIT_AU = 30.05f
@@ -133,7 +133,7 @@ private data class PlanetRenderData(
     /** Log-compressed orbit radius as a fraction of the outermost orbit. */
     val orbitFraction: Float,
     /** Drawn planet radius in dp, √-normalized into [MIN, MAX] so Jupiter stays sane. */
-    val radiusDp: Float,
+    val radiusDp: Float
 )
 
 private val PlanetRenderList = Planets.map { planet ->
@@ -147,14 +147,14 @@ private val PlanetRenderList = Planets.map { planet ->
             ln(1f + OUTERMOST_ORBIT_AU / LOG_SCALE_SOFTENING_AU),
         radiusDp = MIN_PLANET_RADIUS_DP +
             (MAX_PLANET_RADIUS_DP - MIN_PLANET_RADIUS_DP) *
-            (sqrt(planet.relativeSize) / sqrt(LARGEST_RELATIVE_SIZE)),
+            (sqrt(planet.relativeSize) / sqrt(LARGEST_RELATIVE_SIZE))
     )
 }
 
 @Composable
 fun SolarSystemSimulation(
     modifier: Modifier = Modifier,
-    state: SolarSystemSimulationState = remember { SolarSystemSimulationState() },
+    state: SolarSystemSimulationState = remember { SolarSystemSimulationState() }
 ) {
     // Ticker: accumulate scaled frame deltas into the simulation clock. Folding the
     // speed multiplier into dt (instead of into ω) keeps every θ continuous when the
@@ -177,13 +177,13 @@ fun SolarSystemSimulation(
         modifier = modifier
             .fillMaxSize()
             .background(Color(0xFF06070F))
-            .systemBarsPadding(),
+            .systemBarsPadding()
     ) {
         SolarSystemCanvas(
             state = state,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f),
+                .weight(1f)
         )
         SimulationControls(state = state)
     }
@@ -192,7 +192,7 @@ fun SolarSystemSimulation(
 @Composable
 private fun SolarSystemCanvas(
     state: SolarSystemSimulationState,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Canvas(modifier = modifier) {
         // Reading elapsedMillis here (draw phase) means each frame only re-runs
@@ -207,10 +207,10 @@ private fun SolarSystemCanvas(
             brush = Brush.radialGradient(
                 colors = listOf(Color(0xFFFFF9C4), Color(0xFFFFC107), Color(0x00FF8F00)),
                 center = center,
-                radius = sunRadius * 1.8f,
+                radius = sunRadius * 1.8f
             ),
             radius = sunRadius * 1.8f,
-            center = center,
+            center = center
         )
         drawCircle(color = Color(0xFFFFD54F), radius = sunRadius, center = center)
 
@@ -222,14 +222,14 @@ private fun SolarSystemCanvas(
                 radius = orbitRadius,
                 center = center,
                 alpha = 0.35f,
-                style = Stroke(width = 1.dp.toPx()),
+                style = Stroke(width = 1.dp.toPx())
             )
 
             // θ_i = ω_i × t, then polar → Cartesian about the canvas center.
             val theta = planet.angularVelocityRadPerMs * t
             val position = Offset(
                 x = center.x + orbitRadius * cos(theta).toFloat(),
-                y = center.y + orbitRadius * sin(theta).toFloat(),
+                y = center.y + orbitRadius * sin(theta).toFloat()
             )
             val planetRadius = planet.radiusDp.dp.toPx()
 
@@ -241,7 +241,7 @@ private fun SolarSystemCanvas(
                         topLeft = Offset(position.x - ringOuter, position.y - ringOuter * 0.38f),
                         size = Size(ringOuter * 2f, ringOuter * 0.76f),
                         alpha = 0.55f,
-                        style = Stroke(width = planetRadius * 0.35f),
+                        style = Stroke(width = planetRadius * 0.35f)
                     )
                 }
             }
@@ -253,7 +253,7 @@ private fun SolarSystemCanvas(
                 color = Color.White,
                 radius = planetRadius * 0.45f,
                 center = position + toSun * (planetRadius * 0.35f),
-                alpha = 0.30f,
+                alpha = 0.30f
             )
         }
     }
@@ -262,40 +262,40 @@ private fun SolarSystemCanvas(
 @Composable
 private fun SimulationControls(
     state: SolarSystemSimulationState,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         FilledIconButton(
             onClick = state::togglePlayPause,
             colors = IconButtonDefaults.filledIconButtonColors(
                 containerColor = Color(0xFF1D2440),
-                contentColor = Color(0xFFFFD54F),
-            ),
+                contentColor = Color(0xFFFFD54F)
+            )
         ) {
             Icon(
                 imageVector = if (state.isRunning) Icons.Default.Pause else Icons.Default.PlayArrow,
-                contentDescription = if (state.isRunning) "Pause" else "Resume",
+                contentDescription = if (state.isRunning) "Pause" else "Resume"
             )
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = "Time warp %.2f× — 1 Earth year ≈ %.1fs".format(
                     state.speedMultiplier,
-                    SIM_YEAR_MILLIS / (1000f * state.speedMultiplier),
+                    SIM_YEAR_MILLIS / (1000f * state.speedMultiplier)
                 ),
                 color = Color(0xFF9FA8C7),
-                style = MaterialTheme.typography.labelMedium,
+                style = MaterialTheme.typography.labelMedium
             )
             Slider(
                 value = state.speedMultiplier,
                 onValueChange = { state.speedMultiplier = it },
-                valueRange = 0.25f..16f,
+                valueRange = 0.25f..16f
             )
         }
     }

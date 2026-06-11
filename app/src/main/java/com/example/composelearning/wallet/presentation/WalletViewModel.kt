@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class WalletViewModel(
-    private val getCards: GetWalletCardsUseCase,
+    private val getCards: GetWalletCardsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(WalletState())
@@ -38,7 +38,6 @@ class WalletViewModel(
 
     class Factory : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            WalletViewModel(GetWalletCardsUseCase(WalletRepositoryImpl())) as T
+        override fun <T : ViewModel> create(modelClass: Class<T>): T = WalletViewModel(GetWalletCardsUseCase(WalletRepositoryImpl())) as T
     }
 }

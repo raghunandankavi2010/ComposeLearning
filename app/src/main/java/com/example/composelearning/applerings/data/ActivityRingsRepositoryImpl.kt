@@ -11,6 +11,6 @@ class ActivityRingsRepositoryImpl : ActivityRingsRepository {
         // Middle (Exercise) — green, 60%.
         RingSpec(0xFF99FF00, 0xFFD8FF01, 0xFF2F4E00, targetTurns = 0.6f, insetSteps = 1),
         // Inner (Stand) — cyan, 230%.
-        RingSpec(0xFF00D9FD, 0xFF00FFA9, 0xFF00484D, targetTurns = 2.3f, insetSteps = 2),
+        RingSpec(0xFF00D9FD, 0xFF00FFA9, 0xFF00484D, targetTurns = 2.3f, insetSteps = 2)
     )
 }

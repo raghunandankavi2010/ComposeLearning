@@ -9,10 +9,8 @@ class FlingBehaviourMultiplier(
     private val multiplier: Float,
     private val baseFlingBehavior: FlingBehavior
 ) : FlingBehavior {
-    override suspend fun ScrollScope.performFling(initialVelocity: Float): Float {
-        return with(baseFlingBehavior) {
-            performFling(initialVelocity * multiplier)
-        }
+    override suspend fun ScrollScope.performFling(initialVelocity: Float): Float = with(baseFlingBehavior) {
+        performFling(initialVelocity * multiplier)
     }
 }
 

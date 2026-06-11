@@ -270,46 +270,46 @@ private fun createBottlePath(
     val bottomY = center.y + bottleHeight / 2
     val topY = bottomY - bottleHeight
     val bodyHeight = bottleHeight - neckHeight - shoulderHeight
-    
+
     return Path().apply {
         // Bottom left corner (rounded)
         moveTo(startX + 20f, bottomY)
         quadraticTo(startX, bottomY, startX, bottomY - 20f)
-        
+
         // Left side body
         lineTo(startX, bottomY - bodyHeight)
-        
+
         // Left shoulder (curved transition to neck)
         quadraticTo(
-            startX, 
-            topY + neckHeight, 
-            center.x - neckWidth / 2, 
+            startX,
+            topY + neckHeight,
+            center.x - neckWidth / 2,
             topY + neckHeight
         )
-        
+
         // Left neck
         lineTo(center.x - neckWidth / 2, topY)
-        
+
         // Top opening
         lineTo(center.x + neckWidth / 2, topY)
-        
+
         // Right neck
         lineTo(center.x + neckWidth / 2, topY + neckHeight)
-        
+
         // Right shoulder
         quadraticTo(
-            endX, 
-            topY + neckHeight, 
-            endX, 
+            endX,
+            topY + neckHeight,
+            endX,
             bottomY - bodyHeight
         )
-        
+
         // Right side body
         lineTo(endX, bottomY - 20f)
-        
+
         // Bottom right corner (rounded)
         quadraticTo(endX, bottomY, endX - 20f, bottomY)
-        
+
         close()
     }
 }
@@ -321,7 +321,7 @@ private fun DrawScope.drawBottleCap(
 ) {
     val capWidth = neckWidth + 10.dp.toPx()
     val capHeight = 22.dp.toPx()
-    
+
     // Cap Body
     drawRoundRect(
         color = Color(0xFF2C3E50), // Nice dark navy/gray for cap
@@ -329,7 +329,7 @@ private fun DrawScope.drawBottleCap(
         size = Size(capWidth, capHeight),
         cornerRadius = CornerRadius(4.dp.toPx())
     )
-    
+
     // Cap Details (vertical ridges)
     for (i in 0..6) {
         val x = (center.x - capWidth / 2) + (capWidth / 6) * i
@@ -358,7 +358,7 @@ private fun DrawScope.drawMeasurementLines(
 
     markers.forEach { (ratio, label) ->
         val y = bottomY - (bodyHeight * ratio)
-        
+
         // Draw dashed line across the bottle
         drawLine(
             color = Color.Black.copy(alpha = 0.2f),
@@ -407,7 +407,7 @@ private fun DrawScope.drawWater(
     val waterPath = Path()
     // We draw water slightly wider than the bottle to ensure clipping covers edges
     val overfill = 100f
-    
+
     waterPath.moveTo(startX - overfill, bottomY + overfill)
     waterPath.lineTo(endX + overfill, bottomY + overfill)
     waterPath.lineTo(endX + overfill, waterSurfaceY)
@@ -433,7 +433,7 @@ private fun DrawScope.drawWater(
             endY = bottomY
         )
     )
-    
+
     // Subtle foam/light line on top of waves
     val foamPath = Path()
     for (i in 0..steps) {
@@ -441,7 +441,7 @@ private fun DrawScope.drawWater(
         val wave1 = sin((x * waveFrequency / 100f) + waveOffset) * waveAmplitude
         val wave2 = sin((x * waveFrequency * 1.5f / 100f) + waveOffset * 1.5f) * (waveAmplitude * 0.4f)
         val waveY = waterSurfaceY + wave1 + wave2
-        
+
         if (i == 0) foamPath.moveTo(x, waveY)
         else foamPath.lineTo(x, waveY)
     }

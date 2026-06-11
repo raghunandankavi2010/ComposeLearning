@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Color
  */
 data class WheelSection(
     val label: String,
-    val color: Color,
+    val color: Color
 )
 
 /**
@@ -25,5 +25,5 @@ val defaultWheelSections: List<WheelSection> = listOf(
     WheelSection("50", Color(0xFFEC407A)),
     WheelSection("500", Color(0xFF66BB6A)),
     WheelSection("Jackpot", Color(0xFFAB47BC)),
-    WheelSection("10", Color(0xFF29B6F6)),
+    WheelSection("10", Color(0xFF29B6F6))
 )

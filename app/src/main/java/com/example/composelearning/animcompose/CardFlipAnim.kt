@@ -43,9 +43,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.launch
 import kotlin.math.PI
 import kotlin.math.sin
+import kotlinx.coroutines.launch
 
 /**
  * Buttery-smooth 3D credit-card flip.
@@ -101,7 +101,7 @@ fun CreditCardFlip(
                     rotation.animateTo(
                         targetValue = target,
                         animationSpec = spring(
-                            dampingRatio = 0.9f,                  // settles without bouncing
+                            dampingRatio = 0.9f, // settles without bouncing
                             stiffness = Spring.StiffnessMediumLow // ~500ms feel
                         )
                     )
@@ -205,7 +205,7 @@ private fun CardFace(
                 val angle = angleProvider()
                 val faceAngle = if (isFront) angle else angle - 180f
                 if (faceAngle > -90f && faceAngle < 90f) {
-                    val sweep = faceAngle / 90f  // -1 .. 1 across the face
+                    val sweep = faceAngle / 90f // -1 .. 1 across the face
                     val glossX = size.width * (0.5f + sweep * 0.6f)
                     drawRect(
                         brush = Brush.linearGradient(
@@ -408,7 +408,6 @@ private fun CardBackContent(
             )
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-
             // ── Magnetic strip ──
             // Real cards have the magstripe flush against the top, full-bleed
             // edge-to-edge. No horizontal padding here.
@@ -594,7 +593,6 @@ private fun ChipElement() {
             }
         }
     }
-
 }
 
 @Composable
@@ -614,6 +612,7 @@ private fun CardTypeLogo(type: CardType, modifier: Modifier = Modifier) {
                 modifier = modifier
             )
         }
+
         // Mastercard: two overlapping circles. Using clip+background gives a
         // perfect blend in the middle without alpha tricks.
         CardType.MASTERCARD -> {
@@ -635,6 +634,7 @@ private fun CardTypeLogo(type: CardType, modifier: Modifier = Modifier) {
                 )
             }
         }
+
         CardType.AMEX -> {
             Text(
                 text = "AMEX",
@@ -652,7 +652,7 @@ private fun CardTypeLogo(type: CardType, modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true, backgroundColor = 0xFFF0F0F0)
 @Composable
-fun CreditCardFlipPreview() {
+private fun CreditCardFlipPreview() {
     Box(
         modifier = Modifier
             .fillMaxSize()

@@ -35,12 +35,12 @@ import kotlin.math.sin
 fun SpinningWheel(
     rotation: Float,
     modifier: Modifier = Modifier,
-    sections: List<WheelSection> = defaultWheelSections,
+    sections: List<WheelSection> = defaultWheelSections
 ) {
     val sweep = 360f / sections.size
 
     Canvas(
-        modifier = modifier.aspectRatio(1f),
+        modifier = modifier.aspectRatio(1f)
     ) {
         val diameter = min(size.width, size.height)
         val center = Offset(size.width / 2f, size.height / 2f)
@@ -66,7 +66,7 @@ private fun DrawScope.drawDropShadow(center: Offset, radius: Float) {
     drawCircle(
         color = Color.Black.copy(alpha = 0.18f),
         radius = radius + 6.dp.toPx(),
-        center = center.copy(y = center.y + 8.dp.toPx()),
+        center = center.copy(y = center.y + 8.dp.toPx())
     )
 }
 
@@ -74,7 +74,7 @@ private fun DrawScope.drawSlices(
     center: Offset,
     radius: Float,
     sections: List<WheelSection>,
-    sweep: Float,
+    sweep: Float
 ) {
     val topLeft = Offset(center.x - radius, center.y - radius)
     val arcSize = androidx.compose.ui.geometry.Size(radius * 2f, radius * 2f)
@@ -85,7 +85,7 @@ private fun DrawScope.drawSlices(
             sweepAngle = sweep,
             useCenter = true,
             topLeft = topLeft,
-            size = arcSize,
+            size = arcSize
         )
     }
 }
@@ -94,7 +94,7 @@ private fun DrawScope.drawDividers(
     center: Offset,
     radius: Float,
     count: Int,
-    sweep: Float,
+    sweep: Float
 ) {
     repeat(count) { index ->
         val angle = Math.toRadians((index * sweep).toDouble())
@@ -103,9 +103,9 @@ private fun DrawScope.drawDividers(
             start = center,
             end = Offset(
                 x = center.x + radius * cos(angle).toFloat(),
-                y = center.y + radius * sin(angle).toFloat(),
+                y = center.y + radius * sin(angle).toFloat()
             ),
-            strokeWidth = 2.dp.toPx(),
+            strokeWidth = 2.dp.toPx()
         )
     }
 }
@@ -114,7 +114,7 @@ private fun DrawScope.drawLabels(
     center: Offset,
     radius: Float,
     sections: List<WheelSection>,
-    sweep: Float,
+    sweep: Float
 ) {
     val textPaint = Paint().apply {
         color = Color.White.toArgb()
@@ -142,7 +142,7 @@ private fun DrawScope.drawLabels(
                         text,
                         x,
                         startY + line * lineHeight,
-                        textPaint,
+                        textPaint
                     )
                 }
             }
@@ -156,7 +156,7 @@ private fun DrawScope.drawRim(center: Offset, radius: Float) {
         color = Color(0xFF3E2723),
         radius = radius + 10.dp.toPx(),
         center = center,
-        style = Stroke(width = 14.dp.toPx()),
+        style = Stroke(width = 14.dp.toPx())
     )
     // Decorative "LED" pegs evenly spaced around the rim.
     val pegCount = 24
@@ -169,8 +169,8 @@ private fun DrawScope.drawRim(center: Offset, radius: Float) {
             radius = 3.dp.toPx(),
             center = Offset(
                 x = center.x + pegRadius * cos(angle).toFloat(),
-                y = center.y + pegRadius * sin(angle).toFloat(),
-            ),
+                y = center.y + pegRadius * sin(angle).toFloat()
+            )
         )
     }
 }
@@ -203,6 +203,6 @@ private fun DrawScope.drawPointer(center: Offset, radius: Float) {
 private fun SpinningWheelPreview() {
     SpinningWheel(
         rotation = 12f,
-        modifier = Modifier.aspectRatio(1f),
+        modifier = Modifier.aspectRatio(1f)
     )
 }

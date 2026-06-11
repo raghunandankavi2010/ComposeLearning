@@ -124,14 +124,14 @@ fun MathDetailsSection() {
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             Text(
                 text = "Bezier curves interpolate between points. 't' is the interpolation factor (0 to 1).",
                 style = MaterialTheme.typography.bodyMedium
             )
-            
+
             Spacer(modifier = Modifier.height(12.dp))
-            
+
             Text(text = "Quadratic (3 points):", fontWeight = FontWeight.SemiBold)
             Text(
                 text = "B(t) = (1-t)²P₀ + 2(1-t)tP₁ + t²P₂",
@@ -155,7 +155,7 @@ fun MathDetailsSection() {
 fun InteractiveBezierDemo() {
     var isCubic by remember { mutableStateOf(false) }
     var canvasSize by remember { mutableStateOf(Size.Zero) }
-    
+
     var p0Norm by remember { mutableStateOf(Offset(0.1f, 0.8f)) }
     var p1Norm by remember { mutableStateOf(Offset(0.3f, 0.2f)) }
     var p2Norm by remember { mutableStateOf(Offset(0.7f, 0.2f)) }
@@ -177,11 +177,11 @@ fun InteractiveBezierDemo() {
                 .background(Color.White, shape = MaterialTheme.shapes.medium)
                 .pointerInput(isCubic, canvasSize) {
                     if (canvasSize == Size.Zero) return@pointerInput
-                    
+
                     detectDragGestures { change, dragAmount ->
                         val pos = change.position
                         val threshold = 60f
-                        
+
                         val p0 = Offset(p0Norm.x * canvasSize.width, p0Norm.y * canvasSize.height)
                         val p1 = Offset(p1Norm.x * canvasSize.width, p1Norm.y * canvasSize.height)
                         val p2 = Offset(p2Norm.x * canvasSize.width, p2Norm.y * canvasSize.height)
@@ -275,7 +275,7 @@ fun FigmaDeepDiveSection() {
         fontWeight = FontWeight.Bold
     )
     Spacer(modifier = Modifier.height(12.dp))
-    
+
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         DeepDiveItem(
             title = "1. The Anatomy of a Segment",
@@ -319,7 +319,7 @@ fun ComplexFigmaExample() {
                 Checkbox(checked = showSpecs, onCheckedChange = { showSpecs = it })
             }
         }
-        
+
         Text(
             text = "This S-Curve uses two `cubicTo` segments. The red dots are the Figma 'Handles' (Control Points).",
             style = MaterialTheme.typography.bodySmall,
@@ -361,12 +361,12 @@ fun ComplexFigmaExample() {
                         drawLine(Color.Red.copy(alpha = 0.5f), start, handle, 2f)
                         drawCircle(Color.Red, 8f, handle)
                     }
-                    
+
                     // Segment 1 Specs
                     drawCircle(Color.Black, 10f, s1_p0)
                     drawHandle(s1_p0, s1_p1)
                     drawHandle(s1_p3, s1_p2)
-                    
+
                     // Segment 2 Specs
                     drawCircle(Color.Black, 10f, s1_p3)
                     drawHandle(s1_p3, s2_p1)
@@ -396,8 +396,8 @@ fun FigmaToComposeSection() {
     val CurvedHeaderShape = GenericShape { size, _ ->
         moveTo(0f, 0f)
         lineTo(size.width, 0f)
-        lineTo(size.width, size.height * 0.75f) 
-        
+        lineTo(size.width, size.height * 0.75f)
+
         quadraticTo(
             x1 = size.width / 2f,
             y1 = size.height,

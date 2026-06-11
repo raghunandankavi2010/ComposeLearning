@@ -25,7 +25,7 @@ import com.example.composelearning.R
 fun BlurContainer(
     modifier: Modifier = Modifier,
     blur: Float = 10f,
-    content: @Composable BoxScope.() -> Unit = {},
+    content: @Composable BoxScope.() -> Unit = {}
 ) {
     Box(modifier, contentAlignment = Alignment.Center) {
         Box(

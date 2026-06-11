@@ -56,14 +56,14 @@ fun MapsStylePulsatingCircle() {
             ripples.forEach { rippleProgress ->
                 val alpha = (1f - rippleProgress) * 0.35f
                 val radius = centerRadius + (maxRippleRadius - centerRadius) * rippleProgress
-                
+
                 // Outer soft halo
                 drawCircle(
                     color = blueColor.copy(alpha = alpha),
                     radius = radius,
                     style = Fill
                 )
-                
+
                 // Subtle outline for the ripple
                 drawCircle(
                     color = blueColor.copy(alpha = alpha * 0.5f),
@@ -115,7 +115,7 @@ fun PulsatingCircle2() {
     ) {
         Canvas(modifier = Modifier.size(200.dp)) {
             val baseRadius = size.minDimension / 2
-            
+
             // Outer glow
             drawCircle(
                 color = Color(0xFF6C63FF).copy(alpha = 0.2f * (1f - scale + 0.6f)),

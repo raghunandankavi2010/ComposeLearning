@@ -15,7 +15,7 @@ class ProjectRepositoryImpl : ProjectRepository {
             size = "45MB",
             duration = "1:06m",
             imageUrl = "https://picsum.photos/seed/riveo-zurich/1080/640",
-            accentColor = 0xFFBDA098,
+            accentColor = 0xFFBDA098
         ),
         Project(
             id = "oslo",
@@ -23,7 +23,7 @@ class ProjectRepositoryImpl : ProjectRepository {
             size = "1GB",
             duration = "5:02m",
             imageUrl = "https://picsum.photos/seed/riveo-oslo/1080/640",
-            accentColor = 0xFF59659A,
+            accentColor = 0xFF59659A
         ),
         Project(
             id = "krakow",
@@ -31,7 +31,7 @@ class ProjectRepositoryImpl : ProjectRepository {
             size = "500MB",
             duration = "11:04m",
             imageUrl = "https://picsum.photos/seed/riveo-krakow/1080/640",
-            accentColor = 0xFFBAB9B0,
-        ),
+            accentColor = 0xFFBAB9B0
+        )
     )
 }

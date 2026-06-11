@@ -9,11 +9,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.composelearning.ui.theme.AppFontFamilyBlack
 
-
 @Preview(widthDp = 300, showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
-fun AmountTextField(
-) {
+private fun AmountTextField() {
     Text(
         text = "మీ పొలాన్ని\nఎంచుకోండి",
         style = TextStyle(
@@ -21,7 +19,7 @@ fun AmountTextField(
             lineHeight = 38.sp,
             fontFamily = AppFontFamilyBlack,
             fontWeight = FontWeight(900),
-            color = Color(0xFF141414),
+            color = Color(0xFF141414)
         )
     )
 }

@@ -8,5 +8,5 @@ data class BreathingSession(
     val wave2: Long,
     val wave3: Long,
     val startLabel: String,
-    val endLabel: String,
+    val endLabel: String
 )

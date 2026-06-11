@@ -1,6 +1,6 @@
 package com.example.composelearning.animcompose
 
-/**
+/*
  * https://gist.github.com/skydoves/ade49203240be5a0fd781c0e9899a886
  * This code is picked from the above link and belongs to the owner of the gist
  */

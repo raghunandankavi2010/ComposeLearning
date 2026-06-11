@@ -23,6 +23,9 @@ credentials = "1.6.0"
 protobuf = "4.35.0"
 protobufPlugin = "0.10.0"
 okhttp = "5.3.2"
+spotless = "8.6.0"
+ktlint = "1.8.0"
+composeRules = "0.6.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -73,3 +76,4 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

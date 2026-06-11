@@ -5,7 +5,7 @@ import com.example.composelearning.riveo.domain.repository.ProjectRepository
 
 /** Fetches the list of project cards to display. */
 class GetProjectsUseCase(
-    private val repository: ProjectRepository,
+    private val repository: ProjectRepository
 ) {
     suspend operator fun invoke(): List<Project> = repository.getProjects()
 }

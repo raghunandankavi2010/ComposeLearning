@@ -16,6 +16,6 @@ class SongRepositoryImpl : SongRepository {
         Song("Pyramids", "Frank Ocean"),
         Song("Melodrama", "Lorde"),
         Song("Ibn El Leil", "Mashrou' Leila"),
-        Song("Whenever, Wherever", "Shakira"),
+        Song("Whenever, Wherever", "Shakira")
     )
 }

@@ -8,13 +8,13 @@ import com.example.composelearning.googlecalendar.domain.usecase.GetEventsUseCas
 import com.example.composelearning.googlecalendar.ui.state.CalendarUiState
 import com.example.composelearning.googlecalendar.ui.state.ViewMode
 import com.example.composelearning.googlecalendar.util.DateUtils
+import java.time.LocalDate
+import java.time.YearMonth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.YearMonth
 
 class GoogleCalendarViewModel(
     private val getEventsUseCase: GetEventsUseCase
@@ -126,8 +126,6 @@ class GoogleCalendarViewModel(
         private val getEventsUseCase: GetEventsUseCase
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return GoogleCalendarViewModel(getEventsUseCase) as T
-        }
+        override fun <T : ViewModel> create(modelClass: Class<T>): T = GoogleCalendarViewModel(getEventsUseCase) as T
     }
 }

@@ -12,5 +12,5 @@ data class RingSpec(
     val endColor: Long,
     val trackColor: Long,
     val targetTurns: Float,
-    val insetSteps: Int,
+    val insetSteps: Int
 )

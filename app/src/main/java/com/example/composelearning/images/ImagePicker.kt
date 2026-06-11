@@ -19,4 +19,3 @@ fun MyScreen(modifier: Modifier, selectedUri: Uri?) {
             )
         }
 }
-

@@ -15,17 +15,11 @@ class GetEventsUseCase(
         return repository.getEvents(start, end)
     }
 
-    suspend fun getEventsForRange(startDate: LocalDate, endDate: LocalDate): List<CalendarEvent> {
-        return repository.getEvents(startDate, endDate)
-    }
+    suspend fun getEventsForRange(startDate: LocalDate, endDate: LocalDate): List<CalendarEvent> = repository.getEvents(startDate, endDate)
 
-    suspend fun getEventsForDay(date: LocalDate): List<CalendarEvent> {
-        return repository.getEventsForDay(date)
-    }
+    suspend fun getEventsForDay(date: LocalDate): List<CalendarEvent> = repository.getEventsForDay(date)
 
-    suspend fun addEvent(event: CalendarEvent): CalendarEvent {
-        return repository.addEvent(event)
-    }
+    suspend fun addEvent(event: CalendarEvent): CalendarEvent = repository.addEvent(event)
 
     /**
      * Returns events grouped by date for the schedule view.

@@ -4,7 +4,7 @@ data class FeatureCard(
     val id: String,
     val title: String,
     val subtitle: String,
-    val variant: Variant,
+    val variant: Variant
 ) {
     enum class Variant {
         Stat,
@@ -12,6 +12,6 @@ data class FeatureCard(
         Action,
         Profile,
         TextOnly,
-        Chart,
+        Chart
     }
 }

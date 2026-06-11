@@ -39,16 +39,16 @@ import kotlinx.coroutines.delay
 @Composable
 fun AnimatedEntryList(
     items: List<String>,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         itemsIndexed(
             items = items,
-            key = { _, item -> item }, // stable identity so animation state survives recomposition
+            key = { _, item -> item } // stable identity so animation state survives recomposition
         ) { index, item ->
             AnimatedEntry(index = index) {
                 ListRow(text = item, modifier = Modifier.animateItem())
@@ -65,7 +65,7 @@ fun AnimatedEntryList(
 @Composable
 private fun AnimatedEntry(
     index: Int,
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     // rememberSaveable keeps a row from re-animating after it has already appeared:
     // once `visible` is true it stays true, and AnimatedVisibility won't replay the
@@ -85,8 +85,8 @@ private fun AnimatedEntry(
         enter = fadeIn(animationSpec = tween(durationMillis = 400)) +
             slideInVertically(
                 animationSpec = tween(durationMillis = 400),
-                initialOffsetY = { it / 2 },
-            ),
+                initialOffsetY = { it / 2 }
+            )
     ) {
         content()
     }
@@ -95,16 +95,16 @@ private fun AnimatedEntry(
 @Composable
 private fun ListRow(
     text: String,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Text(
             text = text,
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(16.dp)
         )
     }
 }
@@ -113,6 +113,6 @@ private fun ListRow(
 @Composable
 private fun AnimatedEntryListPreview() {
     AnimatedEntryList(
-        items = List(20) { "Item #${it + 1}" },
+        items = List(20) { "Item #${it + 1}" }
     )
 }

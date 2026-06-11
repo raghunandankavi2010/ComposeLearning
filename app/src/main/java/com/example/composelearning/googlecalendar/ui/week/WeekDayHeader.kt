@@ -51,8 +51,11 @@ fun WeekDayHeader(
                 Text(
                     text = DateUtils.formatShortDay(date).uppercase().take(3),
                     style = MaterialTheme.typography.labelSmall,
-                    color = if (isToday) MaterialTheme.colorScheme.primary
-                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = if (isToday) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
                     fontSize = 11.sp,
                     textAlign = TextAlign.Center
                 )

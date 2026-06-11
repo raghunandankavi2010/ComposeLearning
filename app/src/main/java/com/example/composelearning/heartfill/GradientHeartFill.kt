@@ -107,31 +107,31 @@ fun GradientHeartFill(modifier: Modifier = Modifier) {
             .systemBarsPadding()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Center
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(1f),
+                .aspectRatio(1f)
         ) {
             HeartCanvas(
                 progressProvider = { progress.value },
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize()
             )
         }
         Text(
             text = "Diagonal gradient fill — bottom-left → top-right",
             color = Color(0xFF9FA8C7),
             style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier.padding(top = 16.dp),
+            modifier = Modifier.padding(top = 16.dp)
         )
         Button(
             onClick = { scope.launch { progress.runFillAnimation() } },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF1D2440),
-                contentColor = Color(0xFFFF6B9D),
+                contentColor = Color(0xFFFF6B9D)
             ),
-            modifier = Modifier.padding(top = 8.dp),
+            modifier = Modifier.padding(top = 8.dp)
         ) {
             Text("Replay")
         }
@@ -142,14 +142,14 @@ private suspend fun Animatable<Float, AnimationVector1D>.runFillAnimation() {
     snapTo(0f)
     animateTo(
         targetValue = 1f,
-        animationSpec = tween(durationMillis = 1_800, easing = FastOutSlowInEasing),
+        animationSpec = tween(durationMillis = 1_800, easing = FastOutSlowInEasing)
     )
 }
 
 @Composable
 private fun HeartCanvas(
     progressProvider: () -> Float,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Canvas(modifier = modifier) {
         // Reading progress inside the draw scope keeps the animation in the draw
@@ -163,10 +163,10 @@ private fun HeartCanvas(
             colors = listOf(
                 Color(0xFFFF6B9D), // pink
                 Color(0xFFE53935), // red
-                Color(0xFF8E24AA), // violet
+                Color(0xFF8E24AA) // violet
             ),
             start = Offset(0f, size.height),
-            end = Offset(size.width, 0f),
+            end = Offset(size.width, 0f)
         )
 
         // Always-visible outline so the unfilled remainder of the shape reads
@@ -209,27 +209,39 @@ private fun heartPath(size: Size): Path {
         moveTo(w / 2f, h / 5f)
         // Left lobe: notch → left edge.
         cubicTo(
-            w * 0.36f, -h / 25f,
-            0f, h / 15f,
-            w / 28f, h * 0.42f,
+            w * 0.36f,
+            -h / 25f,
+            0f,
+            h / 15f,
+            w / 28f,
+            h * 0.42f
         )
         // Left flank: left edge → bottom tip.
         cubicTo(
-            w / 14f, h * 0.62f,
-            w * 0.36f, h * 0.78f,
-            w / 2f, h * 0.95f,
+            w / 14f,
+            h * 0.62f,
+            w * 0.36f,
+            h * 0.78f,
+            w / 2f,
+            h * 0.95f
         )
         // Right flank: bottom tip → right edge (mirror of the left flank).
         cubicTo(
-            w * 0.64f, h * 0.78f,
-            w * (13f / 14f), h * 0.62f,
-            w * (27f / 28f), h * 0.42f,
+            w * 0.64f,
+            h * 0.78f,
+            w * (13f / 14f),
+            h * 0.62f,
+            w * (27f / 28f),
+            h * 0.42f
         )
         // Right lobe: right edge → notch (mirror of the left lobe).
         cubicTo(
-            w, h / 15f,
-            w * 0.64f, -h / 25f,
-            w / 2f, h / 5f,
+            w,
+            h / 15f,
+            w * 0.64f,
+            -h / 25f,
+            w / 2f,
+            h / 5f
         )
         close()
     }

@@ -40,7 +40,7 @@ fun SmoothProgressBar(
     separatorLength: Dp = 4.dp,
     mirrorMode: Boolean = false,
     reversed: Boolean = false,
-    easing: Easing = AccelerateEasing,
+    easing: Easing = AccelerateEasing
 ) {
     require(sectionsCount >= 1) { "sectionsCount must be >= 1" }
     require(colors.isNotEmpty()) { "colors must not be empty" }
@@ -76,7 +76,7 @@ fun SmoothProgressBar(
     Canvas(
         modifier = modifier
             .fillMaxWidth()
-            .height(strokeWidth),
+            .height(strokeWidth)
     ) {
         if (reversed) {
             scale(scaleX = -1f, scaleY = 1f) {
@@ -88,7 +88,7 @@ fun SmoothProgressBar(
                     strokePx = strokePx,
                     separatorPx = separatorPx,
                     mirrorMode = mirrorMode,
-                    easing = easing,
+                    easing = easing
                 )
             }
         } else {
@@ -100,7 +100,7 @@ fun SmoothProgressBar(
                 strokePx = strokePx,
                 separatorPx = separatorPx,
                 mirrorMode = mirrorMode,
-                easing = easing,
+                easing = easing
             )
         }
     }
@@ -114,7 +114,7 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawSections(
     strokePx: Float,
     separatorPx: Float,
     mirrorMode: Boolean,
-    easing: Easing,
+    easing: Easing
 ) {
     val totalWidth = size.width
     val centerY = size.height / 2f
@@ -140,7 +140,7 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawSections(
                 start = Offset(prevValue, centerY),
                 end = Offset(end, centerY),
                 strokeWidth = strokePx,
-                cap = StrokeCap.Butt,
+                cap = StrokeCap.Butt
             )
             if (mirrorMode) {
                 drawLine(
@@ -148,7 +148,7 @@ private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawSections(
                     start = Offset(totalWidth - prevValue, centerY),
                     end = Offset(totalWidth - end, centerY),
                     strokeWidth = strokePx,
-                    cap = StrokeCap.Butt,
+                    cap = StrokeCap.Butt
                 )
             }
         }

@@ -191,4 +191,3 @@ fun PagerState.calculateCurrentOffsetForPage(page: Int): Float {
 @OptIn(ExperimentalFoundationApi::class)
 val PagerState.pageOffset: Float
     get() = this.currentPage + this.currentPageOffsetFraction
-

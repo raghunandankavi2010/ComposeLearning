@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 
 @Preview
 @Composable
-fun SubComposeLayoutDemo() {
+private fun SubComposeLayoutDemo() {
     ResizeWidthColumn(Modifier.fillMaxWidth(), true) {
         Text(
             text = "Looooooooooooooooooong text",
@@ -39,14 +39,14 @@ fun SubComposeLayoutDemo() {
 }
 
 @Composable
-fun ResizeWidthColumn(modifier: Modifier, resize: Boolean, mainContent: @Composable () -> Unit) {
+fun ResizeWidthColumn(modifier: Modifier = Modifier, resize: Boolean, mainContent: @Composable () -> Unit) {
     SubcomposeLayout(modifier) { constraints ->
         val mainPlaceables = subcompose(SlotsEnum.Main, mainContent).map {
             // Here we measure the width/height of the child Composables
             it.measure(Constraints())
         }
 
-        //Here we find the max width/height of the child Composables
+        // Here we find the max width/height of the child Composables
         val maxSize = mainPlaceables.fold(IntSize.Zero) { currentMax, placeable ->
             IntSize(
                 width = maxOf(currentMax.width, placeable.width),
@@ -57,7 +57,7 @@ fun ResizeWidthColumn(modifier: Modifier, resize: Boolean, mainContent: @Composa
         val resizedPlaceables: List<Placeable> =
             subcompose(SlotsEnum.Dependent, mainContent).map {
                 if (resize) {
-                    /** Here we rewrite the child Composables to have the width of
+                    /* Here we rewrite the child Composables to have the width of
                      * widest Composable
                      */
                     it.measure(
@@ -71,7 +71,7 @@ fun ResizeWidthColumn(modifier: Modifier, resize: Boolean, mainContent: @Composa
                 }
             }
 
-        /**
+        /*
          * We can place the Composables on the screen
          * with layout() and the place() functions
          */
@@ -85,7 +85,6 @@ fun ResizeWidthColumn(modifier: Modifier, resize: Boolean, mainContent: @Composa
     }
 }
 
-
 enum class SlotsEnum {
     Main,
     Dependent
@@ -93,7 +92,7 @@ enum class SlotsEnum {
 
 @Preview
 @Composable
-fun EqualWidthTexts() {
+private fun EqualWidthTexts() {
     MeasureUnconstrainedViewWidth(
         viewToMeasure = {
             Text(
@@ -128,7 +127,7 @@ fun EqualWidthTexts() {
 @Composable
 fun MeasureUnconstrainedViewWidth(
     viewToMeasure: @Composable () -> Unit,
-    content: @Composable (measuredWidth: Dp) -> Unit,
+    content: @Composable (measuredWidth: Dp) -> Unit
 ) {
     SubcomposeLayout { constraints ->
         val measuredWidth = subcompose("viewToMeasure", viewToMeasure)[0]

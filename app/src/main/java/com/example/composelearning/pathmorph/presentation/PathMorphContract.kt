@@ -4,7 +4,7 @@ import com.example.composelearning.pathmorph.domain.model.PhoneShape
 
 data class PathMorphState(
     val isLoading: Boolean = true,
-    val phones: List<PhoneShape> = emptyList(),
+    val phones: List<PhoneShape> = emptyList()
 )
 
 sealed interface PathMorphIntent {

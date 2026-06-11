@@ -107,7 +107,7 @@ fun SquigglySliderSample(onBack: () -> Unit) {
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text("Design Parameters", fontWeight = FontWeight.Bold)
-                    
+
                     Spacer(modifier = Modifier.height(16.dp))
                     Text("Squiggle Amplitude: ${amplitude.toInt()}dp", fontSize = 12.sp)
                     Slider(value = amplitude, onValueChange = { amplitude = it }, valueRange = 0f..15f)
@@ -163,7 +163,7 @@ fun SquigglySlider(
             ) {
                 val width = size.width
                 val centerY = size.height / 2
-                
+
                 val ampPx = amplitude.dp.toPx()
                 val wavePx = wavelength.dp.toPx()
                 val piFloat = PI.toFloat()
@@ -187,7 +187,7 @@ fun SquigglySlider(
                     activePath.lineTo(x, y)
                     x += 2f
                 }
-                
+
                 // Ensure it ends exactly at thumb position
                 if (limitX > 0f) {
                    activePath.lineTo(limitX, centerY + ampPx * sin((2f * piFloat * limitX / wavePx) + phase))

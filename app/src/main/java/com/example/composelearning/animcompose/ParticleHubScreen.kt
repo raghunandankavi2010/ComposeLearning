@@ -55,13 +55,13 @@ fun ParticleAnimationsHubScreen() {
                             Tab(
                                 selected = selectedTab == index,
                                 onClick = { selectedTab = index },
-                                text = { 
+                                text = {
                                     Text(
-                                        text = title, 
+                                        text = title,
                                         style = MaterialTheme.typography.labelLarge,
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis
-                                    ) 
+                                    )
                                 }
                             )
                         }

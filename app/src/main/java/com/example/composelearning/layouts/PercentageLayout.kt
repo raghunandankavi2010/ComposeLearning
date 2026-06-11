@@ -49,7 +49,7 @@ fun PercentageBaseLayout(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 24.dp, vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Header()
 
@@ -58,14 +58,14 @@ fun PercentageBaseLayout(modifier: Modifier = Modifier) {
             childSize = childSize,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f),
+                .weight(1f)
         )
 
         PercentageReadout(percentage)
 
         Slider(
             value = percentage,
-            onValueChange = { percentage = it },
+            onValueChange = { percentage = it }
         )
     }
 }
@@ -76,13 +76,13 @@ private fun Header() {
         Text(
             text = "Percentage layout",
             style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.SemiBold,
+            fontWeight = FontWeight.SemiBold
         )
         Spacer(Modifier.height(4.dp))
         Text(
             text = "Drag the slider — the avatar's Y is (parent − child) × percentage.",
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -91,7 +91,7 @@ private fun Header() {
 private fun PercentageTrack(
     percentage: Float,
     childSize: Dp,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val outline = MaterialTheme.colorScheme.outlineVariant
     val accent = MaterialTheme.colorScheme.primary
@@ -100,7 +100,7 @@ private fun PercentageTrack(
         modifier = modifier
             .clip(RoundedCornerShape(24.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(16.dp),
+            .padding(16.dp)
     ) {
         val parentHeight = maxHeight
         val travel = parentHeight - childSize
@@ -110,7 +110,7 @@ private fun PercentageTrack(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(end = childSize + 24.dp),
-            tickColor = outline,
+            tickColor = outline
         )
 
         Box(
@@ -120,20 +120,20 @@ private fun PercentageTrack(
                 .size(childSize)
                 .clip(RoundedCornerShape(24.dp))
                 .background(accent),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             Text(
                 text = "${(percentage * 100).toInt()}%",
                 color = MaterialTheme.colorScheme.onPrimary,
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.SemiBold
             )
         }
     }
 }
 
 @Composable
-private fun TickRuler(modifier: Modifier, tickColor: Color) {
+private fun TickRuler(modifier: Modifier = Modifier, tickColor: Color) {
     Canvas(modifier = modifier) {
         val ticks = 11
         val strokePx = 2.dp.toPx()
@@ -147,7 +147,7 @@ private fun TickRuler(modifier: Modifier, tickColor: Color) {
                 start = Offset(xStart, y),
                 end = Offset(size.width, y),
                 strokeWidth = strokePx,
-                cap = androidx.compose.ui.graphics.StrokeCap.Round,
+                cap = androidx.compose.ui.graphics.StrokeCap.Round
             )
         }
     }
@@ -159,6 +159,6 @@ private fun PercentageReadout(percentage: Float) {
     Text(
         text = "Position: ${(percentage * 100).toInt()}% · density: ${density.density}x",
         style = MaterialTheme.typography.labelMedium,
-        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
     )
 }

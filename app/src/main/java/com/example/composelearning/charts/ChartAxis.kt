@@ -23,14 +23,14 @@ data class ChartAxis(
     val labelFormatter: (Float) -> String = { it.toString() },
     val tickCount: Int = 5,
     val labelGap: Dp = 4.dp,
-    val labelRotationDegrees: Float = 0f,
+    val labelRotationDegrees: Float = 0f
 )
 
 /** Bounds along one axis. Use [autoNice] to expand to a tick-aligned range. */
 @Immutable
 data class AxisRange(
     val min: Float,
-    val max: Float,
+    val max: Float
 ) {
     val span: Float get() = max - min
 }

@@ -20,26 +20,27 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ConditionalText(modifier: Modifier = Modifier) {
-
     val context = LocalContext.current
-    val minimumLineLength = 2   //Change this to your desired value
-    //Adding States
+    val minimumLineLength = 2 // Change this to your desired value
+    // Adding States
     var expandedState by remember { mutableStateOf(false) }
     var showReadMoreButtonState by remember { mutableStateOf(false) }
     // ue this to expand and collpase
-    //val maxLines = if (expandedState) 200 else minimumLineLength
+    // val maxLines = if (expandedState) 200 else minimumLineLength
 
     Column(modifier = Modifier.padding(24.dp)) {
         Text(
             text = "This is a very long text which goes over two lines. We show a ellipse and also show ReadMore text." +
-                    " When user clicks on Read More we take him to a new screen. What do you think of the implementation?",
+                " When user clicks on Read More we take him to a new screen. What do you think of the implementation?",
             style = MaterialTheme.typography.bodySmall,
-            overflow = TextOverflow.Ellipsis,   //Make sure to add this line
+            overflow = TextOverflow.Ellipsis, // Make sure to add this line
             maxLines = 2,
             onTextLayout = { textLayoutResult: TextLayoutResult ->
-                if (textLayoutResult.lineCount > minimumLineLength - 1) { //Adding this check to avoid ArrayIndexOutOfBounds Exception
-                    if (textLayoutResult.isLineEllipsized(minimumLineLength - 1)) showReadMoreButtonState =
-                        true
+                if (textLayoutResult.lineCount > minimumLineLength - 1) { // Adding this check to avoid ArrayIndexOutOfBounds Exception
+                    if (textLayoutResult.isLineEllipsized(minimumLineLength - 1)) {
+                        showReadMoreButtonState =
+                            true
+                    }
                 }
             }
         )
@@ -49,14 +50,13 @@ fun ConditionalText(modifier: Modifier = Modifier) {
                 color = Color.Gray,
 
                 modifier = Modifier.clickable {
-                    Toast.makeText(context.applicationContext,"Clicked Read More", Toast.LENGTH_SHORT).show()
-                   // expandedState = !expandedState
+                    Toast.makeText(context.applicationContext, "Clicked Read More", Toast.LENGTH_SHORT).show()
+                    // expandedState = !expandedState
                 },
 
                 style = MaterialTheme.typography.bodySmall
 
             )
         }
-
     }
 }

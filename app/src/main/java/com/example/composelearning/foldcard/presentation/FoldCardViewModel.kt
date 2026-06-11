@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class FoldCardViewModel(
-    private val getCard: GetFoldCardUseCase,
+    private val getCard: GetFoldCardUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(FoldCardState())
@@ -33,7 +33,6 @@ class FoldCardViewModel(
 
     class Factory : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            FoldCardViewModel(GetFoldCardUseCase(FoldCardRepositoryImpl())) as T
+        override fun <T : ViewModel> create(modelClass: Class<T>): T = FoldCardViewModel(GetFoldCardUseCase(FoldCardRepositoryImpl())) as T
     }
 }

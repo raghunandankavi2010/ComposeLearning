@@ -19,7 +19,7 @@ enum class LineSmoothing { Linear, Cubic, Step }
 fun buildLinePath(
     points: List<Offset>,
     smoothing: LineSmoothing,
-    path: Path = Path(),
+    path: Path = Path()
 ): Path {
     path.reset()
     if (points.isEmpty()) return path
@@ -34,6 +34,7 @@ fun buildLinePath(
                 path.lineTo(p.x, p.y)
             }
         }
+
         LineSmoothing.Step -> {
             for (i in 1 until points.size) {
                 val prev = points[i - 1]
@@ -44,6 +45,7 @@ fun buildLinePath(
                 path.lineTo(curr.x, curr.y)
             }
         }
+
         LineSmoothing.Cubic -> {
             for (i in 1 until points.size) {
                 val p0 = points[(i - 2).coerceAtLeast(0)]
@@ -53,11 +55,11 @@ fun buildLinePath(
                 val tension = 0.5f
                 val c1 = Offset(
                     x = p1.x + (p2.x - p0.x) / 6f * tension,
-                    y = p1.y + (p2.y - p0.y) / 6f * tension,
+                    y = p1.y + (p2.y - p0.y) / 6f * tension
                 )
                 val c2 = Offset(
                     x = p2.x - (p3.x - p1.x) / 6f * tension,
-                    y = p2.y - (p3.y - p1.y) / 6f * tension,
+                    y = p2.y - (p3.y - p1.y) / 6f * tension
                 )
                 path.cubicTo(c1.x, c1.y, c2.x, c2.y, p2.x, p2.y)
             }

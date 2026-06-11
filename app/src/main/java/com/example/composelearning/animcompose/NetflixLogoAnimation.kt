@@ -96,9 +96,9 @@ fun NetflixLogoAnimation(modifier: Modifier = Modifier) {
             .background(Color.Black)
             .clickable(
                 interactionSource = interaction,
-                indication = null,
+                indication = null
             ) { replay += 1 },
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Canvas(
             modifier = Modifier
@@ -108,12 +108,12 @@ fun NetflixLogoAnimation(modifier: Modifier = Modifier) {
                     scaleY = zoom.value
                     alpha = fade.value
                     transformOrigin = TransformOrigin(0.5f, 0.5f)
-                },
+                }
         ) {
             drawNetflixN(
                 leftFill = leftFill.value,
                 rightFill = rightFill.value,
-                diagFill = diagFill.value,
+                diagFill = diagFill.value
             )
         }
     }
@@ -122,7 +122,7 @@ fun NetflixLogoAnimation(modifier: Modifier = Modifier) {
 private fun DrawScope.drawNetflixN(
     leftFill: Float,
     rightFill: Float,
-    diagFill: Float,
+    diagFill: Float
 ) {
     val w = size.width
     val h = size.height
@@ -132,10 +132,10 @@ private fun DrawScope.drawNetflixN(
     // (TL touches right-top of the left vertical; BR touches left-bottom of the right vertical),
     // plus an offset of strokeW to give the diagonal a consistent thickness at top and bottom.
     val diagPath = Path().apply {
-        moveTo(strokeW, 0f)                  // TL
-        lineTo(2 * strokeW, 0f)              // TR
-        lineTo(w - strokeW, h)               // BR
-        lineTo(w - 2 * strokeW, h)           // BL
+        moveTo(strokeW, 0f) // TL
+        lineTo(2 * strokeW, 0f) // TR
+        lineTo(w - strokeW, h) // BR
+        lineTo(w - 2 * strokeW, h) // BL
         close()
     }
 
@@ -145,10 +145,10 @@ private fun DrawScope.drawNetflixN(
             brush = Brush.verticalGradient(
                 colors = listOf(NetflixHighlight, NetflixRed, NetflixDarkRed),
                 startY = 0f,
-                endY = h,
+                endY = h
             ),
             topLeft = Offset.Zero,
-            size = Size(w, h * diagFill),
+            size = Size(w, h * diagFill)
         )
     }
 
@@ -157,10 +157,10 @@ private fun DrawScope.drawNetflixN(
         brush = Brush.horizontalGradient(
             colors = listOf(NetflixRed, NetflixDarkRed),
             startX = 0f,
-            endX = strokeW,
+            endX = strokeW
         ),
         topLeft = Offset.Zero,
-        size = Size(strokeW, h * leftFill),
+        size = Size(strokeW, h * leftFill)
     )
 
     // Right vertical — mirrored gradient for a subtle 3D-edge feel.
@@ -168,9 +168,9 @@ private fun DrawScope.drawNetflixN(
         brush = Brush.horizontalGradient(
             colors = listOf(NetflixDarkRed, NetflixRed),
             startX = w - strokeW,
-            endX = w,
+            endX = w
         ),
         topLeft = Offset(w - strokeW, 0f),
-        size = Size(strokeW, h * rightFill),
+        size = Size(strokeW, h * rightFill)
     )
 }

@@ -5,7 +5,7 @@ import com.example.composelearning.tutorial.domain.repository.CardsRepository
 import kotlinx.coroutines.flow.Flow
 
 class GetCardsUseCase(
-    private val repository: CardsRepository,
+    private val repository: CardsRepository
 ) {
     operator fun invoke(): Flow<List<FeatureCard>> = repository.observeCards()
 }

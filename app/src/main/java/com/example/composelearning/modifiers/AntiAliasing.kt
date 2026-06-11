@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 
 @Preview
 @Composable
-fun AntiAliasToggleTest() {
+private fun AntiAliasToggleTest() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -34,8 +34,10 @@ fun AntiAliasToggleTest() {
 
 private val DisableAntiAliasFilter =
     android.graphics.PaintFlagsDrawFilter(
-        /* clearBits = */ android.graphics.Paint.ANTI_ALIAS_FLAG,
-        /* setBits = */ 0
+        /* clearBits = */
+        android.graphics.Paint.ANTI_ALIAS_FLAG,
+        /* setBits = */
+        0
     )
 
 @Composable

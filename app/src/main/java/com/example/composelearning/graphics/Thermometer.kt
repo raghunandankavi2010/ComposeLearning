@@ -26,7 +26,7 @@ import com.example.composelearning.R
 fun ThermometerCanvas(modifier: Modifier = Modifier, progress: Int = 100) {
     // totalProgess = 161 is the height - dia of circle - padding
     val totalProgress = 161 - 40 - 12
-    val actualProgress = progress  * (totalProgress) / 100 - (6*2) // padding is twice
+    val actualProgress = progress * (totalProgress) / 100 - (6 * 2) // padding is twice
     val vector = ImageVector.vectorResource(id = R.drawable.thermometer)
     val painter = rememberVectorPainter(image = vector)
 
@@ -47,7 +47,6 @@ fun ThermometerCanvas(modifier: Modifier = Modifier, progress: Int = 100) {
     Canvas(
         modifier = modifier.fillMaxSize().padding(start = 50.dp, top = 50.dp)
     ) {
-
 //        translate(left = 150.dp.toPx() - 25.dp.toPx()- 55.dp.toPx() - 40.dp.toPx(),
 //            top = 150.dp.toPx() - 25.dp.toPx() - totalProgress.dp.toPx() ) {
 //            with(painterNum) {
@@ -66,8 +65,7 @@ fun ThermometerCanvas(modifier: Modifier = Modifier, progress: Int = 100) {
 //            }
 //        }
 
-
-        translate(left = 150.dp.toPx() - 25.dp.toPx()- 55.dp.toPx(), top = 150.dp.toPx() - 25.dp.toPx() - totalProgress.dp.toPx()) {
+        translate(left = 150.dp.toPx() - 25.dp.toPx() - 55.dp.toPx(), top = 150.dp.toPx() - 25.dp.toPx() - totalProgress.dp.toPx()) {
             with(painter) {
                 draw(
                     size = Size(50.dp.toPx(), 161.dp.toPx())
@@ -78,7 +76,7 @@ fun ThermometerCanvas(modifier: Modifier = Modifier, progress: Int = 100) {
             drawCircle(
                 color = Color(0xFF25AB21),
                 center = Offset(25.dp.toPx(), 161.dp.toPx() - 26.dp.toPx()),
-                radius = 20.dp.toPx(),
+                radius = 20.dp.toPx()
             )
 
             // Drawing the line above the circle to indicate the meter
@@ -87,7 +85,7 @@ fun ThermometerCanvas(modifier: Modifier = Modifier, progress: Int = 100) {
                 start = Offset(25.dp.toPx(), totalProgress.dp.toPx() + 5.dp.toPx()), // 5dp is to make sure rounded cap overlaps with circle
                 end = Offset(
                     25.dp.toPx(),
-                    totalProgress.dp.toPx()  - ((actualProgress.dp.toPx()) * animVal.value)
+                    totalProgress.dp.toPx() - ((actualProgress.dp.toPx()) * animVal.value)
                 ),
                 strokeWidth = 15.dp.toPx(),
                 StrokeCap.Round
@@ -112,6 +110,6 @@ fun ThermometerCanvas(modifier: Modifier = Modifier, progress: Int = 100) {
 
 @Preview
 @Composable
-fun PreviewThermometerCanvas() {
+private fun PreviewThermometerCanvas() {
     ThermometerCanvas()
 }

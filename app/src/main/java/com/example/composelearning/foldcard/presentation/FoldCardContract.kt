@@ -4,7 +4,7 @@ import com.example.composelearning.foldcard.domain.model.FoldCardItem
 
 data class FoldCardState(
     val isLoading: Boolean = true,
-    val card: FoldCardItem? = null,
+    val card: FoldCardItem? = null
 )
 
 sealed interface FoldCardIntent {

@@ -87,7 +87,7 @@ class ScreenSmokeTests {
 
             // Go back to the home screen
             Espresso.pressBack()
-            
+
             // Verify we're back at the home screen
             composeTestRule.onNodeWithText("Jetpack Compose Animations").assertIsDisplayed()
         }

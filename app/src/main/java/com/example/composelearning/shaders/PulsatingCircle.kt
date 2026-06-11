@@ -28,7 +28,7 @@ val GREEN = Color(0xFF8706D7)
 
 @Language("AGSL")
 private val blurShader = """
-    
+
 layout(color) uniform half4 iColor;
 uniform float iResolution_x;
 uniform float iResolution_y;

@@ -13,7 +13,7 @@ private suspend fun SortContext.bubbleSort() {
                 swap(j, j + 1)
             } else {
                 peek()
-         }
+            }
         }
     }
 }
@@ -27,12 +27,12 @@ private suspend fun SortContext.bubbleSort() {
 @Composable
 fun BubbleSortRainbow(
     modifier: Modifier = Modifier,
-    applyOwnInsets: Boolean = true,
+    applyOwnInsets: Boolean = true
 ) {
     SortVisualizer(
         sortName = "Bubble Sort",
         sortAction = { bubbleSort() },
         modifier = modifier,
-        applyOwnInsets = applyOwnInsets,
+        applyOwnInsets = applyOwnInsets
     )
 }

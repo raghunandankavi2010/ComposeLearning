@@ -143,7 +143,7 @@ fun Modifier.pageCurl(
     pointer: () -> Float,
     origin: () -> Float,
     padding: Dp,
-    cornerRadius: Dp,
+    cornerRadius: Dp
 ): Modifier = this.graphicsLayer {
     clip = false
     val padPx = padding.toPx()
@@ -154,10 +154,10 @@ fun Modifier.pageCurl(
     shader.setFloatUniform("origin", origin())
     shader.setFloatUniform(
         "container",
-        padPx,                  // left
-        padPx,                  // top
-        size.width - padPx,     // right
-        size.height - padPx,    // bottom
+        padPx, // left
+        padPx, // top
+        size.width - padPx, // right
+        size.height - padPx // bottom
     )
     shader.setFloatUniform("cornerRadius", radiusPx)
 

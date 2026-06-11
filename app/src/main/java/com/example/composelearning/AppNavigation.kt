@@ -98,117 +98,222 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @Parcelize
-sealed interface AnimScreen : NavKey, Parcelable {
-    @Serializable data object SequentialFadeGridScreen: AnimScreen
-    @Serializable data object AnimatingWatchDial: AnimScreen
-    @Serializable data object MeshGradient: AnimScreen
-    @Serializable data object DrawScale: AnimScreen
+sealed interface AnimScreen :
+    NavKey,
+    Parcelable {
+    @Serializable data object SequentialFadeGridScreen : AnimScreen
+
+    @Serializable data object AnimatingWatchDial : AnimScreen
+
+    @Serializable data object MeshGradient : AnimScreen
+
+    @Serializable data object DrawScale : AnimScreen
+
     @Serializable data object Home : AnimScreen
+
     @Serializable data object CanvasBasicsHub : AnimScreen
+
     @Serializable data object MathBasics : AnimScreen
+
     @Serializable data object DrawingFundamentals : AnimScreen
+
     @Serializable data object LinesShapesArcs : AnimScreen
+
     @Serializable data object PathsComplexShapes : AnimScreen
+
     @Serializable data object ImagesBitmaps : AnimScreen
+
     @Serializable data object CanvasState : AnimScreen
+
     @Serializable data object TouchGestures : AnimScreen
+
     @Serializable data object AnimationBasics : AnimScreen
+
     @Serializable data object ValueBasedAnimations : AnimScreen
+
     @Serializable data object TransitionAnimations : AnimScreen
+
     @Serializable data object PhysicsAnimations : AnimScreen
+
     @Serializable data object GameEnvironment : AnimScreen
+
     @Serializable data object BottleWaveAnimation : AnimScreen
+
     @Serializable data object DatePickerScreen : AnimScreen
+
     @Serializable data object FileDeleteAnimation : AnimScreen
+
     @Serializable data object ThermometerAnimation : AnimScreen
+
     @Serializable data object StackedCards : AnimScreen
+
     @Serializable data object April2026Features : AnimScreen
+
     @Serializable data object AnimatedBalance : AnimScreen
+
     @Serializable data object BezierCurves : AnimScreen
+
     @Serializable data object SineWave : AnimScreen
+
     @Serializable data object CustomPager : AnimScreen
+
     @Serializable data object ArcList : AnimScreen
+
     @Serializable data object SquigglySpans : AnimScreen
+
     @Serializable data object Passkeys : AnimScreen
+
     @Serializable data object SquigglySlider : AnimScreen
+
     @Serializable data object InboxRecyclerView : AnimScreen
+
     @Serializable data object YouTubeStyle : AnimScreen
+
     @Serializable data object CircleMenu : AnimScreen
+
     @Serializable data object ChatApp : AnimScreen
+
     @Serializable data object SimpleNav : AnimScreen
+
     @Serializable data object BottomSheet : AnimScreen
+
     @Serializable data object Spotlight : AnimScreen
+
     @Serializable data object TextShimmer : AnimScreen
+
     @Serializable data object CardFlip : AnimScreen
+
     @Serializable data object FluidTabs : AnimScreen
+
     @Serializable data object DraggableSheet : AnimScreen
+
     @Serializable data object StaggeredGrid : AnimScreen
+
     @Serializable data object ParticleHub : AnimScreen
+
     @Serializable data object ChartsHub : AnimScreen
+
     @Serializable data object SensorCard : AnimScreen
+
     @Serializable data object GradientProgress : AnimScreen
+
     @Serializable data object CircularReveal : AnimScreen
+
     @Serializable data object PulsatingCircles : AnimScreen
 
-    @Serializable data object SpinningWheel: AnimScreen {
-    }
+    @Serializable data object SpinningWheel : AnimScreen
+
     @Serializable data object BouncingBall : AnimScreen
+
     @Serializable data object MultiColorProgress : AnimScreen
+
     @Serializable data object SharedElementProduct : AnimScreen
+
     @Serializable data object SidePanelDemo : AnimScreen
+
     @Serializable data object Speedometer : AnimScreen
+
     @Serializable data object FitnessLineChart : AnimScreen
+
     @Serializable data object BarChartDemo : AnimScreen
+
     @Serializable data object DonutChartDemo : AnimScreen
+
     @Serializable data object PieChartDemo : AnimScreen
+
     @Serializable data object CandleChartDemo : AnimScreen
+
     @Serializable data object TemperatureGaugeDemo : AnimScreen
+
     @Serializable data object ShaderDemos : AnimScreen
+
     @Serializable data object TutorialOverlay : AnimScreen
+
     @Serializable data object ShadowsPlayground : AnimScreen
+
     @Serializable data object TimeRangeKnob : AnimScreen
+
     @Serializable data object BiometricDemo : AnimScreen
+
     @Serializable data object ButtonAnimation : AnimScreen
+
     @Serializable data object CalendarPicker : AnimScreen
+
     @Serializable data object BlurEffects : AnimScreen
+
     @Serializable data object ListsShowcase : AnimScreen
+
     @Serializable data object AnimatedListEntry : AnimScreen
+
     @Serializable data object PercentageLayout : AnimScreen
+
     @Serializable data object PathProgress : AnimScreen
+
     @Serializable data object PagerShowcase : AnimScreen
+
     @Serializable data object MarqueeDemo : AnimScreen
+
     @Serializable data object OverlappingImages : AnimScreen
+
     @Serializable data object NetflixLogo : AnimScreen
+
     @Serializable data object AnmolNetflix : AnimScreen
+
     @Serializable data object SortAnimation : AnimScreen
+
     @Serializable data object ImageProcessing : AnimScreen
+
     @Serializable data object SaveActivity : AnimScreen
+
     @Serializable data object ZoomableImage : AnimScreen
+
     @Serializable data object PerItemViewModel : AnimScreen
+
     @Serializable data object SmoothProgress : AnimScreen
+
     @Serializable data object FlightSeat : AnimScreen
+
     @Serializable data object FanCarousel : AnimScreen
+
     @Serializable data object ArcCarousel : AnimScreen
+
     @Serializable data object TabsSample : AnimScreen
+
     @Serializable data object GoogleCalendar : AnimScreen
+
     @Serializable data object FluidSpring : AnimScreen
+
     @Serializable data object RiveoPageCurl : AnimScreen
+
     @Serializable data object WalletStack : AnimScreen
+
     @Serializable data object Breathing : AnimScreen
+
     @Serializable data object PathMorph : AnimScreen
+
     @Serializable data object ActivityRings : AnimScreen
+
     @Serializable data object FoldCard : AnimScreen
+
     @Serializable data object IpodWheel : AnimScreen
+
     @Serializable data object ClearTodo : AnimScreen
+
     @Serializable data object GoogleCalling : AnimScreen
+
     @Serializable data object ProtobufDemo : AnimScreen
+
     @Serializable data object ParallaxList : AnimScreen
+
     @Serializable data object UniquePathVisualizer : AnimScreen
+
     @Serializable data object SolarSystem : AnimScreen
+
     @Serializable data object GradientHeartFill : AnimScreen
 
     /** Second-level home screen listing all demos of one [com.example.composelearning.animcompose.FeatureGroup]. */
-    @Serializable @Parcelize data class Group(val groupId: String) : AnimScreen
+    @Serializable @Parcelize
+    data class Group(val groupId: String) : AnimScreen
 }
 
 @Composable
@@ -252,8 +357,7 @@ fun AppNavigation(
         entry<AnimScreen.ThermometerAnimation> { com.example.composelearning.animcompose.ThermometerAnimation() }
         entry<AnimScreen.StackedCards> { com.example.composelearning.animcompose.TinderSwipeScreen() }
         entry<AnimScreen.April2026Features> {
-            com.example.composelearning.animcompose.April2026FeaturesScreen(
-                onBack = { navigator.goBack() })
+            com.example.composelearning.animcompose.April2026FeaturesScreen(onBack = { navigator.goBack() })
         }
         entry<AnimScreen.AnimatedBalance> { AnimatedBalanceDemo() }
         entry<AnimScreen.BezierCurves> { BezierShowcaseScreen(onBack = { navigator.goBack() }) }
@@ -265,19 +369,17 @@ fun AppNavigation(
         entry<AnimScreen.SquigglySlider> { SquigglySliderSample(onBack = { navigator.goBack() }) }
         entry<AnimScreen.DrawScale> { DrawScaleOnTouch(onBack = { navigator.goBack() }) }
         entry<AnimScreen.YouTubeStyle> {
-            com.example.composelearning.animcompose.YouTubeScreen(
-                onBack = { navigator.goBack() })
+            com.example.composelearning.animcompose.YouTubeScreen(onBack = { navigator.goBack() })
         }
         entry<AnimScreen.CircleMenu> { com.example.composelearning.animcompose.CircularMenuScreenWithFullAnimation() }
         entry<AnimScreen.ChatApp> { com.example.composelearning.animcompose.ChatAppNavigation() }
         entry<AnimScreen.SimpleNav> { com.example.composelearning.animcompose.SimpleAppNavigation() }
         entry<AnimScreen.BottomSheet> { com.example.composelearning.animcompose.BottomSheet() }
         entry<AnimScreen.Spotlight> {
-            com.example.composelearning.animcompose.SpotlightDemoScreen(
-                onFinish = { navigator.goBack() })
+            com.example.composelearning.animcompose.SpotlightDemoScreen(onFinish = { navigator.goBack() })
         }
         entry<AnimScreen.TextShimmer> { com.example.composelearning.animcompose.ShimmerTextShowcase() }
-        entry<AnimScreen.CardFlip> { 
+        entry<AnimScreen.CardFlip> {
             Box(
                 modifier = Modifier.fillMaxSize().systemBarsPadding(),
                 contentAlignment = Alignment.Center
@@ -290,7 +392,7 @@ fun AppNavigation(
         entry<AnimScreen.StaggeredGrid> { com.example.composelearning.animcompose.StaggeredGridDemo() }
         entry<AnimScreen.ParticleHub> { com.example.composelearning.animcompose.ParticleAnimationsHubScreen() }
         entry<AnimScreen.ChartsHub> { com.example.composelearning.animcompose.ChartsHubScreen() }
-        entry<AnimScreen.SensorCard> { 
+        entry<AnimScreen.SensorCard> {
             Box(
                 modifier = Modifier.fillMaxSize().systemBarsPadding(),
                 contentAlignment = Alignment.Center
@@ -323,19 +425,19 @@ fun AppNavigation(
         entry<AnimScreen.BiometricDemo> {
             Box(
                 modifier = Modifier.fillMaxSize().systemBarsPadding(),
-                contentAlignment = Alignment.Center,
+                contentAlignment = Alignment.Center
             ) { BiometricDemoPanel() }
         }
         entry<AnimScreen.ButtonAnimation> {
             Box(
                 modifier = Modifier.fillMaxSize().systemBarsPadding(),
-                contentAlignment = Alignment.Center,
+                contentAlignment = Alignment.Center
             ) { ButtonAnimationTest() }
         }
         entry<AnimScreen.CalendarPicker> {
             CalendarScreen(
                 onBackPressed = { navigator.goBack() },
-                mainViewModel = viewModel<CalendarViewModel>(),
+                mainViewModel = viewModel<CalendarViewModel>()
             )
         }
         entry<AnimScreen.BlurEffects> {
@@ -345,7 +447,7 @@ fun AppNavigation(
         entry<AnimScreen.AnimatedListEntry> {
             AnimatedEntryList(
                 items = remember { List(30) { "Animated item #${it + 1}" } },
-                modifier = Modifier.systemBarsPadding(),
+                modifier = Modifier.systemBarsPadding()
             )
         }
         entry<AnimScreen.PagerShowcase> { PagerShowcaseScreen() }
@@ -359,7 +461,7 @@ fun AppNavigation(
                     .systemBarsPadding()
                     .padding(24.dp),
                 verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(32.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AnimatedBorderButton()
                 BorderProgressBar()
@@ -368,10 +470,10 @@ fun AppNavigation(
         entry<AnimScreen.MarqueeDemo> {
             Box(
                 modifier = Modifier.fillMaxSize().systemBarsPadding().padding(24.dp),
-                contentAlignment = Alignment.Center,
+                contentAlignment = Alignment.Center
             ) {
                 MarqueeText(
-                    text = "This is a long marquee text that scrolls horizontally when it overflows the available space — Jetpack Compose marquee demo.",
+                    text = "This is a long marquee text that scrolls horizontally when it overflows the available space — Jetpack Compose marquee demo."
                 )
             }
         }
@@ -409,8 +511,7 @@ fun AppNavigation(
         entry<AnimScreen.IpodWheel> { IpodScreen() }
         entry<AnimScreen.ClearTodo> { ClearScreen() }
         entry<AnimScreen.GoogleCalling> {
-            com.example.composelearning.animcompose.GoogleCallingRoute(
-                onBack = { navigator.goBack() })
+            com.example.composelearning.animcompose.GoogleCallingRoute(onBack = { navigator.goBack() })
         }
         entry<AnimScreen.ProtobufDemo> { ProtobufDemoRoute(onBack = { navigator.goBack() }) }
         entry<AnimScreen.UniquePathVisualizer> { com.example.composelearning.dsa.UniquePathsVisualizer(modifier = Modifier.systemBarsPadding()) }
@@ -419,7 +520,7 @@ fun AppNavigation(
         entry<AnimScreen.Group> { key ->
             com.example.composelearning.animcompose.GroupFeaturesScreen(
                 groupId = key.groupId,
-                navigator = navigator,
+                navigator = navigator
             )
         }
         entry<AnimScreen.MeshGradient> { SineWaveMeshGradientScreen() }

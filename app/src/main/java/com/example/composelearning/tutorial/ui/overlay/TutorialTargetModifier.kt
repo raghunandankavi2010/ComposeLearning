@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 fun Modifier.tutorialTarget(
     key: String,
     padding: Dp = 8.dp,
-    controller: SpotlightController? = LocalSpotlightController.current,
+    controller: SpotlightController? = LocalSpotlightController.current
 ): Modifier = composed {
     if (controller == null) return@composed this
     val density = LocalDensity.current
@@ -32,7 +32,7 @@ fun Modifier.tutorialTarget(
         val bounds = coords.boundsInWindow()
         val padded = Rect(
             offset = bounds.topLeft - Offset(paddingPx, paddingPx),
-            size = Size(bounds.width + 2 * paddingPx, bounds.height + 2 * paddingPx),
+            size = Size(bounds.width + 2 * paddingPx, bounds.height + 2 * paddingPx)
         )
         controller.publish(key, padded)
     }

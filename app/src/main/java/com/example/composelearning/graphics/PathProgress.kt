@@ -43,7 +43,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun AnimatedBorderButton() {
     val startDurationInSeconds = 2 // Reduced duration for testing
-    var targetValue by remember { mutableStateOf(0f) }
+    var targetValue by remember { mutableFloatStateOf(0f) }
     var isGrayAnimating by remember { mutableStateOf(true) }
     var isAnimationRunning by remember { mutableStateOf(false) } // New state to track if any animation is running
 

@@ -554,5 +554,3 @@ internal class AnimatedChartData(
 
 val Float.degreeToRadian
     get() = (this * Math.PI / 180f).toFloat()
-
-

@@ -60,7 +60,7 @@ fun CustomPagerSample(onBack: () -> Unit) {
                 style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier.padding(16.dp)
             )
-            
+
             // The actual Pager implementation
             CustomPager(
                 modifier = Modifier
@@ -86,7 +86,7 @@ fun CustomPagerSample(onBack: () -> Unit) {
             }
 
             Spacer(modifier = Modifier.height(24.dp))
-            
+
             PagerLogicExplanation()
         }
     }
@@ -100,13 +100,13 @@ fun CustomPager(
 ) {
     val scope = rememberCoroutineScope()
     val density = LocalDensity.current
-    
+
     // Total offset in pixels
     val offset = remember { Animatable(0f) }
     var pageWidth by remember { mutableFloatStateOf(0f) }
-    
+
     // We use dp for the velocity threshold to ensure consistency across screens
-    val velocityThreshold = with(density) { 1000.dp.toPx() } 
+    val velocityThreshold = with(density) { 1000.dp.toPx() }
 
     Box(
         modifier = modifier
@@ -126,7 +126,7 @@ fun CustomPager(
                     },
                     onDragEnd = {
                         val velocity = velocityTracker.calculateVelocity().x
-                        
+
                         // LOGIC: Convert velocity/position to a Target Page
                         val currentPage = -(offset.value / pageWidth)
                         val targetPage = when {

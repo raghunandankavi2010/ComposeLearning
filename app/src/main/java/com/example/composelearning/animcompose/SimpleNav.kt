@@ -52,7 +52,7 @@ import kotlinx.serialization.Serializable
 @Composable
 fun SimpleAppNavigation() {
     val navController = rememberNavController()
-    
+
     // We wrap everything in SharedTransitionLayout to enable shared elements between screens
     SharedTransitionLayout {
         Scaffold(
@@ -60,10 +60,10 @@ fun SimpleAppNavigation() {
                 // Observe the backstack to hide bottom bar on details
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
-                
+
                 // Show bottom bar only if we are on Home or Settings
-                val isTopLevel = currentDestination?.hierarchy?.any { 
-                    it.hasRoute<HomeRoute>() || it.hasRoute<SettingsRoute>() 
+                val isTopLevel = currentDestination?.hierarchy?.any {
+                    it.hasRoute<HomeRoute>() || it.hasRoute<SettingsRoute>()
                 } == true
 
                 AnimatedVisibility(
@@ -74,7 +74,7 @@ fun SimpleAppNavigation() {
                     NavigationBar {
                         NavigationBarItem(
                             selected = currentDestination?.hierarchy?.any { it.hasRoute<HomeRoute>() } == true,
-                            onClick = { 
+                            onClick = {
                                 navController.navigate(HomeRoute) {
                                     popUpTo(navController.graph.findStartDestination().id) { saveState = true }
                                     launchSingleTop = true
@@ -86,7 +86,7 @@ fun SimpleAppNavigation() {
                         )
                         NavigationBarItem(
                             selected = currentDestination?.hierarchy?.any { it.hasRoute<SettingsRoute>() } == true,
-                            onClick = { 
+                            onClick = {
                                 navController.navigate(SettingsRoute) {
                                     popUpTo(navController.graph.findStartDestination().id) { saveState = true }
                                     launchSingleTop = true
@@ -116,12 +116,12 @@ fun SimpleAppNavigation() {
                     SettingsScreen()
                 }
                 composable<DetailRoute> { backStackEntry ->
-                    val route: DetailRoute = backStackEntry.arguments?.let { 
+                    val route: DetailRoute = backStackEntry.arguments?.let {
                         // In modern Navigation, the arguments are parsed automatically
                         // but for manual retrieval if needed:
                         DetailRoute(it.getInt("id"))
                     } ?: DetailRoute(0)
-                    
+
                     DetailScreen(
                         id = route.id,
                         animatedVisibilityScope = this
@@ -139,7 +139,7 @@ fun androidx.compose.animation.SharedTransitionScope.HomeScreen(
     onItemClick: (Int) -> Unit
 ) {
     val items = (1..20).toList()
-    
+
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Text("Home Screen", fontSize = 24.sp)
         LazyColumn {

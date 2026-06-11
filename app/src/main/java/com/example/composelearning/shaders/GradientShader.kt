@@ -27,28 +27,28 @@ private const val AGSL_ATMOSPHERIC_SRC = """
     uniform vec2 uSize;
     vec4 main(in vec2 fragCoord) {
         vec2 uv = fragCoord / uSize;
-        
+
         // Define Figma design colors
         vec4 colorTop = vec4(1.0, 1.0, 1.0, 1.0); // Opaque White
-        
-        // Android graphics pipeline requires pre-multiplied alpha values 
+
+        // Android graphics pipeline requires pre-multiplied alpha values
         // to prevent colors from wiping out into gray or background transparency.
         // Changing to a more reddish tone (rgba(197, 64, 80, 0.3))
         // RGB components are multiplied by Alpha (0.3)
         vec4 colorBottom = vec4(0.77255 * 0.3, 0.25098 * 0.3, 0.31372 * 0.3, 0.3);
-        
+
         // Curve modification: controls how deep the red bleeds upward
         float gradientFactor = smoothstep(-0.05, 0.95, uv.y);
         vec4 mixedColor = mix(colorTop, colorBottom, gradientFactor);
-        
+
         // Precision feather masking simulating the 52px edge-blur bleed bounds
         float leftEdge   = smoothstep(0.0, 0.08, uv.x);
         float rightEdge  = smoothstep(1.0, 0.92, uv.x);
         float topEdge    = smoothstep(0.0, 0.04, uv.y);
         float bottomEdge = smoothstep(1.0, 0.92, uv.y);
-        
+
         float edgeMask = leftEdge * rightEdge * topEdge * bottomEdge;
-        
+
         return mixedColor * edgeMask;
     }
 """
@@ -82,7 +82,7 @@ fun GradientShader(
 
 @Preview(showBackground = true, heightDp = 320, backgroundColor = 0xFF000000)
 @Composable
-fun GradientShaderPreview() {
+private fun GradientShaderPreview() {
     ComposeLearningTheme {
         GradientShader()
     }

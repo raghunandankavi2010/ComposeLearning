@@ -11,5 +11,5 @@ data class Project(
     val size: String,
     val duration: String,
     val imageUrl: String,
-    val accentColor: Long,
+    val accentColor: Long
 )

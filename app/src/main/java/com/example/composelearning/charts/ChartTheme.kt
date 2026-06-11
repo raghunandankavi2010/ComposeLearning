@@ -31,7 +31,7 @@ data class ChartTheme(
     val onSurface: Color,
     val contentPadding: Dp = 16.dp,
     val gridLineWidth: Dp = 1.dp,
-    val axisLineWidth: Dp = 1.dp,
+    val axisLineWidth: Dp = 1.dp
 )
 
 object ChartDefaults {
@@ -39,7 +39,7 @@ object ChartDefaults {
     @Composable
     @ReadOnlyComposable
     fun theme(
-        palette: List<Color> = defaultPalette(),
+        palette: List<Color> = defaultPalette()
     ): ChartTheme {
         val cs = MaterialTheme.colorScheme
         val type = MaterialTheme.typography
@@ -48,21 +48,21 @@ object ChartDefaults {
             axisColor = cs.outline,
             axisLabelStyle = type.labelSmall.copy(
                 color = cs.onSurfaceVariant,
-                fontSize = 11.sp,
+                fontSize = 11.sp
             ),
             titleStyle = type.titleMedium.copy(
                 color = cs.onSurface,
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.SemiBold
             ),
             valueLabelStyle = type.labelMedium.copy(
                 color = cs.onSurface,
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.Medium
             ),
             tooltipBackground = cs.inverseSurface,
             tooltipContent = cs.inverseOnSurface,
             palette = palette,
             surface = cs.surface,
-            onSurface = cs.onSurface,
+            onSurface = cs.onSurface
         )
     }
 
@@ -78,7 +78,7 @@ object ChartDefaults {
             cs.primaryContainer,
             cs.tertiaryContainer,
             cs.secondaryContainer,
-            cs.errorContainer,
+            cs.errorContainer
         )
     }
 }

@@ -19,8 +19,7 @@ import androidx.compose.ui.graphics.Path
  * that command, with a repeated M becoming L).
  */
 data class PathSegment(val cmd: Char, val coords: FloatArray) {
-    override fun equals(other: Any?) =
-        other is PathSegment && cmd == other.cmd && coords.contentEquals(other.coords)
+    override fun equals(other: Any?) = other is PathSegment && cmd == other.cmd && coords.contentEquals(other.coords)
 
     override fun hashCode() = 31 * cmd.hashCode() + coords.contentHashCode()
 }
@@ -76,16 +75,25 @@ fun List<PathSegment>.toPath(map: (Float, Float) -> Offset): Path {
         val c = seg.coords
         when (seg.cmd) {
             'M' -> map(c[0], c[1]).let { path.moveTo(it.x, it.y) }
+
             'L' -> map(c[0], c[1]).let { path.lineTo(it.x, it.y) }
-            'H', 'V' -> {} // not present in the dataset; absolute H/V need state, skipped
+
+            'H', 'V' -> {}
+
+            // not present in the dataset; absolute H/V need state, skipped
             'C' -> {
-                val p1 = map(c[0], c[1]); val p2 = map(c[2], c[3]); val e = map(c[4], c[5])
+                val p1 = map(c[0], c[1])
+                val p2 = map(c[2], c[3])
+                val e = map(c[4], c[5])
                 path.cubicTo(p1.x, p1.y, p2.x, p2.y, e.x, e.y)
             }
+
             'Q' -> {
-                val p1 = map(c[0], c[1]); val e = map(c[2], c[3])
+                val p1 = map(c[0], c[1])
+                val e = map(c[2], c[3])
                 path.quadraticBezierTo(p1.x, p1.y, e.x, e.y)
             }
+
             'Z' -> path.close()
         }
     }
@@ -140,17 +148,21 @@ private fun tokenize(d: String): List<Token> {
                 flush()
                 tokens.add(Token(true, ch, 0f))
             }
+
             ch == '-' -> {
                 // a '-' starts a new number unless it's an exponent sign (e-3)
                 if (num.isNotEmpty() && num.last() != 'e' && num.last() != 'E') flush()
                 num.append(ch)
             }
+
             ch == '.' -> {
                 // a second '.' in a token starts a new number (e.g. "1.2.3")
                 if (num.contains('.')) flush()
                 num.append(ch)
             }
+
             ch.isDigit() || ch == 'e' || ch == 'E' -> num.append(ch)
+
             else -> flush() // whitespace or comma
         }
         i++

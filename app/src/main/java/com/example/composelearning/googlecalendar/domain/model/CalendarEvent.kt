@@ -25,11 +25,7 @@ data class CalendarEvent(
     val durationMinutes: Long
         get() = java.time.Duration.between(startTime, endTime).toMinutes()
 
-    fun overlaps(other: CalendarEvent): Boolean {
-        return startTime < other.endTime && endTime > other.startTime
-    }
+    fun overlaps(other: CalendarEvent): Boolean = startTime < other.endTime && endTime > other.startTime
 
-    fun occursOnDate(date: LocalDate): Boolean {
-        return !startDate.isAfter(date) && !endDate.isBefore(date)
-    }
+    fun occursOnDate(date: LocalDate): Boolean = !startDate.isAfter(date) && !endDate.isBefore(date)
 }

@@ -61,7 +61,7 @@ internal class Col(val hue: Float, val color: Color, initialSlot: Float = 0f) {
 internal class SortContext(
     val columns: List<Col>,
     val slotToColumn: IntArray,
-    private val animScope: CoroutineScope,
+    private val animScope: CoroutineScope
 ) {
     var swaps: Int = 0
     var comparisons: Int = 0
@@ -78,13 +78,13 @@ internal class SortContext(
         animScope.launch {
             colA.xSlot.animateTo(
                 targetValue = slotB.toFloat(),
-                animationSpec = tween(PLACEMENT_ANIM_MS, easing = FastOutSlowInEasing),
+                animationSpec = tween(PLACEMENT_ANIM_MS, easing = FastOutSlowInEasing)
             )
         }
         animScope.launch {
             colB.xSlot.animateTo(
                 targetValue = slotA.toFloat(),
-                animationSpec = tween(PLACEMENT_ANIM_MS, easing = FastOutSlowInEasing),
+                animationSpec = tween(PLACEMENT_ANIM_MS, easing = FastOutSlowInEasing)
             )
         }
         delay(SWAP_DELAY_MS)
@@ -111,7 +111,7 @@ internal fun SortVisualizer(
     sortName: String,
     sortAction: SortAction,
     modifier: Modifier = Modifier,
-    applyOwnInsets: Boolean = true,
+    applyOwnInsets: Boolean = true
 ) {
     var sortMode by remember { mutableStateOf(SortMode.IDLE) }
     var generation by remember { mutableIntStateOf(0) }
@@ -164,8 +164,11 @@ internal fun SortVisualizer(
             }
             val durationMs = (System.nanoTime() - startTime) / 1_000_000
 
-            if (sortMode == SortMode.OFF_THREAD) lastDurationOffThreadMs = durationMs
-            else lastDurationMainMs = durationMs
+            if (sortMode == SortMode.OFF_THREAD) {
+                lastDurationOffThreadMs = durationMs
+            } else {
+                lastDurationMainMs = durationMs
+            }
             lastSwaps = context.swaps
             lastComparisons = context.comparisons
             status = "Completed in ${durationMs}ms"
@@ -176,14 +179,14 @@ internal fun SortVisualizer(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.Black),
+            .background(Color.Black)
     ) {
         Canvas(
             modifier = if (applyOwnInsets) {
                 Modifier.fillMaxSize().systemBarsPadding()
             } else {
                 Modifier.fillMaxSize()
-            },
+            }
         ) {
             val slotWidth = size.width / COLUMN_COUNT
             val rectWidth = slotWidth + 0.5f
@@ -191,7 +194,7 @@ internal fun SortVisualizer(
                 drawRect(
                     color = col.color,
                     topLeft = Offset(col.xSlot.value * slotWidth, 0f),
-                    size = Size(rectWidth, size.height),
+                    size = Size(rectWidth, size.height)
                 )
             }
         }
@@ -212,7 +215,7 @@ internal fun SortVisualizer(
             onRunMain = {
                 generation++
                 sortMode = SortMode.MAIN_THREAD
-            },
+            }
         )
     }
 }
@@ -228,7 +231,7 @@ private fun BoxScope.BenchmarkOverlay(
     comparisons: Int,
     applyTopInset: Boolean,
     onRunOffThread: () -> Unit,
-    onRunMain: () -> Unit,
+    onRunMain: () -> Unit
 ) {
     val enabled = sortMode == SortMode.IDLE
     val topInsetModifier = if (applyTopInset) Modifier.statusBarsPadding() else Modifier
@@ -240,37 +243,37 @@ private fun BoxScope.BenchmarkOverlay(
             .background(Color.Black.copy(alpha = 0.8f))
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
             text = sortName,
             color = Color.White,
             style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.Bold
         )
         Text(
             text = status,
             color = Color.White.copy(alpha = 0.8f),
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodySmall
         )
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             Button(
                 onClick = onRunOffThread,
                 enabled = enabled,
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
             ) { Text("Off-Thread") }
             Button(
                 onClick = onRunMain,
                 enabled = enabled,
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336)),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336))
             ) { Text("Main Thread") }
         }
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             ResultRow("Dispatchers.Default:", lastDurationOffThreadMs)
             ResultRow("Main Thread:", lastDurationMainMs)
@@ -278,7 +281,7 @@ private fun BoxScope.BenchmarkOverlay(
                 text = "Swaps: $swaps | Comparisons: $comparisons",
                 color = Color.White.copy(alpha = 0.6f),
                 style = MaterialTheme.typography.labelSmall,
-                modifier = Modifier.padding(top = 4.dp),
+                modifier = Modifier.padding(top = 4.dp)
             )
         }
     }
@@ -288,14 +291,14 @@ private fun BoxScope.BenchmarkOverlay(
 private fun ResultRow(label: String, duration: Long) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(label, color = Color.LightGray, style = MaterialTheme.typography.labelMedium)
         Text(
             text = if (duration > 0) "${duration}ms" else "--",
             color = if (duration > 0) Color.Green else Color.Gray,
             style = MaterialTheme.typography.labelMedium,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.Bold
         )
     }
 }

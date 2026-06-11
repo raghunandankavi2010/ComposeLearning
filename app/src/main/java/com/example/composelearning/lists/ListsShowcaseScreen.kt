@@ -41,14 +41,14 @@ fun ListsShowcaseScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .systemBarsPadding(),
+            .systemBarsPadding()
     ) {
         PrimaryScrollableTabRow(selectedTabIndex = selected, edgePadding = 0.dp) {
             TABS.forEachIndexed { index, label ->
                 Tab(
                     selected = index == selected,
                     onClick = { selected = index },
-                    text = { Text(label) },
+                    text = { Text(label) }
                 )
             }
         }
@@ -59,7 +59,7 @@ fun ListsShowcaseScreen() {
                 2 -> StickyList()
                 3 -> ReOrderList()
                 4 -> SwipeToCancel(closeScreen = {}, isExpandedScreen = false)
-                5 -> Test2()
+                5 -> LazyStaggeredGridSample()
                 6 -> LazyListPaginated()
                 7 -> CalendarLazyRow()
                 8 -> PreviewCircularListVertical()

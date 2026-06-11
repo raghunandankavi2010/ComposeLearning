@@ -5,7 +5,7 @@ import com.example.composelearning.tutorial.domain.model.TutorialStep
 
 data class TutorialUiState(
     val cards: CardsState = CardsState.Loading,
-    val tutorial: TutorialState = TutorialState.Idle,
+    val tutorial: TutorialState = TutorialState.Idle
 ) {
     sealed interface CardsState {
         data object Loading : CardsState
@@ -16,7 +16,7 @@ data class TutorialUiState(
         data object Idle : TutorialState
         data class Running(
             val steps: List<TutorialStep>,
-            val currentIndex: Int,
+            val currentIndex: Int
         ) : TutorialState {
             val currentStep: TutorialStep get() = steps[currentIndex]
             val isLast: Boolean get() = currentIndex == steps.lastIndex

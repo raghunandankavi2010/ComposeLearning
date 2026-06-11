@@ -84,13 +84,13 @@ fun AnimatingWatchDial(modifier: Modifier = Modifier) {
             // --- Build the static dial ONCE per size (re-runs only when size changes) ---
             val staticDial = ImageBitmap(
                 width = size.width.toInt().coerceAtLeast(1),
-                height = size.height.toInt().coerceAtLeast(1),
+                height = size.height.toInt().coerceAtLeast(1)
             )
             CanvasDrawScope().draw(
                 density = this,
                 layoutDirection = LayoutDirection.Ltr,
                 canvas = Canvas(staticDial),
-                size = size,
+                size = size
             ) {
                 drawFace(center, radius)
                 drawTicks(center, radius)
@@ -130,10 +130,10 @@ private fun DrawScope.drawFace(center: Offset, radius: Float) {
         brush = Brush.radialGradient(
             colors = listOf(FaceCenter, FaceEdge),
             center = center,
-            radius = radius,
+            radius = radius
         ),
         radius = radius * 0.94f,
-        center = center,
+        center = center
     )
 }
 
@@ -155,7 +155,7 @@ private fun DrawScope.drawTicks(center: Offset, radius: Float) {
             start = start,
             end = end,
             strokeWidth = if (isHour) radius * 0.018f else radius * 0.008f,
-            cap = StrokeCap.Round,
+            cap = StrokeCap.Round
         )
     }
 }
@@ -163,13 +163,13 @@ private fun DrawScope.drawTicks(center: Offset, radius: Float) {
 private fun DrawScope.drawNumerals(
     center: Offset,
     radius: Float,
-    textMeasurer: TextMeasurer,
+    textMeasurer: TextMeasurer
 ) {
     val numeralRadius = radius * 0.72f
     val style = TextStyle(
         color = Numerals,
         fontSize = (radius * 0.13f).toSp(),
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.SemiBold
     )
     for (hour in 1..12) {
         val angleRad = Math.toRadians(hour * 30.0)
@@ -181,8 +181,8 @@ private fun DrawScope.drawNumerals(
             textLayoutResult = measured,
             topLeft = Offset(
                 x - measured.size.width / 2f,
-                y - measured.size.height / 2f,
-            ),
+                y - measured.size.height / 2f
+            )
         )
     }
 }
@@ -193,7 +193,7 @@ private fun DrawScope.drawHand(
     length: Float,
     tail: Float,
     strokeWidth: Float,
-    color: Color,
+    color: Color
 ) {
     rotate(degrees = angleDegrees, pivot = center) {
         drawLine(
@@ -201,7 +201,7 @@ private fun DrawScope.drawHand(
             start = Offset(center.x, center.y + tail),
             end = Offset(center.x, center.y - length),
             strokeWidth = strokeWidth,
-            cap = StrokeCap.Round,
+            cap = StrokeCap.Round
         )
     }
 }
@@ -214,12 +214,12 @@ private fun AnimatingWatchDialPreview() {
             .fillMaxSize()
             .background(Color(0xFF05070B))
             .padding(24.dp),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         AnimatingWatchDial(
             modifier = Modifier
                 .fillMaxSize()
-                .aspectRatio(1f),
+                .aspectRatio(1f)
         )
     }
 }

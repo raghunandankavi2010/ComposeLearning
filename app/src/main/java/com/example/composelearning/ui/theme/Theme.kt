@@ -1,9 +1,9 @@
 package com.example.composelearning.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
@@ -26,7 +26,7 @@ private val LightColorPalette = lightColorScheme(
     onSecondary = Color.Black,
     onBackground = Color.Black,
     onSurface = Color.Black,
-    */
+     */
 )
 
 @Composable
@@ -63,7 +63,7 @@ private val GoogleCalendarLightColors = lightColorScheme(
     onSurface = GCalOnSurfaceLight,
     surfaceVariant = GCalBackgroundLight,
     onSurfaceVariant = GCalOnSurfaceVariantLight,
-    outline = GCalOutlineLight,
+    outline = GCalOutlineLight
 )
 
 private val GoogleCalendarDarkColors = darkColorScheme(
@@ -77,7 +77,7 @@ private val GoogleCalendarDarkColors = darkColorScheme(
     onSurface = GCalOnSurfaceDark,
     surfaceVariant = GCalSurfaceDark,
     onSurfaceVariant = GCalOnSurfaceVariantDark,
-    outline = GCalOutlineDark,
+    outline = GCalOutlineDark
 )
 
 @Composable

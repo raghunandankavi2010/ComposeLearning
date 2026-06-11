@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.stateIn
 
 class TutorialViewModel(
     private val getCards: GetCardsUseCase,
-    private val getSteps: GetTutorialStepsUseCase,
+    private val getSteps: GetTutorialStepsUseCase
 ) : ViewModel() {
 
     private val tutorialState = MutableStateFlow<TutorialUiState.TutorialState>(
@@ -27,7 +27,7 @@ class TutorialViewModel(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS),
-            initialValue = TutorialUiState.CardsState.Loading,
+            initialValue = TutorialUiState.CardsState.Loading
         )
 
     val uiState: StateFlow<TutorialUiState> = combine(cardsState, tutorialState) { cards, tutorial ->
@@ -35,7 +35,7 @@ class TutorialViewModel(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(STOP_TIMEOUT_MS),
-        initialValue = TutorialUiState(),
+        initialValue = TutorialUiState()
     )
 
     fun onEvent(event: TutorialEvent) {
@@ -66,17 +66,16 @@ class TutorialViewModel(
     companion object {
         private const val STOP_TIMEOUT_MS = 5_000L
 
-        fun factory(): androidx.lifecycle.ViewModelProvider.Factory =
-            object : androidx.lifecycle.ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    val cardsRepo = CardsRepositoryImpl()
-                    val tutorialRepo = TutorialRepositoryImpl()
-                    return TutorialViewModel(
-                        getCards = GetCardsUseCase(cardsRepo),
-                        getSteps = GetTutorialStepsUseCase(tutorialRepo),
-                    ) as T
-                }
+        fun factory(): androidx.lifecycle.ViewModelProvider.Factory = object : androidx.lifecycle.ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                val cardsRepo = CardsRepositoryImpl()
+                val tutorialRepo = TutorialRepositoryImpl()
+                return TutorialViewModel(
+                    getCards = GetCardsUseCase(cardsRepo),
+                    getSteps = GetTutorialStepsUseCase(tutorialRepo)
+                ) as T
             }
+        }
     }
 }

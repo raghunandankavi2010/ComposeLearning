@@ -132,7 +132,7 @@ fun SwipeableCard(
                 // Translation - ONLY apply horizontal offset to the top card
                 translationX = if (isSwipeable) offsetX.value else 0f
                 translationY = if (isSwipeable) offsetY.value else targetTranslationY.dp.toPx()
-                
+
                 // Rotation
                 rotationZ = if (isSwipeable) {
                     // Tilt the card as it moves horizontally
@@ -144,7 +144,7 @@ fun SwipeableCard(
                 // Scale
                 scaleX = targetScale
                 scaleY = targetScale
-                
+
                 // Opacity fades slightly for very back cards
                 alpha = if (positionFromTop >= 3) 0.6f else 1f
             }
@@ -193,7 +193,7 @@ fun SwipeableCard(
                     .clip(RoundedCornerShape(28.dp)),
                 contentScale = ContentScale.Crop
             )
-            
+
             // Bottom Gradient for text readability
             Box(
                 modifier = Modifier

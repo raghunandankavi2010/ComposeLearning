@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class PathMorphViewModel(
-    private val getShapes: GetPhoneShapesUseCase,
+    private val getShapes: GetPhoneShapesUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PathMorphState())
@@ -38,7 +38,6 @@ class PathMorphViewModel(
 
     class Factory : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            PathMorphViewModel(GetPhoneShapesUseCase(PhoneShapeRepositoryImpl())) as T
+        override fun <T : ViewModel> create(modelClass: Class<T>): T = PathMorphViewModel(GetPhoneShapesUseCase(PhoneShapeRepositoryImpl())) as T
     }
 }

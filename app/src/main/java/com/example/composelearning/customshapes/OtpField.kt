@@ -94,4 +94,3 @@ fun OTPTextField(
         }
     )
 }
-

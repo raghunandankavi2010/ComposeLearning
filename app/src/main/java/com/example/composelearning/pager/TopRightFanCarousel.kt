@@ -6,7 +6,6 @@ import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.derivedStateOf
@@ -38,8 +38,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.launch
 import kotlin.math.hypot
+import kotlinx.coroutines.launch
 
 /**
  * A stacked-card carousel where the front card sits at the center and the rest fan toward the
@@ -58,7 +58,7 @@ fun TopRightFanCarousel(
     stackStepYDp: Dp = (-32).dp,
     stackStepScale: Float = 0.085f,
     stackStepAlpha: Float = 0.24f,
-    stackStepRotation: Float = 7f,
+    stackStepRotation: Float = 7f
 ) {
     if (cards.isEmpty()) return
     val scope = rememberCoroutineScope()
@@ -134,7 +134,7 @@ fun TopRightFanCarousel(
                                                 val flyTarget = dismissDistancePx * 4.5f
                                                 val jobs = listOf(
                                                     launch { dragX.animateTo(dirX * flyTarget, tween(260)) },
-                                                    launch { dragY.animateTo(dirY * flyTarget, tween(260)) },
+                                                    launch { dragY.animateTo(dirY * flyTarget, tween(260)) }
                                                 )
                                                 jobs.forEach { it.join() }
                                                 currentIndex = (currentIndex + 1) % cards.size
@@ -146,7 +146,7 @@ fun TopRightFanCarousel(
                                             scope.launch {
                                                 listOf(
                                                     launch { dragX.animateTo(0f, spring(stiffness = Spring.StiffnessLow)) },
-                                                    launch { dragY.animateTo(0f, spring(stiffness = Spring.StiffnessLow)) },
+                                                    launch { dragY.animateTo(0f, spring(stiffness = Spring.StiffnessLow)) }
                                                 ).forEach { it.join() }
                                             }
                                         }
@@ -156,11 +156,13 @@ fun TopRightFanCarousel(
                                             dragX.animateTo(0f, spring())
                                             dragY.animateTo(0f, spring())
                                         }
-                                    },
+                                    }
                                 )
                             }
-                        } else m
-                    },
+                        } else {
+                            m
+                        }
+                    }
             )
         }
     }
@@ -171,19 +173,19 @@ data class CarouselCard(
     val title: String,
     val subtitle: String,
     val tag: String,
-    val brush: Brush,
+    val brush: Brush
 )
 
 @Composable
 private fun CarouselCardItem(
     card: CarouselCard,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier
             .shadow(elevation = 14.dp, shape = RoundedCornerShape(28.dp))
             .clip(RoundedCornerShape(28.dp))
-            .background(card.brush),
+            .background(card.brush)
     ) {
         // Subtle top-right tag chip
         Box(
@@ -192,15 +194,15 @@ private fun CarouselCardItem(
                 .padding(16.dp)
                 .background(
                     color = Color.White.copy(alpha = 0.22f),
-                    shape = RoundedCornerShape(20.dp),
+                    shape = RoundedCornerShape(20.dp)
                 )
-                .padding(horizontal = 12.dp, vertical = 6.dp),
+                .padding(horizontal = 12.dp, vertical = 6.dp)
         ) {
             androidx.compose.material3.Text(
                 text = card.tag,
                 color = Color.White,
                 fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.SemiBold
             )
         }
 
@@ -208,21 +210,21 @@ private fun CarouselCardItem(
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .fillMaxWidth()
-                .padding(start = 24.dp, end = 24.dp, bottom = 28.dp),
+                .padding(start = 24.dp, end = 24.dp, bottom = 28.dp)
         ) {
             androidx.compose.material3.Text(
                 text = card.title,
                 color = Color.White,
                 fontSize = 34.sp,
                 fontWeight = FontWeight.Bold,
-                lineHeight = 36.sp,
+                lineHeight = 36.sp
             )
             Spacer(Modifier.size(6.dp))
             androidx.compose.material3.Text(
                 text = card.subtitle,
                 color = Color.White.copy(alpha = 0.88f),
                 fontSize = 14.sp,
-                lineHeight = 18.sp,
+                lineHeight = 18.sp
             )
             Spacer(Modifier.height(20.dp))
             // Decorative thin progress underline
@@ -230,7 +232,7 @@ private fun CarouselCardItem(
                 modifier = Modifier
                     .height(3.dp)
                     .fillMaxWidth(0.35f)
-                    .background(Color.White.copy(alpha = 0.85f), RoundedCornerShape(2.dp)),
+                    .background(Color.White.copy(alpha = 0.85f), RoundedCornerShape(2.dp))
             )
         }
     }

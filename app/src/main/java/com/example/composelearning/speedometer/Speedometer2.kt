@@ -99,5 +99,3 @@ fun Speedometer2(
         }
     )
 }
-
-

@@ -12,6 +12,6 @@ class BreathingRepositoryImpl : BreathingRepository {
         wave2 = 0xFF3A9DBB,
         wave3 = 0xFF2A7FB8,
         startLabel = "0:25",
-        endLabel = "3:16",
+        endLabel = "3:16"
     )
 }

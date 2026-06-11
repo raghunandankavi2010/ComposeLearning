@@ -4,7 +4,7 @@ import com.example.composelearning.cleartodo.domain.model.TaskItem
 
 data class ClearState(
     val isLoading: Boolean = true,
-    val tasks: List<TaskItem> = emptyList(),
+    val tasks: List<TaskItem> = emptyList()
 )
 
 sealed interface ClearIntent {

@@ -5,7 +5,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.MaterialTheme import androidx.compose.material3.SecondaryScrollableTabRow
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SecondaryScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,7 +20,7 @@ import androidx.compose.ui.unit.dp
 
 private data class SortTab(
     val label: String,
-    val content: @Composable () -> Unit,
+    val content: @Composable () -> Unit
 )
 
 /**
@@ -38,7 +39,7 @@ fun SortAnimationScreen(modifier: Modifier = Modifier) {
             SortTab("Shell") { ShellSortRainbow(applyOwnInsets = false) },
             SortTab("Merge") { MergeSortRainbow(applyOwnInsets = false) },
             SortTab("Heap") { HeapSortRainbow(applyOwnInsets = false) },
-            SortTab("Timsort") { TimSortRainbow(applyOwnInsets = false) },
+            SortTab("Timsort") { TimSortRainbow(applyOwnInsets = false) }
         )
     }
     var selectedTab by remember { mutableIntStateOf(0) }
@@ -47,13 +48,13 @@ fun SortAnimationScreen(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxSize()
             .background(Color.Black)
-            .statusBarsPadding(),
+            .statusBarsPadding()
     ) {
         SecondaryScrollableTabRow(
             selectedTabIndex = selectedTab,
             containerColor = Color.Black,
             contentColor = Color.White,
-            edgePadding = 0.dp,
+            edgePadding = 0.dp
         ) {
             tabs.forEachIndexed { i, tab ->
                 Tab(
@@ -62,9 +63,9 @@ fun SortAnimationScreen(modifier: Modifier = Modifier) {
                     text = {
                         Text(
                             text = tab.label,
-                            style = MaterialTheme.typography.labelLarge,
+                            style = MaterialTheme.typography.labelLarge
                         )
-                    },
+                    }
                 )
             }
         }

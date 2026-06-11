@@ -39,7 +39,7 @@ import kotlinx.coroutines.launch
 
 /**
  * A sample screen demonstrating the Passkey (FIDO2) flow in Android using Credential Manager.
- * 
+ *
  * Note: For a real app, you would need to communicate with a server (like the provided passkey_server.py)
  * to get challenges and verify responses. This sample mocks the network calls for UI demonstration.
  */
@@ -50,7 +50,7 @@ fun PasskeySample(onBack: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val credentialManager = CredentialManager.create(context)
-    
+
     var statusMessage by remember { mutableStateOf("Ready to secure your account.") }
     var isLoading by remember { mutableStateOf(false) }
 
@@ -80,15 +80,15 @@ fun PasskeySample(onBack: () -> Unit) {
                 modifier = Modifier.size(80.dp),
                 tint = MaterialTheme.colorScheme.primary
             )
-            
+
             Spacer(modifier = Modifier.height(16.dp))
-            
+
             Text(
                 text = "Passwordless Future",
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold
             )
-            
+
             Text(
                 text = statusMessage,
                 style = MaterialTheme.typography.bodyMedium,
@@ -154,13 +154,13 @@ private suspend fun registerPasskey(
         """.trimIndent()
 
         val createRequest = CreatePublicKeyCredentialRequest(requestJson)
-        
+
         onStatus("Opening System Prompt...")
         val result = credentialManager.createCredential(context, createRequest)
-        
+
         // At this point, 'result.registrationResponseJson' contains the public key to send to your server
         onStatus("Passkey Registered Successfully!")
-        
+
     } catch (e: CreateCredentialException) {
         onStatus("Error: ${e.message}")
     }
@@ -191,7 +191,7 @@ private suspend fun signInWithPasskey(
 
         onStatus("Opening System Prompt...")
         val result = credentialManager.getCredential(context, getRequest)
-        
+
         // 'result.credential' contains the signature to verify on your server
         onStatus("Logged in with Passkey!")
 

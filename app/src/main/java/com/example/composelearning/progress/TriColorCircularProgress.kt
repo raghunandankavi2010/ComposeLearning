@@ -48,10 +48,10 @@ fun TriColorCircularProgressIndicator(
     colors: List<Color> = listOf(
         Color(0xFF6A11CB), // segment 1 (head)
         Color(0xFF2575FC), // segment 2 (middle)
-        Color(0xFF00C2A8), // segment 3 (tail)
+        Color(0xFF00C2A8) // segment 3 (tail)
     ),
     rotationPeriodMillis: Int = 2000,
-    cyclePeriodMillis: Int = 1200,
+    cyclePeriodMillis: Int = 1200
 ) {
     require(colors.size == 3) { "TriColorCircularProgressIndicator needs exactly 3 colors" }
 
@@ -69,7 +69,8 @@ fun TriColorCircularProgressIndicator(
     LaunchedEffect(
         animationsEnabled,
         rotationPeriodMillis,
-        cyclePeriodMillis) {
+        cyclePeriodMillis
+    ) {
         if (!animationsEnabled) return@LaunchedEffect
         var startNanos = 0L
         while (true) {
@@ -131,7 +132,7 @@ fun TriColorCircularProgressIndicator(
                 useCenter = false,
                 topLeft = topLeft,
                 size = arcDimen,
-                style = stroke,
+                style = stroke
             )
         }
     }
@@ -139,21 +140,21 @@ fun TriColorCircularProgressIndicator(
 
 @Preview(name = "Tri-color Light", showBackground = true)
 @Composable
-fun PreviewTriColorLight() {
+private fun PreviewTriColorLight() {
     Box(
         modifier = Modifier.fillMaxSize().background(Color.White),
         contentAlignment = Alignment.Center
     ) {
         TriColorCircularProgressIndicator(
             modifier = Modifier.size(100.dp),
-            strokeWidth = 10.dp,
+            strokeWidth = 10.dp
         )
     }
 }
 
 @Preview(name = "Tri-color Dark", showBackground = true)
 @Composable
-fun PreviewTriColorDark() {
+private fun PreviewTriColorDark() {
     Box(
         modifier = Modifier.fillMaxSize().background(Color(0xFF121212)),
         contentAlignment = Alignment.Center
@@ -164,8 +165,8 @@ fun PreviewTriColorDark() {
             colors = listOf(
                 Color(0xFFFF00D4),
                 Color(0xFF8A2BE2),
-                Color(0xFF00DDFF),
-            ),
+                Color(0xFF00DDFF)
+            )
         )
     }
 }

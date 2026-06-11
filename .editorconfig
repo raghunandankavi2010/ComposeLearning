@@ -1,0 +1,47 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{kt,kts}]
+# Android Kotlin style guide
+ktlint_code_style = android_studio
+# Long lines are common in demo/sample code; don't fail the build on them
+max_line_length = off
+# Composables and Previews are PascalCase by convention
+ktlint_function_naming_ignore_when_annotated_with = Composable, Preview
+
+# --- Standard rules relaxed for this sample/learning codebase ---
+ktlint_standard_no-wildcard-imports = disabled
+ktlint_standard_value-parameter-comment = disabled
+ktlint_standard_property-naming = disabled
+# Several files keep commented-out experiments and have no declarations
+ktlint_standard_no-empty-file = disabled
+
+# --- Compose rules (io.nlopez.compose.rules) ---
+# CompositionLocals intentionally defined in this project
+compose_allowed_composition_locals = LocalAnimationsEnabled, LocalSpotlightController
+# Demo screens are self-contained and often don't expose a modifier parameter
+ktlint_compose_modifier-missing-check = disabled
+ktlint_compose_modifier-reused-check = disabled
+ktlint_compose_modifier-not-used-at-root = disabled
+# The modifiers/ package deliberately demonstrates Modifier.composed
+ktlint_compose_modifier-composed-check = disabled
+# Sample APIs aren't designed as reusable components; skip API-shape rules
+ktlint_compose_param-order-check = disabled
+ktlint_compose_parameter-naming = disabled
+ktlint_compose_lambda-param-in-effect = disabled
+ktlint_compose_lambda-param-event-trailing = disabled
+ktlint_compose_vm-forwarding-check = disabled
+ktlint_compose_mutable-state-param-check = disabled
+
+[*.{yml,yaml,json}]
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false

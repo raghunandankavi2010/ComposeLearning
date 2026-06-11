@@ -64,12 +64,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.android.awaitFrame
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 import kotlin.math.pow
 import kotlin.math.withSign
+import kotlinx.coroutines.android.awaitFrame
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 /**
  * A premium sensor-reactive credit card with 3D parallax effects.
@@ -90,7 +90,7 @@ fun SensorReactiveCard(
 
     // Raw sensor values
     var rawPitch by remember { mutableFloatStateOf(0f) } // X-axis tilt (forward/back)
-    var rawRoll by remember { mutableFloatStateOf(0f) }  // Y-axis tilt (left/right)
+    var rawRoll by remember { mutableFloatStateOf(0f) } // Y-axis tilt (left/right)
 
     // Smoothed physics-based values using Animatable for spring animation
     val pitch = remember { Animatable(0f) }
@@ -103,9 +103,11 @@ fun SensorReactiveCard(
     // Combine sensor tilt with flip state
     val targetRotationX = if (isFlipped) 180f else 0f
     val currentRotationY by remember { derivedStateOf { roll.value * 15f } } // Max 15° tilt
-    val currentRotationX by remember { derivedStateOf {
-        (pitch.value * 10f) + if (isFlipped) 180f else 0f
-    } }
+    val currentRotationX by remember {
+        derivedStateOf {
+            (pitch.value * 10f) + if (isFlipped) 180f else 0f
+        }
+    }
 
     // Parallax offsets for internal elements
     val parallaxX by remember { derivedStateOf { roll.value * 20f } }
@@ -134,6 +136,7 @@ fun SensorReactiveCard(
                     Sensor.TYPE_ACCELEROMETER -> {
                         System.arraycopy(event.values, 0, accelerometerReading, 0, 3)
                     }
+
                     Sensor.TYPE_MAGNETIC_FIELD -> {
                         System.arraycopy(event.values, 0, magnetometerReading, 0, 3)
                     }
@@ -145,7 +148,8 @@ fun SensorReactiveCard(
 
                     // Calculate orientation
                     SensorManager.getRotationMatrix(
-                        rotationMatrix, null,
+                        rotationMatrix,
+                        null,
                         accelerometerReading,
                         magnetometerReading
                     )
@@ -687,6 +691,7 @@ private fun CardTypeLogo(type: CardType, modifier: Modifier = Modifier) {
                 modifier = modifier
             )
         }
+
         CardType.MASTERCARD -> {
             Row(modifier = modifier) {
                 Box(
@@ -703,6 +708,7 @@ private fun CardTypeLogo(type: CardType, modifier: Modifier = Modifier) {
                 )
             }
         }
+
         CardType.AMEX -> {
             Text(
                 text = "AMEX",
@@ -749,7 +755,7 @@ private fun Float.toDegrees(): Float = Math.toDegrees(this.toDouble()).toFloat()
 
 @Preview
 @Composable
-fun SensorReactiveCardPreview() {
+private fun SensorReactiveCardPreview() {
     Box(
         modifier = Modifier
             .fillMaxSize()

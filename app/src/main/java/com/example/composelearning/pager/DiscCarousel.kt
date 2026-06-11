@@ -6,7 +6,6 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
-import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -14,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,12 +37,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import com.example.composelearning.R
-import kotlinx.coroutines.launch
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
+import kotlinx.coroutines.launch
 
 // =================================================================================================
 // Compose reimagining of the 2011 Android RenderScript CarouselView. The original drew textured
@@ -67,7 +67,7 @@ private data class DiscItem(
     val title: String,
     val subtitle: String,
     val drawableRes: Int,
-    val accent: Color,
+    val accent: Color
 )
 
 private val discItems = listOf(
@@ -77,7 +77,7 @@ private val discItems = listOf(
     DiscItem("Thumb", "Card 04", R.drawable.ic_launcher_background, Color(0xFF1E88E5)),
     DiscItem("Bkg", "Card 05", R.drawable.ic_launcher_background, Color(0xFFFB8C00)),
     DiscItem("Ping", "Card 06", R.drawable.ic_launcher_background, Color(0xFFD81B60)),
-    DiscItem("Test", "Card 07", R.drawable.ic_launcher_background, Color(0xFF00ACC1)),
+    DiscItem("Test", "Card 07", R.drawable.ic_launcher_background, Color(0xFF00ACC1))
 )
 
 @Composable
@@ -98,14 +98,14 @@ fun DiscCarousel(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(Color(0xFF0B1A2D), Color(0xFF101630), Color(0xFF1B0A2A)),
-                ),
+                    colors = listOf(Color(0xFF0B1A2D), Color(0xFF101630), Color(0xFF1B0A2A))
+                )
             ),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         BoxWithConstraints(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             val density = LocalDensity.current
             val widthPx = with(density) { maxWidth.toPx() }
@@ -138,7 +138,7 @@ fun DiscCarousel(modifier: Modifier = Modifier) {
                                     // nearest slot.
                                     val result = rotation.animateDecay(
                                         initialVelocity = velocityRadPerSec,
-                                        animationSpec = decay,
+                                        animationSpec = decay
                                     )
                                     val landing = result.endState.value
                                     val nearestSlot = (landing / anglePerSlot).roundToInt()
@@ -146,19 +146,19 @@ fun DiscCarousel(modifier: Modifier = Modifier) {
                                         targetValue = nearestSlot * anglePerSlot,
                                         animationSpec = spring(
                                             dampingRatio = 0.75f,
-                                            stiffness = 240f,
-                                        ),
+                                            stiffness = 240f
+                                        )
                                     )
                                 }
                             },
-                            onDragCancel = { tracker.resetTracking() },
+                            onDragCancel = { tracker.resetTracking() }
                         ) { change, dragAmount ->
                             tracker.addPosition(change.uptimeMillis, change.position)
                             scope.launch {
                                 rotation.snapTo(rotation.value - dragAmount / pxPerRadian)
                             }
                         }
-                    },
+                    }
             ) {
                 // Render cards back-to-front. Sorting by cos(theta) ascending means the smallest
                 // cosine (farthest from camera) draws first; this matches the painter's algorithm
@@ -200,7 +200,7 @@ fun DiscCarousel(modifier: Modifier = Modifier) {
                                 scaleX = scale
                                 scaleY = scale
                                 alpha = alphaValue
-                            },
+                            }
                     )
                 }
             }
@@ -210,7 +210,7 @@ fun DiscCarousel(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Index of the slot currently nearest the camera, wrapped into the item range.
             val nearestSlot = (rotation.value / anglePerSlot).roundToInt()
@@ -220,13 +220,13 @@ fun DiscCarousel(modifier: Modifier = Modifier) {
                 text = centerItem.title,
                 color = Color.White,
                 fontSize = 22.sp,
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.SemiBold
             )
             Text(
                 text = "${centerIndex + 1} / $itemCount — drag to spin",
                 color = Color.White.copy(alpha = 0.7f),
                 fontSize = 12.sp,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodySmall
             )
         }
     }
@@ -239,18 +239,18 @@ private fun DiscCard(item: DiscItem, modifier: Modifier = Modifier) {
             .padding(8.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(item.accent.copy(alpha = 0.18f))
-            .padding(2.dp),
+            .padding(2.dp)
     ) {
         Box(
             modifier = Modifier
-                .clip(RoundedCornerShape(18.dp)),
+                .clip(RoundedCornerShape(18.dp))
         ) {
             Image(
                 painter = painterResource(id = item.drawableRes),
                 contentDescription = item.title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .size(width = 168.dp, height = 224.dp),
+                    .size(width = 168.dp, height = 224.dp)
             )
             // Glossy diagonal sheen — the equivalent of the glossy_overlay.png that the 2011
             // sample drew on top of every card texture.
@@ -263,12 +263,12 @@ private fun DiscCard(item: DiscItem, modifier: Modifier = Modifier) {
                                 Color.White.copy(alpha = 0.32f),
                                 Color.White.copy(alpha = 0.08f),
                                 Color.Transparent,
-                                Color.Black.copy(alpha = 0.18f),
+                                Color.Black.copy(alpha = 0.18f)
                             ),
                             start = Offset.Zero,
-                            end = Offset.Infinite,
-                        ),
-                    ),
+                            end = Offset.Infinite
+                        )
+                    )
             )
             Text(
                 text = item.title,
@@ -277,7 +277,7 @@ private fun DiscCard(item: DiscItem, modifier: Modifier = Modifier) {
                 fontSize = 16.sp,
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                    .padding(horizontal = 12.dp, vertical = 10.dp)
             )
         }
     }

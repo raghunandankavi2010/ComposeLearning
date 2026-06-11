@@ -69,19 +69,17 @@ class CurvedSideSheetShape(private val curveAmount: Float) : Shape {
 
 @Composable
 fun DraggableSheetRight(modifier: Modifier = Modifier) {
-
     BoxWithConstraints(
         modifier = modifier
             .fillMaxWidth()
             .fillMaxHeight()
             .background(Color.Transparent)
     ) {
-
         val screenWidth = maxWidth
         val sheetContentWidth = maxWidth * 0.7f
         val handleWidth = 40.dp
         // Increase visible width when collapsed to ensure the curve is prominent and visible
-        val visibleCollapsedWidth = 64.dp 
+        val visibleCollapsedWidth = 64.dp
         val density = LocalDensity.current
         val totalDraggableWidth = sheetContentWidth + handleWidth
 
@@ -107,9 +105,10 @@ fun DraggableSheetRight(modifier: Modifier = Modifier) {
                 val offset = dragState.offset
                 val collapsed = anchors.positionOf(SheetState.Collapsed)
                 val expanded = anchors.positionOf(SheetState.Expanded)
-                
-                if (offset.isNaN()) maxCurvePx
-                else {
+
+                if (offset.isNaN()) {
+                    maxCurvePx
+                } else {
                     // progress: 1.0 at collapsed (max curve), 0.0 at expanded (straight)
                     val progress = ((offset - expanded) / (collapsed - expanded)).coerceIn(0f, 1f)
                     maxCurvePx * progress
@@ -157,7 +156,7 @@ fun DraggableSheetRight(modifier: Modifier = Modifier) {
                         reverseDirection = false,
                         flingBehavior = AnchoredDraggableDefaults.flingBehavior(
                             dragState,
-                            positionalThreshold = { distance -> distance * 0.5f },
+                            positionalThreshold = { distance -> distance * 0.5f }
                         )
                     ),
                 contentAlignment = Alignment.Center
@@ -183,17 +182,17 @@ fun DraggableSheetRight(modifier: Modifier = Modifier) {
 @Composable
 fun OverlappingBoxes(
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     Layout(
         modifier = modifier,
-        content = content,
+        content = content
     ) { measurables, constraints ->
         val largeBox = measurables[0]
         val smallBox = measurables[1]
         val looseConstraints = constraints.copy(
             minWidth = 0,
-            minHeight = 0,
+            minHeight = 0
         )
         val largePlaceable = largeBox.measure(looseConstraints)
         val smallPlaceable = smallBox.measure(looseConstraints)
@@ -203,11 +202,11 @@ fun OverlappingBoxes(
         ) {
             largePlaceable.placeRelative(
                 x = 0,
-                y = 0,
+                y = 0
             )
             smallPlaceable.placeRelative(
                 x = -smallPlaceable.width / 2, // overlap by exactly half the size of second box x axis wise
-                y = largePlaceable.height / 2 - smallPlaceable.height / 2 //center with y axis
+                y = largePlaceable.height / 2 - smallPlaceable.height / 2 // center with y axis
             )
         }
     }

@@ -699,9 +699,9 @@ private fun AnimatedContentScope.ProductDetail(
  * Placeholder long-form description used for the product details section.
  */
 private val loremLong = """
-    This is where you put your long-form product description. 
-    In a real app this would come from your backend or local DB. 
-    The important part for our transition is that the header image 
+    This is where you put your long-form product description.
+    In a real app this would come from your backend or local DB.
+    The important part for our transition is that the header image
     and title feel physically connected to the list card the user tapped.
 """.trimIndent()
 

@@ -5,7 +5,7 @@ import com.example.composelearning.breathing.domain.model.BreathingSession
 data class BreathingState(
     val isLoading: Boolean = true,
     val isPlaying: Boolean = false,
-    val session: BreathingSession? = null,
+    val session: BreathingSession? = null
 )
 
 sealed interface BreathingIntent {

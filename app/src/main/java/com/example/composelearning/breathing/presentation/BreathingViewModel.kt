@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class BreathingViewModel(
-    private val getSession: GetBreathingSessionUseCase,
+    private val getSession: GetBreathingSessionUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(BreathingState())
@@ -39,7 +39,6 @@ class BreathingViewModel(
 
     class Factory : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            BreathingViewModel(GetBreathingSessionUseCase(BreathingRepositoryImpl())) as T
+        override fun <T : ViewModel> create(modelClass: Class<T>): T = BreathingViewModel(GetBreathingSessionUseCase(BreathingRepositoryImpl())) as T
     }
 }

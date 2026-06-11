@@ -11,6 +11,6 @@ class WalletRepositoryImpl : WalletRepository {
         WalletCard(3, "Grace Hopper", "7781", "VISA", 0xFF11998E, 0xFF38EF7D),
         WalletCard(4, "Linus Torvalds", "9003", "Amex", 0xFF373B44, 0xFF4286F4),
         WalletCard(5, "Margaret Hamilton", "5567", "Mastercard", 0xFFDA22FF, 0xFF9733EE),
-        WalletCard(6, "Dennis Ritchie", "2389", "VISA", 0xFFF7971E, 0xFFFFD200),
+        WalletCard(6, "Dennis Ritchie", "2389", "VISA", 0xFFF7971E, 0xFFFFD200)
     )
 }

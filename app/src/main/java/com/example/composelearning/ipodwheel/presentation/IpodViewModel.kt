@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class IpodViewModel(
-    private val getSongs: GetSongsUseCase,
+    private val getSongs: GetSongsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(IpodState())
@@ -28,13 +28,13 @@ class IpodViewModel(
                 val songs = getSongs()
                 _state.update { it.copy(isLoading = false, songs = songs) }
             }
+
             is IpodIntent.Select -> _state.update { it.copy(nowPlaying = intent.index) }
         }
     }
 
     class Factory : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            IpodViewModel(GetSongsUseCase(SongRepositoryImpl())) as T
+        override fun <T : ViewModel> create(modelClass: Class<T>): T = IpodViewModel(GetSongsUseCase(SongRepositoryImpl())) as T
     }
 }

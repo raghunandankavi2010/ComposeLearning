@@ -48,17 +48,17 @@ import kotlinx.coroutines.delay
 /* ---------------------------------- Colors ---------------------------------- */
 private val OpenColor = Color(0xFFECEFF1)
 private val ObstacleColor = Color(0xFF37474F)
-private val PathColor = Color(0xFF42A5F5)   // cell currently on the recursion stack
-private val HeadColor = Color(0xFFFF7043)   // the cell DFS is currently visiting
-private val FoundColor = Color(0xFF66BB6A)  // flashes when a full path is completed
+private val PathColor = Color(0xFF42A5F5) // cell currently on the recursion stack
+private val HeadColor = Color(0xFFFF7043) // the cell DFS is currently visiting
+private val FoundColor = Color(0xFF66BB6A) // flashes when a full path is completed
 private val StartColor = Color(0xFFB3E5FC)
 private val EndColor = Color(0xFFFFCCBC)
 
 /* ------------------------------- DFS step model ------------------------------ */
 private sealed interface DfsStep {
-    data class Enter(val r: Int, val c: Int) : DfsStep   // push cell onto path (mark visited)
-    data class Leave(val r: Int, val c: Int) : DfsStep   // backtrack (unmark)
-    data object PathFound : DfsStep                       // reached target: count++
+    data class Enter(val r: Int, val c: Int) : DfsStep // push cell onto path (mark visited)
+    data class Leave(val r: Int, val c: Int) : DfsStep // backtrack (unmark)
+    data object PathFound : DfsStep // reached target: count++
 }
 
 /**
@@ -102,7 +102,7 @@ private fun exampleGrid(): List<List<Boolean>> = listOf(
     listOf(false, false, false, false),
     listOf(true, true, false, false),
     listOf(false, false, false, true),
-    listOf(false, true, false, false),
+    listOf(false, true, false, false)
 )
 
 private fun openGrid(): List<List<Boolean>> = List(3) { List(3) { false } }
@@ -134,10 +134,12 @@ fun UniquePathsVisualizer(modifier: Modifier = Modifier) {
                 justFound = false
                 pathStack.add(idx(step.r, step.c))
             }
+
             is DfsStep.Leave -> {
                 justFound = false
                 if (pathStack.isNotEmpty()) pathStack.removeAt(pathStack.lastIndex)
             }
+
             DfsStep.PathFound -> {
                 justFound = true
                 pathsFound++
@@ -176,17 +178,17 @@ fun UniquePathsVisualizer(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             "Unique Paths — DFS + Backtracking",
             style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.Bold
         )
         Text(
             "Paths found: $pathsFound / $totalPaths      •      Step ${stepIndex.coerceAtMost(steps.size)}/${steps.size}",
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         // ---- Grid ----
@@ -214,7 +216,9 @@ fun UniquePathsVisualizer(modifier: Modifier = Modifier) {
                             }
                             val color by animateColorAsState(target, tween(180), label = "cell")
                             val scale by animateFloatAsState(
-                                if (isHead) 1f else 0.94f, tween(180), label = "scale",
+                                if (isHead) 1f else 0.94f,
+                                tween(180),
+                                label = "scale"
                             )
 
                             Box(
@@ -226,14 +230,14 @@ fun UniquePathsVisualizer(modifier: Modifier = Modifier) {
                                     .border(
                                         width = if (isHead) 2.dp else 0.dp,
                                         color = if (isHead) Color(0xFFBF360C) else Color.Transparent,
-                                        shape = RoundedCornerShape(8.dp),
+                                        shape = RoundedCornerShape(8.dp)
                                     )
                                     .clickable(enabled = !isPlaying && !isStart && !isEnd) {
                                         grid = grid.mapIndexed { rr, row ->
                                             row.mapIndexed { cc, v -> if (rr == r && cc == c) !v else v }
                                         }
                                     },
-                                contentAlignment = Alignment.Center,
+                                contentAlignment = Alignment.Center
                             ) {
                                 val label = when {
                                     isStart -> "S"
@@ -246,7 +250,7 @@ fun UniquePathsVisualizer(modifier: Modifier = Modifier) {
                                         label,
                                         fontWeight = FontWeight.Bold,
                                         fontSize = (cellSize.value * 0.32f).sp,
-                                        color = if (isObstacle) Color.White else Color(0xFF455A64),
+                                        color = if (isObstacle) Color.White else Color(0xFF455A64)
                                     )
                                 }
                             }
@@ -259,7 +263,7 @@ fun UniquePathsVisualizer(modifier: Modifier = Modifier) {
         // ---- Legend ----
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
+            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally)
         ) {
             LegendChip(HeadColor, "Visiting")
             LegendChip(PathColor, "On path")
@@ -271,14 +275,14 @@ fun UniquePathsVisualizer(modifier: Modifier = Modifier) {
             "Tap any cell (while paused) to toggle a wall.",
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Center
         )
 
         // ---- Controls ----
         Card(elevation = CardDefaults.cardElevation(2.dp), modifier = Modifier.fillMaxWidth()) {
             Column(
                 modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Button(
@@ -286,18 +290,21 @@ fun UniquePathsVisualizer(modifier: Modifier = Modifier) {
                             if (stepIndex >= steps.size) reset()
                             isPlaying = !isPlaying
                         },
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f)
                     ) { Text(if (isPlaying) "Pause" else "Play") }
 
                     OutlinedButton(
-                        onClick = { isPlaying = false; stepForward() },
+                        onClick = {
+                            isPlaying = false
+                            stepForward()
+                        },
                         enabled = !isPlaying && stepIndex < steps.size,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f)
                     ) { Text("Step") }
 
                     OutlinedButton(
                         onClick = { reset() },
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f)
                     ) { Text("Reset") }
                 }
 
@@ -308,18 +315,24 @@ fun UniquePathsVisualizer(modifier: Modifier = Modifier) {
                         value = 620f - speedMs,
                         onValueChange = { speedMs = 620f - it },
                         valueRange = 20f..600f,
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.weight(1f)
                     )
                 }
 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedButton(
-                        onClick = { grid = exampleGrid(); reset() },
-                        modifier = Modifier.weight(1f),
+                        onClick = {
+                            grid = exampleGrid()
+                            reset()
+                        },
+                        modifier = Modifier.weight(1f)
                     ) { Text("Example → 2") }
                     OutlinedButton(
-                        onClick = { grid = openGrid(); reset() },
-                        modifier = Modifier.weight(1f),
+                        onClick = {
+                            grid = openGrid()
+                            reset()
+                        },
+                        modifier = Modifier.weight(1f)
                     ) { Text("Open 3×3 → 12") }
                 }
             }
@@ -333,7 +346,7 @@ private fun LegendChip(color: Color, label: String) {
         Box(
             modifier = Modifier
                 .size(14.dp)
-                .background(color, RoundedCornerShape(3.dp)),
+                .background(color, RoundedCornerShape(3.dp))
         )
         Spacer(Modifier.width(4.dp))
         Text(label, style = MaterialTheme.typography.labelMedium)

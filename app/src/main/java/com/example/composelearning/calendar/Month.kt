@@ -49,4 +49,3 @@ internal fun MonthHeader(modifier: Modifier = Modifier, month: String, year: Str
         )
     }
 }
-

@@ -8,24 +8,24 @@ import coil3.SingletonImageLoader
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.request.crossfade
 import coil3.util.DebugLogger
-import okhttp3.OkHttpClient
 import java.security.cert.X509Certificate
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
+import okhttp3.OkHttpClient
 
-class ComposeLearningApplication : Application(), SingletonImageLoader.Factory {
+class ComposeLearningApplication :
+    Application(),
+    SingletonImageLoader.Factory {
 
-    override fun newImageLoader(context: PlatformContext): ImageLoader {
-        return ImageLoader.Builder(this)
-            .components {
-                add(OkHttpNetworkFetcherFactory(createUnsafeOkHttpClient()))
-            }
-            // Enforce verbose logging for pipeline tasks
-            .logger(DebugLogger())
-            .crossfade(true)
-            .build()
-    }
+    override fun newImageLoader(context: PlatformContext): ImageLoader = ImageLoader.Builder(this)
+        .components {
+            add(OkHttpNetworkFetcherFactory(createUnsafeOkHttpClient()))
+        }
+        // Enforce verbose logging for pipeline tasks
+        .logger(DebugLogger())
+        .crossfade(true)
+        .build()
 
     private fun createUnsafeOkHttpClient(): OkHttpClient {
         try {
@@ -40,9 +40,7 @@ class ComposeLearningApplication : Application(), SingletonImageLoader.Factory {
                 override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {
                 }
 
-                override fun getAcceptedIssuers(): Array<X509Certificate> {
-                    return arrayOf()
-                }
+                override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
             })
 
             // Install the all-trusting trust manager

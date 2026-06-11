@@ -4,6 +4,8 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.composelearning.proto.ContactList
+import java.io.IOException
+import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,8 +13,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import java.io.IOException
-import java.util.concurrent.TimeUnit
 
 /** A contact mapped from the generated protobuf [com.example.composelearning.proto.Contact]. */
 @Immutable
@@ -22,7 +22,7 @@ data class ContactUi(
     val email: String,
     val phone: String,
     val role: String,
-    val active: Boolean,
+    val active: Boolean
 )
 
 @Immutable
@@ -32,7 +32,7 @@ sealed interface ContactsUiState {
     data class Success(
         val contacts: List<ContactUi>,
         /** Size of the protobuf payload we decoded — shown so the saving is visible. */
-        val payloadBytes: Int,
+        val payloadBytes: Int
     ) : ContactsUiState
     data class Error(val message: String) : ContactsUiState
 }
@@ -46,7 +46,7 @@ class ContactsRepository(
     private val client: OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(5, TimeUnit.SECONDS)
         .readTimeout(5, TimeUnit.SECONDS)
-        .build(),
+        .build()
 ) {
     data class Result(val contacts: List<ContactUi>, val payloadBytes: Int)
 
@@ -71,7 +71,7 @@ class ContactsRepository(
                     phone = c.phone,
                     role = c.role.name.replace("ROLE_UNSPECIFIED", "Unknown")
                         .lowercase().replaceFirstChar { it.uppercase() },
-                    active = c.active,
+                    active = c.active
                 )
             }
             Result(contacts, bytes.size)
@@ -80,7 +80,7 @@ class ContactsRepository(
 }
 
 class ProtobufContactsViewModel(
-    private val repository: ContactsRepository = ContactsRepository(),
+    private val repository: ContactsRepository = ContactsRepository()
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<ContactsUiState>(ContactsUiState.Idle)

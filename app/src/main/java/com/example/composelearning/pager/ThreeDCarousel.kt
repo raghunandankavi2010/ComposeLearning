@@ -14,10 +14,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,7 +43,7 @@ private data class CarouselItem(
     val title: String,
     val subtitle: String,
     val drawableRes: Int,
-    val gradient: List<Color>,
+    val gradient: List<Color>
 )
 
 private val carouselItems = listOf(
@@ -51,53 +51,53 @@ private val carouselItems = listOf(
         title = "Crisp Tomato",
         subtitle = "Fresh from the garden",
         drawableRes = R.drawable.ic_launcher_background,
-        gradient = listOf(Color(0xFFFF6B6B), Color(0xFFB3261E)),
+        gradient = listOf(Color(0xFFFF6B6B), Color(0xFFB3261E))
     ),
     CarouselItem(
         title = "Sweet Grapes",
         subtitle = "Bunches of summer",
         drawableRes = R.drawable.ic_launcher_background,
-        gradient = listOf(Color(0xFF7B2CBF), Color(0xFF3C096C)),
+        gradient = listOf(Color(0xFF7B2CBF), Color(0xFF3C096C))
     ),
     CarouselItem(
         title = "Mr. Android",
         subtitle = "Hello, Droid",
         drawableRes = R.drawable.ic_launcher_background,
-        gradient = listOf(Color(0xFF3DDC84), Color(0xFF0F9D58)),
+        gradient = listOf(Color(0xFF3DDC84), Color(0xFF0F9D58))
     ),
     CarouselItem(
         title = "Thumbs Up",
         subtitle = "Approved aesthetic",
         drawableRes = R.drawable.ic_launcher_background,
-        gradient = listOf(Color(0xFF4FC3F7), Color(0xFF0277BD)),
+        gradient = listOf(Color(0xFF4FC3F7), Color(0xFF0277BD))
     ),
     CarouselItem(
         title = "Background Bliss",
         subtitle = "Soft & subtle",
         drawableRes = R.drawable.ic_launcher_background,
-        gradient = listOf(Color(0xFFFFB74D), Color(0xFFE65100)),
+        gradient = listOf(Color(0xFFFFB74D), Color(0xFFE65100))
     ),
     CarouselItem(
         title = "Ping",
         subtitle = "A small wonder",
         drawableRes = R.drawable.ic_launcher_background,
-        gradient = listOf(Color(0xFFEC407A), Color(0xFFAD1457)),
+        gradient = listOf(Color(0xFFEC407A), Color(0xFFAD1457))
     ),
     CarouselItem(
         title = "Test Image",
         subtitle = "Pixel perfect",
         drawableRes = R.drawable.ic_launcher_background,
-        gradient = listOf(Color(0xFF26C6DA), Color(0xFF00838F)),
-    ),
+        gradient = listOf(Color(0xFF26C6DA), Color(0xFF00838F))
+    )
 )
 
 @Composable
 fun ThreeDCarousel(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val pagerState = rememberPagerState(
         initialPage = carouselItems.size / 2,
-        pageCount = { carouselItems.size },
+        pageCount = { carouselItems.size }
     )
 
     Box(
@@ -105,15 +105,15 @@ fun ThreeDCarousel(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(Color(0xFF0F0C29), Color(0xFF302B63), Color(0xFF24243E)),
-                ),
+                    colors = listOf(Color(0xFF0F0C29), Color(0xFF302B63), Color(0xFF24243E))
+                )
             ),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             Spacer(Modifier.height(8.dp))
 
@@ -121,7 +121,7 @@ fun ThreeDCarousel(
                 state = pagerState,
                 contentPadding = PaddingValues(horizontal = 72.dp),
                 pageSpacing = (-24).dp,
-                modifier = Modifier.fillMaxWidth().systemGestureExclusion(),
+                modifier = Modifier.fillMaxWidth().systemGestureExclusion()
             ) { page ->
                 val pageOffset = remember(pagerState.currentPage, pagerState.currentPageOffsetFraction) {
                     (pagerState.currentPage - page) + pagerState.currentPageOffsetFraction
@@ -145,14 +145,14 @@ fun ThreeDCarousel(
 
                             alpha = lerp(0.55f, 1f, 1f - absOffset)
                         },
-                    elevationFactor = 1f - absOffset,
+                    elevationFactor = 1f - absOffset
                 )
             }
 
             PageIndicator(
                 pageCount = carouselItems.size,
                 currentPage = pagerState.currentPage,
-                offsetFraction = pagerState.currentPageOffsetFraction,
+                offsetFraction = pagerState.currentPageOffsetFraction
             )
 
             Spacer(Modifier.height(8.dp))
@@ -164,7 +164,7 @@ fun ThreeDCarousel(
 private fun CarouselCard(
     item: CarouselItem,
     modifier: Modifier = Modifier,
-    elevationFactor: Float = 1f,
+    elevationFactor: Float = 1f
 ) {
     Box(
         modifier = modifier
@@ -172,10 +172,10 @@ private fun CarouselCard(
                 elevation = (24f * elevationFactor).dp,
                 shape = RoundedCornerShape(28.dp),
                 ambientColor = item.gradient.last(),
-                spotColor = item.gradient.last(),
+                spotColor = item.gradient.last()
             )
             .clip(RoundedCornerShape(28.dp))
-            .background(Brush.verticalGradient(item.gradient)),
+            .background(Brush.verticalGradient(item.gradient))
     ) {
         Image(
             painter = painterResource(id = item.drawableRes),
@@ -183,7 +183,7 @@ private fun CarouselCard(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
-                .graphicsLayer { alpha = 0.85f },
+                .graphicsLayer { alpha = 0.85f }
         )
 
         Box(
@@ -194,30 +194,30 @@ private fun CarouselCard(
                         colors = listOf(
                             Color.Transparent,
                             Color.Transparent,
-                            Color.Black.copy(alpha = 0.65f),
-                        ),
-                    ),
-                ),
+                            Color.Black.copy(alpha = 0.65f)
+                        )
+                    )
+                )
         )
 
         Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
                 text = item.title,
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 22.sp,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleLarge
             )
             Text(
                 text = item.subtitle,
                 color = Color.White.copy(alpha = 0.85f),
                 fontSize = 13.sp,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }
@@ -227,14 +227,14 @@ private fun CarouselCard(
 private fun PageIndicator(
     pageCount: Int,
     currentPage: Int,
-    offsetFraction: Float,
+    offsetFraction: Float
 ) {
     val activeColor = Color.White
     val inactiveColor = Color.White.copy(alpha = 0.35f)
 
     androidx.compose.foundation.layout.Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         repeat(pageCount) { index ->
             val distance = abs((currentPage + offsetFraction) - index).coerceIn(0f, 1f)
@@ -244,8 +244,8 @@ private fun PageIndicator(
                     .size(size.dp)
                     .clip(CircleShape)
                     .background(
-                        if (distance < 0.5f) activeColor else inactiveColor,
-                    ),
+                        if (distance < 0.5f) activeColor else inactiveColor
+                    )
             )
         }
     }

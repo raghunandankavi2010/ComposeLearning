@@ -6,7 +6,7 @@ data class TutorialStep(
     val description: String,
     val targetKey: String,
     val cardIndex: Int?,
-    val shape: Shape = Shape.RoundedRect(20),
+    val shape: Shape = Shape.RoundedRect(20)
 ) {
     sealed interface Shape {
         data class RoundedRect(val cornerDp: Int) : Shape

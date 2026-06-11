@@ -8,13 +8,14 @@ import androidx.compose.ui.graphics.graphicsLayer
 
 fun Modifier.customBlur(blur: Float) = this.then(
     graphicsLayer {
-        if (blur > 0f)
+        if (blur > 0f) {
             renderEffect = RenderEffect
                 .createBlurEffect(
                     blur,
                     blur,
-                    Shader.TileMode.DECAL,
+                    Shader.TileMode.DECAL
                 )
                 .asComposeRenderEffect()
+        }
     }
 )

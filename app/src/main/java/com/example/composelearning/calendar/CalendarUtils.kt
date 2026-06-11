@@ -3,7 +3,6 @@ package com.example.composelearning.calendar
 import java.time.YearMonth
 import java.time.temporal.WeekFields
 
-
 fun YearMonth.getNumberWeeks(weekFields: WeekFields = CALENDAR_STARTS_ON): Int {
     val firstWeekNumber = this.atDay(1)[weekFields.weekOfMonth()]
     val lastWeekNumber = this.atEndOfMonth()[weekFields.weekOfMonth()]

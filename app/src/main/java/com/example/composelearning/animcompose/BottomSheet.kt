@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -61,13 +62,13 @@ fun BottomSheet(
 @Composable
 private fun Item(
     label: String,
-    position: Int,
+    position: Int
 ) {
-    var scale by remember { mutableStateOf(0.9f) }
+    var scale by remember { mutableFloatStateOf(0.9f) }
     val animation = animateFloatAsState(
         targetValue = scale,
         animationSpec = FloatSpringSpec(
-            dampingRatio = 0.3f,
+            dampingRatio = 0.3f
         )
     )
 

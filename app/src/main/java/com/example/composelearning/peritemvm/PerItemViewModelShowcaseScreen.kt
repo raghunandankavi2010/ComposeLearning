@@ -61,13 +61,13 @@ import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import kotlin.random.Random
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 // region ── Scoped ViewModelStoreOwner helpers ───────────────────────────────
 //
@@ -124,7 +124,7 @@ fun rememberViewModelStoreProvider(): ViewModelStoreProvider {
 @Composable
 fun rememberViewModelStoreOwner(
     provider: ViewModelStoreProvider,
-    key: Any,
+    key: Any
 ): ViewModelStoreOwner = remember(provider, key) {
     val store = provider.storeFor(key)
     object : ViewModelStoreOwner {
@@ -145,7 +145,7 @@ data class PostItemUiState(
     val body: String = "",
     val likes: Int = 0,
     val liked: Boolean = false,
-    val expanded: Boolean = false,
+    val expanded: Boolean = false
 )
 
 class PostItemViewModel(private val postId: Int) : ViewModel() {
@@ -162,7 +162,7 @@ class PostItemViewModel(private val postId: Int) : ViewModel() {
             _state.update {
                 it.copy(
                     isLoading = false,
-                    body = SAMPLE_BODIES[postId % SAMPLE_BODIES.size],
+                    body = SAMPLE_BODIES[postId % SAMPLE_BODIES.size]
                 )
             }
         }
@@ -186,7 +186,7 @@ private val SAMPLE_BODIES = listOf(
     "Scoped ViewModels die when their composable leaves composition — a clean lifecycle without manual cleanup.",
     "Two items of the same type each get their own VM instance, so a stale fetch from one never bleeds into the other.",
     "Like, expand, retry — all are item-local state. The list controller stays a list controller.",
-    "Lifecycle 2.11's rememberViewModelStoreOwner() formalises this pattern; the helpers above are a 2.10 backport.",
+    "Lifecycle 2.11's rememberViewModelStoreOwner() formalises this pattern; the helpers above are a 2.10 backport."
 )
 // endregion
 
@@ -204,7 +204,7 @@ private fun PerItemLazyColumnDemo(modifier: Modifier = Modifier) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(postIds, key = { it }) { postId ->
                 // Per-item scoped owner. Lives as long as this composable is
@@ -212,7 +212,7 @@ private fun PerItemLazyColumnDemo(modifier: Modifier = Modifier) {
                 val itemOwner = rememberViewModelStoreOwner()
                 CompositionLocalProvider(LocalViewModelStoreOwner provides itemOwner) {
                     val vm: PostItemViewModel = viewModel(
-                        factory = PostItemViewModel.factory(postId),
+                        factory = PostItemViewModel.factory(postId)
                     )
                     PostCard(postId = postId, vm = vm)
                 }
@@ -244,7 +244,7 @@ private fun PerPagePagerDemo(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             repeat(pageIds.size) { index ->
                 val selected = index == pagerState.currentPage
@@ -252,10 +252,13 @@ private fun PerPagePagerDemo(modifier: Modifier = Modifier) {
                     modifier = Modifier
                         .size(if (selected) 10.dp else 8.dp)
                         .background(
-                            color = if (selected) MaterialTheme.colorScheme.primary
-                            else MaterialTheme.colorScheme.outlineVariant,
-                            shape = CircleShape,
-                        ),
+                            color = if (selected) {
+                                MaterialTheme.colorScheme.primary
+                            } else {
+                                MaterialTheme.colorScheme.outlineVariant
+                            },
+                            shape = CircleShape
+                        )
                 )
             }
         }
@@ -263,13 +266,13 @@ private fun PerPagePagerDemo(modifier: Modifier = Modifier) {
             state = pagerState,
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(horizontal = 24.dp),
-            pageSpacing = 12.dp,
+            pageSpacing = 12.dp
         ) { pageIndex ->
             val pageId = pageIds[pageIndex]
             val pageOwner = rememberViewModelStoreOwner(provider, key = pageId)
             CompositionLocalProvider(LocalViewModelStoreOwner provides pageOwner) {
                 val vm: PostItemViewModel = viewModel(
-                    factory = PostItemViewModel.factory(pageId),
+                    factory = PostItemViewModel.factory(pageId)
                 )
                 PostCard(postId = pageId, vm = vm, modifier = Modifier.padding(vertical = 12.dp))
             }
@@ -291,10 +294,12 @@ class FeedScreenViewModel : ViewModel() {
             viewModelScope.launch {
                 delay(Random.nextLong(400, 1400))
                 _state.update { current ->
-                    current + (postId to current.getValue(postId).copy(
-                        isLoading = false,
-                        body = SAMPLE_BODIES[postId % SAMPLE_BODIES.size],
-                    ))
+                    current + (
+                        postId to current.getValue(postId).copy(
+                            isLoading = false,
+                            body = SAMPLE_BODIES[postId % SAMPLE_BODIES.size]
+                        )
+                        )
                 }
             }
         }
@@ -311,26 +316,24 @@ class FeedScreenViewModel : ViewModel() {
     }
 
     private companion object {
-        fun buildInitial(): Map<Int, PostItemUiState> =
-            (1..30).associateWith { PostItemUiState() }
+        fun buildInitial(): Map<Int, PostItemUiState> = (1..30).associateWith { PostItemUiState() }
     }
 }
 
 @Composable
-private fun ScreenLevelViewModelDemo(modifier: Modifier = Modifier) {
-    val vm: FeedScreenViewModel = viewModel()
+private fun ScreenLevelViewModelDemo(modifier: Modifier = Modifier, vm: FeedScreenViewModel = viewModel()) {
     val byId by vm.state.collectAsStateWithLifecycle()
     Column(modifier = modifier) {
         ExplainerBanner(
             title = "One screen-level ViewModel owns every item",
             body = "All loading flags, like counts and expand state live in a Map<Int, …> inside one VM. " +
                 "Works at this scale but bloats fast — and the VM has to fan out loads for items the user may never see.",
-            tone = BannerTone.Warning,
+            tone = BannerTone.Warning
         )
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(byId.keys.toList(), key = { it }) { postId ->
                 val ui = byId.getValue(postId)
@@ -339,7 +342,7 @@ private fun ScreenLevelViewModelDemo(modifier: Modifier = Modifier) {
                     vmTag = "(screen VM)",
                     state = ui,
                     onLike = { vm.toggleLike(postId) },
-                    onExpand = { vm.toggleExpanded(postId) },
+                    onExpand = { vm.toggleExpanded(postId) }
                 )
             }
         }
@@ -353,7 +356,7 @@ private fun ScreenLevelViewModelDemo(modifier: Modifier = Modifier) {
 private fun PostCard(
     postId: Int,
     vm: PostItemViewModel,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
     PostCardStateless(
@@ -362,7 +365,7 @@ private fun PostCard(
         state = state,
         onLike = vm::toggleLike,
         onExpand = vm::toggleExpanded,
-        modifier = modifier,
+        modifier = modifier
     )
 }
 
@@ -373,24 +376,24 @@ private fun PostCardStateless(
     state: PostItemUiState,
     onLike: () -> Unit,
     onExpand: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Surface(
                     modifier = Modifier.size(32.dp),
                     shape = CircleShape,
-                    color = MaterialTheme.colorScheme.tertiaryContainer,
+                    color = MaterialTheme.colorScheme.tertiaryContainer
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Text(
                             text = "P$postId",
                             style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onTertiaryContainer,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer
                         )
                     }
                 }
@@ -399,20 +402,20 @@ private fun PostCardStateless(
                     Text(
                         text = "Post #$postId",
                         style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold,
+                        fontWeight = FontWeight.SemiBold
                     )
                     Text(
                         text = "VM $vmTag",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontFamily = FontFamily.Monospace,
-                        fontSize = 10.sp,
+                        fontSize = 10.sp
                     )
                 }
                 IconButton(onClick = onExpand) {
                     Icon(
                         imageVector = if (state.expanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
-                        contentDescription = if (state.expanded) "Collapse" else "Expand",
+                        contentDescription = if (state.expanded) "Collapse" else "Expand"
                     )
                 }
             }
@@ -423,7 +426,7 @@ private fun PostCardStateless(
                 Text(
                     text = state.body,
                     style = MaterialTheme.typography.bodyMedium,
-                    maxLines = if (state.expanded) Int.MAX_VALUE else 2,
+                    maxLines = if (state.expanded) Int.MAX_VALUE else 2
                 )
             }
             AnimatedVisibility(visible = state.expanded && !state.isLoading) {
@@ -433,7 +436,7 @@ private fun PostCardStateless(
                         text = "Expanded detail — this state is owned by the item's own VM, " +
                             "not a screen-level container.",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
@@ -443,13 +446,16 @@ private fun PostCardStateless(
                     Icon(
                         imageVector = if (state.liked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                         contentDescription = "Like",
-                        tint = if (state.liked) MaterialTheme.colorScheme.error
-                        else MaterialTheme.colorScheme.onSurfaceVariant,
+                        tint = if (state.liked) {
+                            MaterialTheme.colorScheme.error
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        }
                     )
                 }
                 Text(
                     text = "${state.likes}",
-                    style = MaterialTheme.typography.labelLarge,
+                    style = MaterialTheme.typography.labelLarge
                 )
             }
         }
@@ -462,13 +468,13 @@ private fun LoadingSkeleton() {
         CircularProgressIndicator(
             modifier = Modifier.size(14.dp),
             strokeWidth = 2.dp,
-            color = MaterialTheme.colorScheme.primary,
+            color = MaterialTheme.colorScheme.primary
         )
         Spacer(Modifier.width(8.dp))
         Text(
             text = "Loading from this item's own ViewModel…",
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -479,7 +485,7 @@ private enum class BannerTone { Info, Warning }
 private fun ExplainerBanner(
     title: String,
     body: String,
-    tone: BannerTone = BannerTone.Info,
+    tone: BannerTone = BannerTone.Info
 ) {
     val container = when (tone) {
         BannerTone.Info -> MaterialTheme.colorScheme.secondaryContainer
@@ -495,7 +501,7 @@ private fun ExplainerBanner(
             .padding(horizontal = 16.dp, vertical = 8.dp),
         color = container,
         contentColor = onContainer,
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(12.dp)
     ) {
         Column(modifier = Modifier.padding(12.dp)) {
             Text(text = title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
@@ -517,14 +523,14 @@ fun PerItemViewModelShowcaseScreen(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .systemBarsPadding(),
+            .systemBarsPadding()
     ) {
         PrimaryTabRow(selectedTabIndex = selected) {
             TABS.forEachIndexed { index, label ->
                 Tab(
                     selected = index == selected,
                     onClick = { selected = index },
-                    text = { Text(label, color = if (index == selected) MaterialTheme.colorScheme.primary else Color.Unspecified) },
+                    text = { Text(label, color = if (index == selected) MaterialTheme.colorScheme.primary else Color.Unspecified) }
                 )
             }
         }

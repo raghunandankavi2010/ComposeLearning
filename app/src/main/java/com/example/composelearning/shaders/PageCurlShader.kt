@@ -21,7 +21,7 @@ import coil3.request.allowHardware
 
 /**
  * AGSL Page Curl Implementation
- * 
+ *
  * This shader simulates a cylindrical page curl. It takes two textures:
  * 1. Current Page (The one being curled)
  * 2. Next Page (The one revealed underneath)
@@ -29,7 +29,7 @@ import coil3.request.allowHardware
 @Composable
 fun PageCurlShaderScreen() {
     val context = LocalContext.current
-    
+
     // 1. Load Dummy Images
     val frontPageUrl = "https://picsum.photos/seed/page1/1080/1920"
     val backPageUrl = "https://picsum.photos/seed/page2/1080/1920"
@@ -37,7 +37,7 @@ fun PageCurlShaderScreen() {
     var frontBitmap by remember { mutableStateOf<Bitmap?>(null) }
     var backBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
-    
+
     // Fetch bitmaps
     LaunchedEffect(frontPageUrl, backPageUrl) {
         val loader = SingletonImageLoader.get(context)
@@ -76,9 +76,9 @@ fun PageCurlShaderScreen() {
         uniform float2 u_drag_start; // Initial touch point (clickPos)
         uniform shader u_front_tex;
         uniform shader u_back_tex;
-        
+
         const float PI = 3.14159265359;
-        const float RADIUS = 0.1; 
+        const float RADIUS = 0.1;
 
         // Helper to convert our aspect-corrected space back to 0..1 UV for sampling
         float2 sampleUV(float2 p, float asp) {
@@ -92,12 +92,12 @@ fun PageCurlShaderScreen() {
             float2 uv = (fragCoord / u_resolution.xy) * float2(aspect, 1.0);
             float2 mouse = (u_mouse / u_resolution.xy) * float2(aspect, 1.0);
             float2 dragStart = (u_drag_start / u_resolution.xy) * float2(aspect, 1.0);
-            
+
             // 1. Calculate the fold orientation (mouseDir)
             // It uses the vector between the start and current point, but absolute-values the start
             // to find a stable anchor point (origin).
             float2 mouseDir = normalize(abs(dragStart) - mouse);
-            
+
             // 2. Calculate the Origin
             // This anchors the fold to the screen edge based on the drag direction
             float2 origin = clamp(mouse - mouseDir * mouse.x / mouseDir.x, 0.0, 1.0);
@@ -108,11 +108,11 @@ fun PageCurlShaderScreen() {
 
             // 3. Calculate distance from mouse to origin (the "fold depth")
             float mouseDist = length(mouse - origin);
-            
+
             // 4. Project fragment onto the curl axis
             float proj = dot(uv - origin, mouseDir);
             float dist = proj - mouseDist;
-            
+
             float2 linePoint = uv - dist * mouseDir;
 
             if (dist > RADIUS) {
@@ -127,7 +127,7 @@ fun PageCurlShaderScreen() {
                 float theta = asin(dist / RADIUS);
                 float2 p2 = linePoint + mouseDir * (PI - theta) * RADIUS;
                 float2 p1 = linePoint + mouseDir * theta * RADIUS;
-                
+
                 // Back of the page check
                 if (p2.x <= aspect && p2.y <= 1.0 && p2.x >= 0.0 && p2.y >= 0.0) {
                     half4 col = u_front_tex.eval(sampleUV(p2, aspect) * u_resolution);

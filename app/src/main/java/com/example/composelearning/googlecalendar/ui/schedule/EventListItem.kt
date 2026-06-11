@@ -102,8 +102,11 @@ fun DayHeader(
         text = dateText,
         style = MaterialTheme.typography.titleSmall,
         fontWeight = if (isToday) FontWeight.Bold else FontWeight.Medium,
-        color = if (isToday) MaterialTheme.colorScheme.primary
-        else MaterialTheme.colorScheme.onSurface,
+        color = if (isToday) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.onSurface
+        },
         modifier = modifier.padding(horizontal = 16.dp, vertical = 12.dp)
     )
 }

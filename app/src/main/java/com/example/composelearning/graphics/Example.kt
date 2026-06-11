@@ -22,14 +22,14 @@ import kotlin.math.sin
 
 @Composable
 @Preview
-fun Example(
+private fun Example(
     modifier: Modifier = Modifier,
     count: Int = 16,
     gapDegrees: Float = 30f / count,
     innerRadius: Dp = 120.dp,
     outerRadius: Dp = innerRadius * 1.25f,
     cornerRadius: Dp = (outerRadius - innerRadius) / 3,
-    brush: Brush = SolidColor(Color.Red),
+    brush: Brush = SolidColor(Color.Red)
 ) {
     Canvas(modifier = modifier.size(outerRadius * 2)) {
         val path = Path()
@@ -40,13 +40,12 @@ fun Example(
                 sweepAngleDegrees = 360f / count - gapDegrees,
                 innerRadius = innerRadius.toPx(),
                 outerRadius = outerRadius.toPx(),
-                cornerRadius = cornerRadius.toPx(),
+                cornerRadius = cornerRadius.toPx()
             )
         }
         drawPath(path = path, brush = brush)
     }
 }
-
 
 fun Path.drawRoundedRightEndArc(
     center: Offset,
@@ -54,7 +53,7 @@ fun Path.drawRoundedRightEndArc(
     sweepAngleDegrees: Float,
     innerRadius: Float,
     outerRadius: Float,
-    cornerRadius: Float,
+    cornerRadius: Float
 ) {
     val endAngleDegrees = startAngleDegrees + sweepAngleDegrees.toDouble()
     val innerRadiusShift = innerRadius + cornerRadius.toDouble()
@@ -67,7 +66,7 @@ fun Path.drawRoundedRightEndArc(
         rect = Rect(center = center, radius = innerRadius),
         startAngleDegrees = startAngleDegrees,
         sweepAngleDegrees = (sweepAngleDegrees - outerAngleShift).toFloat(),
-        forceMoveTo = true,
+        forceMoveTo = true
     )
 
     // Draw the part of the arc where the right end is rounded
@@ -76,32 +75,27 @@ fun Path.drawRoundedRightEndArc(
         arcTo(
             rect = Rect(
                 center = center,
-                radius = outerRadius,
+                radius = outerRadius
             ),
             startAngleDegrees = endAngleDegrees.toFloat() - outerAngleShift.toFloat(),
             sweepAngleDegrees = outerAngleShift.toFloat(),
-            forceMoveTo = false,
+            forceMoveTo = false
         )
     } else {
         // Otherwise, we draw the remaining part of the arc with a flat end
         arcTo(
             rect = Rect(
                 center = center,
-                radius = outerRadius,
+                radius = outerRadius
             ),
             startAngleDegrees = endAngleDegrees.toFloat(),
             sweepAngleDegrees = -(sweepAngleDegrees - outerAngleShift).toFloat(),
-            forceMoveTo = false,
+            forceMoveTo = false
         )
     }
 
     close()
 }
-
-
-
-
-
 
 fun Path.trying(
     center: Offset,
@@ -122,35 +116,33 @@ fun Path.trying(
         rect = Rect(center = center, radius = innerRadius),
         startAngleDegrees = (startAngleDegrees + innerAngleShift).toFloat(),
         sweepAngleDegrees = (sweepAngleDegrees - innerAngleShift).toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
 
     arcTo(
         rect = Rect(center = center, radius = outerRadius),
-        startAngleDegrees = (endAngleDegrees ).toFloat(),
+        startAngleDegrees = (endAngleDegrees).toFloat(),
         sweepAngleDegrees = -(sweepAngleDegrees - 2 * outerAngleShift).toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
     arcTo(
         rect = Rect(
             center = Offset(
                 x = (center.x + outerRadiusShift * cos((startAngleDegrees + outerAngleShift) * PI / 180)).toFloat(),
-                y = (center.y + outerRadiusShift * sin((startAngleDegrees + outerAngleShift) * PI / 180)).toFloat(),
+                y = (center.y + outerRadiusShift * sin((startAngleDegrees + outerAngleShift) * PI / 180)).toFloat()
             ),
-            radius = radius,
+            radius = radius
         ),
         startAngleDegrees = (startAngleDegrees).toFloat(),
         sweepAngleDegrees = outerAngleShift.toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
     arcTo(
         rect = Rect(center = center, radius = outerRadius),
         startAngleDegrees = endAngleDegrees.toFloat(),
         sweepAngleDegrees = -(sweepAngleDegrees - outerAngleShift).toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
-
-
 
 //    arcTo(
 //        rect = Rect(
@@ -173,7 +165,7 @@ fun Path.addRoundedPolarBoxEnd(
     sweepAngleDegrees: Float,
     innerRadius: Float,
     outerRadius: Float,
-    cornerRadius: Float,
+    cornerRadius: Float
 ) {
     val endAngleDegrees = startAngleDegrees + sweepAngleDegrees.toDouble()
     val innerRadiusShift = innerRadius + cornerRadius.toDouble()
@@ -185,52 +177,50 @@ fun Path.addRoundedPolarBoxEnd(
         rect = Rect(center = center, radius = innerRadius),
         startAngleDegrees = (startAngleDegrees + innerAngleShift).toFloat(),
         sweepAngleDegrees = (sweepAngleDegrees - innerAngleShift).toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
 
     arcTo(
         rect = Rect(center = center, radius = outerRadius),
-        startAngleDegrees = (endAngleDegrees ).toFloat(),
+        startAngleDegrees = (endAngleDegrees).toFloat(),
         sweepAngleDegrees = -(sweepAngleDegrees - 2 * outerAngleShift).toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
     arcTo(
         rect = Rect(
             center = Offset(
                 x = (center.x + outerRadiusShift * cos((startAngleDegrees + outerAngleShift) * PI / 180)).toFloat(),
-                y = (center.y + outerRadiusShift * sin((startAngleDegrees + outerAngleShift) * PI / 180)).toFloat(),
+                y = (center.y + outerRadiusShift * sin((startAngleDegrees + outerAngleShift) * PI / 180)).toFloat()
             ),
-            radius = 0.1f,
+            radius = 0.1f
         ),
         startAngleDegrees = (startAngleDegrees).toFloat(),
         sweepAngleDegrees = outerAngleShift.toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
 
     arcTo(
         rect = Rect(
             center = Offset(
                 x = (center.x + innerRadiusShift * cos((startAngleDegrees + innerAngleShift) * PI / 180)).toFloat(),
-                y = (center.y + innerRadiusShift * sin((startAngleDegrees + innerAngleShift) * PI / 180)).toFloat(),
+                y = (center.y + innerRadiusShift * sin((startAngleDegrees + innerAngleShift) * PI / 180)).toFloat()
             ),
-            radius = 0.1f,
+            radius = 0.1f
         ),
         startAngleDegrees = startAngleDegrees - 90,
         sweepAngleDegrees = (innerAngleShift - 90).toFloat(),
-        forceMoveTo = true,
+        forceMoveTo = true
     )
     close()
 }
 
-
-
-//fun Path.addBox(
+// fun Path.addBox(
 //    center: Offset,
 //    startAngleDegrees: Float,
 //    sweepAngleDegrees: Float,
 //    innerRadius: Float,
 //    outerRadius: Float,
-//) {
+// ) {
 //    val endAngleDegrees = startAngleDegrees + sweepAngleDegrees.toDouble()
 //    val innerAngleShift = asin(innerRadius) * 180 / PI
 //    val outerAngleShift = asin(outerRadius) * 180 / PI
@@ -271,17 +261,16 @@ fun Path.addRoundedPolarBoxEnd(
 //        forceMoveTo = false,
 //    )
 //    close()
-//}
+// }
 
-
-//fun Path.addRoundedPolarEndBox(
+// fun Path.addRoundedPolarEndBox(
 //    center: Offset,
 //    startAngleDegrees: Float,
 //    sweepAngleDegrees: Float,
 //    innerRadius: Float,
 //    outerRadius: Float,
 //    cornerRadius: Float,
-//) {
+// ) {
 //    val endAngleDegrees = startAngleDegrees + sweepAngleDegrees.toDouble()
 //    val innerRadiusShift = innerRadius + cornerRadius.toDouble()
 //    val innerAngleShift = asin(cornerRadius / innerRadiusShift) * 180 / PI
@@ -348,17 +337,15 @@ fun Path.addRoundedPolarBoxEnd(
 //        forceMoveTo = false,
 //    )
 //    close()
-//}
-
+// }
 
 fun Path.addRoundedPolarBox2(
-
     center: Offset,
     startAngleDegrees: Float,
     sweepAngleDegrees: Float,
     innerRadius: Float,
     outerRadius: Float,
-    cornerRadius: Float,
+    cornerRadius: Float
 ) {
     val endAngleDegrees = startAngleDegrees + sweepAngleDegrees.toDouble()
     val innerRadiusShift = innerRadius + cornerRadius.toDouble()
@@ -377,7 +364,7 @@ fun Path.addRoundedPolarBox2(
         rect = Rect(center = center, radius = innerRadius),
         startAngleDegrees = (startAngleDegrees),
         sweepAngleDegrees = (sweepAngleDegrees - outerAngleShift).toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
 
     // Draw the rounded corner at the end of the sweep angle side
@@ -385,7 +372,7 @@ fun Path.addRoundedPolarBox2(
         rect = Rect(center = center, radius = outerRadius),
         startAngleDegrees = (endAngleDegrees - outerAngleShift).toFloat(),
         sweepAngleDegrees = outerAngleShift.toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
 
     // Draw the corner to close the shape
@@ -393,16 +380,14 @@ fun Path.addRoundedPolarBox2(
         rect = Rect(
             center = Offset(
                 x = (center.x + outerRadiusShift * cos((endAngleDegrees - outerAngleShift) * PI / 180)).toFloat(),
-                y = (center.y + outerRadiusShift * sin((endAngleDegrees - outerAngleShift) * PI / 180)).toFloat(),
+                y = (center.y + outerRadiusShift * sin((endAngleDegrees - outerAngleShift) * PI / 180)).toFloat()
             ),
-            radius = cornerRadius,
+            radius = cornerRadius
         ),
         startAngleDegrees = (endAngleDegrees - outerAngleShift).toFloat(),
         sweepAngleDegrees = outerAngleShift.toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
 
     close()
 }
-
-

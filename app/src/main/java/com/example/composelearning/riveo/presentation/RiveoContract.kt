@@ -12,7 +12,7 @@ import com.example.composelearning.riveo.domain.model.Project
  */
 data class RiveoState(
     val isLoading: Boolean = true,
-    val projects: List<Project> = emptyList(),
+    val projects: List<Project> = emptyList()
 )
 
 sealed interface RiveoIntent {

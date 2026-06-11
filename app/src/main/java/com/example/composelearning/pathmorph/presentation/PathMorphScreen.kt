@@ -35,7 +35,7 @@ private val Teal = Color(0xFF4CCADC)
 
 @Composable
 fun PathMorphScreen(
-    viewModel: PathMorphViewModel = viewModel(factory = PathMorphViewModel.Factory()),
+    viewModel: PathMorphViewModel = viewModel(factory = PathMorphViewModel.Factory())
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     PathMorphContent(state)
@@ -47,7 +47,7 @@ private fun PathMorphContent(state: PathMorphState) {
         modifier = Modifier
             .fillMaxSize()
             .background(Teal)
-            .systemBarsPadding(),
+            .systemBarsPadding()
     ) {
         if (state.isLoading || state.phones.size < 2) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), color = Color.White)
@@ -70,14 +70,14 @@ private fun Morph(phones: List<PhoneShape>) {
             color = Color.White,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(16.dp)
         )
 
         Canvas(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .padding(horizontal = 32.dp, vertical = 8.dp),
+                .padding(horizontal = 32.dp, vertical = 8.dp)
         ) {
             val i = floor(slider).toInt().coerceIn(0, lastIndex - 1)
             val t = (slider - i).coerceIn(0f, 1f)
@@ -93,12 +93,15 @@ private fun Morph(phones: List<PhoneShape>) {
             val b = phones[i + 1].screen
             fun lerp(x: Float, y: Float) = x + (y - x) * t
             val screen = fit.rect(
-                lerp(a.x, b.x), lerp(a.y, b.y), lerp(a.width, b.width), lerp(a.height, b.height),
+                lerp(a.x, b.x),
+                lerp(a.y, b.y),
+                lerp(a.width, b.width),
+                lerp(a.height, b.height)
             )
             drawRect(
                 color = Color.White,
                 topLeft = screen.topLeft,
-                size = screen.size,
+                size = screen.size
             )
         }
 
@@ -110,20 +113,20 @@ private fun Morph(phones: List<PhoneShape>) {
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp),
+                .padding(horizontal = 32.dp)
         )
         Slider(
             value = slider,
             onValueChange = { slider = it },
             valueRange = 0f..lastIndex.toFloat(),
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp),
+            modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
         )
         Box(Modifier.padding(bottom = 8.dp)) {
             Text(
                 text = "Drag the slider to morph between phone eras",
                 color = Color.White.copy(alpha = 0.85f),
                 fontSize = 13.sp,
-                modifier = Modifier.padding(horizontal = 32.dp),
+                modifier = Modifier.padding(horizontal = 32.dp)
             )
         }
     }

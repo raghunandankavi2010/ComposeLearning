@@ -36,12 +36,12 @@ private suspend fun SortContext.quickSort(lo: Int, hi: Int) {
 @Composable
 fun QuickSortRainbow(
     modifier: Modifier = Modifier,
-    applyOwnInsets: Boolean = true,
+    applyOwnInsets: Boolean = true
 ) {
     SortVisualizer(
         sortName = "Quick Sort",
         sortAction = { quickSort(0, COLUMN_COUNT - 1) },
         modifier = modifier,
-        applyOwnInsets = applyOwnInsets,
+        applyOwnInsets = applyOwnInsets
     )
 }

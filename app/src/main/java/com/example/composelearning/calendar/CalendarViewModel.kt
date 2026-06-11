@@ -2,11 +2,11 @@ package com.example.composelearning.calendar
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.example.composelearning.calendar.model.CalendarState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
+import com.example.composelearning.calendar.model.CalendarState
 import java.time.LocalDate
+import kotlinx.coroutines.launch
 
 class CalendarViewModel : ViewModel() {
 

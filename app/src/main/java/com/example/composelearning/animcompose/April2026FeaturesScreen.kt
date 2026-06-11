@@ -196,7 +196,7 @@ fun April2026FeaturesScreen(onBack: () -> Unit) {
 @Composable
 fun FoldableVideoSample() {
     val navigator = rememberListDetailPaneScaffoldNavigator<String>()
-    
+
     Box(modifier = Modifier.fillMaxWidth().height(400.dp).background(Color.Black.copy(alpha = 0.05f), RoundedCornerShape(12.dp))) {
         ListDetailPaneScaffold(
             directive = navigator.scaffoldDirective,

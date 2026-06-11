@@ -36,7 +36,7 @@ fun InsertionSortRainbow(modifier: Modifier = Modifier, applyOwnInsets: Boolean 
         sortName = "Insertion Sort",
         sortAction = { insertionSort() },
         modifier = modifier,
-        applyOwnInsets = applyOwnInsets,
+        applyOwnInsets = applyOwnInsets
     )
 }
 // endregion
@@ -62,7 +62,7 @@ fun SelectionSortRainbow(modifier: Modifier = Modifier, applyOwnInsets: Boolean 
         sortName = "Selection Sort",
         sortAction = { selectionSort() },
         modifier = modifier,
-        applyOwnInsets = applyOwnInsets,
+        applyOwnInsets = applyOwnInsets
     )
 }
 // endregion
@@ -95,7 +95,7 @@ fun ShellSortRainbow(modifier: Modifier = Modifier, applyOwnInsets: Boolean = tr
         sortName = "Shell Sort",
         sortAction = { shellSort() },
         modifier = modifier,
-        applyOwnInsets = applyOwnInsets,
+        applyOwnInsets = applyOwnInsets
     )
 }
 // endregion
@@ -146,7 +146,7 @@ fun MergeSortRainbow(modifier: Modifier = Modifier, applyOwnInsets: Boolean = tr
         sortName = "Merge Sort",
         sortAction = { mergeSort() },
         modifier = modifier,
-        applyOwnInsets = applyOwnInsets,
+        applyOwnInsets = applyOwnInsets
     )
 }
 // endregion
@@ -187,12 +187,13 @@ fun HeapSortRainbow(modifier: Modifier = Modifier, applyOwnInsets: Boolean = tru
         sortName = "Heap Sort",
         sortAction = { heapSort() },
         modifier = modifier,
-        applyOwnInsets = applyOwnInsets,
+        applyOwnInsets = applyOwnInsets
     )
 }
 // endregion
 
 // region Timsort (simplified)
+
 /**
  * Simplified Timsort: insertion-sort runs of length [TIMSORT_RUN], then merge adjacent runs
  * pairwise. With n=32 we get four runs of eight that merge in two passes — enough to see Timsort's
@@ -227,7 +228,7 @@ fun TimSortRainbow(modifier: Modifier = Modifier, applyOwnInsets: Boolean = true
         sortName = "Timsort",
         sortAction = { timSort() },
         modifier = modifier,
-        applyOwnInsets = applyOwnInsets,
+        applyOwnInsets = applyOwnInsets
     )
 }
 // endregion

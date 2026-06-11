@@ -57,7 +57,7 @@ class Particle3D(
     val color: Color,
     val maxLifeMillis: Float,
     val gravityScale: Float = 1f,
-    val drag: Float = 0.98f 
+    val drag: Float = 0.98f
 ) {
     var ageMillis: Float = 0f
     var isAlive: Boolean = true
@@ -78,7 +78,7 @@ class Particle3D(
 // EXPLOSION SYSTEM
 // ====================================================================================
 class ExplosionSystem(
-    val particles: MutableList<Particle3D> = mutableListOf(), 
+    val particles: MutableList<Particle3D> = mutableListOf(),
     val gravity: Float = 980f,
     val focalLength: Float = 800f,
     val globalDrag: Float = 0.98f
@@ -96,7 +96,7 @@ class ExplosionSystem(
                 val speed = Random.nextFloat() * 600f + 200f
 
                 val vx = speed * cos(elevation) * cos(azimuth)
-                val vy = speed * sin(elevation) - 200f 
+                val vy = speed * sin(elevation) - 200f
                 val vz = speed * cos(elevation) * sin(azimuth)
 
                 system.particles.add(
@@ -116,18 +116,18 @@ class ExplosionSystem(
         }
 
         private fun getRandomColor(): Color = when (Random.nextInt(6)) {
-            0 -> Color(0xFFFF5722) 
-            1 -> Color(0xFFFF9800) 
-            2 -> Color(0xFFFFEB3B) 
-            3 -> Color(0xFFF44336) 
-            4 -> Color(0xFFFFFFFF) 
+            0 -> Color(0xFFFF5722)
+            1 -> Color(0xFFFF9800)
+            2 -> Color(0xFFFFEB3B)
+            3 -> Color(0xFFF44336)
+            4 -> Color(0xFFFFFFFF)
             else -> Color(0xFFFF7043)
         }
     }
 
     fun update(deltaMillis: Float) {
         val dtSeconds = deltaMillis / 1000f
-        
+
         // MATH FIX: Time-corrected drag
         val timeFactor = deltaMillis / 16.666f
         val adjustedDrag = globalDrag.toDouble().pow(timeFactor.toDouble()).toFloat()
@@ -206,11 +206,11 @@ fun ParticleExpExplosion3D(
                     system.update(deltaMillis)
                     currentTotal += system.totalAliveParticles
                 }
-                
+
                 if (explosions.any { it.isComplete() }) {
                     explosions.removeAll { it.isComplete() }
                 }
-                
+
                 activeParticlesCount.intValue = currentTotal
             }
             lastFrameTime = frameTime
@@ -233,12 +233,12 @@ fun ParticleExpExplosion3D(
         }
 
         ExplosionHUD(
-            fpsCounter.intValue, 
-            activeParticlesCount.intValue, 
+            fpsCounter.intValue,
+            activeParticlesCount.intValue,
             explosions.size,
             modifier = Modifier.padding(contentPadding)
         )
-        
+
         if (activeParticlesCount.intValue == 0 && explosions.isEmpty()) {
             Text(
                 text = "Tap to Spark\n✨ 3D Physics (Optimized) ✨",
@@ -256,7 +256,7 @@ private fun DrawScope.drawParticle(p: Particle3D) {
     if (alpha <= 0.01f) return
 
     val center = Offset(p.screenX, p.screenY)
-    
+
     drawCircle(
         color = p.color,
         radius = p.currentSize * 3f,
@@ -264,7 +264,7 @@ private fun DrawScope.drawParticle(p: Particle3D) {
         alpha = alpha * 0.2f,
         blendMode = BlendMode.Screen
     )
-    
+
     drawCircle(
         color = p.color,
         radius = p.currentSize,
@@ -285,8 +285,8 @@ private fun DrawScope.drawParticle(p: Particle3D) {
 
 @Composable
 private fun ExplosionHUD(
-    fps: Int, 
-    particles: Int, 
+    fps: Int,
+    particles: Int,
     systems: Int,
     modifier: Modifier = Modifier
 ) {

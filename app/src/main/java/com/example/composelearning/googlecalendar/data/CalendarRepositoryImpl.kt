@@ -8,19 +8,18 @@ import android.provider.CalendarContract
 import androidx.compose.ui.graphics.Color
 import com.example.composelearning.googlecalendar.data.model.CalendarEventEntity
 import com.example.composelearning.googlecalendar.domain.model.CalendarEvent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.util.TimeZone
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class CalendarRepositoryImpl(
     private val contentResolver: ContentResolver
 ) : CalendarRepository {
-
 
     companion object {
         private val INSTANCE_PROJECTION = arrayOf(
@@ -52,7 +51,7 @@ class CalendarRepositoryImpl(
             Color(0xFFC53929), // Red
             Color(0xFFF4511E), // Orange
             Color(0xFF7986CB), // Lavender
-            Color(0xFF616161), // Graphite
+            Color(0xFF616161) // Graphite
         )
     }
 
@@ -89,9 +88,7 @@ class CalendarRepositoryImpl(
         entities.map { mapToDomain(it) }
     }
 
-    override suspend fun getEventsForDay(date: LocalDate): List<CalendarEvent> {
-        return getEvents(date, date)
-    }
+    override suspend fun getEventsForDay(date: LocalDate): List<CalendarEvent> = getEvents(date, date)
 
     override suspend fun addEvent(event: CalendarEvent): CalendarEvent = withContext(Dispatchers.IO) {
         val calendarId = findWritableCalendarId()
@@ -147,27 +144,27 @@ class CalendarRepositoryImpl(
         }
     }
 
-    private fun cursorToEntity(cursor: Cursor): CalendarEventEntity {
-        return CalendarEventEntity(
-            eventId = cursor.getLong(COL_EVENT_ID),
-            title = cursor.getString(COL_TITLE) ?: "",
-            dtStart = cursor.getLong(COL_BEGIN),
-            dtEnd = cursor.getLong(COL_END),
-            allDay = cursor.getInt(COL_ALL_DAY) == 1,
-            eventColor = cursor.getInt(COL_COLOR),
-            calendarName = cursor.getString(COL_CALENDAR_NAME) ?: "",
-            eventLocation = cursor.getString(COL_LOCATION) ?: "",
-            description = cursor.getString(COL_DESCRIPTION) ?: ""
-        )
-    }
+    private fun cursorToEntity(cursor: Cursor): CalendarEventEntity = CalendarEventEntity(
+        eventId = cursor.getLong(COL_EVENT_ID),
+        title = cursor.getString(COL_TITLE) ?: "",
+        dtStart = cursor.getLong(COL_BEGIN),
+        dtEnd = cursor.getLong(COL_END),
+        allDay = cursor.getInt(COL_ALL_DAY) == 1,
+        eventColor = cursor.getInt(COL_COLOR),
+        calendarName = cursor.getString(COL_CALENDAR_NAME) ?: "",
+        eventLocation = cursor.getString(COL_LOCATION) ?: "",
+        description = cursor.getString(COL_DESCRIPTION) ?: ""
+    )
 
     private fun mapToDomain(entity: CalendarEventEntity): CalendarEvent {
         val zone = ZoneId.systemDefault()
         val startDateTime = LocalDateTime.ofInstant(
-            Instant.ofEpochMilli(entity.dtStart), zone
+            Instant.ofEpochMilli(entity.dtStart),
+            zone
         )
         val endDateTime = LocalDateTime.ofInstant(
-            Instant.ofEpochMilli(entity.dtEnd), zone
+            Instant.ofEpochMilli(entity.dtEnd),
+            zone
         )
 
         val color = if (entity.eventColor != 0) {

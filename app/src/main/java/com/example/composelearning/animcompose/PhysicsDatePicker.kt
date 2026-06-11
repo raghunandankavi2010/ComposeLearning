@@ -45,7 +45,7 @@ fun PhysicsDatePicker(
 ) {
     val today = remember { LocalDate.now() }
     val pickerState = remember { PhysicsDatePickerState(today) }
-    
+
     val dateItems = remember {
         val formatterEEE = DateTimeFormatter.ofPattern("EEE")
         val formatterMMM = DateTimeFormatter.ofPattern("MMM")
@@ -59,26 +59,26 @@ fun PhysicsDatePicker(
             )
         }
     }
-    
+
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = 365)
     val snapFlingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
-    
+
     val configuration = LocalConfiguration.current
     val horizontalPaddingValues = remember(configuration.screenWidthDp) {
         val screenWidth = configuration.screenWidthDp.dp
         val itemWidth = 80.dp
         PaddingValues(horizontal = (screenWidth - itemWidth) / 2)
     }
-    
+
     val currentOnDateSelected by rememberUpdatedState(onDateSelected)
-    
+
     LaunchedEffect(listState) {
         snapshotFlow { listState.firstVisibleItemIndex }
             .collect { _ ->
                 val layoutInfo = listState.layoutInfo
                 val center = (layoutInfo.viewportStartOffset + layoutInfo.viewportEndOffset) / 2
-                val closestItem = layoutInfo.visibleItemsInfo.minByOrNull { 
-                    abs((it.offset + it.size / 2) - center) 
+                val closestItem = layoutInfo.visibleItemsInfo.minByOrNull {
+                    abs((it.offset + it.size / 2) - center)
                 }
                 closestItem?.let {
                     val newDate = dateItems[it.index].date
@@ -115,7 +115,7 @@ fun PhysicsDatePicker(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 itemsIndexed(
-                    items = dateItems, 
+                    items = dateItems,
                     key = { _, item -> item.date.toEpochDay() }
                 ) { index, item ->
                     DateItem(
@@ -151,7 +151,7 @@ private fun SelectionIndicator() {
         color = Color.White.copy(alpha = 0.1f),
         shape = RoundedCornerShape(24.dp),
         border = androidx.compose.foundation.BorderStroke(
-            1.dp, 
+            1.dp,
             Brush.verticalGradient(
                 listOf(Color.White.copy(alpha = 0.3f), Color.Transparent)
             )

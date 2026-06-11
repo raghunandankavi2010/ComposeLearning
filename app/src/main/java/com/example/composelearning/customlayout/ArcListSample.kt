@@ -178,15 +178,15 @@ fun <T> ArcList(
                     val centerX = size.width / 2f
                     val centerY = size.height / 2f
                     val pos = change.position
-                    
+
                     // Vector from center to touch point
                     val vx = pos.x - centerX
                     val vy = pos.y - centerY
-                    
+
                     // The "torque" applied is the cross product of radius vector and drag vector
                     // τ = r x F
                     val torque = (vx * dragAmount.y - vy * dragAmount.x) / (radiusPx * 10f)
-                    
+
                     scope.launch {
                         angleOffset.snapTo(angleOffset.value + torque)
                     }

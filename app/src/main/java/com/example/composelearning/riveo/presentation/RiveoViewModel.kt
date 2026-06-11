@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
  * No Hilt (per project conventions) — see [Factory] for manual construction.
  */
 class RiveoViewModel(
-    private val getProjects: GetProjectsUseCase,
+    private val getProjects: GetProjectsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(RiveoState())

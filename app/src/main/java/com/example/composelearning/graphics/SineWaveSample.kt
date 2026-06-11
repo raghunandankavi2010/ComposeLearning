@@ -45,7 +45,7 @@ fun SineWaveSample(onBack: () -> Unit) {
     var amplitude by remember { mutableFloatStateOf(50f) }
     var frequency by remember { mutableFloatStateOf(1f) }
     var dotProgress by remember { mutableFloatStateOf(0.5f) }
-    
+
     val animationsEnabled = LocalAnimationsEnabled.current
     val infiniteTransition = rememberInfiniteTransition(label = "SineWaveTransition")
     val phase by if (animationsEnabled) {
@@ -120,7 +120,7 @@ fun SineWaveSample(onBack: () -> Unit) {
                         // Normalize x to 0..1 for frequency calculation
                         val normalizedX = i.toFloat() / points
                         val y = centerY + amplitude * sin(2 * PI.toFloat() * frequency * normalizedX + phase)
-                        
+
                         if (i == 0) {
                             path.moveTo(x, y)
                         } else {
@@ -138,7 +138,7 @@ fun SineWaveSample(onBack: () -> Unit) {
                     // Draw the dot
                     val dotX = dotProgress * width
                     val dotY = centerY + amplitude * sin(2 * PI.toFloat() * frequency * dotProgress + phase)
-                    
+
                     // Draw vertical guide
                     drawLine(
                         color = Color.Gray.copy(alpha = 0.5f),
@@ -199,9 +199,9 @@ fun SineWaveSample(onBack: () -> Unit) {
                     )
                 }
             }
-            
+
             Spacer(modifier = Modifier.height(24.dp))
-            
+
             InfoSection()
         }
     }

@@ -44,11 +44,11 @@ float3 hsl2rgb(float3 hsl) {
     float segment = h * 6.0;
     float x = c * (1.0 - abs(mod(segment, 2.0) - 1.0));
 
-    if (segment < 1.0) { rgb += float3(c, x, 0.0); } 
-    else if (segment < 2.0) { rgb += float3(x, c, 0.0); } 
-    else if (segment < 3.0) { rgb += float3(0.0, c, x); } 
-    else if (segment < 4.0) { rgb += float3(0.0, x, c); } 
-    else if (segment < 5.0) { rgb += float3(x, 0.0, c); } 
+    if (segment < 1.0) { rgb += float3(c, x, 0.0); }
+    else if (segment < 2.0) { rgb += float3(x, c, 0.0); }
+    else if (segment < 3.0) { rgb += float3(0.0, c, x); }
+    else if (segment < 4.0) { rgb += float3(0.0, x, c); }
+    else if (segment < 5.0) { rgb += float3(x, 0.0, c); }
     else { rgb += float3(c, 0.0, x); }
 
     return rgb + m;
@@ -59,14 +59,14 @@ half4 main(float2 fragCoord) {
     // 1. Properly center coordinates and correct aspect ratio
     float2 st = (fragCoord - 0.5 * u_resolution) / u_resolution.y;
 
-    // 2. Get Polar Coordinates 
+    // 2. Get Polar Coordinates
     float angle = atan(st.y, st.x);     // Range: -PI to PI
     float radius = length(st);          // Distance from center
 
     // 3. The Spiral Logic
     // "angle / (2.0 * 3.14159)" normalizes the angle to a 0.0 - 1.0 range.
     float normalized_angle = angle / (2.0 * 3.14159);
-    
+
     // Multiple coils (tightness) and pulls the spiral outward continuously.
     float spiral = radius * 8.0 - normalized_angle - (u_time * 1.5);
 

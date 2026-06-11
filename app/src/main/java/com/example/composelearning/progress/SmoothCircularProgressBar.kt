@@ -46,7 +46,7 @@ fun SmoothCircularProgressBar(
     sweepEasing: Easing = FastOutSlowInEasing,
     size: Dp = 48.dp,
     rotationDurationMs: Int = 2000,
-    sweepDurationMs: Int = 600,
+    sweepDurationMs: Int = 600
 ) {
     require(colors.isNotEmpty())
     require(maxSweepAngle in (minSweepAngle + 1f)..360f)
@@ -108,8 +108,8 @@ fun SmoothCircularProgressBar(
             size = arcSize,
             style = Stroke(
                 width = strokePx,
-                cap = if (rounded) StrokeCap.Round else StrokeCap.Butt,
-            ),
+                cap = if (rounded) StrokeCap.Round else StrokeCap.Butt
+            )
         )
     }
 }

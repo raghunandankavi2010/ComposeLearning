@@ -1,9 +1,9 @@
 package com.example.composelearning.charts
 
 import androidx.compose.runtime.Immutable
-import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 import kotlin.random.Random
+import kotlinx.coroutines.delay
 
 /**
  * One day of fake fitness data.
@@ -16,7 +16,7 @@ data class FitnessDay(
     val dayOffset: Int,
     val steps: Int,
     val activeMinutes: Int,
-    val restingHr: Int,
+    val restingHr: Int
 )
 
 object FitnessRepository {

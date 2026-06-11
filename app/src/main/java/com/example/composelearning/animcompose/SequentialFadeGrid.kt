@@ -25,9 +25,9 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * A 4×4 grid of spaced boxes whose alpha fades out one cell at a time in reading
@@ -60,7 +60,7 @@ fun SequentialFadeGrid(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxSize()
             .padding(24.dp),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         val spacing = 14.dp
         // Largest square cell that lets the 4×4 grid (with gaps) fit the smaller side.
@@ -75,7 +75,7 @@ fun SequentialFadeGrid(modifier: Modifier = Modifier) {
                         val cellColor = Color.hsv(
                             hue = (i.toFloat() / count) * 320f,
                             saturation = 0.55f,
-                            value = 0.95f,
+                            value = 0.95f
                         )
                         Box(
                             modifier = Modifier
@@ -84,13 +84,13 @@ fun SequentialFadeGrid(modifier: Modifier = Modifier) {
                                 .graphicsLayer { alpha = alphas[i].value }
                                 .clip(RoundedCornerShape(18.dp))
                                 .background(cellColor),
-                            contentAlignment = Alignment.Center,
+                            contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = "${i + 1}",
                                 color = Color.White,
                                 fontWeight = FontWeight.Bold,
-                                style = MaterialTheme.typography.titleLarge,
+                                style = MaterialTheme.typography.titleLarge
                             )
                         }
                     }
@@ -107,7 +107,7 @@ fun SequentialFadeGrid(modifier: Modifier = Modifier) {
 @Composable
 private fun LaunchedEffectStagger(
     alphas: List<Animatable<Float, *>>,
-    count: Int,
+    count: Int
 ) {
     androidx.compose.runtime.LaunchedEffect(Unit) {
         while (true) {
@@ -128,9 +128,9 @@ private fun LaunchedEffectStagger(
     }
 }
 
-private const val FADE_MS = 350      // how long a single cell takes to fade
-private const val STAGGER_MS = 110L  // gap between consecutive cells starting
-private const val HOLD_MS = 500L     // pause between the out and in passes
+private const val FADE_MS = 350 // how long a single cell takes to fade
+private const val STAGGER_MS = 110L // gap between consecutive cells starting
+private const val HOLD_MS = 500L // pause between the out and in passes
 
 @Preview(showBackground = true)
 @Composable

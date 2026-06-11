@@ -11,6 +11,6 @@ class TaskRepositoryImpl : TaskRepository {
         TaskItem("Finish the Compose port"),
         TaskItem("Water the plants"),
         TaskItem("Read 20 pages"),
-        TaskItem("Plan the weekend trip"),
+        TaskItem("Plan the weekend trip")
     )
 }

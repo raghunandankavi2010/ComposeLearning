@@ -27,7 +27,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
  */
 @Composable
 fun RiveoScreen(
-    viewModel: RiveoViewModel = viewModel(factory = RiveoViewModel.Factory()),
+    viewModel: RiveoViewModel = viewModel(factory = RiveoViewModel.Factory())
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     RiveoContent(state)
@@ -39,12 +39,12 @@ private fun RiveoContent(state: RiveoState) {
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .systemBarsPadding(),
+            .systemBarsPadding()
     ) {
         if (state.isLoading) {
             CircularProgressIndicator(
                 color = Color.White,
-                modifier = Modifier.align(Alignment.Center),
+                modifier = Modifier.align(Alignment.Center)
             )
         } else {
             Column(
@@ -52,20 +52,20 @@ private fun RiveoContent(state: RiveoState) {
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
                     .padding(vertical = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 Text(
                     text = "Riveo — Page Curl",
                     color = Color.White,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 )
                 Text(
                     text = "Drag a card to the left to peel the page. Release to spring it back.",
                     color = Color.White.copy(alpha = 0.7f),
                     fontSize = 14.sp,
-                    modifier = Modifier.padding(horizontal = 16.dp),
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 )
                 state.projects.forEach { project ->
                     PageCurlCard(project)

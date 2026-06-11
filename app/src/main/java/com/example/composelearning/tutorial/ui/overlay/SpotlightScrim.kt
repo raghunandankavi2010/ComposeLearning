@@ -31,7 +31,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 internal val RectToVector: TwoWayConverter<Rect, AnimationVector4D> =
     TwoWayConverter(
         convertToVector = { r -> AnimationVector4D(r.left, r.top, r.right, r.bottom) },
-        convertFromVector = { v -> Rect(v.v1, v.v2, v.v3, v.v4) },
+        convertFromVector = { v -> Rect(v.v1, v.v2, v.v3, v.v4) }
     )
 
 @Composable
@@ -39,12 +39,12 @@ fun SpotlightScrim(
     targetRect: Rect?,
     cornerRadiusPx: Float,
     scrimColor: Color,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val animatable = remember {
         Animatable(
             initialValue = targetRect ?: Rect.Zero,
-            typeConverter = RectToVector,
+            typeConverter = RectToVector
         )
     }
 
@@ -55,7 +55,7 @@ fun SpotlightScrim(
         }
         animatable.animateTo(
             targetValue = next,
-            animationSpec = tween(durationMillis = 480, easing = FastOutSlowInEasing),
+            animationSpec = tween(durationMillis = 480, easing = FastOutSlowInEasing)
         )
     }
 
@@ -65,18 +65,18 @@ fun SpotlightScrim(
         targetValue = 0f,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 1400, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart,
+            repeatMode = RepeatMode.Restart
         ),
-        label = "pulseAlpha",
+        label = "pulseAlpha"
     )
     val pulseExpand by pulseTransition.animateFloat(
         initialValue = 0f,
         targetValue = 18f,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 1400, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart,
+            repeatMode = RepeatMode.Restart
         ),
-        label = "pulseExpand",
+        label = "pulseExpand"
     )
 
     // Hoisted Path so we never allocate a new one per draw frame.
@@ -98,7 +98,7 @@ fun SpotlightScrim(
                     scrimPath.addRoundRect(
                         RoundRect(
                             rect = rect,
-                            cornerRadius = CornerRadius(cornerRadiusPx, cornerRadiusPx),
+                            cornerRadius = CornerRadius(cornerRadiusPx, cornerRadiusPx)
                         )
                     )
                 }
@@ -113,10 +113,10 @@ fun SpotlightScrim(
                             topLeft = expanded.topLeft,
                             size = Size(expanded.width, expanded.height),
                             cornerRadius = CornerRadius(cr, cr),
-                            style = Stroke(width = 3f),
+                            style = Stroke(width = 3f)
                         )
                     }
                 }
-            },
+            }
     )
 }

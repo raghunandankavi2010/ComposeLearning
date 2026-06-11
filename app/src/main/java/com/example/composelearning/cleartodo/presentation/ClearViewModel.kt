@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ClearViewModel(
-    private val getTasks: GetTasksUseCase,
+    private val getTasks: GetTasksUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ClearState())
@@ -29,6 +29,7 @@ class ClearViewModel(
                 val tasks = getTasks()
                 _state.update { it.copy(isLoading = false, tasks = tasks) }
             }
+
             is ClearIntent.CreateTaskAt -> _state.update { s ->
                 val index = intent.index.coerceIn(0, s.tasks.size)
                 val updated = s.tasks.toMutableList().apply { add(index, TaskItem("New Task")) }
@@ -39,7 +40,6 @@ class ClearViewModel(
 
     class Factory : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            ClearViewModel(GetTasksUseCase(TaskRepositoryImpl())) as T
+        override fun <T : ViewModel> create(modelClass: Class<T>): T = ClearViewModel(GetTasksUseCase(TaskRepositoryImpl())) as T
     }
 }

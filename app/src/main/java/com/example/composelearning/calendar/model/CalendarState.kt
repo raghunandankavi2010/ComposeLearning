@@ -36,7 +36,7 @@ class CalendarState {
 
     // Defaulting to 2 years from current date.
     private val calendarEndDate: LocalDate = LocalDate.now()
-        //.withMonth(12).withDayOfMonth(31)
+    // .withMonth(12).withDayOfMonth(31)
 
     private val periodBetweenCalendarStartEnd: Period = Period.between(
         calendarStartDate,
@@ -77,6 +77,7 @@ class CalendarState {
             selectedStartDate == null && selectedEndDate == null -> {
                 currentState.setDates(newDate, null)
             }
+
             selectedStartDate != null && selectedEndDate != null -> {
                 val animationDirection = if (newDate.isBefore(selectedStartDate)) {
                     AnimationDirection.BACKWARDS
@@ -90,6 +91,7 @@ class CalendarState {
                 )
                 updateSelectedDay(newDate = newDate)
             }
+
             selectedStartDate == null -> {
                 if (newDate.isBefore(selectedEndDate)) {
                     currentState.copy(animateDirection = AnimationDirection.BACKWARDS)
@@ -101,6 +103,7 @@ class CalendarState {
                     currentState
                 }
             }
+
             else -> {
                 if (newDate.isBefore(selectedStartDate)) {
                     currentState.copy(animateDirection = AnimationDirection.BACKWARDS)

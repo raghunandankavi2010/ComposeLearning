@@ -42,7 +42,7 @@ data class ThermometerSpec(
     val bulbDiameter: Dp = 56.dp,
     val tickIntervals: Int = 5,
     val animate: Boolean = true,
-    val showScale: Boolean = true,
+    val showScale: Boolean = true
 )
 
 /**
@@ -69,7 +69,7 @@ fun ThermometerV2(
     modifier: Modifier = Modifier,
     spec: ThermometerSpec = ThermometerSpec(),
     theme: ChartTheme = ChartDefaults.theme(),
-    label: String? = null,
+    label: String? = null
 ) {
     val anim = remember { Animatable(initialValue = value) }
     LaunchedEffect(value, spec.minValue, spec.maxValue, spec.animate) {
@@ -92,14 +92,14 @@ fun ThermometerV2(
     Column(
         modifier = modifier
             .semantics { contentDescription = "${label ?: "Thermometer"}: ${anim.value.toInt()}" },
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (label != null) {
             Text(text = label, style = theme.titleStyle, color = theme.onSurface)
             Text(
                 text = "${anim.value.toInt()}",
                 style = theme.titleStyle.copy(fontSize = theme.titleStyle.fontSize * 1.6f),
-                color = theme.onSurface,
+                color = theme.onSurface
             )
             Spacer(Modifier.height(8.dp))
         }
@@ -107,7 +107,7 @@ fun ThermometerV2(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
-                .padding(8.dp),
+                .padding(8.dp)
         ) {
             val tube = spec.tubeWidth.toPx()
             val bulb = spec.bulbDiameter.toPx()
@@ -125,14 +125,14 @@ fun ThermometerV2(
                 topLeft = Offset(centerX - tube / 2f - 4.dp.toPx(), tubeTopY - 6.dp.toPx()),
                 size = Size(tube + 8.dp.toPx(), tubeHeight + 12.dp.toPx()),
                 cornerRadius = CornerRadius(tube / 2f + 4.dp.toPx(), tube / 2f + 4.dp.toPx()),
-                style = Stroke(width = 1.5.dp.toPx()),
+                style = Stroke(width = 1.5.dp.toPx())
             )
             // Tube channel background — matches surface so unfilled mercury reads as 'empty'.
             drawRoundRect(
                 color = theme.surface,
                 topLeft = Offset(centerX - tube / 2f, tubeTopY),
                 size = Size(tube, tubeHeight),
-                cornerRadius = CornerRadius(tube / 2f, tube / 2f),
+                cornerRadius = CornerRadius(tube / 2f, tube / 2f)
             )
 
             // Bulb outline.
@@ -140,7 +140,7 @@ fun ThermometerV2(
                 theme.gridColor,
                 radius = bulb / 2f + 2.dp.toPx(),
                 center = Offset(centerX, bulbCenterY),
-                style = Stroke(1.5.dp.toPx()),
+                style = Stroke(1.5.dp.toPx())
             )
 
             // Mercury column inside the tube.
@@ -149,13 +149,13 @@ fun ThermometerV2(
             val brush = Brush.verticalGradient(
                 colors = listOf(color, color.copy(alpha = 0.85f)),
                 startY = mercuryTop,
-                endY = tubeBottomY,
+                endY = tubeBottomY
             )
             drawRoundRect(
                 brush = brush,
                 topLeft = Offset(centerX - tube / 2f, mercuryTop),
                 size = Size(tube, filledHeight),
-                cornerRadius = CornerRadius(tube / 2f, tube / 2f),
+                cornerRadius = CornerRadius(tube / 2f, tube / 2f)
             )
 
             // Bulb mercury — solid fill, no alpha background ring or highlight.
@@ -172,7 +172,7 @@ fun ThermometerV2(
                         color = theme.axisColor,
                         start = Offset(centerX - tube / 2f - 14.dp.toPx(), y),
                         end = Offset(centerX - tube / 2f - 6.dp.toPx(), y),
-                        strokeWidth = 1.5.dp.toPx(),
+                        strokeWidth = 1.5.dp.toPx()
                     )
                     val text = v.toInt().toString()
                     val layout = measurer.measure(text, style = theme.axisLabelStyle)
@@ -180,8 +180,8 @@ fun ThermometerV2(
                         textLayoutResult = layout,
                         topLeft = Offset(
                             centerX - tube / 2f - 18.dp.toPx() - layout.size.width,
-                            y - layout.size.height / 2f,
-                        ),
+                            y - layout.size.height / 2f
+                        )
                     )
                 }
             }

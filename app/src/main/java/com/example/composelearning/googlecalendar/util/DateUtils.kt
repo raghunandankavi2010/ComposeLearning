@@ -30,23 +30,17 @@ object DateUtils {
 
     fun formatDayNumber(date: LocalDate): String = date.format(dayNumberFormatter)
 
-    fun formatEventTimeRange(start: LocalDateTime, end: LocalDateTime): String {
-        return "${formatTime(start)} - ${formatTime(end)}"
-    }
+    fun formatEventTimeRange(start: LocalDateTime, end: LocalDateTime): String = "${formatTime(start)} - ${formatTime(end)}"
 
     /**
      * Returns the start of the week (Sunday) for the given date.
      */
-    fun startOfWeek(date: LocalDate): LocalDate {
-        return date.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
-    }
+    fun startOfWeek(date: LocalDate): LocalDate = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
 
     /**
      * Returns the end of the week (Saturday) for the given date.
      */
-    fun endOfWeek(date: LocalDate): LocalDate {
-        return date.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY))
-    }
+    fun endOfWeek(date: LocalDate): LocalDate = date.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY))
 
     /**
      * Returns all 7 days of the week containing [date], starting from Sunday.
@@ -86,7 +80,5 @@ object DateUtils {
 
     fun isToday(date: LocalDate): Boolean = date == LocalDate.now()
 
-    fun isSameMonth(date: LocalDate, yearMonth: YearMonth): Boolean {
-        return date.year == yearMonth.year && date.month == yearMonth.month
-    }
+    fun isSameMonth(date: LocalDate, yearMonth: YearMonth): Boolean = date.year == yearMonth.year && date.month == yearMonth.month
 }

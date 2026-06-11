@@ -32,8 +32,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.launch
 import kotlin.random.Random
+import kotlinx.coroutines.launch
 
 /** Decelerating ease-out: fast launch, gentle friction-like stop. */
 private val SpinEasing = CubicBezierEasing(0.1f, 0.85f, 0.2f, 1f)
@@ -42,7 +42,7 @@ private const val SPIN_DURATION_MS = 4200
 @Composable
 fun SpinningWheelRoute(
     modifier: Modifier = Modifier,
-    sections: List<WheelSection> = defaultWheelSections,
+    sections: List<WheelSection> = defaultWheelSections
 ) {
     val rotation = remember { Animatable(0f) }
     val scope = rememberCoroutineScope()
@@ -62,13 +62,13 @@ fun SpinningWheelRoute(
                 val target = nextSpinTarget(rotation.value)
                 rotation.animateTo(
                     targetValue = target,
-                    animationSpec = tween(SPIN_DURATION_MS, easing = SpinEasing),
+                    animationSpec = tween(SPIN_DURATION_MS, easing = SpinEasing)
                 )
                 result = sections[winningIndex(target, sections.size)]
                 isSpinning = false
             }
         },
-        modifier = modifier,
+        modifier = modifier
     )
 }
 
@@ -98,26 +98,26 @@ private fun SpinningWheelContent(
     isSpinning: Boolean,
     result: WheelSection?,
     onSpin: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically),
+        verticalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterVertically)
     ) {
         Text(
             text = "Spin the Wheel",
             style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.Bold
         )
 
         Box(contentAlignment = Alignment.Center) {
             SpinningWheel(
                 rotation = rotation,
                 sections = sections,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
             )
         }
 
@@ -128,13 +128,13 @@ private fun SpinningWheelContent(
             enabled = !isSpinning,
             shape = RoundedCornerShape(50),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD32F2F)),
-            modifier = Modifier.fillMaxWidth(0.6f),
+            modifier = Modifier.fillMaxWidth(0.6f)
         ) {
             Text(
                 text = if (isSpinning) "Spinning…" else "SPIN",
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp,
-                modifier = Modifier.padding(vertical = 6.dp),
+                modifier = Modifier.padding(vertical = 6.dp)
             )
         }
     }
@@ -145,11 +145,11 @@ private fun ResultCard(isSpinning: Boolean, result: WheelSection?) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = result?.color?.copy(alpha = 0.15f)
-                ?: MaterialTheme.colorScheme.surfaceVariant,
+                ?: MaterialTheme.colorScheme.surfaceVariant
         ),
         modifier = Modifier
             .fillMaxWidth(0.8f)
-            .animateContentSize(),
+            .animateContentSize()
     ) {
         AnimatedContent(
             targetState = when {
@@ -157,7 +157,7 @@ private fun ResultCard(isSpinning: Boolean, result: WheelSection?) {
                 result != null -> "result"
                 else -> "idle"
             },
-            label = "result",
+            label = "result"
         ) { state ->
             val text = when (state) {
                 "spinning" -> "Good luck!"
@@ -171,7 +171,7 @@ private fun ResultCard(isSpinning: Boolean, result: WheelSection?) {
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(16.dp)
             )
         }
     }

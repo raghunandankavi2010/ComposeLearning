@@ -138,7 +138,7 @@ private fun CircularMenuTab() {
     ) {
         Text("Circular Orbital Menu", style = MaterialTheme.typography.titleMedium)
         Spacer(modifier = Modifier.height(32.dp))
-        
+
         Box(contentAlignment = Alignment.Center) {
             Box(
                 modifier = Modifier.size(80.dp).background(MaterialTheme.colorScheme.secondaryContainer, CircleShape),
@@ -146,7 +146,7 @@ private fun CircularMenuTab() {
             ) {
                 Text("CENTER", fontWeight = FontWeight.Bold)
             }
-            
+
             ArcList(
                 items = sampleArcItems.take(8),
                 radius = 140f,
@@ -172,7 +172,7 @@ private fun DiagonalArcTab() {
             modifier = Modifier.padding(16.dp),
             style = MaterialTheme.typography.titleMedium
         )
-        
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -220,7 +220,7 @@ private fun DiagonalArcItem(
     state: LazyListState
 ) {
     val bubbleSize = 90.dp
-    
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -228,25 +228,25 @@ private fun DiagonalArcItem(
             .graphicsLayer {
                 val layoutInfo = state.layoutInfo
                 val itemInfo = layoutInfo.visibleItemsInfo.find { it.index == index }
-                
+
                 if (itemInfo != null) {
                     val viewportWidth = layoutInfo.viewportEndOffset - layoutInfo.viewportStartOffset
-                    
+
                     // x range: 0.0 (left) to 1.0 (right)
                     val xPos = (itemInfo.offset + itemInfo.size / 2f) / viewportWidth.toFloat()
                     val x = xPos.coerceIn(0f, 1f)
-                    
+
                     // Arc Math: Center-Left (0, 0.5) to Top-Right (1, 0)
                     // Linear path would be: y = 0.5 * (1 - x)
-                    // Curved path (Arc): y = 0.5 * sqrt(1 - x^2) 
+                    // Curved path (Arc): y = 0.5 * sqrt(1 - x^2)
                     // Or simpler quadratic curve: y = 0.5 * (1 - x^2)
-                    
+
                     val arcY = 0.5f * (1f - (x * x))
-                    
+
                     // We translate from the "natural" middle vertical alignment
                     // Offset goes from 0 (middle) to -0.5 (top)
                     translationY = -(x * size.height * 0.45f)
-                    
+
                     // Add subtle scaling based on position
                     val scale = 0.8f + (0.2f * (1f - abs(x - 0.5f) * 2))
                     scaleX = scale

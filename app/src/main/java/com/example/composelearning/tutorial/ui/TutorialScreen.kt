@@ -57,7 +57,7 @@ import kotlinx.coroutines.flow.first
 @Composable
 fun TutorialScreen(
     modifier: Modifier = Modifier,
-    viewModel: TutorialViewModel = viewModel(factory = TutorialViewModel.factory()),
+    viewModel: TutorialViewModel = viewModel(factory = TutorialViewModel.factory())
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val controller = remember { SpotlightController() }
@@ -68,8 +68,8 @@ fun TutorialScreen(
             TopAppBar(
                 title = { Text("Your feed") },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                ),
+                    containerColor = MaterialTheme.colorScheme.background
+                )
             )
         },
         floatingActionButton = {
@@ -77,17 +77,17 @@ fun TutorialScreen(
                 ExtendedFloatingActionButton(
                     onClick = { viewModel.onEvent(TutorialEvent.Start) },
                     icon = { Icon(Icons.Default.PlayArrow, contentDescription = null) },
-                    text = { Text("Show tutorial") },
+                    text = { Text("Show tutorial") }
                 )
             }
-        },
+        }
     ) { padding ->
         CompositionLocalProvider(LocalSpotlightController provides controller) {
             TutorialContent(
                 state = state,
                 controller = controller,
                 onEvent = viewModel::onEvent,
-                contentPadding = padding,
+                contentPadding = padding
             )
         }
     }
@@ -98,7 +98,7 @@ private fun TutorialContent(
     state: TutorialUiState,
     controller: SpotlightController,
     onEvent: (TutorialEvent) -> Unit,
-    contentPadding: PaddingValues,
+    contentPadding: PaddingValues
 ) {
     val listState = rememberLazyListState()
     val cornerRadiusPx = with(LocalDensity.current) { 20.dp.toPx() }
@@ -118,16 +118,17 @@ private fun TutorialContent(
             .onGloballyPositioned {
                 overlayCoords = it
                 overlaySize = it.size
-            },
+            }
     ) {
         when (val cards = state.cards) {
             TutorialUiState.CardsState.Loading -> LoadingState()
+
             is TutorialUiState.CardsState.Ready -> {
                 LazyColumn(
                     state = listState,
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
                     verticalArrangement = Arrangement.spacedBy(14.dp),
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     items(cards.cards, key = { it.id }) { card ->
                         FeatureCardItem(card = card)
@@ -161,12 +162,12 @@ private fun TutorialContent(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .pointerInput(tutorial.currentIndex) { /* swallow taps on scrim */ },
+                    .pointerInput(tutorial.currentIndex) { /* swallow taps on scrim */ }
             ) {
                 SpotlightScrim(
                     targetRect = localTargetRect,
                     cornerRadiusPx = cornerRadiusPx,
-                    scrimColor = MaterialTheme.colorScheme.scrim.copy(alpha = 0.72f),
+                    scrimColor = MaterialTheme.colorScheme.scrim.copy(alpha = 0.72f)
                 )
                 CalloutCard(
                     title = step.title,
@@ -177,7 +178,7 @@ private fun TutorialContent(
                     overlaySizePx = overlaySize,
                     onNext = { onEvent(TutorialEvent.Next) },
                     onSkip = { onEvent(TutorialEvent.Skip) },
-                    isLast = tutorial.isLast,
+                    isLast = tutorial.isLast
                 )
             }
         }
@@ -191,14 +192,14 @@ private fun LoadingState() {
             .fillMaxSize()
             .statusBarsPadding(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CircularProgressIndicator()
         Spacer(Modifier.height(12.dp))
         Text(
             text = "Loading your feed…",
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

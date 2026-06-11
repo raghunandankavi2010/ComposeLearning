@@ -63,7 +63,7 @@ private val CardCorner = 16.dp
 @Composable
 fun PageCurlCard(
     project: Project,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
     // pointer == origin  ⇒  dx = 0  ⇒  flat page (the resting state).
@@ -88,9 +88,9 @@ fun PageCurlCard(
                         scope.launch { pointer.snapTo(change.position.x) }
                     },
                     onDragEnd = { scope.launch { pointer.springBack(origin) } },
-                    onDragCancel = { scope.launch { pointer.springBack(origin) } },
+                    onDragCancel = { scope.launch { pointer.springBack(origin) } }
                 )
-            },
+            }
     ) {
         // 1. Delete background (revealed by the curl).
         Box(
@@ -98,7 +98,7 @@ fun PageCurlCard(
                 .fillMaxSize()
                 .padding(CardPadding)
                 .clip(RoundedCornerShape(CardCorner))
-                .background(Color(0xFFE53935)),
+                .background(Color(0xFFE53935))
         ) {
             Icon(
                 imageVector = Icons.Default.Delete,
@@ -107,7 +107,7 @@ fun PageCurlCard(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .padding(end = 28.dp)
-                    .size(32.dp),
+                    .size(32.dp)
             )
         }
 
@@ -120,8 +120,8 @@ fun PageCurlCard(
                     pointer = { pointer.value },
                     origin = { origin },
                     padding = CardPadding,
-                    cornerRadius = CardCorner,
-                ),
+                    cornerRadius = CardCorner
+                )
         ) {
             CardContent(project)
         }
@@ -139,13 +139,13 @@ private fun CardContent(project: Project) {
         modifier = Modifier
             .fillMaxSize()
             .padding(CardPadding)
-            .clip(RoundedCornerShape(CardCorner)),
+            .clip(RoundedCornerShape(CardCorner))
     ) {
         AsyncImage(
             model = project.imageUrl,
             contentDescription = project.title,
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
         )
         // Scrim for text legibility.
         Box(
@@ -154,9 +154,9 @@ private fun CardContent(project: Project) {
                 .background(
                     Brush.verticalGradient(
                         0.45f to Color.Transparent,
-                        1f to Color.Black.copy(alpha = 0.55f),
-                    ),
-                ),
+                        1f to Color.Black.copy(alpha = 0.55f)
+                    )
+                )
         )
 
         Column(modifier = Modifier.align(Alignment.BottomStart).fillMaxWidth()) {
@@ -165,7 +165,7 @@ private fun CardContent(project: Project) {
                 color = Color.White,
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 16.dp, bottom = 6.dp),
+                modifier = Modifier.padding(start = 16.dp, bottom = 6.dp)
             )
             // Accent label strip.
             Row(
@@ -174,7 +174,7 @@ private fun CardContent(project: Project) {
                     .background(Color(project.accentColor).copy(alpha = 0.92f))
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(20.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Label(Icons.Default.Storage, project.size)
                 Label(Icons.Default.CalendarMonth, "Just now")

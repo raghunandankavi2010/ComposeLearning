@@ -32,10 +32,10 @@ fun FluidSpringShaderScreen(onBack: () -> Unit = {}) {
     // We manage velocity manually for momentum instead of simple tweens.
     var targetX by remember { mutableFloatStateOf(0.5f) }
     var targetY by remember { mutableFloatStateOf(0.5f) }
-    
+
     var currentX by remember { mutableFloatStateOf(0.5f) }
     var currentY by remember { mutableFloatStateOf(0.5f) }
-    
+
     var velX by remember { mutableFloatStateOf(0f) }
     var velY by remember { mutableFloatStateOf(0f) }
 
@@ -57,10 +57,10 @@ fun FluidSpringShaderScreen(onBack: () -> Unit = {}) {
                 // Euler Spring Math: f = kx - bv
                 val forceX = (targetX - currentX) * stiffness - velX * damping
                 val forceY = (targetY - currentY) * stiffness - velY * damping
-                
+
                 velX += forceX * dt
                 velY += forceY * dt
-                
+
                 currentX += velX * dt
                 currentY += velY * dt
             }
@@ -72,32 +72,32 @@ fun FluidSpringShaderScreen(onBack: () -> Unit = {}) {
         uniform vec2 u_resolution;
         uniform float u_time;
         uniform vec2 u_pointer; // Driven by physics spring
-        
+
         half4 main(float2 fragCoord) {
             vec2 uv = fragCoord / u_resolution.xy;
             vec2 p = (fragCoord - 0.5 * u_resolution.xy) / u_resolution.y;
             vec2 pointer = (u_pointer - 0.5) * (u_resolution.x / u_resolution.y);
-            
+
             // Calculate distance to physics-driven pointer
             float d = length(p - pointer);
-            
+
             // Simulate Thin-Film Interference
             // thickness = distance-based phase shift
             float thickness = d * 15.0 - u_time * 0.8;
-            
+
             // RGB shift based on wave interference phases (Interference colors)
             vec3 color;
             color.r = 0.5 + 0.5 * cos(thickness + 0.0);
             color.g = 0.5 + 0.5 * cos(thickness + 2.094); // 120 deg shift
             color.b = 0.5 + 0.5 * cos(thickness + 4.188); // 240 deg shift
-            
+
             // Add a "fluid" gloss highlight near the pointer
             float gloss = smoothstep(0.08, 0.0, abs(d - 0.02));
             color += gloss * 0.4;
-            
+
             // Darken edges for focus
             color *= smoothstep(1.5, 0.2, length(p));
-            
+
             return half4(color, 1.0);
         }
     """.trimIndent()
@@ -124,7 +124,7 @@ fun FluidSpringShaderScreen(onBack: () -> Unit = {}) {
                         runtimeShader.setFloatUniform("u_resolution", size.width.toFloat(), size.height.toFloat())
                         runtimeShader.setFloatUniform("u_time", System.currentTimeMillis() / 1000f)
                         runtimeShader.setFloatUniform("u_pointer", currentX, currentY)
-                        
+
                         drawRect(brush = shaderBrush)
                     }
                 }

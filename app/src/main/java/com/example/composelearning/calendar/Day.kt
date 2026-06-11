@@ -265,4 +265,3 @@ internal fun Day(
 
 val DayStatusKey = SemanticsPropertyKey<Boolean>("DayStatusKey")
 var SemanticsPropertyReceiver.dayStatusProperty by DayStatusKey
-

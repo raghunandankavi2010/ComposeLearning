@@ -39,10 +39,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 
-
 @Composable
-fun SwipetoDismiss() {
-    val viewModel: MyViewModel = viewModel()
+fun SwipetoDismiss(viewModel: MyViewModel = viewModel()) {
     TutorialContent(viewModel)
 }
 
@@ -59,7 +57,6 @@ private fun TutorialContent(viewModel: MyViewModel) {
         val usersList by viewModel.listFlow.collectAsStateWithLifecycle()
         val list = usersList.toList()
         LazyColumn {
-
             itemsIndexed(list, key = { _, user -> user.id }) { index, user ->
 
                 val currentItem by rememberUpdatedState(index)
@@ -67,15 +64,16 @@ private fun TutorialContent(viewModel: MyViewModel) {
                 val dismissState = rememberSwipeToDismissBoxState(
                     confirmValueChange = { dismissValue ->
                         when (dismissValue) {
-
                             SwipeToDismissBoxValue.StartToEnd -> {
                                 viewModel.removeItem(currentItem)
                                 true
                             }
-                            SwipeToDismissBoxValue.EndToStart ->{
+
+                            SwipeToDismissBoxValue.EndToStart -> {
                                 viewModel.removeItem(currentItem)
                                 true
                             }
+
                             else -> {
                                 false
                             }
@@ -86,27 +84,31 @@ private fun TutorialContent(viewModel: MyViewModel) {
                     state = dismissState,
                     modifier = Modifier.padding(vertical = 4.dp),
                     backgroundContent = {
-
                         val direction = dismissState.dismissDirection
 
                         val color by animateColorAsState(
 
                             when (dismissState.targetValue) {
                                 SwipeToDismissBoxValue.Settled -> Color.LightGray
-                                SwipeToDismissBoxValue.StartToEnd  -> Color.Green
+                                SwipeToDismissBoxValue.StartToEnd -> Color.Green
                                 SwipeToDismissBoxValue.EndToStart -> Color.Red
-                            }, label = ""
+                            },
+                            label = ""
                         )
                         val alignment = when (direction) {
-                            SwipeToDismissBoxValue.StartToEnd  -> Alignment.CenterStart
+                            SwipeToDismissBoxValue.StartToEnd -> Alignment.CenterStart
+
                             SwipeToDismissBoxValue.EndToStart -> Alignment.CenterEnd
+
                             else -> {
                                 Alignment.CenterStart
                             }
                         }
                         val icon = when (direction) {
-                            SwipeToDismissBoxValue.StartToEnd  -> Icons.Default.Done
+                            SwipeToDismissBoxValue.StartToEnd -> Icons.Default.Done
+
                             SwipeToDismissBoxValue.EndToStart -> Icons.Default.Delete
+
                             else -> {
                                 Icons.Default.Done
                             }
@@ -141,18 +143,17 @@ private fun TutorialContent(viewModel: MyViewModel) {
                             ).value
                         )
                     ) {
-
-                        Text(modifier = Modifier.height(80.dp),
-                            text= user.name,
-                            fontWeight = FontWeight.Bold)
-
+                        Text(
+                            modifier = Modifier.height(80.dp),
+                            text = user.name,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }
         }
     }
 }
-
 
 class MyViewModel : ViewModel() {
     private var userList = mutableStateListOf<User>()

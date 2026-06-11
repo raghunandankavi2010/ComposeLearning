@@ -3,9 +3,9 @@ package com.example.composelearning.images.processing
 import android.graphics.Bitmap
 import android.graphics.BitmapShader
 import android.graphics.Shader
-import org.intellij.lang.annotations.Language
-import kotlin.math.sin
 import androidx.core.graphics.createBitmap
+import kotlin.math.sin
+import org.intellij.lang.annotations.Language
 
 // =================================================================================================
 // Filter catalog. Each preset emulates the kind of look TikTok / Instagram bake into LUTs.
@@ -38,6 +38,7 @@ enum class ImageFilter(val label: String) {
     Noir("Noir"),
     Fade("Fade"),
     Cyberpunk("Cyberpunk"),
+
     // RenderScript-era "complex" filters, reimagined as AGSL stages on GPU + Default-dispatched
     // parallel coroutines on CPU. Posterize is a LUT; Sharpen/Emboss/Edge use a 3x3 convolution
     // stage (the AGSL equivalent of ScriptIntrinsicConvolve3x3); Pixelate is a sample-coord trick.
@@ -45,7 +46,7 @@ enum class ImageFilter(val label: String) {
     Sharpen("Sharpen"),
     Emboss("Emboss"),
     Edge("Edge"),
-    Pixelate("Pixelate"),
+    Pixelate("Pixelate")
 }
 
 // One immutable description of a filter's math. Lives in memory, passed to both pipelines.
@@ -64,7 +65,7 @@ data class FilterSpec(
     val lutB: IntArray?,
     val kernel: FloatArray? = null,
     val kernelOffset: Float = 0f,
-    val pixelateBlock: Float = 0f,
+    val pixelateBlock: Float = 0f
 ) {
     val hasLut: Boolean get() = lutR != null && lutG != null && lutB != null
     val hasKernel: Boolean get() = kernel != null
@@ -74,7 +75,7 @@ data class FilterSpec(
 private val IDENTITY_MAT = floatArrayOf(
     1f, 0f, 0f, 0f,
     0f, 1f, 0f, 0f,
-    0f, 0f, 1f, 0f,
+    0f, 0f, 1f, 0f
 )
 private val ZERO_OFFSET = floatArrayOf(0f, 0f, 0f)
 
@@ -87,10 +88,12 @@ fun filterSpec(filter: ImageFilter): FilterSpec = when (filter) {
         mat = floatArrayOf(
             0.299f, 0.587f, 0.114f, 0f,
             0.299f, 0.587f, 0.114f, 0f,
-            0.299f, 0.587f, 0.114f, 0f,
+            0.299f, 0.587f, 0.114f, 0f
         ),
         offset = ZERO_OFFSET,
-        lutR = null, lutG = null, lutB = null,
+        lutR = null,
+        lutG = null,
+        lutB = null
     )
 
     // Classic 1969 sepia transform (Microsoft's published matrix).
@@ -98,10 +101,12 @@ fun filterSpec(filter: ImageFilter): FilterSpec = when (filter) {
         mat = floatArrayOf(
             0.393f, 0.769f, 0.189f, 0f,
             0.349f, 0.686f, 0.168f, 0f,
-            0.272f, 0.534f, 0.131f, 0f,
+            0.272f, 0.534f, 0.131f, 0f
         ),
         offset = ZERO_OFFSET,
-        lutR = null, lutG = null, lutB = null,
+        lutR = null,
+        lutG = null,
+        lutB = null
     )
 
     // Negative film inversion: 1 - channel.
@@ -109,10 +114,12 @@ fun filterSpec(filter: ImageFilter): FilterSpec = when (filter) {
         mat = floatArrayOf(
             -1f, 0f, 0f, 0f,
             0f, -1f, 0f, 0f,
-            0f, 0f, -1f, 0f,
+            0f, 0f, -1f, 0f
         ),
         offset = floatArrayOf(1f, 1f, 1f),
-        lutR = null, lutG = null, lutB = null,
+        lutR = null,
+        lutG = null,
+        lutB = null
     )
 
     // Punchy saturated look — handled mostly by user-facing sat/contrast bumps in the VM defaults.
@@ -123,10 +130,12 @@ fun filterSpec(filter: ImageFilter): FilterSpec = when (filter) {
         mat = floatArrayOf(
             0.9f, 0f, 0f, 0f,
             0f, 1.0f, 0f, 0f,
-            0f, 0f, 1.15f, 0f,
+            0f, 0f, 1.15f, 0f
         ),
         offset = floatArrayOf(0f, 0.02f, 0.04f),
-        lutR = null, lutG = null, lutB = null,
+        lutR = null,
+        lutG = null,
+        lutB = null
     )
 
     // Warm: amplify red, pull blue.
@@ -134,10 +143,12 @@ fun filterSpec(filter: ImageFilter): FilterSpec = when (filter) {
         mat = floatArrayOf(
             1.15f, 0f, 0f, 0f,
             0f, 1.0f, 0f, 0f,
-            0f, 0f, 0.85f, 0f,
+            0f, 0f, 0.85f, 0f
         ),
         offset = floatArrayOf(0.05f, 0.03f, 0f),
-        lutR = null, lutG = null, lutB = null,
+        lutR = null,
+        lutG = null,
+        lutB = null
     )
 
     // Vintage: S-curve LUT for film-stock contrast + slight warm tint.
@@ -145,12 +156,12 @@ fun filterSpec(filter: ImageFilter): FilterSpec = when (filter) {
         mat = floatArrayOf(
             1.0f, 0f, 0f, 0f,
             0f, 0.95f, 0f, 0f,
-            0f, 0f, 0.85f, 0f,
+            0f, 0f, 0.85f, 0f
         ),
         offset = floatArrayOf(0.03f, 0.02f, 0f),
         lutR = sCurveLut(strength = 0.35f),
         lutG = sCurveLut(strength = 0.28f),
-        lutB = sCurveLut(strength = 0.25f),
+        lutB = sCurveLut(strength = 0.25f)
     )
 
     // Cinematic: teal shadows, orange highlights. Encoded as a per-channel curve that splits
@@ -159,12 +170,12 @@ fun filterSpec(filter: ImageFilter): FilterSpec = when (filter) {
         mat = floatArrayOf(
             1.05f, 0f, 0f, 0f,
             0f, 0.98f, 0.04f, 0f,
-            0.02f, 0.04f, 0.95f, 0f,
+            0.02f, 0.04f, 0.95f, 0f
         ),
         offset = floatArrayOf(0.02f, 0f, 0f),
         lutR = tealOrangeLut(channel = 0),
         lutG = tealOrangeLut(channel = 1),
-        lutB = tealOrangeLut(channel = 2),
+        lutB = tealOrangeLut(channel = 2)
     )
 
     // Polaroid: raised blacks, lowered whites (faded), slight cyan cast.
@@ -172,12 +183,12 @@ fun filterSpec(filter: ImageFilter): FilterSpec = when (filter) {
         mat = floatArrayOf(
             1.0f, 0f, 0f, 0f,
             0f, 1.0f, 0f, 0f,
-            0f, 0f, 1.0f, 0f,
+            0f, 0f, 1.0f, 0f
         ),
         offset = floatArrayOf(0f, 0.02f, 0.04f),
         lutR = fadeLut(minOut = 30, maxOut = 220),
         lutG = fadeLut(minOut = 35, maxOut = 225),
-        lutB = fadeLut(minOut = 50, maxOut = 230),
+        lutB = fadeLut(minOut = 50, maxOut = 230)
     )
 
     // Noir: full desaturation + steep S-curve. Greyscale matrix + aggressive contrast LUT.
@@ -185,12 +196,12 @@ fun filterSpec(filter: ImageFilter): FilterSpec = when (filter) {
         mat = floatArrayOf(
             0.299f, 0.587f, 0.114f, 0f,
             0.299f, 0.587f, 0.114f, 0f,
-            0.299f, 0.587f, 0.114f, 0f,
+            0.299f, 0.587f, 0.114f, 0f
         ),
         offset = ZERO_OFFSET,
         lutR = sCurveLut(strength = 0.7f),
         lutG = sCurveLut(strength = 0.7f),
-        lutB = sCurveLut(strength = 0.7f),
+        lutB = sCurveLut(strength = 0.7f)
     )
 
     // Fade: low-contrast pastel look. Pure LUT remap (linear compression).
@@ -199,7 +210,7 @@ fun filterSpec(filter: ImageFilter): FilterSpec = when (filter) {
         offset = ZERO_OFFSET,
         lutR = fadeLut(minOut = 40, maxOut = 210),
         lutG = fadeLut(minOut = 40, maxOut = 215),
-        lutB = fadeLut(minOut = 55, maxOut = 225),
+        lutB = fadeLut(minOut = 55, maxOut = 225)
     )
 
     // Cyberpunk: magenta highlights, cyan shadows (neon city look).
@@ -207,12 +218,12 @@ fun filterSpec(filter: ImageFilter): FilterSpec = when (filter) {
         mat = floatArrayOf(
             1.1f, 0.0f, 0.1f, 0f,
             0.0f, 0.85f, 0.05f, 0f,
-            0.05f, 0f, 1.2f, 0f,
+            0.05f, 0f, 1.2f, 0f
         ),
         offset = floatArrayOf(0.05f, -0.02f, 0.05f),
         lutR = neonLut(channel = 0),
         lutG = neonLut(channel = 1),
-        lutB = neonLut(channel = 2),
+        lutB = neonLut(channel = 2)
     )
 
     // Posterize: quantize each channel to N levels via a step LUT. Pure LUT, no shader change,
@@ -222,7 +233,7 @@ fun filterSpec(filter: ImageFilter): FilterSpec = when (filter) {
         offset = ZERO_OFFSET,
         lutR = posterizeLut(levels = 6),
         lutG = posterizeLut(levels = 6),
-        lutB = posterizeLut(levels = 6),
+        lutB = posterizeLut(levels = 6)
     )
 
     // Sharpen: classic 3x3 high-pass kernel (sum = 1, so flat areas keep their brightness).
@@ -230,8 +241,10 @@ fun filterSpec(filter: ImageFilter): FilterSpec = when (filter) {
     ImageFilter.Sharpen -> FilterSpec(
         mat = IDENTITY_MAT,
         offset = ZERO_OFFSET,
-        lutR = null, lutG = null, lutB = null,
-        kernel = SHARPEN_KERNEL,
+        lutR = null,
+        lutG = null,
+        lutB = null,
+        kernel = SHARPEN_KERNEL
     )
 
     // Emboss: directional gradient (sum = 0). The 0.5 offset lifts flat regions to mid-grey
@@ -239,9 +252,11 @@ fun filterSpec(filter: ImageFilter): FilterSpec = when (filter) {
     ImageFilter.Emboss -> FilterSpec(
         mat = IDENTITY_MAT,
         offset = ZERO_OFFSET,
-        lutR = null, lutG = null, lutB = null,
+        lutR = null,
+        lutG = null,
+        lutB = null,
         kernel = EMBOSS_KERNEL,
-        kernelOffset = 0.5f,
+        kernelOffset = 0.5f
     )
 
     // Edge: 4-neighbour Laplacian (sum = 0). Flat areas → black, gradients → bright. The
@@ -249,8 +264,10 @@ fun filterSpec(filter: ImageFilter): FilterSpec = when (filter) {
     ImageFilter.Edge -> FilterSpec(
         mat = IDENTITY_MAT,
         offset = ZERO_OFFSET,
-        lutR = null, lutG = null, lutB = null,
-        kernel = LAPLACIAN_KERNEL,
+        lutR = null,
+        lutG = null,
+        lutB = null,
+        kernel = LAPLACIAN_KERNEL
     )
 
     // Pixelate: 12-pixel block mosaic. Snaps the sample coord to the block centre before
@@ -258,27 +275,29 @@ fun filterSpec(filter: ImageFilter): FilterSpec = when (filter) {
     ImageFilter.Pixelate -> FilterSpec(
         mat = IDENTITY_MAT,
         offset = ZERO_OFFSET,
-        lutR = null, lutG = null, lutB = null,
-        pixelateBlock = 12f,
+        lutR = null,
+        lutG = null,
+        lutB = null,
+        pixelateBlock = 12f
     )
 }
 
 private val SHARPEN_KERNEL = floatArrayOf(
     0f, -1f, 0f,
     -1f, 5f, -1f,
-    0f, -1f, 0f,
+    0f, -1f, 0f
 )
 
 private val EMBOSS_KERNEL = floatArrayOf(
     -2f, -1f, 0f,
     -1f, 0f, 1f,
-    0f, 1f, 2f,
+    0f, 1f, 2f
 )
 
 private val LAPLACIAN_KERNEL = floatArrayOf(
     0f, -1f, 0f,
     -1f, 4f, -1f,
-    0f, -1f, 0f,
+    0f, -1f, 0f
 )
 
 // =================================================================================================
@@ -308,12 +327,16 @@ private fun fadeLut(minOut: Int, maxOut: Int): IntArray {
 // shift cyan-ish and bright pixels shift orange-ish. The standard "Hollywood blockbuster" grade.
 private fun tealOrangeLut(channel: Int): IntArray = IntArray(256) { i ->
     val x = i / 255f
-    val highlight = x * x * (3f - 2f * x)            // brighter on highlights
+    val highlight = x * x * (3f - 2f * x) // brighter on highlights
     val shadow = 1f - (1f - x) * (1f - x) * (3f - 2f * (1f - x)) // dimmer on shadows
     val out = when (channel) {
-        0 -> x * 0.6f + highlight * 0.4f + 0.04f            // R: push highlights warm
-        1 -> x * 0.75f + highlight * 0.20f + shadow * 0.05f // G: subtle
-        else -> x * 0.55f + shadow * 0.45f                  // B: pull shadows cool
+        0 -> x * 0.6f + highlight * 0.4f + 0.04f
+
+        // R: push highlights warm
+        1 -> x * 0.75f + highlight * 0.20f + shadow * 0.05f
+
+        // G: subtle
+        else -> x * 0.55f + shadow * 0.45f // B: pull shadows cool
     }
     (out.coerceIn(0f, 1f) * 255f).toInt()
 }
@@ -333,7 +356,11 @@ private fun posterizeLut(levels: Int): IntArray {
 // (channel-dependent phase) to inject color variance through the midtones.
 private fun neonLut(channel: Int): IntArray = IntArray(256) { i ->
     val x = i / 255f
-    val phase = when (channel) { 0 -> 0f; 1 -> 2.094f; else -> 4.188f } // 0°, 120°, 240°
+    val phase = when (channel) {
+        0 -> 0f
+        1 -> 2.094f
+        else -> 4.188f
+    } // 0°, 120°, 240°
     val bend = sin(x * Math.PI.toFloat() + phase) * 0.08f
     val tinted = when (channel) {
         0 -> x * 1.05f + 0.05f + bend
@@ -369,8 +396,7 @@ fun identityLutBitmap(): Bitmap {
     return buildLutBitmap(ramp, ramp, ramp)
 }
 
-fun Bitmap.toClampShader(): BitmapShader =
-    BitmapShader(this, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
+fun Bitmap.toClampShader(): BitmapShader = BitmapShader(this, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
 
 // =================================================================================================
 // The single unified AGSL filter shader. Branching on uniforms is cheap on modern GPUs because
@@ -495,12 +521,16 @@ fun thumbnailGradient(filter: ImageFilter): IntArray {
             // for Emboss / Edge in the chip preview.
             if (spec.hasKernel) {
                 val k = spec.kernel!!
-                var rr = 0f; var gg = 0f; var bb = 0f
+                var rr = 0f
+                var gg = 0f
+                var bb = 0f
                 for (kdy in -1..1) {
                     for (kdx in -1..1) {
                         val (nr, ng, nb) = gradientSample(sx + kdx, sy + kdy, size)
                         val w = k[(kdy + 1) * 3 + (kdx + 1)]
-                        rr += nr * w; gg += ng * w; bb += nb * w
+                        rr += nr * w
+                        gg += ng * w
+                        bb += nb * w
                     }
                 }
                 r = (rr + spec.kernelOffset).coerceIn(0f, 1f)

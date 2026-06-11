@@ -47,9 +47,7 @@ fun MultiColorProgress(
     )
     val stroke = Stroke(8f)
 
-
     val infiniteTransition = rememberInfiniteTransition("PathTransition")
-
 
     val animatedProgress by infiniteTransition.animateValue(
         0F,
@@ -63,7 +61,6 @@ fun MultiColorProgress(
         ),
         label = "MultiColorProgress"
     )
-
 
     Canvas(modifier = Modifier.size(24.dp)) {
         val size = Size(24.dp.toPx(), 24.dp.toPx())
@@ -92,8 +89,6 @@ fun MultiColorProgress(
                 size = Size(diameter, diameter),
                 style = Stroke(8f, cap = StrokeCap.Round)
             )
-
-
 
             drawArc(
                 color = colors[3],
@@ -124,7 +119,7 @@ fun IndeterminateCircularProgressBar(
     strokeColor: Color = Color.Blue,
     strokeWidth: Dp = 8.dp,
     startAngle: Float = 0f,
-    sweepAngle: Float = 360f,
+    sweepAngle: Float = 360f
 ) {
     var progress by remember {
         mutableFloatStateOf(0f)
@@ -143,11 +138,9 @@ fun IndeterminateCircularProgressBar(
 
     val stroke = Stroke(8f)
     Canvas(modifier.size(size)) {
-
         val size = Size(24.dp.toPx(), 24.dp.toPx())
         val diameter = size.minDimension - stroke.width
         val topLeft = Offset((size.width - diameter) / 2f, (size.height - diameter) / 2f)
-
 
         drawArc(
             color = Color.Gray,

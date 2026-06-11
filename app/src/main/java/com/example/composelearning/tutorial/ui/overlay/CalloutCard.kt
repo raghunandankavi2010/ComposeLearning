@@ -51,7 +51,7 @@ fun CalloutCard(
     onNext: () -> Unit,
     onSkip: () -> Unit,
     isLast: Boolean,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val density = LocalDensity.current
     val horizontalPaddingPx = with(density) { 16.dp.toPx() }
@@ -64,7 +64,7 @@ fun CalloutCard(
             overlayHeightPx = overlaySizePx.height.toFloat(),
             estimatedCardHeightPx = with(density) { 200.dp.toPx() },
             verticalGapPx = verticalGapPx,
-            horizontalPaddingPx = horizontalPaddingPx,
+            horizontalPaddingPx = horizontalPaddingPx
         )
     }
 
@@ -75,17 +75,17 @@ fun CalloutCard(
         modifier = modifier,
         enter = fadeIn(tween(240)) + slideInVertically(
             animationSpec = tween(durationMillis = 320),
-            initialOffsetY = { if (placement.above) -it / 4 else it / 4 },
+            initialOffsetY = { if (placement.above) -it / 4 else it / 4 }
         ),
         exit = fadeOut(tween(180)) + slideOutVertically(
             animationSpec = tween(durationMillis = 200),
-            targetOffsetY = { if (placement.above) -it / 4 else it / 4 },
-        ),
+            targetOffsetY = { if (placement.above) -it / 4 else it / 4 }
+        )
     ) {
         Box(
             modifier = Modifier
                 .offset { IntOffset(placement.x.toInt(), placement.y.toInt()) }
-                .width(maxWidthDp),
+                .width(maxWidthDp)
         ) {
             CalloutContent(
                 title = title,
@@ -94,7 +94,7 @@ fun CalloutCard(
                 totalSteps = totalSteps,
                 isLast = isLast,
                 onNext = onNext,
-                onSkip = onSkip,
+                onSkip = onSkip
             )
         }
     }
@@ -108,25 +108,25 @@ private fun CalloutContent(
     totalSteps: Int,
     isLast: Boolean,
     onNext: () -> Unit,
-    onSkip: () -> Unit,
+    onSkip: () -> Unit
 ) {
     Surface(
         shape = RoundedCornerShape(24.dp),
         color = MaterialTheme.colorScheme.surface,
         tonalElevation = 6.dp,
         shadowElevation = 12.dp,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
     ) {
         Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 18.dp)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
                     text = "Step $stepNumber of $totalSteps",
                     style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.primary
                 )
                 StepDots(current = stepNumber - 1, total = totalSteps)
             }
@@ -134,19 +134,19 @@ private fun CalloutContent(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(Modifier.height(6.dp))
             Text(
                 text = description,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(Modifier.height(18.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 TextButton(onClick = onSkip) {
                     Text("Skip")
@@ -155,16 +155,19 @@ private fun CalloutContent(
                     onClick = onNext,
                     shape = RoundedCornerShape(16.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                    ),
+                        containerColor = MaterialTheme.colorScheme.primary
+                    )
                 ) {
                     Text(if (isLast) "Done" else "Next")
                     Spacer(Modifier.width(6.dp))
                     Icon(
-                        imageVector = if (isLast) Icons.Default.Check
-                        else Icons.AutoMirrored.Filled.ArrowForward,
+                        imageVector = if (isLast) {
+                            Icons.Default.Check
+                        } else {
+                            Icons.AutoMirrored.Filled.ArrowForward
+                        },
                         contentDescription = null,
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(18.dp)
                     )
                 }
             }
@@ -177,13 +180,16 @@ private fun StepDots(current: Int, total: Int) {
     Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         repeat(total) { index ->
             val active = index == current
-            val color = if (active) MaterialTheme.colorScheme.primary
-            else MaterialTheme.colorScheme.outlineVariant
+            val color = if (active) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.outlineVariant
+            }
             Box(
                 Modifier
                     .size(if (active) 8.dp else 6.dp)
                     .clip(CircleShape)
-                    .background(color),
+                    .background(color)
             )
         }
     }
@@ -193,7 +199,7 @@ private data class CalloutPlacement(
     val x: Float,
     val y: Float,
     val maxWidth: Float,
-    val above: Boolean,
+    val above: Boolean
 )
 
 private fun computePlacement(
@@ -202,7 +208,7 @@ private fun computePlacement(
     overlayHeightPx: Float,
     estimatedCardHeightPx: Float,
     verticalGapPx: Float,
-    horizontalPaddingPx: Float,
+    horizontalPaddingPx: Float
 ): CalloutPlacement {
     val maxWidth = (overlayWidthPx - 2 * horizontalPaddingPx).coerceAtLeast(0f)
     if (targetRect == null) {
@@ -210,14 +216,14 @@ private fun computePlacement(
             x = horizontalPaddingPx,
             y = overlayHeightPx - estimatedCardHeightPx - verticalGapPx,
             maxWidth = maxWidth,
-            above = false,
+            above = false
         )
     }
 
     val spaceBelow = overlayHeightPx - targetRect.bottom
     val spaceAbove = targetRect.top
     val placeAbove = spaceBelow < estimatedCardHeightPx + verticalGapPx &&
-            spaceAbove > spaceBelow
+        spaceAbove > spaceBelow
 
     val y = if (placeAbove) {
         (targetRect.top - estimatedCardHeightPx - verticalGapPx)
@@ -231,6 +237,6 @@ private fun computePlacement(
         x = horizontalPaddingPx,
         y = y,
         maxWidth = maxWidth,
-        above = placeAbove,
+        above = placeAbove
     )
 }

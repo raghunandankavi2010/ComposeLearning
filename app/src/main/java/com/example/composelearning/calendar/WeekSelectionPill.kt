@@ -21,13 +21,9 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.runtime.Composable
-import com.example.composelearning.calendar.model.CalendarState
-import com.example.composelearning.calendar.model.CalendarState.Companion.DAYS_IN_WEEK
-import com.example.composelearning.calendar.model.CalendarUiState
-import com.example.composelearning.calendar.model.Week
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -40,6 +36,10 @@ import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.composelearning.calendar.model.CalendarState
+import com.example.composelearning.calendar.model.CalendarState.Companion.DAYS_IN_WEEK
+import com.example.composelearning.calendar.model.CalendarUiState
+import com.example.composelearning.calendar.model.Week
 import java.time.LocalDate
 
 @Composable
@@ -69,7 +69,6 @@ fun WeekSelectionPill(
             .height(widthPerDay)
             .clipToBounds(),
         onDraw = {
-
             val (offset, size) = getOffsetAndSize(
                 this.size.width,
                 state,
@@ -135,7 +134,8 @@ private fun getOffsetAndSize(
         // to a range between at min 0f and 1f.
         normalize(
             selectedPercentage,
-            startPercentage, endPercentage
+            startPercentage,
+            endPercentage
         )
     }
 
@@ -149,7 +149,7 @@ private fun getOffsetAndSize(
         if (state.isRightHighlighted(currentWeekStart, week.yearMonth)) sideSize else 0f
 
     var totalSize = (scaledSelectedNumberDays * widthPerDayPx) +
-            (leftSize + rightSize) * scaledPercentage
+        (leftSize + rightSize) * scaledPercentage
     if (dayDelay + monthOverlapDelay == 0 && numberDaysSelected >= 1) {
         totalSize = totalSize.coerceAtLeast(widthPerDayPx)
     }
@@ -180,7 +180,6 @@ private fun normalize(
     val inRange = inMax - inMin
     return (x - inMin) * outRange / inRange + outMin
 }
-
 
 private fun DrawScope.drawStartAndEndRoundedRectangles(
     offset: Offset,

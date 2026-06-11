@@ -19,7 +19,7 @@ import androidx.compose.runtime.remember
 fun rememberChartProgress(
     key: Any?,
     spec: AnimationSpec<Float> = tween(durationMillis = 900, easing = FastOutSlowInEasing),
-    initial: Float = 0f,
+    initial: Float = 0f
 ): State<Float> {
     val animatable = remember { Animatable(initial) }
     LaunchedEffect(key) {

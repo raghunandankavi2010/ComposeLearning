@@ -1,6 +1,5 @@
 package com.example.composelearning.lists
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,16 +17,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-
 @Preview
 @Composable
-fun Test2() {
-
+private fun LazyStaggeredGridSample() {
     val itemCount = 100
     val itemHeight = 100.dp
     val verticalItemSpacing = 4.dp
     val leftItemHeight = itemHeight * itemCount + verticalItemSpacing * (itemCount - 1)
-
 
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(2),
@@ -36,8 +32,6 @@ fun Test2() {
         contentPadding = PaddingValues(horizontal = 4.dp, vertical = 4.dp),
         modifier = Modifier.fillMaxSize()
     ) {
-
-
         item(
             span = StaggeredGridItemSpan.FullLine
         ) {

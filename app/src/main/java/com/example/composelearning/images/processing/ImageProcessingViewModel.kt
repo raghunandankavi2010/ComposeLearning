@@ -33,13 +33,13 @@ data class FilterParams(
     val brightness: Float = 0f,
     val contrast: Float = 1f,
     val saturation: Float = 1f,
-    val vignette: Float = 0f,
+    val vignette: Float = 0f
 )
 
 data class ImageProcessingUiState(
     val sourceUri: Uri? = null,
     val sourceBitmap: Bitmap? = null,
-    val isLoadingSource: Boolean = false,
+    val isLoadingSource: Boolean = false
 )
 
 class ImageProcessingViewModel(application: Application) : AndroidViewModel(application) {
@@ -107,8 +107,11 @@ class ImageProcessingViewModel(application: Application) : AndroidViewModel(appl
             @Suppress("DEPRECATION")
             MediaStore.Images.Media.getBitmap(resolver, uri)
         }
-        return if (raw.config == Bitmap.Config.ARGB_8888) raw
-        else raw.copy(Bitmap.Config.ARGB_8888, false).also { raw.recycle() }
+        return if (raw.config == Bitmap.Config.ARGB_8888) {
+            raw
+        } else {
+            raw.copy(Bitmap.Config.ARGB_8888, false).also { raw.recycle() }
+        }
     }
 
     private fun decodeResourceScaled(@DrawableRes resId: Int, longEdgeTarget: Int): Bitmap {

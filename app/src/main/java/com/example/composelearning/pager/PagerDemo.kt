@@ -156,4 +156,3 @@ fun PagerDemo3(modifier: Modifier = Modifier) {
         }
     }
 }
-

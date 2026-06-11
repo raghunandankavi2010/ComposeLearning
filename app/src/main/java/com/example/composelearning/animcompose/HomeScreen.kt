@@ -1,5 +1,6 @@
 package com.example.composelearning.animcompose
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -71,71 +72,57 @@ fun MainHomeScreen(navigator: Navigator) {
                 shape = MaterialTheme.shapes.large,
             )
 
-            if (query.isBlank()) {
-                GroupList(navigator)
-            } else {
-                SearchResultsList(searchResults, navigator)
+            val groups = remember { FeatureCatalog.groupBy { it.group } }
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                if (query.isBlank()) {
+                    items(
+                        items = FeatureGroup.entries,
+                        key = { "group_${it.name}" },
+                    ) { group ->
+                        GroupCard(
+                            group = group,
+                            count = groups[group]?.size ?: 0,
+                            onClick = {
+                                navigator.navigate(com.example.composelearning.AnimScreen.Group(group.name))
+                            },
+                        )
+                    }
+                } else {
+                    if (searchResults.isEmpty()) {
+                        item(key = "empty_state") {
+                            Box(
+                                modifier = Modifier
+                                    .fillParentMaxSize()
+                                    .padding(bottom = 64.dp), // Adjust for search bar height
+                                contentAlignment = androidx.compose.ui.Alignment.Center,
+                            ) {
+                                Text(
+                                    text = "No demos match your search",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+                    } else {
+                        items(
+                            items = searchResults,
+                            key = { "result_${it.title}" },
+                        ) { category ->
+                            CategoryCard(
+                                title = category.title,
+                                description = category.description,
+                                badge = category.group.title,
+                                onClick = { navigator.navigate(category.route) }
+                            )
+                        }
+                    }
+                }
             }
-        }
-    }
-}
-
-@Composable
-private fun GroupList(navigator: Navigator) {
-    val groups = remember { FeatureCatalog.groupBy { it.group } }
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        items(
-            items = FeatureGroup.entries,
-            key = { it.name },
-        ) { group ->
-            GroupCard(
-                group = group,
-                count = groups[group]?.size ?: 0,
-                onClick = {
-                    navigator.navigate(com.example.composelearning.AnimScreen.Group(group.name))
-                },
-            )
-        }
-    }
-}
-
-@Composable
-private fun SearchResultsList(
-    results: List<AnimationCategory>,
-    navigator: Navigator,
-) {
-    if (results.isEmpty()) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = androidx.compose.ui.Alignment.Center,
-        ) {
-            Text(
-                text = "No demos match your search",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        }
-        return
-    }
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        items(
-            items = results,
-            key = { it.title },
-        ) { category ->
-            CategoryCard(
-                title = category.title,
-                description = category.description,
-                badge = category.group.title,
-                onClick = { navigator.navigate(category.route) }
-            )
         }
     }
 }
@@ -194,8 +181,9 @@ private fun GroupCard(
     onClick: () -> Unit,
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -235,8 +223,9 @@ fun CategoryCard(
     badge: String? = null,
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(

@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 
 private const val DRAG_THRESHOLD = 0.5f
 
-/**
+/*
  * A simplified side panel layout with drag gestures to change its width.
  *
  * Features:

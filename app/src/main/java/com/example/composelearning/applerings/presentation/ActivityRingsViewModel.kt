@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ActivityRingsViewModel(
-    private val getRings: GetActivityRingsUseCase,
+    private val getRings: GetActivityRingsUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ActivityRingsState())
@@ -38,7 +38,6 @@ class ActivityRingsViewModel(
 
     class Factory : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T =
-            ActivityRingsViewModel(GetActivityRingsUseCase(ActivityRingsRepositoryImpl())) as T
+        override fun <T : ViewModel> create(modelClass: Class<T>): T = ActivityRingsViewModel(GetActivityRingsUseCase(ActivityRingsRepositoryImpl())) as T
     }
 }

@@ -43,7 +43,7 @@ import com.example.composelearning.tutorial.ui.overlay.tutorialTarget
 @Composable
 fun FeatureCardItem(
     card: FeatureCard,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     when (card.variant) {
         FeatureCard.Variant.Hero -> HeroCard(card, modifier)
@@ -56,7 +56,7 @@ fun FeatureCardItem(
 }
 
 @Composable
-private fun HeroCard(card: FeatureCard, modifier: Modifier) {
+private fun HeroCard(card: FeatureCard, modifier: Modifier = Modifier) {
     val primary = MaterialTheme.colorScheme.primary
     val secondary = MaterialTheme.colorScheme.tertiary
     Card(
@@ -65,7 +65,7 @@ private fun HeroCard(card: FeatureCard, modifier: Modifier) {
             .height(180.dp)
             .tutorialTarget(card.id),
         shape = RoundedCornerShape(24.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Box(
             Modifier
@@ -74,23 +74,23 @@ private fun HeroCard(card: FeatureCard, modifier: Modifier) {
                     Brush.linearGradient(
                         colors = listOf(primary, secondary),
                         start = Offset.Zero,
-                        end = Offset.Infinite,
+                        end = Offset.Infinite
                     )
                 )
-                .padding(22.dp),
+                .padding(22.dp)
         ) {
             Column(verticalArrangement = Arrangement.Bottom, modifier = Modifier.fillMaxSize()) {
                 Text(
                     text = card.title,
                     style = MaterialTheme.typography.headlineSmall,
                     color = MaterialTheme.colorScheme.onPrimary,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.SemiBold
                 )
                 Spacer(Modifier.height(6.dp))
                 Text(
                     text = card.subtitle,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.86f),
+                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.86f)
                 )
             }
         }
@@ -98,7 +98,7 @@ private fun HeroCard(card: FeatureCard, modifier: Modifier) {
 }
 
 @Composable
-private fun StatCard(card: FeatureCard, modifier: Modifier) {
+private fun StatCard(card: FeatureCard, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -106,26 +106,26 @@ private fun StatCard(card: FeatureCard, modifier: Modifier) {
             .tutorialTarget(card.id),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-        ),
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+        )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(20.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 Modifier
                     .size(52.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.primaryContainer),
-                contentAlignment = Alignment.Center,
+                contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Default.Bolt,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
             Spacer(Modifier.width(16.dp))
@@ -133,12 +133,12 @@ private fun StatCard(card: FeatureCard, modifier: Modifier) {
                 Text(
                     text = card.title,
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.SemiBold
                 )
                 Text(
                     text = card.subtitle,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
@@ -146,7 +146,7 @@ private fun StatCard(card: FeatureCard, modifier: Modifier) {
 }
 
 @Composable
-private fun ActionCard(card: FeatureCard, modifier: Modifier) {
+private fun ActionCard(card: FeatureCard, modifier: Modifier = Modifier) {
     val isShare = card.id == "card_share"
     Card(
         modifier = modifier
@@ -154,32 +154,36 @@ private fun ActionCard(card: FeatureCard, modifier: Modifier) {
             .tutorialTarget(card.id),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-        ),
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
+        )
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Text(
                 text = card.title,
                 style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.SemiBold
             )
             Spacer(Modifier.height(4.dp))
             Text(
                 text = card.subtitle,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(Modifier.height(16.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 FilledTonalButton(
                     onClick = {},
-                    modifier = if (isShare) Modifier else Modifier
-                        .tutorialTarget("card_quick_action_button"),
+                    modifier = if (isShare) {
+                        Modifier
+                    } else {
+                        Modifier
+                            .tutorialTarget("card_quick_action_button")
+                    }
                 ) {
                     Icon(
                         imageVector = if (isShare) Icons.Default.Share else Icons.Default.Bolt,
                         contentDescription = null,
-                        modifier = Modifier.size(18.dp),
+                        modifier = Modifier.size(18.dp)
                     )
                     Spacer(Modifier.width(6.dp))
                     Text(if (isShare) "Invite" else "Run")
@@ -193,7 +197,7 @@ private fun ActionCard(card: FeatureCard, modifier: Modifier) {
 }
 
 @Composable
-private fun ProfileCard(card: FeatureCard, modifier: Modifier) {
+private fun ProfileCard(card: FeatureCard, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -201,26 +205,26 @@ private fun ProfileCard(card: FeatureCard, modifier: Modifier) {
             .tutorialTarget(card.id),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-        ),
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer
+        )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 18.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 Modifier
                     .size(56.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.tertiary),
-                contentAlignment = Alignment.Center,
+                contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Default.Person,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onTertiary,
+                    tint = MaterialTheme.colorScheme.onTertiary
                 )
             }
             Spacer(Modifier.width(14.dp))
@@ -229,12 +233,12 @@ private fun ProfileCard(card: FeatureCard, modifier: Modifier) {
                     text = card.title,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onTertiaryContainer,
+                    color = MaterialTheme.colorScheme.onTertiaryContainer
                 )
                 Text(
                     text = card.subtitle,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.8f),
+                    color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.8f)
                 )
             }
         }
@@ -242,15 +246,15 @@ private fun ProfileCard(card: FeatureCard, modifier: Modifier) {
 }
 
 @Composable
-private fun TextOnlyCard(card: FeatureCard, modifier: Modifier) {
+private fun TextOnlyCard(card: FeatureCard, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
             .fillMaxWidth()
             .tutorialTarget(card.id),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-        ),
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
+        )
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -258,27 +262,27 @@ private fun TextOnlyCard(card: FeatureCard, modifier: Modifier) {
                     imageVector = Icons.Default.Star,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(20.dp),
+                    modifier = Modifier.size(20.dp)
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
                     text = card.title,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.SemiBold
                 )
             }
             Spacer(Modifier.height(8.dp))
             Text(
                 text = card.subtitle,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
 }
 
 @Composable
-private fun ChartCard(card: FeatureCard, modifier: Modifier) {
+private fun ChartCard(card: FeatureCard, modifier: Modifier = Modifier) {
     val barColor = MaterialTheme.colorScheme.primary
     val barColorMuted = MaterialTheme.colorScheme.primary.copy(alpha = 0.35f)
     Card(
@@ -288,28 +292,28 @@ private fun ChartCard(card: FeatureCard, modifier: Modifier) {
             .tutorialTarget(card.id),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-        ),
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+        )
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Default.Insights,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
+                    tint = MaterialTheme.colorScheme.primary
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
                     text = card.title,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.SemiBold
                 )
             }
             Spacer(Modifier.height(4.dp))
             Text(
                 text = card.subtitle,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(Modifier.height(14.dp))
             FakeBarChart(
@@ -318,7 +322,7 @@ private fun ChartCard(card: FeatureCard, modifier: Modifier) {
                 mutedColor = barColorMuted,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(80.dp),
+                    .height(80.dp)
             )
         }
     }
@@ -329,7 +333,7 @@ private fun FakeBarChart(
     values: List<Float>,
     barColor: Color,
     mutedColor: Color,
-    modifier: Modifier,
+    modifier: Modifier = Modifier
 ) {
     Canvas(modifier = modifier) {
         val gap = 8.dp.toPx()
@@ -342,7 +346,7 @@ private fun FakeBarChart(
                 color = if (index == values.lastIndex - 1) barColor else mutedColor,
                 topLeft = Offset(left, top),
                 size = androidx.compose.ui.geometry.Size(barWidth, barHeight),
-                cornerRadius = androidx.compose.ui.geometry.CornerRadius(6.dp.toPx()),
+                cornerRadius = androidx.compose.ui.geometry.CornerRadius(6.dp.toPx())
             )
         }
     }
