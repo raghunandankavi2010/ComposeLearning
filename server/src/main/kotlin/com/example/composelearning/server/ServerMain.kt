@@ -42,7 +42,7 @@ fun main() {
             exchange,
             status = 200,
             contentType = "application/x-protobuf",
-            body = protoBytes,
+            body = protoBytes
         )
     }
 
@@ -51,7 +51,7 @@ fun main() {
             exchange,
             status = 200,
             contentType = "application/json",
-            body = jsonBytes,
+            body = jsonBytes
         )
     }
 
@@ -98,7 +98,7 @@ private fun sampleContacts(): List<Contact> = listOf(
     contact(5, "Andy Grove", "andy@example.com", "+1-408-555-0188", Role.MANAGER, true),
     contact(6, "Margaret Hamilton", "margaret@example.com", "+1-617-555-0166", Role.ENGINEER, true),
     contact(7, "Don Norman", "don@example.com", "+1-858-555-0123", Role.DESIGNER, true),
-    contact(8, "Katherine Johnson", "katherine@example.com", "+1-757-555-0154", Role.ENGINEER, false),
+    contact(8, "Katherine Johnson", "katherine@example.com", "+1-757-555-0154", Role.ENGINEER, false)
 )
 
 private fun contact(
@@ -107,7 +107,7 @@ private fun contact(
     email: String,
     phone: String,
     role: Role,
-    active: Boolean,
+    active: Boolean
 ): Contact = Contact.newBuilder()
     .setId(id)
     .setName(name)
@@ -134,5 +134,4 @@ private fun contactsAsJson(contacts: List<Contact>): String = buildString {
     append("]}")
 }
 
-private fun percentSmaller(protoSize: Int, jsonSize: Int): Int =
-    ((jsonSize - protoSize) * 100.0 / jsonSize).toInt()
+private fun percentSmaller(protoSize: Int, jsonSize: Int): Int = ((jsonSize - protoSize) * 100.0 / jsonSize).toInt()
