@@ -14,7 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -88,6 +91,34 @@ fun getHalfOfRange(min: Float, max: Float): Float {
     return min + half
 }
 
+/**
+ * Color anchors along the temperature axis (°C). Between anchors the color is
+ * linearly interpolated, so the bar reads as a smooth scale:
+ *  super cold -> red, cold -> blue, comfortable -> green, warm -> orange, too hot -> red.
+ */
+private val temperatureAnchors = listOf(
+    -20f to Color(0xFFB71C1C), // super cold  -> deep red
+    -10f to Color(0xFF1976D2), // cold        -> blue
+    0f to Color(0xFF26C6DA),   // cool        -> cyan
+    20f to Color(0xFF2E9E5B),  // comfortable -> green
+    30f to Color(0xFFFB8C00),  // warm        -> orange
+    40f to Color(0xFFD32F2F),  // too hot     -> red
+)
+
+/** Maps a temperature in °C to its zone color, clamped to the anchor range. */
+fun temperatureColor(temp: Float): Color {
+    if (temp <= temperatureAnchors.first().first) return temperatureAnchors.first().second
+    if (temp >= temperatureAnchors.last().first) return temperatureAnchors.last().second
+    for (i in 0 until temperatureAnchors.size - 1) {
+        val (t0, c0) = temperatureAnchors[i]
+        val (t1, c1) = temperatureAnchors[i + 1]
+        if (temp in t0..t1) {
+            return lerp(c0, c1, (temp - t0) / (t1 - t0))
+        }
+    }
+    return temperatureAnchors.last().second
+}
+
 @Composable
 fun TemperatureChart3(
     modifier: Modifier = Modifier,
@@ -97,14 +128,28 @@ fun TemperatureChart3(
     textMeasurer: TextMeasurer = rememberTextMeasurer()
 ) {
     val context = LocalContext.current
-    val tickInterval = (maxTemp.toFloat() - minTemp.toFloat()) / (5.0f - 1.0f)
 
-    val numTicks = (maxTemp - minTemp) / tickInterval.toInt() + 1
+    val state = remember { mutableFloatStateOf(temp.toFloat()) } // Track indicator position
 
-    val vector = ImageVector.vectorResource(id = R.drawable.indicator)
-    val painter = rememberVectorPainter(image = vector)
+    // ~6 labelled (major) ticks across the range, each split into 5 minor steps.
+    val majorStep = ((maxTemp - minTemp) / 6f).let { if (it <= 0f) 1f else it }
+    val minorPerMajor = 5
 
-    val state = remember { mutableFloatStateOf((temp).toFloat()) } // Track indicator position with offset
+    val labelStyle = TextStyle(
+        fontSize = 11.sp,
+        lineHeight = 13.sp,
+        fontFamily = FontFamily(Font(R.font.jio_type_medium)),
+        fontWeight = FontWeight(500),
+        color = Color(0xA6000000),
+        textAlign = TextAlign.Center,
+    )
+    val badgeStyle = TextStyle(
+        fontSize = 13.sp,
+        fontFamily = FontFamily(Font(R.font.jio_type_medium)),
+        fontWeight = FontWeight(700),
+        color = Color.White,
+        textAlign = TextAlign.Center,
+    )
 
     Canvas(
         modifier = modifier
@@ -113,73 +158,106 @@ fun TemperatureChart3(
                 minTemp = minTemp.toFloat(),
                 maxTemp = maxTemp.toFloat(),
                 onDragEnd = { newTemp ->
-                    val roundedTemp = round(newTemp).toInt() // Adjust for offset before showing toast
-                    Toast.makeText(context.applicationContext, "$roundedTemp", Toast.LENGTH_SHORT).show()
+                    val roundedTemp = round(newTemp).toInt()
+                    Toast.makeText(context.applicationContext, "$roundedTemp°", Toast.LENGTH_SHORT).show()
                 }
             )
     ) {
+        val padX = 12.dp.toPx()
+        val barLeft = padX
+        val barRight = size.width - padX
+        val barWidth = barRight - barLeft
+        val barTop = 36.dp.toPx()
+        val barHeight = 38.dp.toPx()
+        val barBottom = barTop + barHeight
+        val corner = CornerRadius(10.dp.toPx()) // softly rounded, not a full pill
 
-        val tickSpacing = (this.size.width - 16.dp.toPx()) / (numTicks - 1)
+        val range = (maxTemp - minTemp).toFloat().coerceAtLeast(1f)
+        fun xForTemp(t: Float) = barLeft + (t - minTemp) / range * barWidth
 
-        val cornerRadius = CornerRadius(8.dp.toPx())
-
+        // 1) Gradient temperature bar — sampled from the zone colors across the range.
+        val stops = 24
+        val gradientColors = (0 until stops).map { i ->
+            temperatureColor(minTemp + range * i / (stops - 1))
+        }
         drawRoundRect(
-            Color(0xFF169B4A),
-            size = Size(this.size.width, 50.dp.toPx()),
-            cornerRadius = cornerRadius
+            brush = Brush.horizontalGradient(gradientColors, startX = barLeft, endX = barRight),
+            topLeft = Offset(barLeft, barTop),
+            size = Size(barWidth, barHeight),
+            cornerRadius = corner,
         )
 
-        val adjustedLeft = (state.floatValue - minTemp.toFloat()) / (maxTemp.toFloat() - minTemp.toFloat()) * (this.size.width  - cornerRadius.x * 2 )
-
-        translate(
-            left =   adjustedLeft - 5.dp.toPx() + 8.dp.toPx() ,
-            top = -3.dp.toPx()
-        ) {
-            with(painter) {
-                draw(
-                    size = Size(10.dp.toPx(), 56.dp.toPx())
-                )
-            }
-        }
-
-        // Loop through each tick position based on spacing
-        for (i in 0 until numTicks) {
-            val xPosition = i * tickSpacing
-            val text = (minTemp + i * tickInterval).toInt().toString()
-
-            // Measure text width for accurate centering
-            val textMeasureResult = textMeasurer.measure(
-                text = text,
-                style = TextStyle(
-                    fontSize = 11.sp,
-                    lineHeight = 13.sp,
-                    fontFamily = FontFamily(Font(R.font.jio_type_medium)),
-                    fontWeight = FontWeight(500),
-                    color = Color(0xA6000000),
-
-                    textAlign = TextAlign.Center,
-                )
+        // 2) Ticks (minor + major) and labels under the bar.
+        val tickTop = barBottom + 6.dp.toPx()
+        val minorStep = majorStep / minorPerMajor
+        val totalMinor = (range / minorStep).toInt()
+        for (i in 0..totalMinor) {
+            val tv = minTemp + i * minorStep
+            if (tv > maxTemp + 0.001f) break
+            val x = xForTemp(tv)
+            val isMajor = i % minorPerMajor == 0
+            val len = if (isMajor) 12.dp.toPx() else 6.dp.toPx()
+            drawLine(
+                color = Color(0x66000000),
+                start = Offset(x, tickTop),
+                end = Offset(x, tickTop + len),
+                strokeWidth = if (isMajor) 2.dp.toPx() else 1.dp.toPx(),
             )
-
-            translate(left = 8.dp.toPx() ) {
-                drawLine(
-                    color = Color(0xA6000000),
-                    start = Offset(x = xPosition, y = 54.dp.toPx()),
-                    end = Offset(x = xPosition, y = 64.dp.toPx()),
-                    strokeWidth = 2.dp.toPx()
-                )
-
-                val textSize = textMeasureResult.size
-
+            if (isMajor) {
+                val layout = textMeasurer.measure(tv.toInt().toString(), labelStyle)
                 drawText(
-                    textLayoutResult = textMeasureResult,
-                    color = Color(0xA6000000),
-                    topLeft = Offset(
-                        xPosition - (textSize.width) / 2, 66.dp.toPx()
-                    )
+                    textLayoutResult = layout,
+                    topLeft = Offset(x - layout.size.width / 2f, tickTop + 14.dp.toPx()),
                 )
             }
         }
+
+        // 3) Indicator — white handle through the bar + a colored value badge above it.
+        val value = state.floatValue
+        val zoneColor = temperatureColor(value)
+        val handleW = 6.dp.toPx()
+        // Keep the handle fully inset within the bar so it always sits on the
+        // colored track instead of floating off the rounded ends.
+        val indicatorX = xForTemp(value).coerceIn(barLeft + handleW / 2f, barRight - handleW / 2f)
+
+        drawRoundRect(
+            color = Color.White,
+            topLeft = Offset(indicatorX - handleW / 2f, barTop - 4.dp.toPx()),
+            size = Size(handleW, barHeight + 8.dp.toPx()),
+            cornerRadius = CornerRadius(handleW / 2f),
+        )
+        drawCircle(zoneColor, radius = 5.dp.toPx(), center = Offset(indicatorX, barTop + barHeight / 2f))
+
+        val badgeLayout = textMeasurer.measure("${round(value).toInt()}°", badgeStyle)
+        val badgeH = 24.dp.toPx()
+        val badgeW = badgeLayout.size.width + 20.dp.toPx()
+        val badgeCx = indicatorX.coerceIn(barLeft + badgeW / 2f, barRight - badgeW / 2f)
+        val badgeTop = 2.dp.toPx()
+        drawRoundRect(
+            color = zoneColor,
+            topLeft = Offset(badgeCx - badgeW / 2f, badgeTop),
+            size = Size(badgeW, badgeH),
+            cornerRadius = CornerRadius(badgeH / 3f),
+        )
+        // Pointer triangle from the badge down toward the bar.
+        val triHalf = 5.dp.toPx()
+        val triTopY = badgeTop + badgeH
+        drawPath(
+            Path().apply {
+                moveTo(badgeCx - triHalf, triTopY)
+                lineTo(badgeCx + triHalf, triTopY)
+                lineTo(badgeCx, triTopY + 6.dp.toPx())
+                close()
+            },
+            zoneColor,
+        )
+        drawText(
+            textLayoutResult = badgeLayout,
+            topLeft = Offset(
+                badgeCx - badgeLayout.size.width / 2f,
+                badgeTop + (badgeH - badgeLayout.size.height) / 2f,
+            ),
+        )
     }
 }
 

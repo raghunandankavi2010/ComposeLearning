@@ -19,6 +19,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -29,8 +30,12 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.composelearning.util.LogCompositions
 import com.example.composelearning.R
 import com.example.composelearning.customshapes.dpToPx
@@ -348,21 +353,37 @@ fun SpeedometerTry(
     }
 }
 
+/** One colored band of the gauge. [fraction] is its share of the 0..1 sweep. */
+data class SpeedSegment(val fraction: Float, val color: Color)
+
+/**
+ * Default multi-color band, green -> red like a vehicle tachometer.
+ * Fractions sum to 1f so the bands fill the whole 180° arc.
+ */
+val DefaultSpeedSegments: List<SpeedSegment> = listOf(
+    SpeedSegment(0.18f, Color(0xFF00B0FF)), // cyan
+    SpeedSegment(0.18f, Color(0xFF00C853)), // green
+    SpeedSegment(0.16f, Color(0xFFAEEA00)), // lime
+    SpeedSegment(0.16f, Color(0xFFFFD600)), // yellow
+    SpeedSegment(0.16f, Color(0xFFFF9100)), // orange
+    SpeedSegment(0.16f, Color(0xFFDD2C00)), // red
+)
+
 @Composable
-fun Speedometer3(
+fun VehicleSpeedometer(
     modifier: Modifier = Modifier,
-    redProgress: Int,
-    greenProgress: Int,
-    yellowProgress: Int,
-    blueProgress: Int,
     progress: Int,
+    segments: List<SpeedSegment> = DefaultSpeedSegments,
+    needleColor: Color = Color(0xFF102A43),
+    tickColor: Color = Color(0xFF37474F),
+    maxValue: Int = 100,
 ) {
 
     BoxWithConstraints(
-        modifier = modifier.nativeBlur(20f)
+        modifier = modifier
             .fillMaxWidth()
             .padding(11.dp)
-            .height(160.dp)
+            .height(200.dp)
     )
     {
 
@@ -388,98 +409,122 @@ fun Speedometer3(
         val innerRadius = 60.dp.dpToPx()
         val outerRadius = 114.dp.dpToPx()
         val cornerRadius = 12.dp.dpToPx()
-        var start = startArcAngle
 
+        val center = Offset(constraints.maxWidth / 2f, constraints.maxHeight.toFloat())
 
-//        val drawEntireArc = remember {
-//            Path().apply {
-//                addRoundedPolarBoxAllSides(
-//                    center = Offset(constraints.maxWidth / 2f, constraints.maxHeight.toFloat()),
-//                    startAngleDegrees = startArcAngle,
-//                    sweepAngleDegrees = 180f,
-//                    innerRadius = innerRadius,
-//                    outerRadius = outerRadius,
-//                    cornerRadius = cornerRadius
-//                )
-//            }
-//        }
+        // Build one rounded band per segment. The first band rounds its start edge,
+        // the last band rounds its end edge, middle bands stay square so they butt
+        // together cleanly. Recomputed only when the inputs actually change.
+        val coloredPaths = remember(segments, center, innerRadius, outerRadius, cornerRadius) {
+            val paths = ArrayList<Pair<Path, Color>>(segments.size)
+            var start = startArcAngle
+            segments.forEachIndexed { index, segment ->
+                val sweep = segment.fraction * arcDegrees
+                val path = Path().apply {
+                    when (index) {
+                        0 -> addRoundedPolarBox(
+                            center = center,
+                            startAngleDegrees = start,
+                            sweepAngleDegrees = sweep,
+                            innerRadius = innerRadius,
+                            outerRadius = outerRadius,
+                            cornerRadius = cornerRadius,
+                        )
 
-        val redPath = remember {
-            Path().apply {
-                addRoundedPolarBox(
-                    center = Offset(constraints.maxWidth / 2f, constraints.maxHeight.toFloat()),
-                    startAngleDegrees = start,
-                    sweepAngleDegrees = redProgress * (arcDegrees) / 100f,
-                    innerRadius = innerRadius,
-                    outerRadius = outerRadius,
-                    cornerRadius = cornerRadius,
-                )
+                        segments.lastIndex -> addRoundedEndBox(
+                            center = center,
+                            startAngleDegrees = start,
+                            sweepAngleDegrees = sweep,
+                            innerRadius = innerRadius,
+                            outerRadius = outerRadius,
+                            cornerRadius = cornerRadius,
+                        )
+
+                        else -> addRoundedPolarBoxAllSides(
+                            center = center,
+                            startAngleDegrees = start,
+                            sweepAngleDegrees = sweep,
+                            innerRadius = innerRadius,
+                            outerRadius = outerRadius,
+                            cornerRadius = 0.1f,
+                        )
+                    }
+                }
+                paths += path to segment.color
+                start += sweep
             }
-        }
-        start += redProgress * (arcDegrees) / 100f
-
-        val yellow = remember {
-            Path().apply {
-                addRoundedPolarBoxAllSides(
-                    center = Offset(constraints.maxWidth / 2f, constraints.maxHeight.toFloat()),
-                    startAngleDegrees = start,
-                    sweepAngleDegrees = yellowProgress * (arcDegrees) / 100f,
-                    innerRadius = innerRadius,
-                    outerRadius = outerRadius,
-                    cornerRadius = 0.1f
-                )
-            }
-        }
-
-        start += yellowProgress * (arcDegrees) / 100f
-
-        val green = remember {
-            Path().apply {
-                addRoundedPolarBoxAllSides(
-                    center = Offset(constraints.maxWidth / 2f, constraints.maxHeight.toFloat()),
-                    startAngleDegrees = start,
-                    sweepAngleDegrees = greenProgress * (arcDegrees) / 100f,
-                    innerRadius = innerRadius,
-                    outerRadius = outerRadius,
-                    cornerRadius = 0.1f
-                )
-            }
+            paths
         }
 
-        start += greenProgress * (arcDegrees) / 100f
-        println("$start")
-
-        val blue = remember {
-            Path().apply {
-                addRoundedEndBox(
-                    center = Offset(constraints.maxWidth / 2f, constraints.maxHeight.toFloat()),
-                    startAngleDegrees = start,
-                    sweepAngleDegrees = blueProgress * (arcDegrees) / 100f,
-                    innerRadius = innerRadius,
-                    outerRadius = outerRadius,
-                    cornerRadius = cornerRadius
-                )
-            }
-        }
         val vector = ImageVector.vectorResource(id = R.drawable.pointer_black)
         val painter = rememberVectorPainter(image = vector)
+        val labelStyle = TextStyle(
+            color = tickColor,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.SemiBold,
+        )
         Canvas(
             modifier = Modifier
                 .aspectRatio(1f),
             onDraw = {
                 drawIntoCanvas {
-                    val w = drawContext.size.width
-                    val h = drawContext.size.height
-                    val centerOffset =
-                        Offset(constraints.maxWidth / 2f, constraints.maxHeight.toFloat())
+                    val centerOffset = center
 
-                    drawPath(redPath, Color(0xFFE30513))
-                    drawPath(yellow, Color(0xFFF7AB20))
-                    drawPath(green, Color(0xFF25AB21))
-                    drawPath(blue, Color(0xFF2253DA))
+                    coloredPaths.forEach { (path, color) ->
+                        drawPath(path, color)
+                    }
+
+                    // Vehicle-style ticks just inside the colored band: a long
+                    // major tick + number every 10 units, four minor ticks between.
+                    val majorCount = 10
+                    val minorPerMajor = 5
+                    val totalSteps = majorCount * minorPerMajor
+                    val tickOuter = innerRadius - 6.dp.toPx()
+                    val majorLen = 16.dp.toPx()
+                    val minorLen = 8.dp.toPx()
+                    // Numbers sit just beyond the outer edge of the bands, where
+                    // there is room to breathe instead of crowding the hub.
+                    val labelRadius = outerRadius + 14.dp.toPx()
+                    for (i in 0..totalSteps) {
+                        val frac = i / totalSteps.toFloat()
+                        val angleRad = (startArcAngle + frac * arcDegrees) * (PI / 180f)
+                        val ca = cos(angleRad)
+                        val sa = sin(angleRad)
+                        val isMajor = i % minorPerMajor == 0
+                        val len = if (isMajor) majorLen else minorLen
+                        val tickWidth = if (isMajor) 3.dp.toPx() else 1.5.dp.toPx()
+                        val outerPoint = Offset(
+                            (centerOffset.x + tickOuter * ca).toFloat(),
+                            (centerOffset.y + tickOuter * sa).toFloat(),
+                        )
+                        val innerPoint = Offset(
+                            (centerOffset.x + (tickOuter - len) * ca).toFloat(),
+                            (centerOffset.y + (tickOuter - len) * sa).toFloat(),
+                        )
+                        drawLine(
+                            color = tickColor,
+                            start = innerPoint,
+                            end = outerPoint,
+                            strokeWidth = tickWidth,
+                            cap = StrokeCap.Round,
+                        )
+                        if (isMajor) {
+                            val value = (frac * maxValue).toInt().toString()
+                            val layout = textMeasurer.measure(value, labelStyle)
+                            val lx = (centerOffset.x + labelRadius * ca).toFloat()
+                            val ly = (centerOffset.y + labelRadius * sa).toFloat()
+                            drawText(
+                                textLayoutResult = layout,
+                                topLeft = Offset(
+                                    lx - layout.size.width / 2f,
+                                    ly - layout.size.height / 2f,
+                                ),
+                            )
+                        }
+                    }
 
                     rotate(
-                        progressAnimation.value * (arcDegrees) / 100f,
+                        progressAnimation.value * (arcDegrees) / maxValue,
                         pivot = Offset(centerOffset.x, centerOffset.y)
                     ) {
                         translate(
@@ -488,12 +533,16 @@ fun Speedometer3(
                         ) {
                             with(painter) {
                                 draw(
-                                    size = Size(111.dp.toPx(), 22.dp.toPx())
+                                    size = Size(111.dp.toPx(), 22.dp.toPx()),
+                                    colorFilter = ColorFilter.tint(needleColor),
                                 )
                             }
                         }
                     }
 
+                    // Hub cap that anchors the needle.
+                    drawCircle(needleColor, 15.dp.toPx(), centerOffset)
+                    drawCircle(Color.White, 6.dp.toPx(), centerOffset)
                 }
             }
         )

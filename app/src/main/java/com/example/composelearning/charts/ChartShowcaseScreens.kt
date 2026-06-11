@@ -285,7 +285,7 @@ fun TemperatureShowcaseScreen(onBack: () -> Unit) {
 
 @Composable
 fun TemperatureContent(modifier: Modifier = Modifier) {
-    val tabs = listOf("Gauge", "Thermometer V2", "Animation")
+    val tabs = listOf("Gauge", "Thermometer V2", "Animation", "Scale")
     var selectedTab by remember { mutableIntStateOf(0) }
 
     Column(modifier.fillMaxSize()) {
@@ -301,8 +301,36 @@ fun TemperatureContent(modifier: Modifier = Modifier) {
         when (selectedTab) {
             0 -> TemperatureGaugeTab()
             1 -> ThermometerV2Tab()
-            else -> com.example.composelearning.animcompose.ThermometerAnimation()
+            2 -> com.example.composelearning.animcompose.ThermometerAnimation()
+            else -> TemperatureScaleTab()
         }
+    }
+}
+
+@Composable
+private fun TemperatureScaleTab() {
+    var temp by remember { mutableIntStateOf(22) }
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        Text("Temperature scale — drag the handle", style = MaterialTheme.typography.titleMedium)
+        Spacer(Modifier.height(8.dp))
+        Text(
+            "Red = freezing, blue = cold, green = comfortable, orange = warm, red = too hot.",
+            style = MaterialTheme.typography.bodySmall,
+        )
+        Spacer(Modifier.height(24.dp))
+        com.example.composelearning.graphics.TemperatureChart3(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp),
+            temp = temp,
+            minTemp = -20,
+            maxTemp = 40,
+        )
     }
 }
 
@@ -462,13 +490,9 @@ fun SpeedometerContent(modifier: Modifier = Modifier) {
                 )
             }
         }
-        SpeedometerSection(title = "Speedometer3 — multi-segment polar path") {
+        SpeedometerSection(title = "VehicleSpeedometer — multi-segment polar path") {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                com.example.composelearning.speedometer.Speedometer3(
-                    redProgress = 25,
-                    yellowProgress = 25,
-                    greenProgress = 25,
-                    blueProgress = 25,
+                com.example.composelearning.speedometer.VehicleSpeedometer(
                     progress = 75,
                 )
             }

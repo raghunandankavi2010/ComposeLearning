@@ -18,13 +18,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.geometry.RoundRect
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
@@ -35,10 +37,12 @@ data class TemperatureGaugeSpec(
     val maxValue: Float,
     val barHeight: Dp = 50.dp,
     val cornerRadius: Dp = 8.dp,
-    val tickCount: Int = 5,
+    val tickCount: Int = 7,
     val indicatorWidth: Dp = 12.dp,
     val indicatorOverhang: Dp = 6.dp,
-    val barColor: Color = Color(0xFF169B4A),
+    val barColor: Color = Color(0xFF169B4A),   // green  (comfortable)
+    val midColor: Color = Color(0xFFFB8C00),   // orange (warm)
+    val highColor: Color = Color(0xFFD32F2F),  // red    (too hot)
     val indicatorColor: Color = Color(0xFFFFFFFF),
     val showGradient: Boolean = true,
     val animateDrag: Boolean = true,
@@ -100,16 +104,18 @@ fun TemperatureGaugeV2(
             val r = spec.cornerRadius.toPx()
             val barColor = spec.barColor
             if (spec.showGradient) {
-                drawRoundRect(
-                    brush = Brush.horizontalGradient(
-                        listOf(
-                            barColor.copy(alpha = 0.85f),
-                            barColor,
-                        )
-                    ),
-                    size = Size(size.width, barH),
-                    cornerRadius = CornerRadius(r, r),
-                )
+                // Three equal solid bands — green, orange, red — clipped to the
+                // rounded bar so only the outer ends are rounded.
+                val seg = size.width / 3f
+                clipPath(
+                    Path().apply {
+                        addRoundRect(RoundRect(0f, 0f, size.width, barH, CornerRadius(r, r)))
+                    }
+                ) {
+                    drawRect(spec.barColor, topLeft = Offset(0f, 0f), size = Size(seg, barH))
+                    drawRect(spec.midColor, topLeft = Offset(seg, 0f), size = Size(seg, barH))
+                    drawRect(spec.highColor, topLeft = Offset(seg * 2f, 0f), size = Size(size.width - seg * 2f, barH))
+                }
             } else {
                 drawRoundRect(
                     color = barColor,

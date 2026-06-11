@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.colorspace.ColorSpaces
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.composelearning.speedometer.Speedometer3
+import com.example.composelearning.speedometer.VehicleSpeedometer
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.HazeStyle
 import dev.chrisbanes.haze.HazeTint
@@ -34,7 +34,7 @@ import dev.chrisbanes.haze.materials.HazeMaterials
 fun BlurSample(modifier: Modifier = Modifier) {
 
     Box {
-        Speedometer3(modifier.blur(10.dp, BlurredEdgeTreatment.Unbounded), 30, 30, 30, 10, 50)
+        VehicleSpeedometer(modifier.blur(10.dp, BlurredEdgeTreatment.Unbounded), progress = 50)
         Text("Testing Blur in compose", Modifier.align(Alignment.Center))
     }
 }
@@ -45,16 +45,12 @@ fun BlurSample(modifier: Modifier = Modifier) {
 fun BlurSampleWithHaze(modifier: Modifier = Modifier) {
     val hazeState = remember { HazeState() }
     Box {
-        Speedometer3(
+        VehicleSpeedometer(
             modifier
                 .hazeSource(state = hazeState)
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            30,
-            30,
-            30,
-            10,
-            50
+            progress = 50,
         )
 
        val style=  HazeStyle(backgroundColor = Color.Transparent, tints =  emptyList<HazeTint>(), blurRadius = 10.dp)
@@ -80,9 +76,9 @@ fun BlurSampleWithHaze(modifier: Modifier = Modifier) {
 @Composable
 fun BlurWithRenderEffect(modifier: Modifier = Modifier) {
     Box {
-        Speedometer3(modifier.graphicsLayer(
+        VehicleSpeedometer(modifier.graphicsLayer(
             renderEffect = RenderEffect.createBlurEffect(25f,25f, Shader.TileMode.DECAL).asComposeRenderEffect()
-        ), 30, 30, 30, 10, 50)
+        ), progress = 50)
         Text("Testing Blur in compose", modifier.align(Alignment.Center))
     }
 }

@@ -93,6 +93,7 @@ private enum class ShaderDemo(val title: String, val subtitle: String) {
     Spiral("Spiral shader", "Dynamic polar coordinate spiral"),
     FluidSpring("Fluid Spring (Masterclass)", "Euler physics + Thin-film interference"),
     PageCurl("Page Curl", "Cylindrical fold simulation with two textures"),
+    BlurredGradient("Blurred Gradient", "Dynamic AGSL gradient background"),
 }
 
 @Composable
@@ -153,6 +154,7 @@ fun ShadersHubScreen() {
                         ShaderDemo.Spiral -> SpiralShaderScreen()
                         ShaderDemo.FluidSpring -> FluidSpringShaderScreen(onBack = { current = null })
                         ShaderDemo.PageCurl -> PageCurlShaderScreen()
+                        ShaderDemo.BlurredGradient -> GradientShader()
                     }
                 }
             }
