@@ -57,7 +57,7 @@ class ImageProcessingViewModel(application: Application) : AndroidViewModel(appl
         // Seed with the bundled sample bitmap so the screen has something to filter the moment
         // the user opens it. Decode off the main thread.
         viewModelScope.launch(Dispatchers.IO) {
-            val bmp = runCatching { decodeResourceScaled(R.drawable.ic_launcher_background, longEdgeTarget = 1200) }
+            val bmp = runCatching { decodeResourceScaled(R.drawable.sample_photo, longEdgeTarget = 1200) }
                 .getOrNull() ?: return@launch
             // If the user already picked something in the meantime, drop the sample.
             _ui.update { current -> if (current.sourceBitmap == null) current.copy(sourceBitmap = bmp) else current }
