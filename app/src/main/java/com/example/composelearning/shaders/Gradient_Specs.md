@@ -1,4 +1,4 @@
-# Mathematical Specification: JioKrishi 4.0 Atmospheric Background (Reddish Tone)
+# Mathematical Specification: Atmospheric Background (Reddish Tone)
 
 This document provides the rigorous mathematical specification for the background layer implemented with the reddish tone update.
 
