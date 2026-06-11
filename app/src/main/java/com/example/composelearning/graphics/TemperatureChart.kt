@@ -184,16 +184,15 @@ fun TemperatureChart3(
             )
     ) {
         val padX = 12.dp.toPx()
-        val barLeft = padX
         val barRight = size.width - padX
-        val barWidth = barRight - barLeft
+        val barWidth = barRight - padX
         val barTop = 52.dp.toPx() // leaves room for the pin head above the bar
         val barHeight = 38.dp.toPx()
         val barBottom = barTop + barHeight
         val corner = CornerRadius(10.dp.toPx()) // softly rounded, not a full pill
 
         val range = (maxTemp - minTemp).toFloat().coerceAtLeast(1f)
-        fun xForTemp(t: Float) = barLeft + (t - minTemp) / range * barWidth
+        fun xForTemp(t: Float) = padX + (t - minTemp) / range * barWidth
 
         // 1) Gradient temperature bar — sampled from the zone colors across the range.
         val stops = 24
@@ -201,8 +200,8 @@ fun TemperatureChart3(
             temperatureColor(minTemp + range * i / (stops - 1))
         }
         drawRoundRect(
-            brush = Brush.horizontalGradient(gradientColors, startX = barLeft, endX = barRight),
-            topLeft = Offset(barLeft, barTop),
+            brush = Brush.horizontalGradient(gradientColors, startX = padX, endX = barRight),
+            topLeft = Offset(padX, barTop),
             size = Size(barWidth, barHeight),
             cornerRadius = corner,
         )
@@ -236,7 +235,7 @@ fun TemperatureChart3(
         //    the bar, tinted to the current zone, with the temperature inside its head.
         val value = state.floatValue
         val zoneColor = temperatureColor(value)
-        val cx = xForTemp(value).coerceIn(barLeft, barRight)
+        val cx = xForTemp(value).coerceIn(padX, barRight)
 
         val tipY = barTop + 3.dp.toPx()        // tip dips slightly into the bar
         val headR = 15.dp.toPx()

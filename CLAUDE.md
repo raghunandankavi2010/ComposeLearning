@@ -33,6 +33,7 @@ Features in `:app` are organized as packages under `app/src/main/java/com/exampl
 ├── googlecalendar/     # Google Calendar clone with schedule/week views
 ├── gradients/          # Mesh gradient samples
 ├── graphics/           # Shaders, Path progress, Blur effects, Draw scale
+├── heartfill/          # Gradient heart with diagonal fill reveal (see its README.md)
 ├── images/             # Overlapping avatars, Image processing (AGSL)
 ├── ipodwheel/          # iPod Click Wheel interaction
 ├── layouts/            # Percentage-based custom layout

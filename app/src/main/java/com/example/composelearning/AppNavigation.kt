@@ -86,6 +86,7 @@ import com.example.composelearning.shaders.FluidSpringShaderScreen
 import com.example.composelearning.shaders.ShadersHubScreen
 import com.example.composelearning.shadows.ShadowsShowcaseScreen
 import com.example.composelearning.sliders.SquigglySliderSample
+import com.example.composelearning.solarsystem.SolarSystemSimulation
 import com.example.composelearning.spinningwheel.SpinningWheelRoute
 import com.example.composelearning.tabs.TabsSampleNavigation
 import com.example.composelearning.textfields.MarqueeText
@@ -203,6 +204,11 @@ sealed interface AnimScreen : NavKey, Parcelable {
     @Serializable data object ProtobufDemo : AnimScreen
     @Serializable data object ParallaxList : AnimScreen
     @Serializable data object UniquePathVisualizer : AnimScreen
+    @Serializable data object SolarSystem : AnimScreen
+    @Serializable data object GradientHeartFill : AnimScreen
+
+    /** Second-level home screen listing all demos of one [com.example.composelearning.animcompose.FeatureGroup]. */
+    @Serializable @Parcelize data class Group(val groupId: String) : AnimScreen
 }
 
 @Composable
@@ -408,6 +414,14 @@ fun AppNavigation(
         }
         entry<AnimScreen.ProtobufDemo> { ProtobufDemoRoute(onBack = { navigator.goBack() }) }
         entry<AnimScreen.UniquePathVisualizer> { com.example.composelearning.dsa.UniquePathsVisualizer(modifier = Modifier.systemBarsPadding()) }
+        entry<AnimScreen.SolarSystem> { SolarSystemSimulation() }
+        entry<AnimScreen.GradientHeartFill> { com.example.composelearning.heartfill.GradientHeartFill() }
+        entry<AnimScreen.Group> { key ->
+            com.example.composelearning.animcompose.GroupFeaturesScreen(
+                groupId = key.groupId,
+                navigator = navigator,
+            )
+        }
         entry<AnimScreen.MeshGradient> { SineWaveMeshGradientScreen() }
         entry<AnimScreen.AnimatingWatchDial> { AnimatingWatchDial() }
         entry<AnimScreen.SequentialFadeGridScreen> { SequentialFadeGrid() }
