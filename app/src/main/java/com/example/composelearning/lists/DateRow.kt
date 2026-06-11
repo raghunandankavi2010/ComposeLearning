@@ -1,5 +1,8 @@
 package com.example.composelearning.lists
 
+import com.example.composelearning.ui.theme.AppFontFamilyBold
+import com.example.composelearning.ui.theme.AppFontFamilyMedium
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.animateScrollBy
@@ -121,11 +124,7 @@ fun DateCard(
                         .height(20.dp),
                     style = TextStyle(
                         fontSize = 14.sp,
-                        fontFamily = FontFamily(
-                            Font(
-                                R.font.jio_type_medium, FontWeight(700)
-                            )
-                        )
+                        fontFamily = AppFontFamilyBold
                     ),
                     color = Color(0xA6000000),
                     textAlign = TextAlign.Center,
@@ -141,7 +140,7 @@ fun DateCard(
                         style = TextStyle(
                             fontSize = 24.sp,
                             lineHeight = 32.sp,
-                            fontFamily = FontFamily(Font(R.font.jio_type_medium)),
+                            fontFamily = AppFontFamilyMedium,
                             fontWeight = FontWeight(700),
                             color = Color(0xA6000000),
                             textAlign = TextAlign.Center,

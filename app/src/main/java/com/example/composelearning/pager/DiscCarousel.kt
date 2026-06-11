@@ -71,13 +71,13 @@ private data class DiscItem(
 )
 
 private val discItems = listOf(
-    DiscItem("Tomato", "Card 01", R.drawable.tomato, Color(0xFFE53935)),
-    DiscItem("Grapes", "Card 02", R.drawable.ic_grapes, Color(0xFF8E24AA)),
-    DiscItem("Droid", "Card 03", R.drawable.droid, Color(0xFF43A047)),
-    DiscItem("Thumb", "Card 04", R.drawable.thumb, Color(0xFF1E88E5)),
-    DiscItem("Bkg", "Card 05", R.drawable.bkg, Color(0xFFFB8C00)),
-    DiscItem("Ping", "Card 06", R.drawable.ping, Color(0xFFD81B60)),
-    DiscItem("Test", "Card 07", R.drawable.test, Color(0xFF00ACC1)),
+    DiscItem("Tomato", "Card 01", R.drawable.ic_launcher_background, Color(0xFFE53935)),
+    DiscItem("Grapes", "Card 02", R.drawable.ic_launcher_background, Color(0xFF8E24AA)),
+    DiscItem("Droid", "Card 03", R.drawable.ic_launcher_background, Color(0xFF43A047)),
+    DiscItem("Thumb", "Card 04", R.drawable.ic_launcher_background, Color(0xFF1E88E5)),
+    DiscItem("Bkg", "Card 05", R.drawable.ic_launcher_background, Color(0xFFFB8C00)),
+    DiscItem("Ping", "Card 06", R.drawable.ic_launcher_background, Color(0xFFD81B60)),
+    DiscItem("Test", "Card 07", R.drawable.ic_launcher_background, Color(0xFF00ACC1)),
 )
 
 @Composable

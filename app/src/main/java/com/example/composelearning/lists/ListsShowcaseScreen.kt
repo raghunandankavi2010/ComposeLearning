@@ -54,13 +54,13 @@ fun ListsShowcaseScreen() {
         }
         Box(modifier = Modifier.fillMaxSize()) {
             when (selected) {
-                0 -> GeneralAlertsList(modifier = Modifier.fillMaxSize())
+                0 -> GeneralList(modifier = Modifier.fillMaxSize())
                 1 -> ProductListScreen()
                 2 -> StickyList()
                 3 -> ReOrderList()
                 4 -> SwipeToCancel(closeScreen = {}, isExpandedScreen = false)
                 5 -> Test2()
-                6 -> JioNews()
+                6 -> LazyListPaginated()
                 7 -> CalendarLazyRow()
                 8 -> PreviewCircularListVertical()
                 9 -> PreviewCircularList()

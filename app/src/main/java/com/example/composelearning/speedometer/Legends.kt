@@ -2,6 +2,8 @@
 
 package com.example.composelearning.speedometer
 
+import com.example.composelearning.ui.theme.AppFontFamilyMedium
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -36,7 +38,7 @@ fun Legend(color: Color, legendText: String, alpha: Boolean) {
             style = TextStyle(
                 fontSize = 12.sp,
                 lineHeight = 16.sp,
-                fontFamily = FontFamily(Font(R.font.jio_type_medium)),
+                fontFamily = AppFontFamilyMedium,
                 fontWeight = FontWeight(700),
                 color = colorValue,
             )

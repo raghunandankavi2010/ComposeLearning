@@ -367,7 +367,7 @@ private fun SliderImpl(
                     )
             ) {
                 Image(
-                    painter = painterResource(R.drawable.thumb),
+                    painter = painterResource(R.drawable.ic_launcher_background),
                     contentDescription = "Thumb",
                     modifier = Modifier
                         .size(thumbSize, thumbSize)

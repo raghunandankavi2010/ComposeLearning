@@ -123,7 +123,7 @@ fun ZoomableImageScreen(onBack: () -> Unit = {}) {
             contentAlignment = Alignment.Center,
         ) {
             ZoomableImage(
-                imagePainter = painterResource(R.drawable.tomato),
+                imagePainter = painterResource(R.drawable.ic_launcher_background),
                 modifier = Modifier.fillMaxSize(),
             )
         }

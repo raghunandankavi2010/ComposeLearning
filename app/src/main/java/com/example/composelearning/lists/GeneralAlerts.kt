@@ -4,9 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -14,59 +12,49 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.res.ResourcesCompat
 import com.example.composelearning.R
+import com.example.composelearning.ui.theme.AppFontFamilyBold
+import com.example.composelearning.ui.theme.AppFontFamilyMedium
 
-data class AlertsData(val time: String, val type: String, val content: String, val id: Int) {
+data class ListData(val time: String, val type: String, val content: String, val id: Int) {
 
 }
 
 
-fun getAlertsData(): MutableList<AlertsData> {
-    val list = mutableListOf<AlertsData>()
+fun getListData(): MutableList<ListData> {
+    val list = mutableListOf<ListData>()
     repeat(40) {
         list.add(
-            AlertsData(
-                "9:00pm,12/08/2024",
-                "Fertilizer Land. Keeping cotton field weed free for initial 60 days is very important. To avoid weed infestation,  spray the field with Pendimethalin 38.7% CS @  ml/liter of water. Spray the solution on entire field. Keeping cotton field weed free for initial 60 days is very important. To avoid weed infestation,  spray the field with Pendimethalin 38.7% CS @  ml/liter of water. Spray the solution on entire field",
-                "Keeping cotton field weed free for initial 60 days is very important. To avoid weed infestation,  spray the field with Pendimethalin 38.7% CS @  ml/liter of water. Spray the solution on entire field. Keeping cotton field weed free for initial 60 days is very important. To avoid weed infestation,  spray the field with Pendimethalin 38.7% CS @  ml/liter of water. Spray the solution on entire field",
+            ListData(
+                "10:30am,15/09/2024",
+                "Advanced Irrigation Management. Ensuring the soil remains consistently moist during the flowering stage is critical for maximizing crop yield. To prevent water stress, monitor the soil moisture levels daily and apply drip irrigation as needed. Proper hydration ensures that the plants remain healthy and productive throughout the growing season.",
+                "Advanced Irrigation Management. Ensuring the soil remains consistently moist during the flowering stage is critical for maximizing crop yield. To prevent water stress, monitor the soil moisture levels daily and apply drip irrigation as needed. Proper hydration ensures that the plants remain healthy and productive throughout the growing season.",
                 it
             )
         )
@@ -76,8 +64,8 @@ fun getAlertsData(): MutableList<AlertsData> {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun GeneralAlertsList(modifier: Modifier, lazyListState: LazyListState = rememberLazyListState()) {
-    val list = getAlertsData()
+fun GeneralList(modifier: Modifier, lazyListState: LazyListState = rememberLazyListState()) {
+    val list = getListData()
     val expand = remember { mutableStateMapOf<Int, Boolean>() }
     LazyColumn(
         modifier = modifier
@@ -100,7 +88,7 @@ fun GeneralAlertsList(modifier: Modifier, lazyListState: LazyListState = remembe
 
 @Composable
 fun GeneralAlerts(
-    alertsData: AlertsData,
+    alertsData: ListData,
     expand: Boolean,
     index: Int,
     onExpandClicked: (Int,Boolean) -> Unit
@@ -120,24 +108,9 @@ fun GeneralAlerts(
         shape = RoundedCornerShape(16.dp)
     ) {
 
-        val context = LocalContext.current
-        val fontFamily = remember {
-            FontFamily(
-                typeface = ResourcesCompat.getFont(context, R.font.jio_type_medium)!!
-            )
-        }
-
-        val fontFamilyBold = remember {
-            FontFamily(
-                typeface = ResourcesCompat.getFont(context, R.font.jio_type_bold)!!
-            )
-        }
-
-        val fontFamilyNormal = remember {
-            FontFamily(
-                typeface = ResourcesCompat.getFont(context, R.font.jio_type_medium)!!
-            )
-        }
+        val fontFamily = AppFontFamilyMedium
+        val fontFamilyBold = AppFontFamilyBold
+        val fontFamilyNormal = AppFontFamilyMedium
 
         Column(
             modifier = Modifier

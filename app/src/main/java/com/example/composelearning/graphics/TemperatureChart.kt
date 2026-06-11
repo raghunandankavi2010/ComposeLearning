@@ -1,5 +1,7 @@
 package com.example.composelearning.graphics
 
+import com.example.composelearning.ui.theme.AppFontFamilyMedium
+
 import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -138,14 +140,14 @@ fun TemperatureChart3(
     val labelStyle = TextStyle(
         fontSize = 11.sp,
         lineHeight = 13.sp,
-        fontFamily = FontFamily(Font(R.font.jio_type_medium)),
+        fontFamily = AppFontFamilyMedium,
         fontWeight = FontWeight(500),
         color = Color(0xA6000000),
         textAlign = TextAlign.Center,
     )
     val badgeStyle = TextStyle(
         fontSize = 13.sp,
-        fontFamily = FontFamily(Font(R.font.jio_type_medium)),
+        fontFamily = AppFontFamilyMedium,
         fontWeight = FontWeight(700),
         color = Color.White,
         textAlign = TextAlign.Center,
@@ -374,7 +376,7 @@ fun TemperatureChart2(
                 style = TextStyle(
                     fontSize = 11.sp,
                     lineHeight = 13.sp,
-                    fontFamily = FontFamily(Font(R.font.jio_type_medium)),
+                    fontFamily = AppFontFamilyMedium,
                     fontWeight = FontWeight(500),
                     color = Color(0xA6000000),
 
@@ -458,7 +460,7 @@ fun TemperatureChart(
                 style = TextStyle(
                     fontSize = 11.sp,
                     lineHeight = 13.sp,
-                    fontFamily = FontFamily(Font(R.font.jio_type_medium)),
+                    fontFamily = AppFontFamilyMedium,
                     fontWeight = FontWeight(500),
                     color = Color(0xA6000000),
 
@@ -504,7 +506,7 @@ fun TemperatureChart(
 //                style = TextStyle(
 //                    fontSize = 11.sp,
 //                    lineHeight = 13.sp,
-//                    fontFamily = FontFamily(Font(R.font.jio_type_medium)),
+//                    fontFamily = AppFontFamilyMedium,
 //                    fontWeight = FontWeight(500),
 //                    color = Color(0xA6000000),
 //

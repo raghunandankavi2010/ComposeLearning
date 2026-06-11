@@ -146,7 +146,7 @@ fun CropImage(
                         shape = CircleShape
                     )
                     .then(iconModifier),
-                painter = painterResource(R.drawable.ic_remove),
+                painter = painterResource(R.drawable.droid),
                 contentDescription = stringResource(id = R.string.remove)
             )
         } else if (selected) {
@@ -160,7 +160,7 @@ fun CropImage(
                         color = Color.White,
                         shape = CircleShape
                     ),
-                painter = painterResource(R.drawable.ic_select),
+                painter = painterResource(R.drawable.droid),
                 contentDescription = stringResource(id = R.string.selected)
             )
         }
@@ -177,7 +177,7 @@ private fun BannerPreview() {
                 isRemoveIconShow = true,
                 cropId = 0,
                 selected = true,
-                cropImage = R.drawable.ic_remove,
+                cropImage = R.drawable.droid,
                 { selected, index ->
 
                 },
@@ -201,9 +201,9 @@ fun ImageWithAction(
     val interactionSource = remember { MutableInteractionSource() }
 
     val vector = if (isRemoveIconShow) {
-        ImageVector.vectorResource(id = R.drawable.ic_remove_border)
+        ImageVector.vectorResource(id = R.drawable.ic_edit)
     } else {
-        ImageVector.vectorResource(id = R.drawable.ic_select_border)
+        ImageVector.vectorResource(id = R.drawable.ic_edit)
     }
     val painter = rememberVectorPainter(image = vector)
     val context = LocalContext.current

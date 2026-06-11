@@ -16,6 +16,8 @@
 
 package com.example.composelearning.calendar
 
+import com.example.composelearning.ui.theme.AppFontFamilyBlack
+
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,7 +42,7 @@ internal fun MonthHeader(modifier: Modifier = Modifier, month: String, year: Str
             style =  TextStyle(
                 fontSize = 16.sp,
                 lineHeight = 20.sp,
-                fontFamily = FontFamily(Font(R.font.jio_type_black)),
+                fontFamily = AppFontFamilyBlack,
                 fontWeight = FontWeight(900),
                 color = Color(0xFF141414),
                 )

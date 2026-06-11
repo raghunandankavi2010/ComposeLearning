@@ -82,7 +82,7 @@ fun EquiRow() {
         Color.Red
     )
 
-    val imageBitmap = ImageBitmap.imageResource(R.drawable.test)
+    val imageBitmap = ImageBitmap.imageResource(R.drawable.ic_launcher_background)
     val image = remember {
         imageBitmap
     }

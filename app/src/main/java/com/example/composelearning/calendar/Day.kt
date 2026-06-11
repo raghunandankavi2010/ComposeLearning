@@ -16,6 +16,8 @@
 
 package com.example.composelearning.calendar
 
+import com.example.composelearning.ui.theme.AppFontFamilyMedium
+
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -77,7 +79,7 @@ internal fun DayOfWeekHeading(day: String) {
         style = TextStyle(
             fontSize = 16.sp,
             lineHeight = 24.sp,
-            fontFamily = FontFamily(Font(R.font.jio_type_medium)),
+            fontFamily = AppFontFamilyMedium,
             fontWeight = FontWeight(700),
             color = Color(0xA6000000),
             textAlign = TextAlign.Center,
@@ -214,7 +216,7 @@ internal fun Day(
                     style = TextStyle(
                         fontSize = 16.sp,
                         lineHeight = 24.sp,
-                        fontFamily = FontFamily(Font(R.font.jio_type_medium)),
+                        fontFamily = AppFontFamilyMedium,
                         fontWeight = FontWeight(700),
                     ),
                     color = Color.White
@@ -236,7 +238,7 @@ internal fun Day(
                     style = TextStyle(
                         fontSize = 16.sp,
                         lineHeight = 24.sp,
-                        fontFamily = FontFamily(Font(R.font.jio_type_medium)),
+                        fontFamily = AppFontFamilyMedium,
                         fontWeight = FontWeight(700),
                     ),
                     color = Color(0xFF03753C)
@@ -252,7 +254,7 @@ internal fun Day(
                 style = TextStyle(
                     fontSize = 16.sp,
                     lineHeight = 24.sp,
-                    fontFamily = FontFamily(Font(R.font.jio_type_medium)),
+                    fontFamily = AppFontFamilyMedium,
                     fontWeight = FontWeight(700),
                 ),
                 color = color

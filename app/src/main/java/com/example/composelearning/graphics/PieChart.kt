@@ -1,5 +1,8 @@
 package com.example.composelearning.graphics
 
+import com.example.composelearning.ui.theme.AppFontFamilyBlack
+import com.example.composelearning.ui.theme.AppFontFamilyMedium
+
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
@@ -236,7 +239,7 @@ fun PieChart(
                         style = TextStyle(
                                 fontSize = 11.sp,
                                 lineHeight = 16.5.sp,
-                                fontFamily = FontFamily(Font(R.font.jio_type_medium)),
+                                fontFamily = AppFontFamilyMedium,
                                 fontWeight = FontWeight(500),
                                 color = Color(0xFF141414),
 
@@ -326,7 +329,7 @@ Column(modifier = Modifier.align(Alignment.Center),
         style = TextStyle(
             fontSize = 12.sp,
             lineHeight = 16.sp,
-            fontFamily = FontFamily(Font(R.font.jio_type_medium)),
+            fontFamily = AppFontFamilyMedium,
             fontWeight = FontWeight(500),
             color = onSurface.copy(alpha = 0.65f),
             textAlign = TextAlign.Center,
@@ -339,7 +342,7 @@ Column(modifier = Modifier.align(Alignment.Center),
         style = TextStyle(
             fontSize = 24.sp,
             lineHeight = 28.sp,
-            fontFamily = FontFamily(Font(R.font.jio_type_black)),
+            fontFamily = AppFontFamilyBlack,
             fontWeight = FontWeight(900),
             color = onSurface,
             textAlign = TextAlign.Center,

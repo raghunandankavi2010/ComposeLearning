@@ -36,11 +36,11 @@ import com.example.composelearning.R
 private data class AvatarItem(val drawable: Int, val tint: Color)
 
 private val AVATARS = listOf(
-    AvatarItem(R.drawable.tomato, Color(0xFFFCA5A5)),
-    AvatarItem(R.drawable.droid, Color(0xFFA7F3D0)),
-    AvatarItem(R.drawable.ic_grapes, Color(0xFFC4B5FD)),
-    AvatarItem(R.drawable.ping, Color(0xFFFDE68A)),
-    AvatarItem(R.drawable.thumb, Color(0xFF93C5FD)),
+    AvatarItem(R.drawable.ic_launcher_background, Color(0xFFFCA5A5)),
+    AvatarItem(R.drawable.ic_launcher_background, Color(0xFFA7F3D0)),
+    AvatarItem(R.drawable.ic_launcher_background, Color(0xFFC4B5FD)),
+    AvatarItem(R.drawable.ic_launcher_background, Color(0xFFFDE68A)),
+    AvatarItem(R.drawable.ic_launcher_background, Color(0xFF93C5FD)),
 )
 
 @Composable

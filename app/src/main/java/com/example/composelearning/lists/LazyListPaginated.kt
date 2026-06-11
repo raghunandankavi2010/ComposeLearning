@@ -24,7 +24,7 @@ import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 
 @Composable
-fun JioNews() {
+fun LazyListPaginated() {
     Row(
         modifier = Modifier
             .padding(top=16.dp)
@@ -93,7 +93,7 @@ fun JioNews() {
 @Composable
 fun PreviewImageWithRedDot() {
     ComposeLearningTheme {
-        JioNews()
+        LazyListPaginated()
     }
 }
 

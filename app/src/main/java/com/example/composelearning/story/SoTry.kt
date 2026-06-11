@@ -571,7 +571,7 @@ fun NumberBox(
 @Composable
 fun Avatar(avatarSize: Int = 200) {
 
-    val imageBitmapDst = ImageBitmap.imageResource(R.drawable.thumb)
+    val imageBitmapDst = ImageBitmap.imageResource(R.drawable.ic_launcher_background)
 
     val imageBitmapSrc = ImageBitmap.imageResource(R.drawable.droid)
 

@@ -1,5 +1,7 @@
 package com.example.composelearning.recomposition
 
+import com.example.composelearning.ui.theme.AppFontFamilyBlack
+
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -33,7 +35,7 @@ fun TextWidth(modifier: Modifier = Modifier) {
     val headingSmall: TextStyle = TextStyle(
         fontSize = 32.sp,
         lineHeight = 32.sp,
-        fontFamily = FontFamily(Font(R.font.jio_type_black)),
+        fontFamily = AppFontFamilyBlack,
         fontWeight = FontWeight.Black
     )
 
