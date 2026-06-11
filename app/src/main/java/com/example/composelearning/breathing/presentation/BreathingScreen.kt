@@ -43,7 +43,7 @@ private const val WOBBLE = 0.18f // how much the blob's control points breathe (
 
 @Composable
 fun BreathingScreen(
-    viewModel: BreathingViewModel = viewModel(factory = BreathingViewModel.Factory()),
+    viewModel: BreathingViewModel = viewModel(factory = BreathingViewModel.Factory())
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val session = state.session
@@ -56,7 +56,7 @@ fun BreathingScreen(
     BreathingScene(
         session = session,
         isPlaying = state.isPlaying,
-        onToggle = { viewModel.onIntent(BreathingIntent.TogglePlay) },
+        onToggle = { viewModel.onIntent(BreathingIntent.TogglePlay) }
     )
 }
 
@@ -64,7 +64,7 @@ fun BreathingScreen(
 private fun BreathingScene(
     session: BreathingSession,
     isPlaying: Boolean,
-    onToggle: () -> Unit,
+    onToggle: () -> Unit
 ) {
     val clock = rememberClockMillis()
 
@@ -77,7 +77,7 @@ private fun BreathingScene(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .pointerInput(Unit) { detectTapGestures { onToggle() } },
+            .pointerInput(Unit) { detectTapGestures { onToggle() } }
     ) {
         Canvas(Modifier.fillMaxSize()) {
             val t = clock.value
@@ -93,7 +93,7 @@ private fun BreathingScene(
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .padding(top = 96.dp),
+                .padding(top = 96.dp)
         )
     }
 }
@@ -152,7 +152,7 @@ private fun DrawScope.drawBlob(t: Float) {
  */
 private fun DrawScope.drawPlayPause(p: Float) {
     val c = center()
-    val s = size.minDimension * 0.10f      // half-size of the icon box
+    val s = size.minDimension * 0.10f // half-size of the icon box
     val w = s * 2f
     val h = s * 2f
     val ox = c.x - s
@@ -165,14 +165,14 @@ private fun DrawScope.drawPlayPause(p: Float) {
         lerp(pt(0.16f, 0.08f), pt(0.16f, 0f)),
         lerp(pt(0.50f, 0.29f), pt(0.40f, 0f)),
         lerp(pt(0.50f, 0.71f), pt(0.40f, 1f)),
-        lerp(pt(0.16f, 0.92f), pt(0.16f, 1f)),
+        lerp(pt(0.16f, 0.92f), pt(0.16f, 1f))
     )
     // Right piece: play right-half (triangle tip) → right pause bar.
     val right = listOf(
         lerp(pt(0.50f, 0.29f), pt(0.60f, 0f)),
         lerp(pt(0.92f, 0.50f), pt(0.84f, 0f)),
         lerp(pt(0.92f, 0.50f), pt(0.84f, 1f)),
-        lerp(pt(0.50f, 0.71f), pt(0.60f, 1f)),
+        lerp(pt(0.50f, 0.71f), pt(0.60f, 1f))
     )
     drawQuad(left)
     drawQuad(right)

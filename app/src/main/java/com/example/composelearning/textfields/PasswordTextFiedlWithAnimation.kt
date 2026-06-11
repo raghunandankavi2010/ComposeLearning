@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 
 @Preview
 @Composable
-fun PasswordFieldWithAnimatedBorder() {
+private fun PasswordFieldWithAnimatedBorder() {
     var password by remember { mutableStateOf("") }
     val pathMeasure by remember { mutableStateOf(PathMeasure()) }
     val path = remember { Path() }
@@ -38,9 +38,7 @@ fun PasswordFieldWithAnimatedBorder() {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-
-        borderColor = if ( password.length >= 8) Color.Green else Color.Red
+        borderColor = if (password.length >= 8) Color.Green else Color.Red
 
         Text("Password:")
 
@@ -78,7 +76,7 @@ fun PasswordFieldWithAnimatedBorder() {
                         color = borderColor
                     )
                 },
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             BasicTextField(
                 value = password,
@@ -88,8 +86,7 @@ fun PasswordFieldWithAnimatedBorder() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
-                    .background(Color.Transparent)
-                ,
+                    .background(Color.Transparent),
                 visualTransformation = PasswordVisualTransformation(),
                 singleLine = true,
                 textStyle = androidx.compose.ui.text.TextStyle.Default.copy(
@@ -109,6 +106,6 @@ fun PasswordFieldWithAnimatedBorder() {
             Text("Validate")
         }
 
-        Text("Password is ${if ( password.length >= 8) "valid" else "invalid"}")
+        Text("Password is ${if (password.length >= 8) "valid" else "invalid"}")
     }
 }

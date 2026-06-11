@@ -12,30 +12,32 @@ import androidx.compose.ui.text.withLink
 
 @Composable
 fun LinkAnnotationExample() {
-    Text(buildAnnotatedString {
-        append("Some other text ")
-        withLink(
-            LinkAnnotation.Url(
-                // Added the sample Url here.
-                url = "https://developer.android.com/jetpack/compose",
-                styles = TextLinkStyles(
-                    style = SpanStyle(color = Color.Blue),
-                    hoveredStyle = SpanStyle(
-                        color = Color.Red,
-                        textDecoration = TextDecoration.Underline
-                    ),
-                    focusedStyle = SpanStyle(
-                        color = Color.Red,
-                        textDecoration = TextDecoration.LineThrough
-                    ),
-                    pressedStyle = SpanStyle(
-                        color = Color.Green,
-                        textDecoration = TextDecoration.LineThrough
-                    ),
+    Text(
+        buildAnnotatedString {
+            append("Some other text ")
+            withLink(
+                LinkAnnotation.Url(
+                    // Added the sample Url here.
+                    url = "https://developer.android.com/jetpack/compose",
+                    styles = TextLinkStyles(
+                        style = SpanStyle(color = Color.Blue),
+                        hoveredStyle = SpanStyle(
+                            color = Color.Red,
+                            textDecoration = TextDecoration.Underline
+                        ),
+                        focusedStyle = SpanStyle(
+                            color = Color.Red,
+                            textDecoration = TextDecoration.LineThrough
+                        ),
+                        pressedStyle = SpanStyle(
+                            color = Color.Green,
+                            textDecoration = TextDecoration.LineThrough
+                        )
+                    )
                 )
-            )
-        ) {
-            append("Jetpack Compose")
+            ) {
+                append("Jetpack Compose")
+            }
         }
-    })
+    )
 }

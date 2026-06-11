@@ -52,6 +52,7 @@ private const val DRAG_THRESHOLD = 0.5f
  * @param dragHandleContent Composable content for the drag handle
  * @param content Composable content inside the side panel (currently not used for drawing as per request)
  */
+
 /**
  * A simplified side panel layout with drag gestures to change its width.
  *
@@ -191,7 +192,6 @@ private fun DragHandle(
     }
 }
 
-
 enum class SidePanelState { Expanded, Collapsed }
 enum class SidePanelArrangement { Start, End }
 
@@ -276,15 +276,11 @@ fun rememberSidePanelState(
         dampingRatio = Spring.DampingRatioNoBouncy,
         stiffness = Spring.StiffnessLow
     )
-): SidePanelStateHolder {
-    return remember(initialState, animationSpec) {
-        SidePanelStateHolder(initialState, animationSpec)
-    }
+): SidePanelStateHolder = remember(initialState, animationSpec) {
+    SidePanelStateHolder(initialState, animationSpec)
 }
 
-private fun calculateDragDelta(arrangement: SidePanelArrangement, dragX: Float): Float {
-    return if (arrangement == SidePanelArrangement.End) -dragX else dragX
-}
+private fun calculateDragDelta(arrangement: SidePanelArrangement, dragX: Float): Float = if (arrangement == SidePanelArrangement.End) -dragX else dragX
 
 private fun calculateDragHandleRect(layoutCoordinates: androidx.compose.ui.layout.LayoutCoordinates): Rect {
     val position = layoutCoordinates.localToWindow(Offset.Zero)

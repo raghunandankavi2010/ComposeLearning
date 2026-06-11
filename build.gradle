@@ -21,21 +21,31 @@ def ktlintOverrides = [
     // Standard rules relaxed for this sample/learning codebase
     'ktlint_standard_no-wildcard-imports': 'disabled',
     'ktlint_standard_value-parameter-comment': 'disabled',
+    'ktlint_standard_value-argument-comment': 'disabled',
     'ktlint_standard_property-naming': 'disabled',
+    'ktlint_standard_backing-property-naming': 'disabled',
+    'ktlint_standard_kdoc': 'disabled',
     'ktlint_standard_no-empty-file': 'disabled',
     // CompositionLocals intentionally defined in this project
-    'compose_allowed_composition_locals': 'LocalAnimationsEnabled, LocalSpotlightController',
+    'compose_allowed_composition_locals': 'LocalAnimationsEnabled, LocalSpotlightController, LocalSharedTransitionScope, LocalNavAnimatedVisibilityScope, LocalAnimatedVisibilityScope',
     // Demo screens are self-contained; skip Compose API-shape rules
     'ktlint_compose_modifier-missing-check': 'disabled',
     'ktlint_compose_modifier-reused-check': 'disabled',
     'ktlint_compose_modifier-not-used-at-root': 'disabled',
     'ktlint_compose_modifier-composed-check': 'disabled',
+    'ktlint_compose_modifier-clickable-order': 'disabled',
     'ktlint_compose_param-order-check': 'disabled',
     'ktlint_compose_parameter-naming': 'disabled',
+    'ktlint_compose_naming-check': 'disabled',
     'ktlint_compose_lambda-param-in-effect': 'disabled',
     'ktlint_compose_lambda-param-event-trailing': 'disabled',
+    'ktlint_compose_content-trailing-lambda': 'disabled',
     'ktlint_compose_vm-forwarding-check': 'disabled',
     'ktlint_compose_mutable-state-param-check': 'disabled',
+    'ktlint_compose_mutable-params-check': 'disabled',
+    'ktlint_compose_mutable-state-autoboxing': 'disabled',
+    'ktlint_compose_multiple-emitters-check': 'disabled',
+    'ktlint_compose_state-param-check': 'disabled',
 ]
 
 allprojects {

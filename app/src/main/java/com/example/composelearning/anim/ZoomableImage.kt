@@ -110,21 +110,21 @@ fun ZoomableImageScreen(onBack: () -> Unit = {}) {
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = Color.White,
                     navigationIconContentColor = Color.White,
-                    actionIconContentColor = Color.White,
-                ),
+                    actionIconContentColor = Color.White
+                )
             )
-        },
+        }
     ) { padding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
                 .background(Color.Black),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             ZoomableImage(
                 imagePainter = painterResource(R.drawable.ic_launcher_background),
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize()
             )
         }
     }

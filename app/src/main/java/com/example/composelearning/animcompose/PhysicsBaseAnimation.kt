@@ -372,12 +372,14 @@ fun FlingBehaviorDemo() {
             Checkbox(checked = isChainMode, onCheckedChange = { isChainMode = it })
             Text("Chain Mode")
             Button(onClick = {
-                objects = objects.map { it.copy(
-                    velocity = Offset(
-                        Random.nextFloat() * 400f - 200f,
-                        Random.nextFloat() * 400f - 200f
+                objects = objects.map {
+                    it.copy(
+                        velocity = Offset(
+                            Random.nextFloat() * 400f - 200f,
+                            Random.nextFloat() * 400f - 200f
+                        )
                     )
-                )}
+                }
             }) {
                 Text("Randomize")
             }
@@ -400,7 +402,9 @@ fun FlingBehaviorDemo() {
                                 objects = objects.map { obj ->
                                     if (obj.id == touchedObject.id) {
                                         obj.copy(isDragging = true, velocity = Offset.Zero)
-                                    } else obj
+                                    } else {
+                                        obj
+                                    }
                                 }
                             }
                         },
@@ -410,7 +414,9 @@ fun FlingBehaviorDemo() {
                                 objects = objects.map { obj ->
                                     if (obj.id == id) {
                                         obj.copy(position = change.position)
-                                    } else obj
+                                    } else {
+                                        obj
+                                    }
                                 }
                             }
                             dragVelocity = dragAmount * 60f
@@ -420,7 +426,9 @@ fun FlingBehaviorDemo() {
                                 objects = objects.map { obj ->
                                     if (obj.id == id) {
                                         obj.copy(isDragging = false, velocity = dragVelocity * 0.5f)
-                                    } else obj
+                                    } else {
+                                        obj
+                                    }
                                 }
                                 draggedObjectId = null
                                 dragVelocity = Offset.Zero

@@ -50,7 +50,7 @@ fun StaggeredGridDemo() {
     val delayPerItem = 0.08f
 
     val maxIndex = rows * cols - 1
-    val totalSpan = 1 +  maxIndex * delayPerItem
+    val totalSpan = 1 + maxIndex * delayPerItem
     val scaledGlobal = t.value * totalSpan
 
     Box(
@@ -78,7 +78,7 @@ fun StaggeredGridDemo() {
                         Box(
                             modifier = Modifier
                                 .size(56.dp)
-                                //.scale(scale)
+                                // .scale(scale)
                                 .background(
                                     color = Color(0xFF5B86E5).copy(alpha = alpha),
                                     shape = RoundedCornerShape(12.dp)

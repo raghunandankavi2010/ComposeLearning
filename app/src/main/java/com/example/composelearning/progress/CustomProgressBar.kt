@@ -115,7 +115,7 @@ fun CustomProgressBar() {
 
 @Composable
 fun MultiColorProgressCanvas(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     heightOfProgress: Dp,
     cornerRadii: Dp
 ) {
@@ -127,29 +127,29 @@ fun MultiColorProgressCanvas(
     val animationDuration = 300
 
     LaunchedEffect(greyAnimate, yellowAnimate, redAnimate, greenAnimate, redAnimate) {
-       // launch {
-            greenAnimate.animateTo(
-                targetValue = 1f,
-                animationSpec = tween(durationMillis = animationDuration)
-            )
-            yellowAnimate.animateTo(
-                targetValue = 1f,
-                animationSpec = tween(durationMillis = animationDuration)
-            )
-            redAnimate.animateTo(
-                targetValue = 1f,
-                animationSpec = tween(durationMillis = animationDuration)
-            )
-            greyAnimate.animateTo(
-                targetValue = 1f,
-                animationSpec = tween(durationMillis = animationDuration)
-            )
+        // launch {
+        greenAnimate.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(durationMillis = animationDuration)
+        )
+        yellowAnimate.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(durationMillis = animationDuration)
+        )
+        redAnimate.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(durationMillis = animationDuration)
+        )
+        greyAnimate.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(durationMillis = animationDuration)
+        )
     }
 
     Canvas(
         modifier = modifier
     ) {
-        //draw shapes here
+        // draw shapes here
         // get canvas width in dp
         val canvasWidth = size.width.toDp()
         // calculate the progress for each color
@@ -170,7 +170,7 @@ fun MultiColorProgressCanvas(
                 RoundRect(
                     rect = Rect(
                         offset = Offset(0f, 0f),
-                        size = Size(canvasWidth.toPx(), heightOfProgress.toPx()),
+                        size = Size(canvasWidth.toPx(), heightOfProgress.toPx())
                     ),
                     topLeft = cornerRadius,
                     bottomLeft = cornerRadius,
@@ -181,7 +181,7 @@ fun MultiColorProgressCanvas(
         }
         drawPath(
             path = progressPath,
-            color = Color(0xFFE0E0E0),
+            color = Color(0xFFE0E0E0)
         )
 
         // draw the active progress
@@ -191,10 +191,10 @@ fun MultiColorProgressCanvas(
                 RoundRect(
                     rect = Rect(
                         offset = Offset(0f, 0f),
-                        size = Size(greenSize.toPx() * greenAnimate.value, 8.dp.toPx()),
+                        size = Size(greenSize.toPx() * greenAnimate.value, 8.dp.toPx())
                     ),
                     topLeft = cornerRadius,
-                    bottomLeft = cornerRadius,
+                    bottomLeft = cornerRadius
                 )
             )
         }
@@ -202,19 +202,19 @@ fun MultiColorProgressCanvas(
             path = path,
             color = Color(0xFF69BA6E)
         )
-        //draw yellow progress with offset =  green progress offset
+        // draw yellow progress with offset =  green progress offset
         drawRect(
             color = Color(0xFFFEC93E),
             topLeft = Offset(greenSize.toPx(), 0f),
             size = Size(yellowSize.toPx() * yellowAnimate.value, 8.dp.toPx())
         )
-        //draw red progress with offset =  yellow progress + green progress
+        // draw red progress with offset =  yellow progress + green progress
         drawRect(
             color = Color(0xFFED5554),
             topLeft = Offset(greenSize.toPx() + yellowSize.toPx(), 0f),
             size = Size(redSize.toPx() * redAnimate.value, 8.dp.toPx())
         )
-        //draw grey progress with offset =  red progress + yellow progress + green progress
+        // draw grey progress with offset =  red progress + yellow progress + green progress
         drawRect(
             color = Color(0xFFBDBDBD),
             topLeft = Offset(
@@ -278,7 +278,6 @@ fun AnotherProgressBar() {
                         // on below line we are specifying width for the inner box
                         .width((284.dp - 15.dp) * progressGreen / 100)
 
-
                 )
                 Box(
                     // on below line we are adding modifier to this box.
@@ -316,7 +315,6 @@ fun AnotherProgressBar() {
                         // on below line we are specifying width for the inner box
                         .width(5.dp)
                 )
-
 
                 // progress red
                 Box(

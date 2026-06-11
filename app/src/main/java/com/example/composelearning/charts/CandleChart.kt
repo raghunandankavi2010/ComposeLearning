@@ -30,7 +30,7 @@ data class Candle(
     val high: Float,
     val low: Float,
     val close: Float,
-    val volume: Float = 0f,
+    val volume: Float = 0f
 ) {
     val isBullish: Boolean get() = close >= open
 }
@@ -51,7 +51,7 @@ data class CandleChartSpec(
     val leftAxisGutter: Dp = 44.dp,
     val rightAxisGutter: Dp = 12.dp,
     val topAxisGutter: Dp = 12.dp,
-    val bottomAxisGutter: Dp = 28.dp,
+    val bottomAxisGutter: Dp = 28.dp
 )
 
 /**
@@ -71,7 +71,7 @@ fun CandleChart(
     modifier: Modifier = Modifier,
     spec: CandleChartSpec = CandleChartSpec(),
     theme: ChartTheme = ChartDefaults.theme(),
-    onCandleSelected: ((index: Int) -> Unit)? = null,
+    onCandleSelected: ((index: Int) -> Unit)? = null
 ) {
     if (candles.isEmpty()) return
     val measurer = rememberTextMeasurer()
@@ -114,13 +114,13 @@ private fun DrawScope.drawCandleChart(
     theme: ChartTheme,
     progress: Float,
     selected: Int?,
-    measurer: TextMeasurer,
+    measurer: TextMeasurer
 ) {
     val full = Rect(
         left = spec.leftAxisGutter.toPx(),
         top = spec.topAxisGutter.toPx(),
         right = size.width - spec.rightAxisGutter.toPx(),
-        bottom = size.height - spec.bottomAxisGutter.toPx(),
+        bottom = size.height - spec.bottomAxisGutter.toPx()
     )
     val volumeHeight = if (spec.showVolume) full.height * spec.volumeFraction else 0f
     val priceRect = Rect(full.left, full.top, full.right, full.bottom - volumeHeight)
@@ -135,7 +135,7 @@ private fun DrawScope.drawCandleChart(
                 color = theme.gridColor,
                 start = Offset(priceRect.left, y),
                 end = Offset(priceRect.right, y),
-                strokeWidth = theme.gridLineWidth.toPx(),
+                strokeWidth = theme.gridLineWidth.toPx()
             )
             if (spec.yAxis.showLabels) {
                 val layout = measurer.measure(spec.yAxis.labelFormatter(v), style = theme.axisLabelStyle)
@@ -143,8 +143,8 @@ private fun DrawScope.drawCandleChart(
                     textLayoutResult = layout,
                     topLeft = Offset(
                         priceRect.left - layout.size.width - spec.yAxis.labelGap.toPx(),
-                        y - layout.size.height / 2f,
-                    ),
+                        y - layout.size.height / 2f
+                    )
                 )
             }
         }
@@ -178,7 +178,7 @@ private fun DrawScope.drawCandleChart(
             color = color,
             start = Offset(center, animHighY),
             end = Offset(center, animLowY),
-            strokeWidth = spec.wickWidth.toPx(),
+            strokeWidth = spec.wickWidth.toPx()
         )
 
         // Body
@@ -189,7 +189,7 @@ private fun DrawScope.drawCandleChart(
             color = color,
             topLeft = Offset(center - bodyWidth / 2f, bodyTop),
             size = Size(bodyWidth, bodyHeight),
-            cornerRadius = CornerRadius(spec.bodyCornerRadius.toPx(), spec.bodyCornerRadius.toPx()),
+            cornerRadius = CornerRadius(spec.bodyCornerRadius.toPx(), spec.bodyCornerRadius.toPx())
         )
 
         if (isSelected) {
@@ -197,7 +197,7 @@ private fun DrawScope.drawCandleChart(
             drawRoundRect(
                 color = theme.tooltipBackground.copy(alpha = 0.18f),
                 topLeft = Offset(priceRect.left + i * slotWidth, priceRect.top),
-                size = Size(slotWidth, priceRect.height),
+                size = Size(slotWidth, priceRect.height)
             )
         }
 
@@ -208,7 +208,7 @@ private fun DrawScope.drawCandleChart(
                 color = color.copy(alpha = 0.6f),
                 topLeft = Offset(center - bodyWidth / 2f, volumeRect.bottom - vHeight),
                 size = Size(bodyWidth, vHeight),
-                cornerRadius = CornerRadius(spec.bodyCornerRadius.toPx(), spec.bodyCornerRadius.toPx()),
+                cornerRadius = CornerRadius(spec.bodyCornerRadius.toPx(), spec.bodyCornerRadius.toPx())
             )
         }
     }
@@ -222,7 +222,7 @@ private fun DrawScope.drawCandleChart(
             val layout = measurer.measure(candles[i].label, style = theme.axisLabelStyle)
             drawText(
                 textLayoutResult = layout,
-                topLeft = Offset(center - layout.size.width / 2f, full.bottom + spec.xAxis.labelGap.toPx()),
+                topLeft = Offset(center - layout.size.width / 2f, full.bottom + spec.xAxis.labelGap.toPx())
             )
         }
     }
@@ -231,7 +231,7 @@ private fun DrawScope.drawCandleChart(
         color = theme.axisColor,
         start = Offset(priceRect.left, priceRect.bottom),
         end = Offset(priceRect.right, priceRect.bottom),
-        strokeWidth = theme.axisLineWidth.toPx(),
+        strokeWidth = theme.axisLineWidth.toPx()
     )
 }
 
@@ -239,13 +239,13 @@ private fun candlePriceRect(
     width: Float,
     height: Float,
     spec: CandleChartSpec,
-    density: androidx.compose.ui.unit.Density,
+    density: androidx.compose.ui.unit.Density
 ): Rect = with(density) {
     val volH = if (spec.showVolume) (height - spec.topAxisGutter.toPx() - spec.bottomAxisGutter.toPx()) * spec.volumeFraction else 0f
     Rect(
         left = spec.leftAxisGutter.toPx(),
         top = spec.topAxisGutter.toPx(),
         right = width - spec.rightAxisGutter.toPx(),
-        bottom = height - spec.bottomAxisGutter.toPx() - volH,
+        bottom = height - spec.bottomAxisGutter.toPx() - volH
     )
 }

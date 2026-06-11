@@ -1,6 +1,5 @@
 package com.example.composelearning.customshapes
 
-
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -39,7 +38,6 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 
-
 class CustomShape : Shape {
     private val cornerRadius = 50f // Adjust corner radius as needed
 
@@ -53,13 +51,10 @@ class CustomShape : Shape {
             lineTo(size.width, size.height)
             lineTo(size.width, (size.height / 2.5).toFloat())
             close()
-
         }
         return Outline.Generic(path)
-
     }
 }
-
 
 @Composable
 fun ShapeTry() {
@@ -68,7 +63,7 @@ fun ShapeTry() {
             .padding(top = 100.dp)
             .widthIn(min = 250.dp, max = 250.dp)
     ) {
-       val list =  listOf(Color(0xFF5936B4), Color(0xFF362A84))
+        val list = listOf(Color(0xFF5936B4), Color(0xFF362A84))
         Canvas(
             modifier = Modifier
                 .width(250.dp)
@@ -81,24 +76,22 @@ fun ShapeTry() {
                 lineTo(size.width, size.height)
                 lineTo(size.width, (size.height / 2.5).toFloat())
                 close()
-
             }
 
-           val paint =  Paint().apply {
-               shader = LinearGradientShader(
-                   rect.topLeft,
-                   rect.bottomRight,
-                   list
-               )
-               pathEffect = PathEffect.cornerPathEffect(60f)
-           }
+            val paint = Paint().apply {
+                shader = LinearGradientShader(
+                    rect.topLeft,
+                    rect.bottomRight,
+                    list
+                )
+                pathEffect = PathEffect.cornerPathEffect(60f)
+            }
             drawIntoCanvas { canvas ->
                 canvas.drawOutline(
                     outline = Outline.Generic(path),
                     paint = paint
                 )
             }
-
         }
     }
 }

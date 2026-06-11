@@ -43,7 +43,7 @@ import com.example.composelearning.toEntries
 fun TabsSampleNavigation() {
     val navState = rememberNavigationState(
         startRoute = TabsScreen.Photos,
-        topLevelRoutes = TopLevelTabs.toSet(),
+        topLevelRoutes = TopLevelTabs.toSet()
     )
     val navigator = remember { Navigator(navState) }
 
@@ -61,14 +61,14 @@ fun TabsSampleNavigation() {
                 PhotoDetailScreen(
                     id = key.id,
                     sharedScope = sharedScope,
-                    onBack = { navigator.goBack() },
+                    onBack = { navigator.goBack() }
                 )
             }
             entry<TabsScreen.ArticleDetail> { key ->
                 ArticleDetailScreen(
                     id = key.id,
                     sharedScope = sharedScope,
-                    onBack = { navigator.goBack() },
+                    onBack = { navigator.goBack() }
                 )
             }
             entry<TabsScreen.SettingDetail> { key ->
@@ -82,20 +82,20 @@ fun TabsSampleNavigation() {
                 AnimatedVisibility(
                     visible = showBottomBar,
                     enter = slideInVertically { it },
-                    exit = slideOutVertically { it },
+                    exit = slideOutVertically { it }
                 ) {
                     TabsBottomBar(
                         currentTab = navState.topLevelRoute as? TabsScreen ?: TabsScreen.Photos,
-                        onTabClick = { navigator.navigate(it) },
+                        onTabClick = { navigator.navigate(it) }
                     )
                 }
-            },
+            }
         ) { padding ->
             @Suppress("UNCHECKED_CAST")
             NavDisplay(
                 modifier = Modifier.padding(padding),
                 entries = navState.toEntries(provider),
-                onBack = { navigator.goBack() },
+                onBack = { navigator.goBack() }
             )
         }
     }
@@ -104,7 +104,7 @@ fun TabsSampleNavigation() {
 @Composable
 private fun TabsBottomBar(
     currentTab: TabsScreen,
-    onTabClick: (TabsScreen) -> Unit,
+    onTabClick: (TabsScreen) -> Unit
 ) {
     NavigationBar {
         TopLevelTabs.forEach { tab ->
@@ -112,7 +112,7 @@ private fun TabsBottomBar(
                 selected = tab == currentTab,
                 onClick = { onTabClick(tab) },
                 icon = { Icon(iconFor(tab), contentDescription = null) },
-                label = { Text(tab.tabTitle()) },
+                label = { Text(tab.tabTitle()) }
             )
         }
     }

@@ -36,10 +36,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.composelearning.ui.theme.ComposeLearningTheme
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.roundToInt
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 /**
  * Inspired from https://fvilarino.medium.com/recreating-google-podcasts-speed-selector-in-jetpack-compose-7623203a009d
@@ -51,7 +51,7 @@ private val colors = listOf(
     Color.Blue,
     Color.Magenta,
     Color.Yellow,
-    Color.Cyan,
+    Color.Cyan
 )
 
 @Stable
@@ -67,13 +67,13 @@ interface CarouselState {
 
 class CarouselStateImpl(
     currentValue: Float,
-    override val range: ClosedRange<Int>,
+    override val range: ClosedRange<Int>
 ) : CarouselState {
     private val floatRange = range.start.toFloat()..range.endInclusive.toFloat()
     private val animatable = Animatable(currentValue)
     private val decayAnimationSpec = FloatSpringSpec(
         dampingRatio = Spring.DampingRatioLowBouncy,
-        stiffness = Spring.StiffnessLow,
+        stiffness = Spring.StiffnessLow
     )
     override val currentValue: Float
         get() = animatable.value
@@ -95,7 +95,7 @@ class CarouselStateImpl(
         animatable.animateTo(
             targetValue = target,
             initialVelocity = velocity,
-            animationSpec = decayAnimationSpec,
+            animationSpec = decayAnimationSpec
         )
     }
 
@@ -137,7 +137,7 @@ class CarouselStateImpl(
 @Composable
 fun rememberCarouselState(
     currentValue: Float = 0f,
-    range: ClosedRange<Int> = 0..40,
+    range: ClosedRange<Int> = 0..40
 ): CarouselState {
     val state = rememberSaveable(saver = CarouselStateImpl.Saver) {
         CarouselStateImpl(currentValue, range)
@@ -154,7 +154,7 @@ fun InstagramCarousel(
     state: CarouselState = rememberCarouselState(),
     numSegments: Int = 5,
     circleColor: Color = MaterialTheme.colorScheme.onSurface,
-    currentValueLabel: @Composable (Int) -> Unit = { value -> Text(value.toString()) },
+    currentValueLabel: @Composable (Int) -> Unit = { value -> Text(value.toString()) }
 ) {
     val context = LocalContext.current
     Column(
@@ -162,19 +162,19 @@ fun InstagramCarousel(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         currentValueLabel(state.currentValue.roundToInt())
-        //Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
+        // Icon(Icons.Filled.ArrowDropDown, contentDescription = null)
         val scope = rememberCoroutineScope()
 
         BoxWithConstraints(
             modifier = Modifier
                 .fillMaxWidth()
                 .drag(state, numSegments),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             CenterCircle(
                 modifier = Modifier.align(Alignment.Center),
                 fillColor = Color(android.graphics.Color.parseColor("#4DB6AC")),
-                strokeWidth = 5.dp,
+                strokeWidth = 5.dp
             )
             val segmentWidth = maxWidth / numSegments
             val segmentWidthPx = constraints.maxWidth.toFloat() / numSegments.toFloat()
@@ -200,9 +200,9 @@ fun InstagramCarousel(
                         .width(segmentWidth)
                         .wrapContentHeight(Alignment.CenterVertically)
                         .graphicsLayer(
-                            translationX = offsetX,
+                            translationX = offsetX
                         ),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Box(
                         modifier = Modifier
@@ -233,7 +233,7 @@ fun InstagramCarousel(
 @SuppressLint("ReturnFromAwaitPointerEventScope", "MultipleAwaitPointerEventScopes")
 private fun Modifier.drag(
     state: CarouselState,
-    numSegments: Int,
+    numSegments: Int
 ) = pointerInput(Unit) {
     val decay = splineBasedDecay<Float>(this)
     val segmentWidthPx = size.width / numSegments
@@ -267,8 +267,8 @@ private fun Modifier.drag(
 
 @Preview(widthDp = 420)
 @Composable
-fun InstagramCarouselPreview() {
-    ComposeLearningTheme() {
+private fun InstagramCarouselPreview() {
+    ComposeLearningTheme {
         Surface(modifier = Modifier.fillMaxWidth()) {
             InstagramCarousel(
                 modifier = Modifier

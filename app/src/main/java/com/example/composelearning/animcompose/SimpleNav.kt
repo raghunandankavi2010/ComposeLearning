@@ -45,7 +45,9 @@ import kotlinx.serialization.Serializable
 
 // 1. Define Destinations (Using Type-Safe Navigation)
 @Serializable object HomeRoute
+
 @Serializable object SettingsRoute
+
 @Serializable data class DetailRoute(val id: Int)
 
 @OptIn(ExperimentalSharedTransitionApi::class)

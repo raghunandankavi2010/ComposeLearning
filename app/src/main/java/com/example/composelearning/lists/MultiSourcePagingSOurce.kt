@@ -31,20 +31,20 @@ class MultiSourcePagingSource(
         )
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Item>): Int? {
-        return state.anchorPosition?.let { anchorPosition ->
-            val closestPage = state.closestPageToPosition(anchorPosition)
-            closestPage?.prevKey?.plus(1) ?: closestPage?.nextKey?.minus(1)
-        }
+    override fun getRefreshKey(state: PagingState<Int, Item>): Int? = state.anchorPosition?.let { anchorPosition ->
+        val closestPage = state.closestPageToPosition(anchorPosition)
+        closestPage?.prevKey?.plus(1) ?: closestPage?.nextKey?.minus(1)
     }
 }
 
 // Generate dummy data
 fun generateDummyData(): List<List<Item>> {
     val sources = mutableListOf<List<Item>>()
-    repeat(5) { sourceIndex -> // 5 data sources
+    repeat(5) { sourceIndex ->
+        // 5 data sources
         val items = mutableListOf<Item>()
-        repeat(100) { itemIndex -> // Each source has 50 items
+        repeat(100) { itemIndex ->
+            // Each source has 50 items
             items.add(Item(id = itemIndex, value = "Source $sourceIndex Item $itemIndex"))
         }
         sources.add(items)

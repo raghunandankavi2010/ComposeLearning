@@ -2,8 +2,6 @@
 
 package com.example.composelearning.speedometer
 
-import com.example.composelearning.ui.theme.AppFontFamilyMedium
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -22,16 +20,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composelearning.R
+import com.example.composelearning.ui.theme.AppFontFamilyMedium
 
 @Composable
 fun Legend(color: Color, legendText: String, alpha: Boolean) {
-    val (alphaValue,colorValue) = if (alpha) 0.5f to Color(0xFFB5B5B5) else 1f to Color(0xFF141414)
+    val (alphaValue, colorValue) = if (alpha) 0.5f to Color(0xFFB5B5B5) else 1f to Color(0xFF141414)
 
     Row {
-        Box(modifier = Modifier
-            .clip(CircleShape)
-            .size((13.2).dp)
-            .background(color.copy(alpha = alphaValue)))
+        Box(
+            modifier = Modifier
+                .clip(CircleShape)
+                .size((13.2).dp)
+                .background(color.copy(alpha = alphaValue))
+        )
         Text(
             modifier = Modifier.padding(start = 5.36.dp),
             text = legendText,
@@ -40,7 +41,7 @@ fun Legend(color: Color, legendText: String, alpha: Boolean) {
                 lineHeight = 16.sp,
                 fontFamily = AppFontFamilyMedium,
                 fontWeight = FontWeight(700),
-                color = colorValue,
+                color = colorValue
             )
         )
     }

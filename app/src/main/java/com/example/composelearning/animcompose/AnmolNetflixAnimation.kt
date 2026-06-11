@@ -34,8 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import androidx.compose.ui.zIndex
 import com.example.composelearning.util.LocalAnimationsEnabled
-import kotlinx.coroutines.launch
 import kotlin.random.Random
+import kotlinx.coroutines.launch
 
 /**
  * Faithful Compose port of Anmol Verma's Netflix intro animation from
@@ -63,14 +63,14 @@ fun AnmolNetflixIntroAnimation() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black),
+            .background(Color.Black)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Black),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             NetflixIntroN(Modifier)
         }
@@ -78,7 +78,7 @@ fun AnmolNetflixIntroAnimation() {
 }
 
 @Composable
-private fun NetflixIntroN(modifier: Modifier) {
+private fun NetflixIntroN(modifier: Modifier = Modifier) {
     val zoomInNetflixBox = remember { Animatable(1f) }
     // Color Animatable lives in `androidx.compose.animation` (not `.core`); use FQN to
     // avoid a name clash with the Float Animatable we use everywhere else.
@@ -103,7 +103,7 @@ private fun NetflixIntroN(modifier: Modifier) {
                     5f at 750 using LinearEasing
                     10f at 1750 using LinearEasing
                     16f at 3500 using LinearEasing
-                },
+                }
             )
         }
         launch {
@@ -114,7 +114,7 @@ private fun NetflixIntroN(modifier: Modifier) {
                     delayMillis = 600
                     baseColor.copy(alpha = 0.5f) at 0 using LinearEasing
                     baseColor.copy(alpha = 0f) at 2500 using LinearEasing
-                },
+                }
             )
         }
         launch {
@@ -125,7 +125,7 @@ private fun NetflixIntroN(modifier: Modifier) {
                     delayMillis = 1200
                     0f at 0 using LinearEasing
                     -100f at 3500 using LinearEasing
-                },
+                }
             )
         }
         launch {
@@ -136,7 +136,7 @@ private fun NetflixIntroN(modifier: Modifier) {
                     delayMillis = 800
                     0f at 0 using LinearEasing
                     -100f at 2500 using LinearEasing
-                },
+                }
             )
         }
         launch {
@@ -147,7 +147,7 @@ private fun NetflixIntroN(modifier: Modifier) {
                     delayMillis = 500
                     0f at 0 using LinearEasing
                     -100f at 2500 using LinearEasing
-                },
+                }
             )
         }
         launch {
@@ -158,7 +158,7 @@ private fun NetflixIntroN(modifier: Modifier) {
                     delayMillis = 1600
                     0f at 0 using LinearEasing
                     1f at 2500 using LinearEasing
-                },
+                }
             )
         }
     }
@@ -172,8 +172,8 @@ private fun NetflixIntroN(modifier: Modifier) {
             .height(nHeight)
             .graphicsLayer(
                 scaleX = zoomInNetflixBox.value,
-                scaleY = zoomInNetflixBox.value,
-            ),
+                scaleY = zoomInNetflixBox.value
+            )
     ) {
         // Left vertical (with lumières overlay)
         EffectBrushOne(
@@ -185,7 +185,7 @@ private fun NetflixIntroN(modifier: Modifier) {
                 .background(fadingLumieresBox.value),
             brushMoving = brushMovingBrush1,
             showingLumieres = showingLumieres,
-            nWidth = nWidth,
+            nWidth = nWidth
         )
 
         // Right vertical
@@ -196,7 +196,7 @@ private fun NetflixIntroN(modifier: Modifier) {
                 .fillMaxHeight()
                 .offset(x = (57.8 / 100).times(nWidth), y = 0.dp)
                 .rotate(180f),
-            nWidth = nWidth,
+            nWidth = nWidth
         )
 
         // Diagonal stroke = same brush, just rotated -19.5°
@@ -207,7 +207,7 @@ private fun NetflixIntroN(modifier: Modifier) {
                 .fillMaxHeight(1.5f)
                 .offset(x = (40.5 / 100).times(nWidth), y = (-25 / 100).times(nHeight))
                 .rotate(-19.5f),
-            nWidth = nWidth,
+            nWidth = nWidth
         )
     }
 }
@@ -217,7 +217,7 @@ private fun EffectBrushOne(
     modifier: Modifier = Modifier,
     brushMoving: Animatable<Float, AnimationVector1D>,
     showingLumieres: Animatable<Float, AnimationVector1D>,
-    nWidth: Dp,
+    nWidth: Dp
 ) {
     EffectBrush(brushMoving, modifier, nWidth)
 
@@ -226,7 +226,7 @@ private fun EffectBrushOne(
         modifier = Modifier
             .fillMaxWidth(0.195f)
             .fillMaxHeight()
-            .offset(x = (22.4 / 100).times(nWidth), y = 0.dp),
+            .offset(x = (22.4 / 100).times(nWidth), y = 0.dp)
     )
 }
 
@@ -239,14 +239,14 @@ private data class BrushFurModel(val left: Float, val width: Float, val backgrou
 @Composable
 private fun EffectBrush(
     brushMoving: Animatable<Float, AnimationVector1D>,
-    modifier: Modifier,
-    nWidth: Dp,
+    modifier: Modifier = Modifier,
+    nWidth: Dp
 ) {
     val brushList by remember { mutableStateOf(brushFurList.reversed()) }
     val height = LocalDensity.current.run { LocalConfiguration.current.screenHeightDp.dp.toPx() }
 
     Box(
-        modifier = modifier.graphicsLayer(translationY = brushMoving.value),
+        modifier = modifier.graphicsLayer(translationY = brushMoving.value)
     ) {
         repeat(brushList.size) { i ->
             val brushFur = brushList[i]
@@ -259,7 +259,7 @@ private fun EffectBrush(
                     .offset { IntOffset(xOffset.toInt(), 0) }
                     .fillMaxHeight()
                     .graphicsLayer(translationY = brushMoving.value * (height / 100))
-                    .background(brushFur.background),
+                    .background(brushFur.background)
             )
         }
     }
@@ -308,7 +308,7 @@ private data class Lamp(
     val z: Float = 1f,
     val left: Float,
     val width: Float,
-    val animDelay: Float,
+    val animDelay: Float
 )
 
 private const val LUMIERE_LEFT = "left"
@@ -317,7 +317,7 @@ private const val LUMIERE_RIGHT = "right"
 @Composable
 private fun EffectLumieres(
     showingLumieres: Animatable<Float, AnimationVector1D>,
-    modifier: Modifier,
+    modifier: Modifier = Modifier
 ) {
     val width = LocalConfiguration.current.screenWidthDp
     Box(modifier = modifier.graphicsLayer(alpha = showingLumieres.value)) {
@@ -333,7 +333,7 @@ private fun EffectLumieres(
                     .background(lamp.color)
                     .zIndex(lamp.z),
                 animName = animName,
-                lamp = lamp,
+                lamp = lamp
             )
         }
     }
@@ -341,9 +341,9 @@ private fun EffectLumieres(
 
 @Composable
 private fun LampComposable(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     animName: String,
-    lamp: Lamp,
+    lamp: Lamp
 ) {
     val translate = remember { Animatable(0f) }
     val scale = remember { Animatable(1f) }
@@ -360,7 +360,7 @@ private fun LampComposable(
                         10f at 1000 using LinearEasing
                         60f at 1250 using LinearEasing
                         120f at 5000 using LinearEasing
-                    },
+                    }
                 )
             }
             launch {
@@ -371,7 +371,7 @@ private fun LampComposable(
                         delayMillis = lamp.animDelay.toInt()
                         1f at 1000 using LinearEasing
                         3f at 5000 using LinearEasing
-                    },
+                    }
                 )
             }
         } else {
@@ -385,7 +385,7 @@ private fun LampComposable(
                         -10f at 1000 using LinearEasing
                         -60f at 1250 using LinearEasing
                         -120f at 5000 using LinearEasing
-                    },
+                    }
                 )
             }
             launch {
@@ -396,7 +396,7 @@ private fun LampComposable(
                         delayMillis = lamp.animDelay.toInt()
                         1f at 1000 using LinearEasing
                         3f at 5000 using LinearEasing
-                    },
+                    }
                 )
             }
         }
@@ -408,9 +408,9 @@ private fun LampComposable(
                 translationX = translate.value,
                 translationY = translate.value,
                 scaleY = scale.value,
-                scaleX = scale.value,
+                scaleX = scale.value
             )
-            .blur(4.dp),
+            .blur(4.dp)
     )
 }
 

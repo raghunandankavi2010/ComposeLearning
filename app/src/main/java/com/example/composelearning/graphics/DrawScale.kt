@@ -89,7 +89,7 @@ fun DrawScaleOnTouch(onBack: () -> Unit) {
                     colors = listOf(
                         Color(0xFF2196F3), // Blue
                         Color(0xFFE91E63), // Pink
-                        Color(0xFFFFEB3B)  // Yellow
+                        Color(0xFFFFEB3B) // Yellow
                     ),
                     start = Offset(centerX - 150f, centerY - 150f),
                     end = Offset(centerX + 150f, centerY + 150f)
@@ -111,6 +111,6 @@ fun DrawScaleOnTouch(onBack: () -> Unit) {
 
 @Preview(showBackground = true)
 @Composable
-fun DrawScaleOnTouchPreview() {
+private fun DrawScaleOnTouchPreview() {
     DrawScaleOnTouch(onBack = {})
 }

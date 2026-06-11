@@ -18,7 +18,7 @@ import kotlin.random.Random
 
 @Composable
 fun RandomEqualizer(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     barCount: Int = 3
 ) {
     val randomData = remember { mutableStateOf(List(barCount) { Random.nextFloat() }) }
@@ -50,7 +50,6 @@ fun RandomEqualizer(
                     targetValue = heightDp * d
                 )
 
-
                 Box(
                     Modifier
                         .width(barWidthDp)
@@ -65,10 +64,10 @@ fun RandomEqualizer(
 
 @Preview
 @Composable
-fun RandomEqualizerPreview() {
+private fun RandomEqualizerPreview() {
     RandomEqualizer(
         Modifier
             .fillMaxSize()
-            .background(Color.Gray),
+            .background(Color.Gray)
     )
 }

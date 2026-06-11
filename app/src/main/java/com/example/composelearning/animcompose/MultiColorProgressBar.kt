@@ -128,10 +128,9 @@ fun MultiColorIndeterminateCircularProgressBar(
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
-fun MultiColorIndeterminateCircularProgressBarPreview() {
+private fun MultiColorIndeterminateCircularProgressBarPreview() {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -140,7 +139,7 @@ fun MultiColorIndeterminateCircularProgressBarPreview() {
             colors = listOf(
                 Color(0xFFF44336), // Red
                 Color(0xFFFFC107), // Amber
-                Color(0xFF2196F3)  // Blue
+                Color(0xFF2196F3) // Blue
             ),
             strokeWidth = 24.dp
         )

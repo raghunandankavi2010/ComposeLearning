@@ -41,14 +41,14 @@ private val BalanceTextStyle = TextStyle(
     fontSize = 48.sp,
     fontWeight = FontWeight.Bold,
     color = Color.White,
-    fontFeatureSettings = "tnum",
+    fontFeatureSettings = "tnum"
 )
 
 @Composable
 fun AnimatedBalance(
     balance: Int,
     modifier: Modifier = Modifier,
-    durationMillis: Int = 1500,
+    durationMillis: Int = 1500
 ) {
     val animatedBalance = remember(balance) { Animatable(0f) }
 
@@ -57,8 +57,8 @@ fun AnimatedBalance(
             targetValue = balance.toFloat(),
             animationSpec = tween(
                 durationMillis = durationMillis,
-                easing = LinearOutSlowInEasing,
-            ),
+                easing = LinearOutSlowInEasing
+            )
         )
     }
 
@@ -68,13 +68,13 @@ fun AnimatedBalance(
 
     Row(
         modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(text = "₹ ", style = BalanceTextStyle)
 
         AnimatedNumberText(
             value = { animatedBalance.value },
-            placeholder = targetText,
+            placeholder = targetText
         )
     }
 }
@@ -82,7 +82,7 @@ fun AnimatedBalance(
 @Composable
 private fun AnimatedNumberText(
     value: () -> Float,
-    placeholder: String,
+    placeholder: String
 ) {
     val displayValue = value().roundToInt()
     val text = remember(displayValue) {
@@ -94,12 +94,12 @@ private fun AnimatedNumberText(
             text = placeholder,
             style = BalanceTextStyle,
             textAlign = TextAlign.End,
-            modifier = Modifier.alpha(0f),
+            modifier = Modifier.alpha(0f)
         )
         Text(
             text = text,
             style = BalanceTextStyle,
-            textAlign = TextAlign.End,
+            textAlign = TextAlign.End
         )
     }
 }
@@ -114,12 +114,12 @@ fun AnimatedBalanceDemo() {
             .background(Color(0xFF0F1115))
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Center
     ) {
         Text(
             text = "Available Balance",
             fontSize = 16.sp,
-            color = Color(0xFF9AA0A6),
+            color = Color(0xFF9AA0A6)
         )
 
         Spacer(Modifier.height(8.dp))
@@ -130,7 +130,7 @@ fun AnimatedBalanceDemo() {
                 .clip(RoundedCornerShape(20.dp))
                 .background(Color(0xFF1B1F27))
                 .padding(vertical = 32.dp, horizontal = 20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             AnimatedBalance(balance = balance)
         }

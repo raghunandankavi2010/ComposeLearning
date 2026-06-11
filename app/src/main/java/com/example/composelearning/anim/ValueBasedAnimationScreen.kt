@@ -1,6 +1,9 @@
 package com.example.composelearning.anim
 
-
+import android.view.animation.AnticipateInterpolator
+import android.view.animation.BounceInterpolator
+import android.view.animation.Interpolator
+import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
@@ -9,25 +12,21 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlin.math.*
 import kotlin.random.Random
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.graphics.drawscope.scale
-import android.view.animation.OvershootInterpolator
-import android.view.animation.AnticipateInterpolator
-import android.view.animation.BounceInterpolator
-import android.view.animation.Interpolator
-import androidx.compose.ui.graphics.Path
 
 @Composable
 fun ValueBasedAnimationsScreen() {
@@ -270,12 +269,15 @@ fun CustomCurveAnimationDemo() {
 
     val customCurves = listOf(
         "Elastic" to { t: Float ->
-            if (t == 0f || t == 1f) t
-            else {
+            if (t == 0f || t == 1f) {
+                t
+            } else {
                 val period = 0.3f
                 val amplitude = 1f
-                (-amplitude * 2.0.pow(-10.0 * t).toFloat() *
-                        sin(((t - period / 4f) * (2f * Math.PI.toFloat()) / period)).toFloat()).toFloat()
+                (
+                    -amplitude * 2.0.pow(-10.0 * t).toFloat() *
+                        sin(((t - period / 4f) * (2f * Math.PI.toFloat()) / period)).toFloat()
+                    ).toFloat()
             }
         },
         "Bounce In" to { t: Float ->
@@ -353,15 +355,20 @@ fun CustomCurveAnimationDemo() {
                 val curveValue = (customCurves[selectedCurve].second.invoke(t) as Float)
                 val x = curveStartX + t * curveWidth
                 val y = curveStartY + curveHeight - (curveValue * curveHeight)
-                if (i == 0) curvePath.moveTo(x, y)
-                else curvePath.lineTo(x, y)
+                if (i == 0) {
+                    curvePath.moveTo(x, y)
+                } else {
+                    curvePath.lineTo(x, y)
+                }
             }
             drawPath(curvePath, Color.Blue, style = Stroke(width = 3.dp.toPx()))
 
             // Current position indicator
             val currentT = if (isAnimating) {
                 (animatedPosition - 50.dp.toPx()) / (300.dp.toPx() - 50.dp.toPx())
-            } else 0f
+            } else {
+                0f
+            }
 
             if (currentT > 0f) {
                 val curveValue = (customCurves[selectedCurve].second.invoke(currentT) as Float)
@@ -398,21 +405,22 @@ fun CustomCurveAnimationDemo() {
     }
 }
 
-private fun bounceOut(t: Float): Float {
-    return when {
-        t < 1f / 2.75f -> 7.5625f * t * t
-        t < 2f / 2.75f -> {
-            val t2 = t - 1.5f / 2.75f
-            7.5625f * t2 * t2 + 0.75f
-        }
-        t < 2.5f / 2.75f -> {
-            val t2 = t - 2.25f / 2.75f
-            7.5625f * t2 * t2 + 0.9375f
-        }
-        else -> {
-            val t2 = t - 2.625f / 2.75f
-            7.5625f * t2 * t2 + 0.984375f
-        }
+private fun bounceOut(t: Float): Float = when {
+    t < 1f / 2.75f -> 7.5625f * t * t
+
+    t < 2f / 2.75f -> {
+        val t2 = t - 1.5f / 2.75f
+        7.5625f * t2 * t2 + 0.75f
+    }
+
+    t < 2.5f / 2.75f -> {
+        val t2 = t - 2.25f / 2.75f
+        7.5625f * t2 * t2 + 0.9375f
+    }
+
+    else -> {
+        val t2 = t - 2.625f / 2.75f
+        7.5625f * t2 * t2 + 0.984375f
     }
 }
 
@@ -537,8 +545,11 @@ fun MathematicalAnimationDemo() {
                     val t = i.toFloat() / steps
                     val position = currentFunction(t, 1.dp.toPx())
                     val pathPos = center + position
-                    if (i == 0) path.moveTo(pathPos.x, pathPos.y)
-                    else path.lineTo(pathPos.x, pathPos.y)
+                    if (i == 0) {
+                        path.moveTo(pathPos.x, pathPos.y)
+                    } else {
+                        path.lineTo(pathPos.x, pathPos.y)
+                    }
                 }
                 drawPath(path, Color.Cyan, style = Stroke(width = 2.dp.toPx()))
             }

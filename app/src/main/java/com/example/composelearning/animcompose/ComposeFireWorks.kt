@@ -90,7 +90,8 @@ data class Particle(
 )
 
 enum class ParticleType {
-    TRAIL, EXPLOSION
+    TRAIL,
+    EXPLOSION
 }
 
 data class Firework(
@@ -318,13 +319,13 @@ data class CircleLayer(
 )
 
 enum class OrnamentType {
-    SPARKLE,      // ✨
-    STAR,         // 🌟
-    DIZZY,        // 💫
-    CIRCLE_RED,   // Red circle
-    STAR_ICON,    // ⭐
+    SPARKLE, // ✨
+    STAR, // 🌟
+    DIZZY, // 💫
+    CIRCLE_RED, // Red circle
+    STAR_ICON, // ⭐
     RED_ENVELOPE, // 🧧
-    BOUQUET       // 💐
+    BOUQUET // 💐
 }
 
 // ============================================================================
@@ -358,15 +359,21 @@ fun AnimatedOrnament(
     ) {
         when (type) {
             OrnamentType.SPARKLE -> Text("✨", fontSize = 10.sp)
+
             OrnamentType.STAR -> Text("🌟", fontSize = 10.sp)
+
             OrnamentType.DIZZY -> Text("💫", fontSize = 10.sp)
+
             OrnamentType.CIRCLE_RED -> {
                 Canvas(modifier = Modifier.size(8.dp)) {
                     drawCircle(color = Color.Red)
                 }
             }
+
             OrnamentType.STAR_ICON -> Text("⭐", fontSize = 12.sp)
+
             OrnamentType.RED_ENVELOPE -> Text("🧧", fontSize = 10.sp)
+
             OrnamentType.BOUQUET -> Text(
                 "💐",
                 fontSize = 10.sp,
@@ -542,6 +549,6 @@ fun ChristmasTree(
 
 @androidx.compose.ui.tooling.preview.Preview
 @Composable
-fun PreviewNewYearsEveFireworks() {
+private fun PreviewNewYearsEveFireworks() {
     NewYearsEveFireworksScreen()
 }

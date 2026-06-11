@@ -109,7 +109,7 @@ data class Product(
     val id: String,
     val title: String,
     val subtitle: String,
-    val imageUrl: String,
+    val imageUrl: String
 )
 
 /**
@@ -174,7 +174,7 @@ private fun ProductImage(
     request: ImageRequest,
     contentDescription: String?,
     modifier: Modifier = Modifier,
-    contentScale: ContentScale = ContentScale.Crop,
+    contentScale: ContentScale = ContentScale.Crop
 ) {
     val placeholderPainter: Painter = ColorPainter(MaterialTheme.colorScheme.surfaceVariant)
     val errorPainter: Painter = ColorPainter(MaterialTheme.colorScheme.errorContainer)
@@ -190,9 +190,9 @@ private fun ProductImage(
             android.util.Log.e(
                 "ProductImage",
                 "Failed to load ${request.data}",
-                state.result.throwable,
+                state.result.throwable
             )
-        },
+        }
     )
 }
 
@@ -229,7 +229,8 @@ fun ProductScreen(products: List<Product>) {
         val sharedScope = this
 
         val screenTransition = updateTransition(
-            targetState = state, label = "screenTransition"
+            targetState = state,
+            label = "screenTransition"
         )
 
         val sharedConfig = remember(screenTransition) {
@@ -244,7 +245,8 @@ fun ProductScreen(products: List<Product>) {
         }
 
         Surface(
-            modifier = Modifier.fillMaxSize(), color = backgroundColor
+            modifier = Modifier.fillMaxSize(),
+            color = backgroundColor
         ) {
             screenTransition.AnimatedContent(
                 transitionSpec = {
@@ -255,43 +257,51 @@ fun ProductScreen(products: List<Product>) {
 
                     when {
                         forward -> {
-                            (slideIntoContainer(
-                                AnimatedContentTransitionScope.SlideDirection.Left,
-                                animationSpec = tween(SCREEN_DURATION, easing = CinematicEasing)
-                            ) + fadeIn(
-                                tween(
-                                    SCREEN_DURATION,
-                                    easing = LinearOutSlowInEasing
+                            (
+                                slideIntoContainer(
+                                    AnimatedContentTransitionScope.SlideDirection.Left,
+                                    animationSpec = tween(SCREEN_DURATION, easing = CinematicEasing)
+                                ) + fadeIn(
+                                    tween(
+                                        SCREEN_DURATION,
+                                        easing = LinearOutSlowInEasing
+                                    )
+                                ) + scaleIn(
+                                    initialScale = 0.98f,
+                                    animationSpec = tween(SCREEN_DURATION, easing = CinematicEasing)
                                 )
-                            ) + scaleIn(
-                                initialScale = 0.98f,
-                                animationSpec = tween(SCREEN_DURATION, easing = CinematicEasing)
-                            )).togetherWith(
+                                ).togetherWith(
                                 slideOutOfContainer(
                                     AnimatedContentTransitionScope.SlideDirection.Left,
                                     animationSpec = tween(
-                                        SCREEN_DURATION, easing = CinematicEasing
+                                        SCREEN_DURATION,
+                                        easing = CinematicEasing
                                     )
                                 ) + fadeOut(
                                     tween(
-                                        SCREEN_DURATION - 150, easing = FastOutSlowInEasing
+                                        SCREEN_DURATION - 150,
+                                        easing = FastOutSlowInEasing
                                     )
                                 )
                             )
                         }
 
                         backward -> {
-                            (slideIntoContainer(
-                                AnimatedContentTransitionScope.SlideDirection.Right,
-                                animationSpec = tween(
-                                    SCREEN_DURATION - 80, easing = CinematicEasing
+                            (
+                                slideIntoContainer(
+                                    AnimatedContentTransitionScope.SlideDirection.Right,
+                                    animationSpec = tween(
+                                        SCREEN_DURATION - 80,
+                                        easing = CinematicEasing
+                                    )
+                                ) + fadeIn(tween(SCREEN_DURATION - 80))
                                 )
-                            ) + fadeIn(tween(SCREEN_DURATION - 80)))
                                 .togetherWith(
                                     slideOutOfContainer(
                                         AnimatedContentTransitionScope.SlideDirection.Right,
                                         animationSpec = tween(
-                                            SCREEN_DURATION - 80, easing = CinematicEasing
+                                            SCREEN_DURATION - 80,
+                                            easing = CinematicEasing
                                         )
                                     ) + fadeOut(tween(SCREEN_DURATION - 150))
                                 )
@@ -302,7 +312,7 @@ fun ProductScreen(products: List<Product>) {
                                 .togetherWith(fadeOut(tween(200)))
                         }
                     }.using(SizeTransform(clip = false))
-                },
+                }
             ) { target ->
                 when (target) {
                     ScreenState.List -> ProductList(
@@ -360,7 +370,8 @@ private fun linearBoundsTransform(
     durationMillis: Int = SHARED_DURATION
 ): BoundsTransform = BoundsTransform { _, _ ->
     tween(
-        durationMillis, easing = CubicBezierEasing(0.2f, 0.9f, 0.3f, 1.15f)
+        durationMillis,
+        easing = CubicBezierEasing(0.2f, 0.9f, 0.3f, 1.15f)
     )
 }
 
@@ -372,7 +383,8 @@ private fun linearBoundsTransform(
  */
 @OptIn(ExperimentalSharedTransitionApi::class)
 private fun arcBoundsTransform(
-    durationMillis: Int = SHARED_DURATION, arcMode: ArcMode = ArcMode.ArcAbove
+    durationMillis: Int = SHARED_DURATION,
+    arcMode: ArcMode = ArcMode.ArcAbove
 ): BoundsTransform = BoundsTransform { initial, target ->
     keyframes {
         this.durationMillis = durationMillis
@@ -478,13 +490,14 @@ fun SharedTransitionScope.ProductListItem(
                 .size(72.dp)
                 .sharedElement(
                     sharedContentState = rememberSharedContentState(
-                        key = "image-${product.id}", config = sharedConfig
+                        key = "image-${product.id}",
+                        config = sharedConfig
                     ),
                     animatedVisibilityScope = animatedVisibilityScope,
                     boundsTransform = linearBoundsTransform(),
-                    clipInOverlayDuringTransition = OverlayClip(RoundedCornerShape(16.dp)),
+                    clipInOverlayDuringTransition = OverlayClip(RoundedCornerShape(16.dp))
                 )
-                .clip(RoundedCornerShape(16.dp)),
+                .clip(RoundedCornerShape(16.dp))
         )
 
         Spacer(Modifier.width(16.dp))
@@ -500,7 +513,8 @@ fun SharedTransitionScope.ProductListItem(
                 modifier = Modifier
                     .sharedElement(
                         sharedContentState = rememberSharedContentState(
-                            key = "title-${product.id}", config = sharedConfig
+                            key = "title-${product.id}",
+                            config = sharedConfig
                         ),
                         animatedVisibilityScope = animatedVisibilityScope,
                         boundsTransform = arcTitleTransform()
@@ -518,7 +532,8 @@ fun SharedTransitionScope.ProductListItem(
                 modifier = Modifier
                     .sharedElement(
                         sharedContentState = rememberSharedContentState(
-                            key = "subtitle-${product.id}", config = sharedConfig
+                            key = "subtitle-${product.id}",
+                            config = sharedConfig
                         ),
                         animatedVisibilityScope = animatedVisibilityScope,
                         boundsTransform = arcSubtitleTransform()
@@ -546,11 +561,13 @@ private fun AnimatedContentScope.ProductDetail(
         modifier = Modifier.fillMaxSize()
     ) {
         TopAppBar(
-            title = {}, navigationIcon = {
+            title = {},
+            navigationIcon = {
                 IconButton(onClick = onBack) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                 }
-            }, colors = TopAppBarDefaults.topAppBarColors(
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.Transparent
             )
         )
@@ -571,14 +588,16 @@ private fun AnimatedContentScope.ProductDetail(
                     .height(320.dp)
                     .sharedBounds(
                         sharedContentState = rememberSharedContentState(
-                            key = "imageBounds-${product.id}", config = sharedConfig
+                            key = "imageBounds-${product.id}",
+                            config = sharedConfig
                         ),
                         animatedVisibilityScope = animatedVisibilityScope,
                         resizeMode = SharedTransitionScope.ResizeMode.scaleToBounds(
-                            contentScale = ContentScale.Fit, alignment = Alignment.Center
+                            contentScale = ContentScale.Fit,
+                            alignment = Alignment.Center
                         ),
                         boundsTransform = arcBoundsTransform(),
-                        clipInOverlayDuringTransition = OverlayClip(headerShape),
+                        clipInOverlayDuringTransition = OverlayClip(headerShape)
                     )
                     .clip(headerShape),
                 contentAlignment = Alignment.Center
@@ -595,13 +614,14 @@ private fun AnimatedContentScope.ProductDetail(
                         .offset(y = (-40).dp)
                         .sharedElement(
                             sharedContentState = rememberSharedContentState(
-                                key = "image-${product.id}", config = sharedConfig
+                                key = "image-${product.id}",
+                                config = sharedConfig
                             ),
                             animatedVisibilityScope = animatedVisibilityScope,
                             boundsTransform = linearBoundsTransform(),
-                            clipInOverlayDuringTransition = OverlayClip(imageShape),
+                            clipInOverlayDuringTransition = OverlayClip(imageShape)
                         )
-                        .clip(imageShape),
+                        .clip(imageShape)
                 )
 
                 Box(
@@ -630,7 +650,8 @@ private fun AnimatedContentScope.ProductDetail(
                         modifier = Modifier
                             .sharedElement(
                                 sharedContentState = rememberSharedContentState(
-                                    key = "title-${product.id}", config = sharedConfig
+                                    key = "title-${product.id}",
+                                    config = sharedConfig
                                 ),
                                 animatedVisibilityScope = animatedVisibilityScope,
                                 boundsTransform = arcTitleTransform()
@@ -649,7 +670,8 @@ private fun AnimatedContentScope.ProductDetail(
                         modifier = Modifier
                             .sharedElement(
                                 sharedContentState = rememberSharedContentState(
-                                    key = "subtitle-${product.id}", config = sharedConfig
+                                    key = "subtitle-${product.id}",
+                                    config = sharedConfig
                                 ),
                                 animatedVisibilityScope = animatedVisibilityScope,
                                 boundsTransform = arcSubtitleTransform()
@@ -678,18 +700,24 @@ private fun AnimatedContentScope.ProductDetail(
                             delayMillis = 120,
                             easing = CinematicEasing
                         )
-                    ) { it / 5 }, exit = fadeOut(
+                    ) { it / 5 },
+                    exit = fadeOut(
                         animationSpec = tween(260)
                     ) + slideOutVertically(
                         animationSpec = tween(260)
-                    ) { it / 5 }), verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) { it / 5 }
+                ),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = "Details", style = MaterialTheme.typography.titleMedium
+                text = "Details",
+                style = MaterialTheme.typography.titleMedium
             )
 
             Text(
-                text = loremLong, style = MaterialTheme.typography.bodyMedium, lineHeight = 20.sp
+                text = loremLong,
+                style = MaterialTheme.typography.bodyMedium,
+                lineHeight = 20.sp
             )
         }
     }
@@ -708,6 +736,7 @@ private val loremLong = """
 /**
  * Sample product data for previews or manual testing.
  */
+
 /**
  * Sample products. Image URLs point at specific photos on Unsplash's CDN — each one was picked to
  * match the product it represents (a real espresso photo for espresso, etc.). The URLs use
@@ -723,67 +752,79 @@ val sampleProducts: List<Product> = listOf(
         id = "espresso",
         title = "Espresso",
         subtitle = "Strong, short, and bold – the purest coffee shot.",
-        imageUrl = unsplash("photo-1510707577719-ae7c14805e3a"),
-    ), Product(
+        imageUrl = unsplash("photo-1510707577719-ae7c14805e3a")
+    ),
+    Product(
         id = "cappuccino",
         title = "Cappuccino",
         subtitle = "Velvety milk foam over a rich espresso base.",
-        imageUrl = unsplash("photo-1572442388796-11668a67e53d"),
-    ), Product(
+        imageUrl = unsplash("photo-1572442388796-11668a67e53d")
+    ),
+    Product(
         id = "latte",
         title = "Caffè Latte",
         subtitle = "Smooth and milky, perfect for a slow morning.",
-        imageUrl = unsplash("photo-1561882468-9110e03e0f78"),
-    ), Product(
+        imageUrl = unsplash("photo-1561882468-9110e03e0f78")
+    ),
+    Product(
         id = "mocha",
         title = "Mocha",
         subtitle = "Chocolate meets espresso – a sweet classic.",
-        imageUrl = unsplash("photo-1578314675229-c7fb52e9d23c"),
-    ), Product(
+        imageUrl = unsplash("photo-1578314675229-c7fb52e9d23c")
+    ),
+    Product(
         id = "iced",
         title = "Iced Coffee",
         subtitle = "Cold, refreshing, and perfect for summer days.",
-        imageUrl = unsplash("photo-1517701604599-bb29b565090c"),
-    ), Product(
+        imageUrl = unsplash("photo-1517701604599-bb29b565090c")
+    ),
+    Product(
         id = "cookies",
         title = "Fresh Cookies",
         subtitle = "Warm, gooey cookies – perfect with any drink.",
-        imageUrl = unsplash("photo-1499636136210-6f4ee915583e"),
-    ), Product(
+        imageUrl = unsplash("photo-1499636136210-6f4ee915583e")
+    ),
+    Product(
         id = "flat_white",
         title = "Flat White",
         subtitle = "Silky microfoam over a rich double espresso.",
-        imageUrl = unsplash("photo-1497935586351-b67a49e012bf"),
-    ), Product(
+        imageUrl = unsplash("photo-1497935586351-b67a49e012bf")
+    ),
+    Product(
         id = "filter",
         title = "Filter Coffee",
         subtitle = "Slow-brewed, clean and bright in flavor.",
-        imageUrl = unsplash("photo-1442550528053-c431ecb55509"),
-    ), Product(
+        imageUrl = unsplash("photo-1442550528053-c431ecb55509")
+    ),
+    Product(
         id = "toast",
         title = "Buttered Toast",
         subtitle = "Golden, crispy slices with melted butter.",
-        imageUrl = unsplash("photo-1525351484163-7529414344d8"),
-    ), Product(
+        imageUrl = unsplash("photo-1525351484163-7529414344d8")
+    ),
+    Product(
         id = "tea",
         title = "Herbal Tea",
         subtitle = "Calming blend of herbs, no caffeine, all comfort.",
-        imageUrl = unsplash("photo-1576092768241-dec231879fc3"),
-    ), Product(
+        imageUrl = unsplash("photo-1576092768241-dec231879fc3")
+    ),
+    Product(
         id = "cake",
         title = "Slice of Cake",
         subtitle = "Rich, moist cake – your afternoon treat.",
-        imageUrl = unsplash("photo-1565958011703-44f9829ba187"),
-    ), Product(
+        imageUrl = unsplash("photo-1565958011703-44f9829ba187")
+    ),
+    Product(
         id = "cupcake",
         title = "Cupcake",
         subtitle = "Small, sweet, and topped with creamy frosting.",
-        imageUrl = unsplash("photo-1426869981800-95ebf51ce900"),
-    ), Product(
+        imageUrl = unsplash("photo-1426869981800-95ebf51ce900")
+    ),
+    Product(
         id = "takeaway",
         title = "Takeaway Coffee",
         subtitle = "Your favorite brew, ready to go.",
-        imageUrl = unsplash("photo-1521017432531-fbd92d768814"),
+        imageUrl = unsplash("photo-1521017432531-fbd92d768814")
     )
 )
 
@@ -796,5 +837,4 @@ val sampleProducts: List<Product> = listOf(
  *   • `auto=format`       — let the CDN serve WebP/AVIF to clients that support it
  *   • `fit=crop`          — center-crop instead of letterboxing
  */
-private fun unsplash(photoId: String): String =
-    "https://images.unsplash.com/$photoId?w=800&q=80&auto=format&fit=crop"
+private fun unsplash(photoId: String): String = "https://images.unsplash.com/$photoId?w=800&q=80&auto=format&fit=crop"

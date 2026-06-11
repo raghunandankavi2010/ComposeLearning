@@ -1,6 +1,5 @@
 package com.example.composelearning.customshapes
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,7 +25,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-
 @Composable
 fun OTPTextField(
     value: String,
@@ -39,7 +37,7 @@ fun OTPTextField(
         keyboardType = KeyboardType.Number
     ),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    onValueChange: (String) -> Unit,
+    onValueChange: (String) -> Unit
 ) {
     val spaceBetweenBoxes = 8.dp
     val gapBetweenLineAndText = 8.dp
@@ -63,7 +61,7 @@ fun OTPTextField(
                 Modifier
                     .fillMaxWidth()
                     .height(boxHeight),
-                horizontalArrangement = Arrangement.Center,
+                horizontalArrangement = Arrangement.Center
             ) {
                 repeat(length) { index ->
                     val color = if (index == value.length) Color.Black else Color.Gray

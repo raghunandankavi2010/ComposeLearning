@@ -50,7 +50,6 @@ fun TextSwitch(
     items: List<String>,
     onSelectionChange: (Int) -> Unit
 ) {
-
     BoxWithConstraints(
         modifier
             .padding(8.dp)
@@ -60,7 +59,6 @@ fun TextSwitch(
             .padding(8.dp)
     ) {
         if (items.isNotEmpty()) {
-
             val maxWidth = this.maxWidth
             val tabWidth = maxWidth / items.size
 
@@ -79,34 +77,32 @@ fun TextSwitch(
                     .fillMaxHeight()
             )
 
-            Row(modifier = Modifier
-                .fillMaxWidth()
-
-                .drawWithContent {
-
-                    // This is for setting black tex while drawing on white background
-                    val padding = 8.dp.toPx()
-                    drawRoundRect(
-                        topLeft = Offset(x = indicatorOffset.toPx() + padding, padding),
-                        size = Size(size.width / 2 - padding * 2, size.height - padding * 2),
-                        color = Color.Black,
-                        cornerRadius = CornerRadius(x = 8.dp.toPx(), y = 8.dp.toPx()),
-                    )
-
-                    drawWithLayer {
-                        drawContent()
-
-                        // This is white top rounded rectangle
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .drawWithContent {
+                        // This is for setting black tex while drawing on white background
+                        val padding = 8.dp.toPx()
                         drawRoundRect(
-                            topLeft = Offset(x = indicatorOffset.toPx(), 0f),
-                            size = Size(size.width / 2, size.height),
-                            color = Color.White,
-                            cornerRadius = CornerRadius(x = 8.dp.toPx(), y = 8.dp.toPx()),
-                            blendMode = BlendMode.SrcOut
+                            topLeft = Offset(x = indicatorOffset.toPx() + padding, padding),
+                            size = Size(size.width / 2 - padding * 2, size.height - padding * 2),
+                            color = Color.Black,
+                            cornerRadius = CornerRadius(x = 8.dp.toPx(), y = 8.dp.toPx())
                         )
-                    }
 
-                }
+                        drawWithLayer {
+                            drawContent()
+
+                            // This is white top rounded rectangle
+                            drawRoundRect(
+                                topLeft = Offset(x = indicatorOffset.toPx(), 0f),
+                                size = Size(size.width / 2, size.height),
+                                color = Color.White,
+                                cornerRadius = CornerRadius(x = 8.dp.toPx(), y = 8.dp.toPx()),
+                                blendMode = BlendMode.SrcOut
+                            )
+                        }
+                    }
             ) {
                 items.forEachIndexed { index, text ->
                     Box(

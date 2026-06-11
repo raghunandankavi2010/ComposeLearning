@@ -1,7 +1,5 @@
 package com.example.composelearning.graphics
 
-import com.example.composelearning.ui.theme.AppFontFamilyMedium
-
 import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -17,13 +15,13 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextMeasurer
@@ -35,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.composelearning.ui.theme.AppFontFamilyMedium
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.round
@@ -46,37 +45,35 @@ fun Modifier.dragIndicatorModifier2(
     maxTemp: Float,
     indicatorWidth: Dp = 10.dp,
     onDragEnd: (Float) -> Unit = {}
-): Modifier {
-    return this.pointerInput(Unit) {
-        detectDragGestures(
-            onDragStart = {
-                // No action needed on drag start
-            },
-            onDrag = { change, dragAmount ->
-                val canvasWidth = size.width - 8.dp.toPx().toInt()
-                val dragRatio = dragAmount.x / canvasWidth.coerceAtLeast(1.toDp().toPx().toInt())
+): Modifier = this.pointerInput(Unit) {
+    detectDragGestures(
+        onDragStart = {
+            // No action needed on drag start
+        },
+        onDrag = { change, dragAmount ->
+            val canvasWidth = size.width - 8.dp.toPx().toInt()
+            val dragRatio = dragAmount.x / canvasWidth.coerceAtLeast(1.toDp().toPx().toInt())
 
-                val positionChange = (maxTemp - minTemp) * dragRatio
-                val newPosition = state.value + positionChange
-                val clampedPosition =
-                    max(minTemp, min(maxTemp, newPosition))
+            val positionChange = (maxTemp - minTemp) * dragRatio
+            val newPosition = state.value + positionChange
+            val clampedPosition =
+                max(minTemp, min(maxTemp, newPosition))
+            state.value = clampedPosition
+        },
+        onDragEnd = {
+            onDragEnd(state.value)
+        }
+    )
+    detectTapGestures(
+        onTap = {
+            val canvasSize = size
+            if (it.x in 0f..(indicatorWidth.toPx() - 5.dp.toPx())) {
+                val newPosition = (it.x / canvasSize.width) * (maxTemp - minTemp) + minTemp
+                val clampedPosition = max(minTemp, min(maxTemp, newPosition))
                 state.value = clampedPosition
-            },
-            onDragEnd = {
-                onDragEnd(state.value)
             }
-        )
-        detectTapGestures(
-            onTap = {
-                val canvasSize = size
-                if (it.x in 0f..(indicatorWidth.toPx() - 5.dp.toPx())) {
-                    val newPosition = (it.x / canvasSize.width) * (maxTemp - minTemp) + minTemp
-                    val clampedPosition = max(minTemp, min(maxTemp, newPosition))
-                    state.value = clampedPosition
-                }
-            }
-        )
-    }
+        }
+    )
 }
 
 /**
@@ -89,14 +86,14 @@ private fun DrawScope.drawTemperatureHandle(centerX: Float) {
         color = Color.White,
         topLeft = Offset(centerX - w / 2f, -3.dp.toPx()),
         size = Size(w, 56.dp.toPx()),
-        cornerRadius = CornerRadius(w / 2f),
+        cornerRadius = CornerRadius(w / 2f)
     )
     val accentW = 3.dp.toPx()
     drawRoundRect(
         color = Color(0xFF169B4A),
         topLeft = Offset(centerX - accentW / 2f, 8.dp.toPx()),
         size = Size(accentW, 34.dp.toPx()),
-        cornerRadius = CornerRadius(accentW / 2f),
+        cornerRadius = CornerRadius(accentW / 2f)
     )
 }
 
@@ -119,10 +116,10 @@ fun getHalfOfRange(min: Float, max: Float): Float {
 private val temperatureAnchors = listOf(
     -20f to Color(0xFFB71C1C), // super cold  -> deep red
     -10f to Color(0xFF1976D2), // cold        -> blue
-    0f to Color(0xFF26C6DA),   // cool        -> cyan
-    20f to Color(0xFF2E9E5B),  // comfortable -> green
-    30f to Color(0xFFFB8C00),  // warm        -> orange
-    40f to Color(0xFFD32F2F),  // too hot     -> red
+    0f to Color(0xFF26C6DA), // cool        -> cyan
+    20f to Color(0xFF2E9E5B), // comfortable -> green
+    30f to Color(0xFFFB8C00), // warm        -> orange
+    40f to Color(0xFFD32F2F) // too hot     -> red
 )
 
 /** Maps a temperature in °C to its zone color, clamped to the anchor range. */
@@ -161,14 +158,14 @@ fun TemperatureChart3(
         fontFamily = AppFontFamilyMedium,
         fontWeight = FontWeight(500),
         color = Color(0xA6000000),
-        textAlign = TextAlign.Center,
+        textAlign = TextAlign.Center
     )
     val badgeStyle = TextStyle(
         fontSize = 13.sp,
         fontFamily = AppFontFamilyMedium,
         fontWeight = FontWeight(700),
         color = Color.White,
-        textAlign = TextAlign.Center,
+        textAlign = TextAlign.Center
     )
 
     Canvas(
@@ -203,7 +200,7 @@ fun TemperatureChart3(
             brush = Brush.horizontalGradient(gradientColors, startX = padX, endX = barRight),
             topLeft = Offset(padX, barTop),
             size = Size(barWidth, barHeight),
-            cornerRadius = corner,
+            cornerRadius = corner
         )
 
         // 2) Ticks (minor + major) and labels under the bar.
@@ -220,13 +217,13 @@ fun TemperatureChart3(
                 color = Color(0x66000000),
                 start = Offset(x, tickTop),
                 end = Offset(x, tickTop + len),
-                strokeWidth = if (isMajor) 2.dp.toPx() else 1.dp.toPx(),
+                strokeWidth = if (isMajor) 2.dp.toPx() else 1.dp.toPx()
             )
             if (isMajor) {
                 val layout = textMeasurer.measure(tv.toInt().toString(), labelStyle)
                 drawText(
                     textLayoutResult = layout,
-                    topLeft = Offset(x - layout.size.width / 2f, tickTop + 14.dp.toPx()),
+                    topLeft = Offset(x - layout.size.width / 2f, tickTop + 14.dp.toPx())
                 )
             }
         }
@@ -237,9 +234,9 @@ fun TemperatureChart3(
         val zoneColor = temperatureColor(value)
         val cx = xForTemp(value).coerceIn(padX, barRight)
 
-        val tipY = barTop + 3.dp.toPx()        // tip dips slightly into the bar
+        val tipY = barTop + 3.dp.toPx() // tip dips slightly into the bar
         val headR = 15.dp.toPx()
-        val headCy = tipY - headR * 2f         // head sits above the bar
+        val headCy = tipY - headR * 2f // head sits above the bar
 
         val pin = Path().apply {
             moveTo(cx, tipY)
@@ -248,7 +245,7 @@ fun TemperatureChart3(
                 rect = Rect(center = Offset(cx, headCy), radius = headR),
                 startAngleDegrees = 135f,
                 sweepAngleDegrees = 270f,
-                forceMoveTo = false,
+                forceMoveTo = false
             )
             close()
         }
@@ -263,15 +260,13 @@ fun TemperatureChart3(
             textLayoutResult = pinLabel,
             topLeft = Offset(
                 cx - pinLabel.size.width / 2f,
-                headCy - pinLabel.size.height / 2f,
-            ),
+                headCy - pinLabel.size.height / 2f
+            )
         )
         // Precise contact dot where the pin meets the bar.
         drawCircle(Color.White, radius = 2.5.dp.toPx(), center = Offset(cx, barTop + barHeight / 2f))
     }
 }
-
-
 
 @Composable
 fun Modifier.dragIndicatorModifier(
@@ -280,40 +275,36 @@ fun Modifier.dragIndicatorModifier(
     maxTemp: Float,
     indicatorWidth: Dp = 10.dp,
     onDragEnd: (Float) -> Unit = {}
-): Modifier {
-    return this.pointerInput(Unit) {
-        detectDragGestures(
-            onDragStart = {
-                // No action needed on drag start
-            },
-            onDrag = { change, dragAmount ->
-                val canvasWidth = size.width
-                val dragRatio = dragAmount.x / canvasWidth.coerceAtLeast(1.toDp().toPx().toInt())
+): Modifier = this.pointerInput(Unit) {
+    detectDragGestures(
+        onDragStart = {
+            // No action needed on drag start
+        },
+        onDrag = { change, dragAmount ->
+            val canvasWidth = size.width
+            val dragRatio = dragAmount.x / canvasWidth.coerceAtLeast(1.toDp().toPx().toInt())
 
-                val positionChange = (maxTemp - minTemp) * dragRatio
-                val newPosition = state.value + positionChange
-                val clampedPosition =
-                    max(minTemp, min(maxTemp, newPosition))
+            val positionChange = (maxTemp - minTemp) * dragRatio
+            val newPosition = state.value + positionChange
+            val clampedPosition =
+                max(minTemp, min(maxTemp, newPosition))
+            state.value = clampedPosition
+        },
+        onDragEnd = {
+            onDragEnd(state.value)
+        }
+    )
+    detectTapGestures(
+        onTap = {
+            val canvasSize = size
+            if (it.x in 0f..(indicatorWidth.toPx() + 5.dp.toPx())) {
+                val newPosition = (it.x / canvasSize.width) * (maxTemp - minTemp) + minTemp
+                val clampedPosition = max(minTemp, min(maxTemp, newPosition))
                 state.value = clampedPosition
-            },
-            onDragEnd = {
-                onDragEnd(state.value)
             }
-        )
-        detectTapGestures(
-            onTap = {
-                val canvasSize = size
-                if (it.x in 0f..(indicatorWidth.toPx() + 5.dp.toPx())) {
-                    val newPosition = (it.x / canvasSize.width) * (maxTemp - minTemp) + minTemp
-                    val clampedPosition = max(minTemp, min(maxTemp, newPosition))
-                    state.value = clampedPosition
-                }
-            }
-        )
-    }
+        }
+    )
 }
-
-
 
 @Composable
 fun TemperatureChart2(
@@ -341,15 +332,13 @@ fun TemperatureChart2(
                 maxTemp = maxTemp.toFloat(),
                 onDragEnd = { newTemp ->
                     val roundedTemp = round(newTemp).toInt()
-                   Toast.makeText(context.applicationContext,"$roundedTemp",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context.applicationContext, "$roundedTemp", Toast.LENGTH_SHORT).show()
                 }
             )
     ) {
-
         val tickSpacing = (this.size.width - 16.dp.toPx()) / (numTicks - 1)
 
         val cornerRadius = CornerRadius((radius.dp.toPx()))
-
 
         drawRoundRect(
             Color(0xFF169B4A),
@@ -357,13 +346,13 @@ fun TemperatureChart2(
             cornerRadius = cornerRadius
         )
 
-        val adjustedLeft = (state.floatValue - minTemp.toFloat()) / (maxTemp.toFloat() - minTemp.toFloat()) * (this.size.width  - cornerRadius.x * 2 )
+        val adjustedLeft = (state.floatValue - minTemp.toFloat()) / (maxTemp.toFloat() - minTemp.toFloat()) * (this.size.width - cornerRadius.x * 2)
 
         drawTemperatureHandle(centerX = adjustedLeft + radius.dp.toPx())
 
         // Loop through each tick position based on spacing
         for (i in 0 until numTicks) {
-            val xPosition =  i * tickSpacing
+            val xPosition = i * tickSpacing
             val text = (minTemp + i * tickInterval).toInt().toString()
 
             // Measure text width for accurate centering
@@ -376,7 +365,7 @@ fun TemperatureChart2(
                     fontWeight = FontWeight(500),
                     color = Color(0xA6000000),
 
-                    textAlign = TextAlign.Center,
+                    textAlign = TextAlign.Center
                 )
             )
 
@@ -392,9 +381,8 @@ fun TemperatureChart2(
             drawText(
                 textLayoutResult = textMeasureResult,
                 color = Color(0xA6000000),
-                topLeft = Offset(
-                    xPosition - (textSize.width )/  2, 66.dp.toPx())
-                )
+                topLeft = Offset(xPosition - (textSize.width) / 2, 66.dp.toPx())
+            )
         }
     }
 }
@@ -414,11 +402,9 @@ fun TemperatureChart(
 
     val state = remember { mutableFloatStateOf(temp.toFloat()) } // Track indicator position
 
-
     Canvas(
         modifier = modifier
     ) {
-
         val tickSpacing = (this.size.width - 16.dp.toPx()) / (numTicks - 1)
 
         val cornerRadius = CornerRadius(8.dp.toPx())
@@ -429,7 +415,7 @@ fun TemperatureChart(
             cornerRadius = cornerRadius
         )
 
-        val adjustedLeft = (state.floatValue - minTemp.toFloat()) / (maxTemp.toFloat() - minTemp.toFloat()) * (this.size.width  - cornerRadius.x * 2 )
+        val adjustedLeft = (state.floatValue - minTemp.toFloat()) / (maxTemp.toFloat() - minTemp.toFloat()) * (this.size.width - cornerRadius.x * 2)
 
         drawTemperatureHandle(centerX = adjustedLeft + 8.dp.toPx())
 
@@ -448,11 +434,11 @@ fun TemperatureChart(
                     fontWeight = FontWeight(500),
                     color = Color(0xA6000000),
 
-                    textAlign = TextAlign.Center,
+                    textAlign = TextAlign.Center
                 )
             )
 
-            translate(left = 8.dp.toPx() ) {
+            translate(left = 8.dp.toPx()) {
                 drawLine(
                     color = Color(0xA6000000),
                     start = Offset(x = xPosition, y = 54.dp.toPx()),
@@ -466,7 +452,8 @@ fun TemperatureChart(
                     textLayoutResult = textMeasureResult,
                     color = Color(0xA6000000),
                     topLeft = Offset(
-                        xPosition - (textSize.width) / 2, 66.dp.toPx()
+                        xPosition - (textSize.width) / 2,
+                        66.dp.toPx()
                     )
                 )
             }
@@ -474,10 +461,9 @@ fun TemperatureChart(
     }
 }
 
+// val textSize = textMeasureResult.size
 
-//val textSize = textMeasureResult.size
-
-//val textCenter = textSize.center
+// val textCenter = textSize.center
 
 //            drawText(
 //                textLayoutResult = textMeasureResult,
@@ -498,13 +484,13 @@ fun TemperatureChart(
 //                )
 //            )
 
-//@Composable
-//fun TemperatureChart(
+// @Composable
+// fun TemperatureChart(
 //    modifier: Modifier = Modifier,
 //    temp: Int,
 //    minTemp: Int = 0,
 //    maxTemp: Int = 60
-//) {
+// ) {
 //
 //    val tickInterval = 15
 //    val numTicks = (maxTemp - minTemp) / tickInterval + 1
@@ -530,10 +516,9 @@ fun TemperatureChart(
 //            )
 //        }
 //    }
-//}
+// }
 
-
-//fun TemperatureChart(modifier: Modifier = Modifier, temp: Int, minTemp: Int, maxTemp: Int) {
+// fun TemperatureChart(modifier: Modifier = Modifier, temp: Int, minTemp: Int, maxTemp: Int) {
 //
 //
 //
@@ -563,4 +548,4 @@ fun TemperatureChart(
 //            )
 //        }
 //    }
-//}
+// }

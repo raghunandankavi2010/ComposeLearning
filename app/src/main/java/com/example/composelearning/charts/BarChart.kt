@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 @Immutable
 data class BarEntry(
     val label: String,
-    val values: List<Float>,
+    val values: List<Float>
 )
 
 enum class BarMode { Grouped, Stacked }
@@ -45,7 +45,7 @@ data class BarChartSpec(
     val rightAxisGutter: Dp = 12.dp,
     val topAxisGutter: Dp = 14.dp,
     val bottomAxisGutter: Dp = 28.dp,
-    val gradient: Boolean = true,
+    val gradient: Boolean = true
 )
 
 /**
@@ -68,7 +68,7 @@ fun BarChart(
     modifier: Modifier = Modifier,
     spec: BarChartSpec = BarChartSpec(),
     theme: ChartTheme = ChartDefaults.theme(),
-    onBarSelected: ((categoryIndex: Int, seriesIndex: Int) -> Unit)? = null,
+    onBarSelected: ((categoryIndex: Int, seriesIndex: Int) -> Unit)? = null
 ) {
     if (entries.isEmpty()) return
     val measurer = rememberTextMeasurer()
@@ -95,7 +95,9 @@ fun BarChart(
                     val slotWidth = plot.width / entries.size
                     val xInSlot = tap.x - plot.left - cat * slotWidth
                     ((xInSlot / (slotWidth / seriesCount)).toInt()).coerceIn(0, seriesCount - 1)
-                } else 0
+                } else {
+                    0
+                }
                 selected = cat to seriesIndex
                 onBarSelected?.invoke(cat, seriesIndex)
             }
@@ -113,13 +115,13 @@ private fun DrawScope.drawBarChart(
     theme: ChartTheme,
     progress: Float,
     selected: Pair<Int, Int>?,
-    measurer: TextMeasurer,
+    measurer: TextMeasurer
 ) {
     val plot = Rect(
         left = spec.leftAxisGutter.toPx(),
         top = spec.topAxisGutter.toPx(),
         right = size.width - spec.rightAxisGutter.toPx(),
-        bottom = size.height - spec.bottomAxisGutter.toPx(),
+        bottom = size.height - spec.bottomAxisGutter.toPx()
     )
 
     // Y grid + labels
@@ -131,7 +133,7 @@ private fun DrawScope.drawBarChart(
                 color = theme.gridColor,
                 start = Offset(plot.left, y),
                 end = Offset(plot.right, y),
-                strokeWidth = theme.gridLineWidth.toPx(),
+                strokeWidth = theme.gridLineWidth.toPx()
             )
             if (spec.yAxis.showLabels) {
                 val layout = measurer.measure(spec.yAxis.labelFormatter(v), style = theme.axisLabelStyle)
@@ -139,8 +141,8 @@ private fun DrawScope.drawBarChart(
                     textLayoutResult = layout,
                     topLeft = Offset(
                         plot.left - layout.size.width - spec.yAxis.labelGap.toPx(),
-                        y - layout.size.height / 2f,
-                    ),
+                        y - layout.size.height / 2f
+                    )
                 )
             }
         }
@@ -150,7 +152,7 @@ private fun DrawScope.drawBarChart(
         color = theme.axisColor,
         start = Offset(plot.left, plot.bottom),
         end = Offset(plot.right, plot.bottom),
-        strokeWidth = theme.axisLineWidth.toPx(),
+        strokeWidth = theme.axisLineWidth.toPx()
     )
 
     val slotWidth = plot.width / entries.size
@@ -181,10 +183,11 @@ private fun DrawScope.drawBarChart(
                         size = Size(barWidth, plot.bottom - animatedTop),
                         color = if (highlighted) color else color.copy(alpha = 0.85f),
                         cornerRadius = spec.cornerRadius.toPx(),
-                        gradient = spec.gradient,
+                        gradient = spec.gradient
                     )
                 }
             }
+
             BarMode.Stacked -> {
                 val barWidth = (slotWidth - spec.groupSpacing.toPx()).coerceAtMost(spec.maxBarWidth.toPx())
                 val barLeft = slotCenter - barWidth / 2f
@@ -202,7 +205,7 @@ private fun DrawScope.drawBarChart(
                         size = Size(barWidth, bottomY - animatedTopY),
                         color = color,
                         cornerRadius = if (sIdx == entry.values.lastIndex) spec.cornerRadius.toPx() else 0f,
-                        gradient = spec.gradient,
+                        gradient = spec.gradient
                     )
                 }
             }
@@ -212,7 +215,7 @@ private fun DrawScope.drawBarChart(
             val layout = measurer.measure(entry.label, style = theme.axisLabelStyle)
             drawText(
                 textLayoutResult = layout,
-                topLeft = Offset(slotCenter - layout.size.width / 2f, plot.bottom + spec.xAxis.labelGap.toPx()),
+                topLeft = Offset(slotCenter - layout.size.width / 2f, plot.bottom + spec.xAxis.labelGap.toPx())
             )
         }
     }
@@ -223,29 +226,31 @@ private fun DrawScope.drawBar(
     size: Size,
     color: Color,
     cornerRadius: Float,
-    gradient: Boolean,
+    gradient: Boolean
 ) {
     if (size.height <= 0f) return
     val brush = if (gradient) {
         Brush.verticalGradient(
             colors = listOf(color, color.copy(alpha = 0.7f)),
             startY = topLeft.y,
-            endY = topLeft.y + size.height,
+            endY = topLeft.y + size.height
         )
-    } else null
+    } else {
+        null
+    }
     if (brush != null) {
         drawRoundRect(
             brush = brush,
             topLeft = topLeft,
             size = size,
-            cornerRadius = CornerRadius(cornerRadius, cornerRadius),
+            cornerRadius = CornerRadius(cornerRadius, cornerRadius)
         )
     } else {
         drawRoundRect(
             color = color,
             topLeft = topLeft,
             size = size,
-            cornerRadius = CornerRadius(cornerRadius, cornerRadius),
+            cornerRadius = CornerRadius(cornerRadius, cornerRadius)
         )
     }
 }
@@ -254,12 +259,12 @@ private fun barPlotRect(
     width: Float,
     height: Float,
     spec: BarChartSpec,
-    density: androidx.compose.ui.unit.Density,
+    density: androidx.compose.ui.unit.Density
 ): Rect = with(density) {
     Rect(
         left = spec.leftAxisGutter.toPx(),
         top = spec.topAxisGutter.toPx(),
         right = width - spec.rightAxisGutter.toPx(),
-        bottom = height - spec.bottomAxisGutter.toPx(),
+        bottom = height - spec.bottomAxisGutter.toPx()
     )
 }

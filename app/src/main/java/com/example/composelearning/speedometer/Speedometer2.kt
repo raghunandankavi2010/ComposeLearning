@@ -1,6 +1,5 @@
 package com.example.composelearning.speedometer
 
-
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -20,15 +19,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import com.example.composelearning.util.LogCompositions
 import com.example.composelearning.R
-import kotlinx.coroutines.launch
+import com.example.composelearning.util.LogCompositions
 import kotlin.math.PI
-
+import kotlinx.coroutines.launch
 
 @Composable
 fun Speedometer2(
-    progress: Int,
+    progress: Int
 ) {
     LogCompositions("Speedometer", "Running")
     val arcDegrees = 180f
@@ -44,7 +42,6 @@ fun Speedometer2(
         Animatable(startAngleRadians.toFloat())
     }
 
-
     val vector = ImageVector.vectorResource(id = R.drawable.arc)
     val painter = rememberVectorPainter(image = vector)
 
@@ -55,12 +52,14 @@ fun Speedometer2(
         launch {
             pointerAnimation.animateTo(
                 targetValue = endProgressInRadians.toFloat(),
-                animationSpec = tween(durationMillis = 3000, easing = CustomEaseOutBounce))
+                animationSpec = tween(durationMillis = 3000, easing = CustomEaseOutBounce)
+            )
         }
         launch {
             progressAnimation.animateTo(
                 targetValue = progress.toFloat(),
-                animationSpec = tween(durationMillis = 3000, easing = CustomEaseOutBounce))
+                animationSpec = tween(durationMillis = 3000, easing = CustomEaseOutBounce)
+            )
         }
     }
 
@@ -83,7 +82,7 @@ fun Speedometer2(
                     }
                 }
 
-                rotate(progressAnimation.value * (arcDegrees) / 100f -  118f, pivot = Offset(centerOffset.x,centerOffset.y)) {
+                rotate(progressAnimation.value * (arcDegrees) / 100f - 118f, pivot = Offset(centerOffset.x, centerOffset.y)) {
                     translate(
                         left = centerOffset.x - 70.dp.toPx(),
                         top = centerOffset.y - 70.dp.toPx()

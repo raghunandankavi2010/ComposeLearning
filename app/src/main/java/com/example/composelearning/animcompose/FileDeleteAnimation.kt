@@ -38,7 +38,12 @@ data class FileItem(
 )
 
 enum class FileType {
-    DOCUMENT, IMAGE, VIDEO, AUDIO, FOLDER, ARCHIVE
+    DOCUMENT,
+    IMAGE,
+    VIDEO,
+    AUDIO,
+    FOLDER,
+    ARCHIVE
 }
 
 // ============================================
@@ -203,10 +208,11 @@ fun FileItemWithAnimation(
             },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = if (isDeleting)
+            containerColor = if (isDeleting) {
                 MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f)
-            else
+            } else {
                 MaterialTheme.colorScheme.surface
+            }
         ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = if (isDeleting) 8.dp else 1.dp
@@ -230,10 +236,11 @@ fun FileItemWithAnimation(
                     fontWeight = FontWeight.Medium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    color = if (isDeleting)
+                    color = if (isDeleting) {
                         MaterialTheme.colorScheme.error
-                    else
+                    } else {
                         MaterialTheme.colorScheme.onSurface
+                    }
                 )
                 Text(
                     text = "${file.size} • ${file.date}",
@@ -309,8 +316,11 @@ fun TrashBin(
                 .width(48.dp)
                 .height(10.dp)
                 .background(
-                    color = if (isOpen) MaterialTheme.colorScheme.error
-                    else MaterialTheme.colorScheme.outline,
+                    color = if (isOpen) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        MaterialTheme.colorScheme.outline
+                    },
                     shape = RoundedCornerShape(topStart = 6.dp, topEnd = 6.dp)
                 )
         )
@@ -320,8 +330,11 @@ fun TrashBin(
         // Bin Body
         Surface(
             shape = RoundedCornerShape(bottomStart = 10.dp, bottomEnd = 10.dp),
-            color = if (isOpen) MaterialTheme.colorScheme.errorContainer
-            else MaterialTheme.colorScheme.surfaceVariant,
+            color = if (isOpen) {
+                MaterialTheme.colorScheme.errorContainer
+            } else {
+                MaterialTheme.colorScheme.surfaceVariant
+            },
             modifier = Modifier
                 .size(48.dp, 50.dp)
                 .scale(binScale)
@@ -336,8 +349,11 @@ fun TrashBin(
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = "Trash",
-                    tint = if (isOpen) MaterialTheme.colorScheme.error
-                    else MaterialTheme.colorScheme.onSurfaceVariant,
+                    tint = if (isOpen) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -357,26 +373,31 @@ private fun FileIcon(type: FileType, isDeleting: Boolean) {
             Color(0xFFE3F2FD),
             Color(0xFF1976D2)
         )
+
         FileType.IMAGE -> Triple(
             Icons.Default.Image,
             Color(0xFFF3E5F5),
             Color(0xFF7B1FA2)
         )
+
         FileType.VIDEO -> Triple(
             Icons.Default.Videocam,
             Color(0xFFFFEBEE),
             Color(0xFFC62828)
         )
+
         FileType.AUDIO -> Triple(
             Icons.Default.Audiotrack,
             Color(0xFFE8F5E9),
             Color(0xFF388E3C)
         )
+
         FileType.FOLDER -> Triple(
             Icons.Default.Folder,
             Color(0xFFFFF3E0),
             Color(0xFFF57C00)
         )
+
         FileType.ARCHIVE -> Triple(
             Icons.Default.FolderZip,
             Color(0xFFECEFF1),
@@ -404,7 +425,7 @@ private fun FileIcon(type: FileType, isDeleting: Boolean) {
 
 @Preview(showBackground = true)
 @Composable
-fun FileManagerPreview() {
+private fun FileManagerPreview() {
     MaterialTheme {
         FileManagerScreen()
     }

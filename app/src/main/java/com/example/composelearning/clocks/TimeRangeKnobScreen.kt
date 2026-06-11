@@ -8,10 +8,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -67,7 +67,7 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 
 private const val MINUTES_PER_DAY = 24 * 60
-private const val MINUTES_PER_HALF = 12 * 60   // dial face spans 12 hours
+private const val MINUTES_PER_HALF = 12 * 60 // dial face spans 12 hours
 private const val SNAP_MINUTES = 5
 
 @Composable
@@ -81,7 +81,7 @@ fun TimeRangeKnobScreen() {
     val background by animateColorAsState(
         palette.background,
         animationSpec = tween(600),
-        label = "background",
+        label = "background"
     )
     val surface by animateColorAsState(palette.surface, tween(600), label = "surface")
     val onSurface by animateColorAsState(palette.onSurface, tween(600), label = "onSurface")
@@ -95,28 +95,31 @@ fun TimeRangeKnobScreen() {
             .background(background)
             .systemBarsPadding()
             .padding(horizontal = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(Modifier.height(8.dp))
         Text(
             text = palette.title,
             style = MaterialTheme.typography.titleMedium,
             color = onSurfaceMuted,
-            fontWeight = FontWeight.Medium,
+            fontWeight = FontWeight.Medium
         )
         Spacer(Modifier.height(4.dp))
         Text(
             text = "Schedule",
             style = MaterialTheme.typography.headlineLarge,
             color = onSurface,
-            fontWeight = FontWeight.SemiBold,
+            fontWeight = FontWeight.SemiBold
         )
         Spacer(Modifier.height(28.dp))
 
         TimeRangeDial(
             startMinutes = startMinutes,
             endMinutes = endMinutes,
-            onChange = { s, e -> startMinutes = s; endMinutes = e },
+            onChange = { s, e ->
+                startMinutes = s
+                endMinutes = e
+            },
             trackColor = onSurface,
             onTrackColor = onSurfaceMuted,
             surfaceColor = surface,
@@ -125,14 +128,14 @@ fun TimeRangeKnobScreen() {
             backgroundColor = background,
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(1f),
+                .aspectRatio(1f)
         )
 
         Spacer(Modifier.height(32.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             TimeBadge(
                 label = "Bedtime",
@@ -142,7 +145,7 @@ fun TimeRangeKnobScreen() {
                 surface = surface,
                 onSurface = onSurface,
                 onSurfaceMuted = onSurfaceMuted,
-                onClick = { startMinutes = toggleAmPm(startMinutes) },
+                onClick = { startMinutes = toggleAmPm(startMinutes) }
             )
             TimeBadge(
                 label = "Wake up",
@@ -152,7 +155,7 @@ fun TimeRangeKnobScreen() {
                 surface = surface,
                 onSurface = onSurface,
                 onSurfaceMuted = onSurfaceMuted,
-                onClick = { endMinutes = toggleAmPm(endMinutes) },
+                onClick = { endMinutes = toggleAmPm(endMinutes) }
             )
         }
 
@@ -167,16 +170,16 @@ fun TimeRangeKnobScreen() {
                         radius = 28.dp,
                         color = accentStart,
                         offset = DpOffset(0.dp, 12.dp),
-                        alpha = 0.35f,
-                    ),
+                        alpha = 0.35f
+                    )
                 )
                 .background(surface, RoundedCornerShape(28.dp))
-                .padding(horizontal = 20.dp, vertical = 18.dp),
+                .padding(horizontal = 20.dp, vertical = 18.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
                     Text("Duration", color = onSurfaceMuted, style = MaterialTheme.typography.labelMedium)
@@ -185,7 +188,7 @@ fun TimeRangeKnobScreen() {
                         text = formatDuration(durationMinutes(startMinutes, endMinutes)),
                         color = onSurface,
                         style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.SemiBold,
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
                 Text(
@@ -195,9 +198,9 @@ fun TimeRangeKnobScreen() {
                     modifier = Modifier
                         .background(
                             color = accentStart.copy(alpha = 0.15f),
-                            shape = RoundedCornerShape(50),
+                            shape = RoundedCornerShape(50)
                         )
-                        .padding(horizontal = 14.dp, vertical = 6.dp),
+                        .padding(horizontal = 14.dp, vertical = 6.dp)
                 )
             }
         }
@@ -213,20 +216,20 @@ private fun TimeBadge(
     surface: Color,
     onSurface: Color,
     onSurfaceMuted: Color,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .clip(RoundedCornerShape(16.dp))
             .clickable(onClick = onClick)
-            .padding(4.dp),
+            .padding(4.dp)
     ) {
         Box(
             modifier = Modifier
                 .size(44.dp)
                 .background(surface, CircleShape),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             Icon(imageVector = icon, contentDescription = null, tint = tint)
         }
@@ -237,7 +240,7 @@ private fun TimeBadge(
                 text = time,
                 color = onSurface,
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.SemiBold
             )
         }
     }
@@ -254,7 +257,7 @@ private fun TimeRangeDial(
     accentStart: Color,
     accentEnd: Color,
     backgroundColor: Color,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val density = LocalDensity.current
     val textMeasurer = rememberTextMeasurer()
@@ -288,7 +291,7 @@ private fun TimeRangeDial(
         TextStyle(
             color = onTrackColor,
             fontSize = 13.sp,
-            fontWeight = FontWeight.Medium,
+            fontWeight = FontWeight.Medium
         )
     }
     val centerStyle = remember(trackColor) {
@@ -315,8 +318,14 @@ private fun TimeRangeDial(
                             activeThumb = if (ds <= de) 0 else 1
                             lastDragAngle = angleAt(pos, centerPx)
                         },
-                        onDragEnd = { activeThumb = null; lastDragAngle = null },
-                        onDragCancel = { activeThumb = null; lastDragAngle = null },
+                        onDragEnd = {
+                            activeThumb = null
+                            lastDragAngle = null
+                        },
+                        onDragCancel = {
+                            activeThumb = null
+                            lastDragAngle = null
+                        },
                         onDrag = { change, _ ->
                             change.consume()
                             val newAngle = angleAt(change.position, centerPx)
@@ -333,20 +342,21 @@ private fun TimeRangeDial(
                                 when (activeThumb) {
                                     0 -> currentOnChange(
                                         wrapDay(currentStart + deltaMinutes),
-                                        currentEnd,
+                                        currentEnd
                                     )
+
                                     1 -> currentOnChange(
                                         currentStart,
-                                        wrapDay(currentEnd + deltaMinutes),
+                                        wrapDay(currentEnd + deltaMinutes)
                                     )
                                 }
                                 // Only commit the new reference angle when we actually consumed
                                 // a full snap step — otherwise small jitter would never accumulate.
                                 lastDragAngle = newAngle
                             }
-                        },
+                        }
                     )
-                },
+                }
         ) {
             val ringTopLeft = Offset(centerPx.x - ringRadiusPx, centerPx.y - ringRadiusPx)
             val ringSize = Size(ringRadiusPx * 2, ringRadiusPx * 2)
@@ -356,12 +366,14 @@ private fun TimeRangeDial(
                 color = onTrackColor.copy(alpha = 0.10f),
                 radius = ringRadiusPx,
                 center = centerPx,
-                style = Stroke(width = ringStrokePx),
+                style = Stroke(width = ringStrokePx)
             )
 
             // 2. Active arc (sweep gradient between the thumbs)
-            val startAngleDeg = ((startMinutes % MINUTES_PER_HALF) /
-                    MINUTES_PER_HALF.toFloat()) * 360f - 90f
+            val startAngleDeg = (
+                (startMinutes % MINUTES_PER_HALF) /
+                    MINUTES_PER_HALF.toFloat()
+                ) * 360f - 90f
             val sweepDeg = sweepDegrees(startMinutes, endMinutes)
             drawArc(
                 brush = arcBrush,
@@ -370,7 +382,7 @@ private fun TimeRangeDial(
                 useCenter = false,
                 topLeft = ringTopLeft,
                 size = ringSize,
-                style = Stroke(width = ringStrokePx, cap = StrokeCap.Round),
+                style = Stroke(width = ringStrokePx, cap = StrokeCap.Round)
             )
 
             // 3. Tick marks — 48 total (every 15 minutes on a 12h face).
@@ -385,15 +397,29 @@ private fun TimeRangeDial(
             val quarterStroke = 1.dp.toPx()
             for (i in 0 until totalTicks) {
                 val angle = (i / totalTicks.toFloat()) * 2f * PI.toFloat() - (PI.toFloat() / 2f)
-                val onCardinal = i % (totalTicks / 4) == 0   // every 3h on a 12h face
-                val onHour = i % 4 == 0                       // every hour
+                val onCardinal = i % (totalTicks / 4) == 0 // every 3h on a 12h face
+                val onHour = i % 4 == 0 // every hour
                 val len: Float
                 val alpha: Float
                 val stroke: Float
                 when {
-                    onCardinal -> { len = cardinalLen; alpha = 0.90f; stroke = cardinalStroke }
-                    onHour -> { len = hourLen; alpha = 0.55f; stroke = hourStroke }
-                    else -> { len = quarterLen; alpha = 0.22f; stroke = quarterStroke }
+                    onCardinal -> {
+                        len = cardinalLen
+                        alpha = 0.90f
+                        stroke = cardinalStroke
+                    }
+
+                    onHour -> {
+                        len = hourLen
+                        alpha = 0.55f
+                        stroke = hourStroke
+                    }
+
+                    else -> {
+                        len = quarterLen
+                        alpha = 0.22f
+                        stroke = quarterStroke
+                    }
                 }
                 val r1 = tickInnerRadius
                 val r0 = tickInnerRadius - len
@@ -404,7 +430,7 @@ private fun TimeRangeDial(
                     start = Offset(centerPx.x + cosA * r0, centerPx.y + sinA * r0),
                     end = Offset(centerPx.x + cosA * r1, centerPx.y + sinA * r1),
                     strokeWidth = stroke,
-                    cap = StrokeCap.Round,
+                    cap = StrokeCap.Round
                 )
             }
 
@@ -414,15 +440,15 @@ private fun TimeRangeDial(
                 val angle = (h / 12f) * 2f * PI.toFloat() - (PI.toFloat() / 2f)
                 val pos = Offset(
                     centerPx.x + cos(angle) * labelRadius,
-                    centerPx.y + sin(angle) * labelRadius,
+                    centerPx.y + sin(angle) * labelRadius
                 )
                 val measured = textMeasurer.measure(AnnotatedString(label), style = labelStyle)
                 drawText(
                     textLayoutResult = measured,
                     topLeft = Offset(
                         pos.x - measured.size.width / 2f,
-                        pos.y - measured.size.height / 2f,
-                    ),
+                        pos.y - measured.size.height / 2f
+                    )
                 )
             }
 
@@ -433,30 +459,30 @@ private fun TimeRangeDial(
                 style = TextStyle(
                     color = trackColor,
                     fontSize = 40.sp,
-                    fontWeight = FontWeight.SemiBold,
-                ),
+                    fontWeight = FontWeight.SemiBold
+                )
             )
             val captionMeasured = textMeasurer.measure(
                 AnnotatedString("Duration"),
                 style = TextStyle(
                     color = onTrackColor,
                     fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                ),
+                    fontWeight = FontWeight.Medium
+                )
             )
             drawText(
                 textLayoutResult = captionMeasured,
                 topLeft = Offset(
                     centerPx.x - captionMeasured.size.width / 2f,
-                    centerPx.y - durationMeasured.size.height / 2f - captionMeasured.size.height - 4.dp.toPx(),
-                ),
+                    centerPx.y - durationMeasured.size.height / 2f - captionMeasured.size.height - 4.dp.toPx()
+                )
             )
             drawText(
                 textLayoutResult = durationMeasured,
                 topLeft = Offset(
                     centerPx.x - durationMeasured.size.width / 2f,
-                    centerPx.y - durationMeasured.size.height / 2f,
-                ),
+                    centerPx.y - durationMeasured.size.height / 2f
+                )
             )
         }
 
@@ -466,14 +492,14 @@ private fun TimeRangeDial(
             iconColor = accentStart,
             surface = surfaceColor,
             iconVector = Icons.Default.DarkMode,
-            thumbSize = thumbSize,
+            thumbSize = thumbSize
         )
         Thumb(
             offsetPx = IntOffset((endPos.x - thumbRadiusPx).toInt(), (endPos.y - thumbRadiusPx).toInt()),
             iconColor = accentEnd,
             surface = surfaceColor,
             iconVector = Icons.Default.WbSunny,
-            thumbSize = thumbSize,
+            thumbSize = thumbSize
         )
     }
 }
@@ -484,7 +510,7 @@ private fun Thumb(
     iconColor: Color,
     surface: Color,
     iconVector: androidx.compose.ui.graphics.vector.ImageVector,
-    thumbSize: Dp,
+    thumbSize: Dp
 ) {
     Box(
         modifier = Modifier
@@ -496,17 +522,17 @@ private fun Thumb(
                     radius = 16.dp,
                     color = iconColor,
                     offset = DpOffset(0.dp, 4.dp),
-                    alpha = 0.55f,
-                ),
+                    alpha = 0.55f
+                )
             )
             .background(surface, CircleShape),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Icon(
             imageVector = iconVector,
             contentDescription = null,
             tint = iconColor,
-            modifier = Modifier.size(thumbSize * 0.55f),
+            modifier = Modifier.size(thumbSize * 0.55f)
         )
     }
 }
@@ -515,7 +541,7 @@ private fun Thumb(
 
 private fun thumbPosition(center: Offset, radius: Float, minutes: Int): Offset {
     val angle = ((minutes % MINUTES_PER_HALF) / MINUTES_PER_HALF.toFloat()) *
-            2f * PI.toFloat() - PI.toFloat() / 2f
+        2f * PI.toFloat() - PI.toFloat() / 2f
     return Offset(center.x + cos(angle) * radius, center.y + sin(angle) * radius)
 }
 
@@ -532,20 +558,20 @@ private fun angleAt(point: Offset, center: Offset): Float {
 private fun wrapDay(minutes: Int): Int = ((minutes % MINUTES_PER_DAY) + MINUTES_PER_DAY) % MINUTES_PER_DAY
 
 /** Flip a time by +/- 12h, mod 24h. */
-private fun toggleAmPm(minutes: Int): Int =
-    (minutes + MINUTES_PER_HALF) % MINUTES_PER_DAY
+private fun toggleAmPm(minutes: Int): Int = (minutes + MINUTES_PER_HALF) % MINUTES_PER_DAY
 
 private fun sweepDegrees(start: Int, end: Int): Float {
     val dur = durationMinutes(start, end)
-    return if (dur >= MINUTES_PER_HALF) 360f
-    else (dur / MINUTES_PER_HALF.toFloat()) * 360f
+    return if (dur >= MINUTES_PER_HALF) {
+        360f
+    } else {
+        (dur / MINUTES_PER_HALF.toFloat()) * 360f
+    }
 }
 
-private fun durationMinutes(start: Int, end: Int): Int =
-    if (end >= start) end - start else MINUTES_PER_DAY - start + end
+private fun durationMinutes(start: Int, end: Int): Int = if (end >= start) end - start else MINUTES_PER_DAY - start + end
 
-private fun midpointMinutes(start: Int, end: Int): Int =
-    (start + durationMinutes(start, end) / 2) % MINUTES_PER_DAY
+private fun midpointMinutes(start: Int, end: Int): Int = (start + durationMinutes(start, end) / 2) % MINUTES_PER_DAY
 
 private fun formatTime(minutes: Int): String {
     val h24 = minutes / 60
@@ -571,7 +597,7 @@ private data class DialPalette(
     val onSurface: Color,
     val onSurfaceMuted: Color,
     val accentStart: Color,
-    val accentEnd: Color,
+    val accentEnd: Color
 )
 
 private fun paletteFor(midpointMin: Int): DialPalette {
@@ -585,7 +611,7 @@ private fun paletteFor(midpointMin: Int): DialPalette {
             onSurface = Color(0xFFE8ECFF),
             onSurfaceMuted = Color(0xFF8E97C9),
             accentStart = Color(0xFF818CF8),
-            accentEnd = Color(0xFFC084FC),
+            accentEnd = Color(0xFFC084FC)
         )
     } else {
         DialPalette(
@@ -596,7 +622,7 @@ private fun paletteFor(midpointMin: Int): DialPalette {
             onSurface = Color(0xFF1F2937),
             onSurfaceMuted = Color(0xFF6B7280),
             accentStart = Color(0xFFFF8A65),
-            accentEnd = Color(0xFFFBBF24),
+            accentEnd = Color(0xFFFBBF24)
         )
     }
 }

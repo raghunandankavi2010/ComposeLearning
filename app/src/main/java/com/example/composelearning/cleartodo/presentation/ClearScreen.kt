@@ -40,8 +40,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.composelearning.cleartodo.domain.model.TaskItem
-import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
 
 private val TaskHeight = 64.dp
 private val ColorTop = Color(0xFFC52B27)
@@ -51,18 +51,18 @@ private const val COMMIT_THRESHOLD = 0.6f
 
 @Composable
 fun ClearScreen(
-    viewModel: ClearViewModel = viewModel(factory = ClearViewModel.Factory()),
+    viewModel: ClearViewModel = viewModel(factory = ClearViewModel.Factory())
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     Column(
-        modifier = Modifier.fillMaxSize().background(Color.Black).systemBarsPadding(),
+        modifier = Modifier.fillMaxSize().background(Color.Black).systemBarsPadding()
     ) {
         Text(
             "Clear",
             color = Color.White,
             fontSize = 26.sp,
             fontWeight = FontWeight.Light,
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier.fillMaxWidth().padding(16.dp)
         )
         if (state.isLoading) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -71,7 +71,7 @@ fun ClearScreen(
         } else {
             ClearList(
                 tasks = state.tasks,
-                onCreateAt = { viewModel.onIntent(ClearIntent.CreateTaskAt(it)) },
+                onCreateAt = { viewModel.onIntent(ClearIntent.CreateTaskAt(it)) }
             )
         }
     }
@@ -118,7 +118,7 @@ private fun ClearList(tasks: List<TaskItem>, onCreateAt: (Int) -> Unit) {
                         open.animateTo(0f, tween(220))
                     }
                 }
-            },
+            }
     ) {
         val openValue = open.value
         val halfPx = openValue * taskPx / 2f
@@ -130,7 +130,7 @@ private fun ClearList(tasks: List<TaskItem>, onCreateAt: (Int) -> Unit) {
             TaskRow(
                 task = task,
                 color = lerp(ColorTop, ColorBottom, if (tasks.size <= 1) 0f else index / (tasks.size - 1f)),
-                modifier = Modifier.offset { IntOffset(0, y.roundToInt()) },
+                modifier = Modifier.offset { IntOffset(0, y.roundToInt()) }
             )
         }
 
@@ -140,21 +140,21 @@ private fun ClearList(tasks: List<TaskItem>, onCreateAt: (Int) -> Unit) {
                 boundaryYpx = focal * taskPx,
                 gapPx = openValue * taskPx,
                 unfold = openValue,
-                density = density.density,
+                density = density.density
             )
         }
     }
 }
 
 @Composable
-private fun TaskRow(task: TaskItem, color: Color, modifier: Modifier) {
+private fun TaskRow(task: TaskItem, color: Color, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(TaskHeight)
             .background(color)
             .padding(horizontal = 16.dp),
-        contentAlignment = Alignment.CenterStart,
+        contentAlignment = Alignment.CenterStart
     ) {
         Text(task.text, color = Color.White, fontSize = 17.sp)
     }
@@ -176,7 +176,7 @@ private fun CreateRow(boundaryYpx: Float, gapPx: Float, unfold: Float, density: 
         modifier = Modifier
             .offset { IntOffset(0, topY.roundToInt()) }
             .fillMaxWidth()
-            .height(gapDp),
+            .height(gapDp)
     ) {
         // Top face: pivots about its bottom edge (the crease).
         Box(
@@ -190,7 +190,7 @@ private fun CreateRow(boundaryYpx: Float, gapPx: Float, unfold: Float, density: 
                     cameraDistance = 16f * density
                 }
                 .clipToBounds()
-                .background(CreateGreen),
+                .background(CreateGreen)
         )
         // Bottom face: pivots about its top edge.
         Box(
@@ -204,14 +204,14 @@ private fun CreateRow(boundaryYpx: Float, gapPx: Float, unfold: Float, density: 
                     cameraDistance = 16f * density
                 }
                 .clipToBounds()
-                .background(CreateGreen),
+                .background(CreateGreen)
         )
         Text(
             "＋  Create a new Task",
             color = Color.White.copy(alpha = unfold),
             fontSize = 16.sp,
             fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.align(Alignment.Center),
+            modifier = Modifier.align(Alignment.Center)
         )
     }
 }

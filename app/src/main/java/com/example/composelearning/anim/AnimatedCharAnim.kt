@@ -59,14 +59,14 @@ fun StaggeredTextAnimation(
                             delayMillis = index * staggerDelay.toInt() // Staggered delay
                         )
                     ) +
-                            // Slide in from the bottom. A positive initialOffsetY slides UP.
-                            slideInVertically(
-                                initialOffsetY = { it / 2 }, // Slide in from half its height down
-                                animationSpec = tween(
-                                    durationMillis = 3000,
-                                    delayMillis = index * staggerDelay.toInt()
-                                )
+                        // Slide in from the bottom. A positive initialOffsetY slides UP.
+                        slideInVertically(
+                            initialOffsetY = { it / 2 }, // Slide in from half its height down
+                            animationSpec = tween(
+                                durationMillis = 3000,
+                                delayMillis = index * staggerDelay.toInt()
                             )
+                        )
             ) {
                 // The actual character displayed as a Text composable.
                 Text(
@@ -81,7 +81,7 @@ fun StaggeredTextAnimation(
 
 @Preview(showBackground = true)
 @Composable
-fun TextAnimationPreview() {
+private fun TextAnimationPreview() {
     // A main container to center everything on the screen
     Box(
         modifier = Modifier.fillMaxSize(),

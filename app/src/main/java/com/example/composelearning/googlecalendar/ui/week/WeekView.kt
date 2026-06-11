@@ -37,11 +37,11 @@ import com.example.composelearning.googlecalendar.domain.model.CalendarEvent
 import com.example.composelearning.googlecalendar.ui.day.HOUR_HEIGHT_DP
 import com.example.composelearning.googlecalendar.util.DateUtils
 import com.example.composelearning.googlecalendar.util.OverlapCalculator
-import kotlinx.coroutines.flow.distinctUntilChanged
 import java.time.LocalDate
 import java.time.LocalTime
+import kotlinx.coroutines.flow.distinctUntilChanged
 
-private const val WEEK_PAGE_COUNT = 104  // ~1 year before and after
+private const val WEEK_PAGE_COUNT = 104 // ~1 year before and after
 private const val WEEK_CENTER_PAGE = WEEK_PAGE_COUNT / 2
 
 @Composable
@@ -88,8 +88,11 @@ fun WeekView(
 
             WeekTimeline(
                 weekDays = pageWeekDays,
-                eventsByDay = if (pageWeekStart == DateUtils.startOfWeek(selectedDate))
-                    weekEvents else emptyMap()
+                eventsByDay = if (pageWeekStart == DateUtils.startOfWeek(selectedDate)) {
+                    weekEvents
+                } else {
+                    emptyMap()
+                }
             )
         }
     }
@@ -228,7 +231,13 @@ private fun WeekTimeLabel(
         contentAlignment = Alignment.TopCenter
     ) {
         if (hour != 0) {
-            val displayHour = if (hour > 12) hour - 12 else if (hour == 0) 12 else hour
+            val displayHour = if (hour > 12) {
+                hour - 12
+            } else if (hour == 0) {
+                12
+            } else {
+                hour
+            }
             val amPm = if (hour < 12) "AM" else "PM"
             Text(
                 text = "$displayHour $amPm",

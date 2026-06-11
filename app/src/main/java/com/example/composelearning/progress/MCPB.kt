@@ -16,7 +16,6 @@ package com.example.composelearning.progress
  * limitations under the License.
  */
 
-
 import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.Spring
@@ -82,7 +81,7 @@ fun LinearProgressIndicator(
     modifier: Modifier = Modifier,
     color: Color = ProgressIndicatorDefaults.linearColor,
     trackColor: Color = ProgressIndicatorDefaults.linearTrackColor,
-    strokeCap: StrokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
+    strokeCap: StrokeCap = ProgressIndicatorDefaults.LinearStrokeCap
 ) {
     val coercedProgress = { progress().coerceIn(0f, 1f) }
     Canvas(
@@ -119,7 +118,7 @@ fun LinearProgressIndicator(
     modifier: Modifier = Modifier,
     color: Color = ProgressIndicatorDefaults.linearColor,
     trackColor: Color = ProgressIndicatorDefaults.linearTrackColor,
-    strokeCap: StrokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
+    strokeCap: StrokeCap = ProgressIndicatorDefaults.LinearStrokeCap
 ) {
     val infiniteTransition = rememberInfiniteTransition()
     // Fractional position of the 'head' and 'tail' of the two lines drawn, i.e. if the head is 0.8
@@ -183,7 +182,7 @@ fun LinearProgressIndicator(
                 firstLineTail.value,
                 color,
                 strokeWidth,
-                strokeCap,
+                strokeCap
             )
         }
         if (secondLineHead.value - secondLineTail.value > 0) {
@@ -192,7 +191,7 @@ fun LinearProgressIndicator(
                 secondLineTail.value,
                 color,
                 strokeWidth,
-                strokeCap,
+                strokeCap
             )
         }
     }
@@ -200,13 +199,15 @@ fun LinearProgressIndicator(
 
 @Deprecated(
     message = "Use the overload that takes `progress` as a lambda",
-    replaceWith = ReplaceWith("LinearProgressIndicator(\n" +
+    replaceWith = ReplaceWith(
+        "LinearProgressIndicator(\n" +
             "progress = { progress },\n" +
             "modifier = modifier,\n" +
             "color = color,\n" +
             "trackColor = trackColor,\n" +
             "strokeCap = strokeCap,\n" +
-            ")")
+            ")"
+    )
 )
 @Composable
 fun LinearProgressIndicator(
@@ -214,13 +215,13 @@ fun LinearProgressIndicator(
     modifier: Modifier = Modifier,
     color: Color = ProgressIndicatorDefaults.linearColor,
     trackColor: Color = ProgressIndicatorDefaults.linearTrackColor,
-    strokeCap: StrokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
+    strokeCap: StrokeCap = ProgressIndicatorDefaults.LinearStrokeCap
 ) = LinearProgressIndicator(
     progress = { progress },
     modifier = modifier,
     color = color,
     trackColor = trackColor,
-    strokeCap = strokeCap,
+    strokeCap = strokeCap
 )
 
 @Suppress("DEPRECATION")
@@ -230,13 +231,13 @@ fun LinearProgressIndicator(
     progress: Float,
     modifier: Modifier = Modifier,
     color: Color = ProgressIndicatorDefaults.linearColor,
-    trackColor: Color = ProgressIndicatorDefaults.linearTrackColor,
+    trackColor: Color = ProgressIndicatorDefaults.linearTrackColor
 ) = LinearProgressIndicator(
     progress,
     modifier,
     color,
     trackColor,
-    strokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
+    strokeCap = ProgressIndicatorDefaults.LinearStrokeCap
 )
 
 @Deprecated("Maintained for binary compatibility", level = DeprecationLevel.HIDDEN)
@@ -244,12 +245,12 @@ fun LinearProgressIndicator(
 fun LinearProgressIndicator(
     modifier: Modifier = Modifier,
     color: Color = ProgressIndicatorDefaults.linearColor,
-    trackColor: Color = ProgressIndicatorDefaults.linearTrackColor,
+    trackColor: Color = ProgressIndicatorDefaults.linearTrackColor
 ) = LinearProgressIndicator(
     modifier,
     color,
     trackColor,
-    strokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
+    strokeCap = ProgressIndicatorDefaults.LinearStrokeCap
 )
 
 private fun DrawScope.drawLinearIndicator(
@@ -257,7 +258,7 @@ private fun DrawScope.drawLinearIndicator(
     endFraction: Float,
     color: Color,
     strokeWidth: Float,
-    strokeCap: StrokeCap,
+    strokeCap: StrokeCap
 ) {
     val width = size.width
     val height = size.height
@@ -286,7 +287,7 @@ private fun DrawScope.drawLinearIndicator(
                 Offset(adjustedBarStart, yOffset),
                 Offset(adjustedBarEnd, yOffset),
                 strokeWidth,
-                strokeCap,
+                strokeCap
             )
         }
     }
@@ -295,7 +296,7 @@ private fun DrawScope.drawLinearIndicator(
 private fun DrawScope.drawLinearIndicatorTrack(
     color: Color,
     strokeWidth: Float,
-    strokeCap: StrokeCap,
+    strokeCap: StrokeCap
 ) = drawLinearIndicator(0f, 1f, color, strokeWidth, strokeCap)
 
 private val SemanticsBoundsPadding: Dp = 10.dp
@@ -350,7 +351,7 @@ fun CircularProgressIndicator(
     color: Color = ProgressIndicatorDefaults.circularColor,
     strokeWidth: Dp = ProgressIndicatorDefaults.CircularStrokeWidth,
     trackColor: Color = ProgressIndicatorDefaults.circularTrackColor,
-    strokeCap: StrokeCap = ProgressIndicatorDefaults.CircularDeterminateStrokeCap,
+    strokeCap: StrokeCap = ProgressIndicatorDefaults.CircularDeterminateStrokeCap
 ) {
     val coercedProgress = { progress().coerceIn(0f, 1f) }
     val stroke = with(LocalDensity.current) {
@@ -370,7 +371,6 @@ fun CircularProgressIndicator(
         drawDeterminateCircularIndicator(startAngle, sweep, Color.Red, stroke)
         drawDeterminateCircularIndicator(startAngle, sweep, Color.Cyan, stroke)
         drawDeterminateCircularIndicator(startAngle, sweep, Color.Magenta, stroke)
-
     }
 }
 
@@ -396,7 +396,7 @@ fun CircularProgressIndicator(
     determinateColors: List<Color> = listOf(Color.Green),
     strokeWidth: Dp = ProgressIndicatorDefaults.CircularStrokeWidth,
     trackColor: Color = ProgressIndicatorDefaults.circularTrackColor,
-    strokeCap: StrokeCap = ProgressIndicatorDefaults.CircularIndeterminateStrokeCap,
+    strokeCap: StrokeCap = ProgressIndicatorDefaults.CircularIndeterminateStrokeCap
 ) {
     val stroke = with(LocalDensity.current) {
         Stroke(width = strokeWidth.toPx(), cap = strokeCap)
@@ -475,14 +475,14 @@ fun CircularProgressIndicator(
     }
 }
 
-//@Composable
-//fun CircularProgressIndicator(
+// @Composable
+// fun CircularProgressIndicator(
 //    modifier: Modifier = Modifier,
 //    color: Color = ProgressIndicatorDefaults.circularColor,
 //    strokeWidth: Dp = ProgressIndicatorDefaults.CircularStrokeWidth,
 //    trackColor: Color = ProgressIndicatorDefaults.circularTrackColor,
 //    strokeCap: StrokeCap = ProgressIndicatorDefaults.CircularIndeterminateStrokeCap,
-//) {
+// ) {
 //    val stroke = with(LocalDensity.current) {
 //        Stroke(width = strokeWidth.toPx(), cap = StrokeCap.Round)
 //    }
@@ -570,38 +570,38 @@ fun CircularProgressIndicator(
 //        val blueSweepAngle = redSweepAngle / 2f
 //
 //
-////        drawIndeterminateCircularIndicator(
-////            startAngle.value + offset + 45f , // Blue arc starts after green arc ends
-////            strokeWidth,
-////            redSweepAngle,
-////            Color.Blue,
-////            stroke
-////        )
+// //        drawIndeterminateCircularIndicator(
+// //            startAngle.value + offset + 45f , // Blue arc starts after green arc ends
+// //            strokeWidth,
+// //            redSweepAngle,
+// //            Color.Blue,
+// //            stroke
+// //        )
 //
 //
-////        drawIndeterminateCircularIndicator(
-////            startAngle.value + offset - offset/2,
-////            strokeWidth,
-////            sweep,
-////            Color.Green,
-////            stroke
-////        )
-////
-////        drawIndeterminateCircularIndicator(
-////            startAngle.value + offset- offset/2,
-////            strokeWidth,
-////            sweep,
-////            Color.Blue,
-////            stroke
-////        )
+// //        drawIndeterminateCircularIndicator(
+// //            startAngle.value + offset - offset/2,
+// //            strokeWidth,
+// //            sweep,
+// //            Color.Green,
+// //            stroke
+// //        )
+// //
+// //        drawIndeterminateCircularIndicator(
+// //            startAngle.value + offset- offset/2,
+// //            strokeWidth,
+// //            sweep,
+// //            Color.Blue,
+// //            stroke
+// //        )
 //
-////        drawIndeterminateCircularIndicator(
-////            startAngle.value + offset,
-////            strokeWidth,
-////            sweep,
-////            color,
-////            stroke
-////        )
+// //        drawIndeterminateCircularIndicator(
+// //            startAngle.value + offset,
+// //            strokeWidth,
+// //            sweep,
+// //            color,
+// //            stroke
+// //        )
 //        val brush = Brush.linearGradient(colors = listOf(Color.Red, Color.Blue))
 //
 //        drawRoundRect(
@@ -610,28 +610,29 @@ fun CircularProgressIndicator(
 //            brush = brush,
 //            cornerRadius = CornerRadius(10f,10f)
 //        )
-////        drawIndeterminateCircularIndicator(
-////            startAngle.value + greenOffset, // Green arc starts at original start angle
-////            strokeWidth,
-////            sweep,
-////            Color.Green,
-////            stroke
-////        )
-////
+// //        drawIndeterminateCircularIndicator(
+// //            startAngle.value + greenOffset, // Green arc starts at original start angle
+// //            strokeWidth,
+// //            sweep,
+// //            Color.Green,
+// //            stroke
+// //        )
+// //
 //    }
-//}
+// }
 
 @Deprecated(
     message = "Use the overload that takes `progress` as a lambda",
     replaceWith = ReplaceWith(
         "CircularProgressIndicator(\n" +
-                "progress = { progress },\n" +
-                "modifier = modifier,\n" +
-                "color = color,\n" +
-                "strokeWidth = strokeWidth,\n" +
-                "trackColor = trackColor,\n" +
-                "strokeCap = strokeCap,\n" +
-                ")")
+            "progress = { progress },\n" +
+            "modifier = modifier,\n" +
+            "color = color,\n" +
+            "strokeWidth = strokeWidth,\n" +
+            "trackColor = trackColor,\n" +
+            "strokeCap = strokeCap,\n" +
+            ")"
+    )
 )
 @Composable
 fun CircularProgressIndicator(
@@ -640,14 +641,14 @@ fun CircularProgressIndicator(
     color: Color = ProgressIndicatorDefaults.circularColor,
     strokeWidth: Dp = ProgressIndicatorDefaults.CircularStrokeWidth,
     trackColor: Color = ProgressIndicatorDefaults.circularTrackColor,
-    strokeCap: StrokeCap = ProgressIndicatorDefaults.CircularDeterminateStrokeCap,
+    strokeCap: StrokeCap = ProgressIndicatorDefaults.CircularDeterminateStrokeCap
 ) = CircularProgressIndicator(
     progress = { progress },
     modifier = modifier,
     color = color,
     strokeWidth = strokeWidth,
     trackColor = trackColor,
-    strokeCap = strokeCap,
+    strokeCap = strokeCap
 )
 
 @Suppress("DEPRECATION")
@@ -664,22 +665,22 @@ fun CircularProgressIndicator(
     color,
     strokeWidth,
     trackColor = ProgressIndicatorDefaults.circularTrackColor,
-    strokeCap = ProgressIndicatorDefaults.CircularDeterminateStrokeCap,
+    strokeCap = ProgressIndicatorDefaults.CircularDeterminateStrokeCap
 )
 
-//@Deprecated("Maintained for binary compatibility", level = DeprecationLevel.HIDDEN)
-//@Composable
-//fun CircularProgressIndicator(
+// @Deprecated("Maintained for binary compatibility", level = DeprecationLevel.HIDDEN)
+// @Composable
+// fun CircularProgressIndicator(
 //    modifier: Modifier = Modifier,
 //    color: Color = ProgressIndicatorDefaults.circularColor,
 //    strokeWidth: Dp = ProgressIndicatorDefaults.CircularStrokeWidth
-//) = CircularProgressIndicator(
+// ) = CircularProgressIndicator(
 //    modifier,
 //    color,
 //    strokeWidth,
 //    trackColor = ProgressIndicatorDefaults.circularTrackColor,
 //    strokeCap = ProgressIndicatorDefaults.CircularIndeterminateStrokeCap,
-//)
+// )
 
 private fun DrawScope.drawCircularIndicator(
     startAngle: Float,
@@ -748,10 +749,9 @@ object ProgressIndicatorDefaults {
     /** Default color for a linear progress indicator. */
     val linearColor: Color @Composable get() = Color.Green
 
-
     /** Default color for a circular progress indicator. */
     val circularColor: Color @Composable get() =
-       Color.Red
+        Color.Red
 
     /** Default track color for a linear progress indicator. */
     val linearTrackColor: Color @Composable get() =

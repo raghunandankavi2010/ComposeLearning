@@ -12,9 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -31,17 +34,13 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.ui.unit.sp
 import com.example.composelearning.util.LocalAnimationsEnabled
 import kotlinx.coroutines.delay
 
-
 @Preview
 @Composable
-fun AnimatedBorderButton() {
+private fun AnimatedBorderButton() {
     val startDurationInSeconds = 2 // Reduced duration for testing
     var targetValue by remember { mutableFloatStateOf(0f) }
     var isGrayAnimating by remember { mutableStateOf(true) }
@@ -154,13 +153,11 @@ fun AnimatedBorderButton() {
 
 @Composable
 fun BorderProgressBar() {
-
     val startDurationInSeconds = 10
 
     var targetValue by remember {
         mutableFloatStateOf(100f)
     }
-
 
     Column(
         modifier = Modifier
@@ -192,7 +189,6 @@ fun BorderProgressBar() {
 
         Box(contentAlignment = Alignment.Center) {
             Canvas(modifier = Modifier.size(250.dp, 140.dp)) {
-
                 if (path.isEmpty) {
                     path.addRoundRect(
                         RoundRect(
@@ -227,18 +223,15 @@ fun BorderProgressBar() {
                     color = Color.Blue
                 )
             }
-
-
         }
 
         Spacer(modifier = Modifier.height(20.dp))
 
         val animationsEnabled = LocalAnimationsEnabled.current
         LaunchedEffect(isAnimationRunning, animationsEnabled) {
-            if(animationsEnabled && !isAnimationRunning){
+            if (animationsEnabled && !isAnimationRunning) {
                 targetValue = 0f
             }
         }
-
     }
 }

@@ -30,10 +30,13 @@ fun MainHomeScreen(navigator: Navigator) {
     var query by rememberSaveable { androidx.compose.runtime.mutableStateOf("") }
 
     val searchResults = remember(query) {
-        if (query.isBlank()) emptyList()
-        else FeatureCatalog.filter {
-            it.title.contains(query, ignoreCase = true) ||
-                it.description.contains(query, ignoreCase = true)
+        if (query.isBlank()) {
+            emptyList()
+        } else {
+            FeatureCatalog.filter {
+                it.title.contains(query, ignoreCase = true) ||
+                    it.description.contains(query, ignoreCase = true)
+            }
         }
     }
 
@@ -43,7 +46,7 @@ fun MainHomeScreen(navigator: Navigator) {
                 title = { Text("Jetpack Compose Animations") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = Color.White,
+                    titleContentColor = Color.White
                 )
             )
         }
@@ -69,7 +72,7 @@ fun MainHomeScreen(navigator: Navigator) {
                     }
                 },
                 singleLine = true,
-                shape = MaterialTheme.shapes.large,
+                shape = MaterialTheme.shapes.large
             )
 
             val groups = remember { FeatureCatalog.groupBy { it.group } }
@@ -82,14 +85,14 @@ fun MainHomeScreen(navigator: Navigator) {
                 if (query.isBlank()) {
                     items(
                         items = FeatureGroup.entries,
-                        key = { "group_${it.name}" },
+                        key = { "group_${it.name}" }
                     ) { group ->
                         GroupCard(
                             group = group,
                             count = groups[group]?.size ?: 0,
                             onClick = {
                                 navigator.navigate(com.example.composelearning.AnimScreen.Group(group.name))
-                            },
+                            }
                         )
                     }
                 } else {
@@ -99,19 +102,19 @@ fun MainHomeScreen(navigator: Navigator) {
                                 modifier = Modifier
                                     .fillParentMaxSize()
                                     .padding(bottom = 64.dp), // Adjust for search bar height
-                                contentAlignment = androidx.compose.ui.Alignment.Center,
+                                contentAlignment = androidx.compose.ui.Alignment.Center
                             ) {
                                 Text(
                                     text = "No demos match your search",
                                     style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }
                     } else {
                         items(
                             items = searchResults,
-                            key = { "result_${it.title}" },
+                            key = { "result_${it.title}" }
                         ) { category ->
                             CategoryCard(
                                 title = category.title,
@@ -132,7 +135,7 @@ fun MainHomeScreen(navigator: Navigator) {
 @Composable
 fun GroupFeaturesScreen(
     groupId: String,
-    navigator: Navigator,
+    navigator: Navigator
 ) {
     val group = remember(groupId) { FeatureGroup.valueOf(groupId) }
     val features = remember(group) { FeatureCatalog.filter { it.group == group } }
@@ -148,7 +151,7 @@ fun GroupFeaturesScreen(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = Color.White,
+                    titleContentColor = Color.White
                 )
             )
         }
@@ -162,7 +165,7 @@ fun GroupFeaturesScreen(
         ) {
             items(
                 items = features,
-                key = { it.title },
+                key = { it.title }
             ) { category ->
                 CategoryCard(
                     title = category.title,
@@ -178,7 +181,7 @@ fun GroupFeaturesScreen(
 private fun GroupCard(
     group: FeatureGroup,
     count: Int,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -196,11 +199,11 @@ private fun GroupCard(
                     text = group.title,
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.weight(1f)
                 )
                 Badge(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 ) {
                     Text("$count")
                 }
@@ -220,7 +223,7 @@ fun CategoryCard(
     title: String,
     description: String,
     onClick: () -> Unit,
-    badge: String? = null,
+    badge: String? = null
 ) {
     Card(
         modifier = Modifier
@@ -242,7 +245,7 @@ fun CategoryCard(
                 Text(
                     text = badge,
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.tertiary,
+                    color = MaterialTheme.colorScheme.tertiary
                 )
             }
             Spacer(modifier = Modifier.height(4.dp))

@@ -11,23 +11,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 
-
 @Composable
 fun SecondScreen(
-    redirectToLogin:(Boolean) -> Unit,
-    secondViewModel: SecondViewModel = viewModel(),
+    redirectToLogin: (Boolean) -> Unit,
+    secondViewModel: SecondViewModel = viewModel()
 ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = Color.Red)
-                .clickable {
-                    redirectToLogin(true)
-                },
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.Red)
+            .clickable {
+                redirectToLogin(true)
+            },
 
-            contentAlignment = Alignment.Center
-        ) {
-            Text(text = "second screen")
-        }
-
+        contentAlignment = Alignment.Center
+    ) {
+        Text(text = "second screen")
+    }
 }

@@ -38,7 +38,7 @@ class SidePanelActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                   MainScreenContent()
+                    MainScreenContent()
                 }
             }
         }
@@ -111,7 +111,7 @@ fun MainScreenContent() {
 
 @Preview(showBackground = true, widthDp = 400, heightDp = 700)
 @Composable
-fun PreviewMainScreenContent() {
+private fun PreviewMainScreenContent() {
     MaterialTheme {
         MainScreenContent()
     }

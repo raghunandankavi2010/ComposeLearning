@@ -30,10 +30,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 
-
 @Preview
 @Composable
-fun ButtonAnimationTest() {
+private fun ButtonAnimationTest() {
     var show by remember { mutableStateOf(false) }
 
     val progress by animateFloatAsState(
@@ -47,7 +46,6 @@ fun ButtonAnimationTest() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-
         Button(onClick = { show = !show }) {
             Text(text = "Click")
         }
@@ -77,19 +75,16 @@ fun ButtonAnimationTest() {
 
 @Composable
 fun ButtonAnimationLayout(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     progress: Float,
     content: @Composable () -> Unit
 ) {
-
     val measurePolicy = remember(progress) {
-
         object : MeasurePolicy {
             override fun MeasureScope.measure(
                 measurables: List<Measurable>,
                 constraints: Constraints
             ): MeasureResult {
-
                 require(measurables.size == 2)
 
                 val mobileButtonPlaceable =
@@ -100,9 +95,9 @@ fun ButtonAnimationLayout(
                 )
 
                 return layout(
-                    constraints.maxWidth, stationaryButtonPlaceable.height
+                    constraints.maxWidth,
+                    stationaryButtonPlaceable.height
                 ) {
-
                     val width = mobileButtonPlaceable.width
                     val leftPadding = 16.dp.roundToPx()
 
@@ -117,7 +112,6 @@ fun ButtonAnimationLayout(
                     )
                 }
             }
-
         }
     }
     Layout(

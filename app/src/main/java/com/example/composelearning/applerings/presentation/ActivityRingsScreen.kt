@@ -41,14 +41,14 @@ private val StrokeWidth = 34.dp
 
 @Composable
 fun ActivityRingsScreen(
-    viewModel: ActivityRingsViewModel = viewModel(factory = ActivityRingsViewModel.Factory()),
+    viewModel: ActivityRingsViewModel = viewModel(factory = ActivityRingsViewModel.Factory())
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFF000001)),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         when {
             state.isLoading -> CircularProgressIndicator(color = Color.White)
@@ -58,7 +58,7 @@ fun ActivityRingsScreen(
             "Tap to replay",
             color = Color.White.copy(alpha = 0.5f),
             fontSize = 14.sp,
-            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 40.dp),
+            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 40.dp)
         )
     }
 }
@@ -76,7 +76,7 @@ private fun ActivityRings(rings: List<RingSpec>) {
     Canvas(
         modifier = Modifier
             .fillMaxSize()
-            .pointerInput(Unit) { detectTapGestures { replay++ } },
+            .pointerInput(Unit) { detectTapGestures { replay++ } }
     ) {
         val strokePx = StrokeWidth.toPx()
         val center = Offset(size.width / 2f, size.height / 2f)
@@ -96,7 +96,7 @@ private fun DrawScope.drawRing(
     center: Offset,
     radius: Float,
     strokePx: Float,
-    progress: Float,
+    progress: Float
 ) {
     val topLeft = Offset(center.x - radius, center.y - radius)
     val arcSize = Size(radius * 2, radius * 2)
@@ -110,7 +110,7 @@ private fun DrawScope.drawRing(
         useCenter = false,
         topLeft = topLeft,
         size = arcSize,
-        style = Stroke(width = strokePx),
+        style = Stroke(width = strokePx)
     )
 
     val sweep = ring.targetTurns * 360f * progress
@@ -123,14 +123,14 @@ private fun DrawScope.drawRing(
                 0f to Color(ring.startColor),
                 0.5f to Color(ring.endColor),
                 1f to Color(ring.startColor),
-                center = center,
+                center = center
             ),
             startAngle = 0f,
             sweepAngle = sweep,
             useCenter = false,
             topLeft = topLeft,
             size = arcSize,
-            style = stroke,
+            style = stroke
         )
     }
 
@@ -138,16 +138,16 @@ private fun DrawScope.drawRing(
     val endAngleRad = Math.toRadians((-90f + sweep).toDouble())
     val capCenter = Offset(
         center.x + radius * cos(endAngleRad).toFloat(),
-        center.y + radius * sin(endAngleRad).toFloat(),
+        center.y + radius * sin(endAngleRad).toFloat()
     )
     drawCircle(
         color = Color.Black.copy(alpha = 0.28f),
         radius = strokePx / 2f,
-        center = capCenter + Offset(2f, 4f),
+        center = capCenter + Offset(2f, 4f)
     )
     drawCircle(
         color = Color(ring.endColor),
         radius = strokePx / 2f,
-        center = capCenter,
+        center = capCenter
     )
 }

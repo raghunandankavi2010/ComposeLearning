@@ -48,7 +48,7 @@ fun PremiumCircularProgressIndicator(
         1.0f to Color(0xFF6A11CB)
     ),
     rotationPeriodMillis: Int = 2000,
-    cyclePeriodMillis: Int = 1200,
+    cyclePeriodMillis: Int = 1200
 ) {
     val minSweep = 30f
     val maxSweep = 270f
@@ -64,7 +64,8 @@ fun PremiumCircularProgressIndicator(
     LaunchedEffect(
         animationsEnabled,
         rotationPeriodMillis,
-        cyclePeriodMillis) {
+        cyclePeriodMillis
+    ) {
         if (!animationsEnabled) return@LaunchedEffect
         var startNanos = 0L
         while (true) {
@@ -111,7 +112,6 @@ fun PremiumCircularProgressIndicator(
         val arcSize = size.minDimension - strokeWidthPx
         val topLeft = Offset(strokeWidthPx / 2, strokeWidthPx / 2)
 
-
         // B. Draw the Progress Arc
         drawArc(
             brush = brush,
@@ -130,7 +130,7 @@ fun PremiumCircularProgressIndicator(
 
 @Preview(name = "Light Mode", showBackground = true)
 @Composable
-fun PreviewProgressLight() {
+private fun PreviewProgressLight() {
     Box(
         modifier = Modifier.fillMaxSize().background(Color.White),
         contentAlignment = Alignment.Center
@@ -144,7 +144,7 @@ fun PreviewProgressLight() {
 
 @Preview(name = "Dark Mode", showBackground = true)
 @Composable
-fun PreviewProgressDark() {
+private fun PreviewProgressDark() {
     Box(
         modifier = Modifier.fillMaxSize().background(Color(0xFF121212)),
         contentAlignment = Alignment.Center

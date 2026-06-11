@@ -51,7 +51,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-
 class SpotlightRegistry {
     private val _targets = mutableStateMapOf<String, Rect>()
     val targets: Map<String, Rect> get() = _targets
@@ -125,13 +124,13 @@ fun SpotlightOverlay(
 
     val animated by animateRectAsState(targetValue = targetLocal ?: Rect.Zero, label = "spotRect")
     val alpha by androidx.compose.animation.core.animateFloatAsState(
-        targetValue = if (targetLocal != null) 1f else 1f, label = "overlayAlpha"
+        targetValue = if (targetLocal != null) 1f else 1f,
+        label = "overlayAlpha"
     )
 
-    fun hitTest(posWin: Offset): Rect? =
-        registry.targets.values
-            .filter { it.contains(posWin) }
-            .minByOrNull { it.width * it.height }
+    fun hitTest(posWin: Offset): Rect? = registry.targets.values
+        .filter { it.contains(posWin) }
+        .minByOrNull { it.width * it.height }
 
     val rPx = with(LocalDensity.current) { 96.dp.toPx() }
 
@@ -223,7 +222,6 @@ fun SpotlightDemoScreen(onFinish: () -> Unit = {}) {
                 .fillMaxSize()
                 .padding(padding)
         ) {
-
             Column(
                 Modifier
                     .fillMaxSize()
@@ -237,7 +235,8 @@ fun SpotlightDemoScreen(onFinish: () -> Unit = {}) {
                         .spotlightTarget("search", registry)
                 ) {
                     Text(
-                        "Search settings, features…", Modifier.padding(14.dp),
+                        "Search settings, features…",
+                        Modifier.padding(14.dp),
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -344,13 +343,13 @@ fun RowScope.AssistChip(title: String, action: String, id: String, registry: Spo
         Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(title, style = MaterialTheme.typography.titleSmall)
             Text(
-                action, style = MaterialTheme.typography.labelMedium,
+                action,
+                style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.primary
             )
         }
     }
 }
-
 
 @Composable
 fun RowScope.FeatureCard(
@@ -378,7 +377,6 @@ fun RowScope.FeatureCard(
     }
 }
 
-
 @Composable
 private fun FeatureCardBody(
     title: String,
@@ -390,7 +388,8 @@ private fun FeatureCardBody(
     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(title, style = MaterialTheme.typography.titleMedium)
         Text(
-            subtitle, style = MaterialTheme.typography.bodyMedium,
+            subtitle,
+            style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Row(Modifier.fillMaxWidth()) {
@@ -414,7 +413,8 @@ private fun ActivityRow(title: String, time: String, id: String, registry: Spotl
             Column(Modifier.weight(1f)) {
                 Text(title, style = MaterialTheme.typography.bodyLarge)
                 Text(
-                    time, style = MaterialTheme.typography.bodySmall,
+                    time,
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }

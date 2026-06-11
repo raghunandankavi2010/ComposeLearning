@@ -28,13 +28,11 @@ import kotlin.math.roundToInt
 
 @Composable
 fun DrawCubic() {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-
         val density = LocalDensity.current.density
 
         val configuration = LocalConfiguration.current
@@ -49,14 +47,14 @@ fun DrawCubic() {
         /*
         Adds a cubic bezier segment that curves from the current point(x0,y0) to the
         given point (x3, y3), using the control points (x1, y1) and (x2, y2).
-     */
+         */
         var x1 by remember { mutableStateOf(0f) }
         var y1 by remember { mutableStateOf(screenWidthInPx) }
-        var x2 by remember { mutableStateOf(screenWidthInPx/2) }
+        var x2 by remember { mutableStateOf(screenWidthInPx / 2) }
         var y2 by remember { mutableStateOf(0f) }
 
         var x3 by remember { mutableStateOf(screenWidthInPx) }
-        var y3 by remember { mutableStateOf(screenWidthInPx/2) }
+        var y3 by remember { mutableStateOf(screenWidthInPx / 2) }
 
         val path = remember { Path() }
         Canvas(
@@ -64,7 +62,7 @@ fun DrawCubic() {
                 .padding(8.dp)
                 .shadow(1.dp)
                 .background(Color.White)
-                .size(screenWidth, screenWidth/2)
+                .size(screenWidth, screenWidth / 2)
         ) {
             path.reset()
             path.moveTo(x0, y0)
@@ -90,61 +88,60 @@ fun DrawCubic() {
         }
 
         Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-
             Text(text = "X0: ${x0.roundToInt()}")
             Slider(
                 value = x0,
                 onValueChange = { x0 = it },
-                valueRange = 0f..screenWidthInPx,
+                valueRange = 0f..screenWidthInPx
             )
 
             Text(text = "Y0: ${y0.roundToInt()}")
             Slider(
                 value = y0,
                 onValueChange = { y0 = it },
-                valueRange = 0f..screenWidthInPx,
+                valueRange = 0f..screenWidthInPx
             )
 
             Text(text = "X1: ${x1.roundToInt()}")
             Slider(
                 value = x1,
                 onValueChange = { x1 = it },
-                valueRange = 0f..screenWidthInPx,
+                valueRange = 0f..screenWidthInPx
             )
 
             Text(text = "Y1: ${y1.roundToInt()}")
             Slider(
                 value = y1,
                 onValueChange = { y1 = it },
-                valueRange = 0f..screenWidthInPx,
+                valueRange = 0f..screenWidthInPx
             )
 
             Text(text = "X2: ${x2.roundToInt()}")
             Slider(
                 value = x2,
                 onValueChange = { x2 = it },
-                valueRange = 0f..screenWidthInPx,
+                valueRange = 0f..screenWidthInPx
             )
 
             Text(text = "Y2: ${y2.roundToInt()}")
             Slider(
                 value = y2,
                 onValueChange = { y2 = it },
-                valueRange = 0f..screenWidthInPx,
+                valueRange = 0f..screenWidthInPx
             )
 
             Text(text = "X3: ${x3.roundToInt()}")
             Slider(
                 value = x3,
                 onValueChange = { x3 = it },
-                valueRange = 0f..screenWidthInPx,
+                valueRange = 0f..screenWidthInPx
             )
 
             Text(text = "Y3: ${y3.roundToInt()}")
             Slider(
                 value = y3,
                 onValueChange = { y3 = it },
-                valueRange = 0f..screenWidthInPx,
+                valueRange = 0f..screenWidthInPx
             )
         }
     }

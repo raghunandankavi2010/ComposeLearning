@@ -22,11 +22,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import com.example.composelearning.calendar.model.CalendarUiState
-import com.example.composelearning.calendar.model.Week
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.dp
+import com.example.composelearning.calendar.model.CalendarUiState
+import com.example.composelearning.calendar.model.Week
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
@@ -53,7 +53,6 @@ internal fun Week(
 
     Box(modifier = Modifier) {
         Row(modifier = modifier) {
-
             for (i in 0..6) {
                 if (currentDay.month == week.yearMonth.month) {
                     Day(

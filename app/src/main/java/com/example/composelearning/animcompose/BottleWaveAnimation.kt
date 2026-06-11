@@ -16,9 +16,9 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.delay
 import kotlin.math.*
 import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.delay
 
 @Composable
 fun BottleWaveAnimation() {
@@ -427,7 +427,7 @@ private fun DrawScope.drawWater(
         brush = Brush.verticalGradient(
             colors = listOf(
                 Color(0xFF4FC3F7), // Light Blue
-                Color(0xFF0288D1)  // Deeper Blue
+                Color(0xFF0288D1) // Deeper Blue
             ),
             startY = waterSurfaceY,
             endY = bottomY
@@ -442,8 +442,11 @@ private fun DrawScope.drawWater(
         val wave2 = sin((x * waveFrequency * 1.5f / 100f) + waveOffset * 1.5f) * (waveAmplitude * 0.4f)
         val waveY = waterSurfaceY + wave1 + wave2
 
-        if (i == 0) foamPath.moveTo(x, waveY)
-        else foamPath.lineTo(x, waveY)
+        if (i == 0) {
+            foamPath.moveTo(x, waveY)
+        } else {
+            foamPath.lineTo(x, waveY)
+        }
     }
 
     drawPath(

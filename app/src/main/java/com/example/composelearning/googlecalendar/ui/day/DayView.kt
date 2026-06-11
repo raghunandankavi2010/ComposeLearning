@@ -32,11 +32,11 @@ import com.example.composelearning.googlecalendar.domain.model.CalendarEvent
 import com.example.composelearning.googlecalendar.domain.model.LayoutEvent
 import com.example.composelearning.googlecalendar.util.DateUtils
 import com.example.composelearning.googlecalendar.util.OverlapCalculator
-import kotlinx.coroutines.flow.distinctUntilChanged
 import java.time.LocalDate
 import java.time.LocalTime
+import kotlinx.coroutines.flow.distinctUntilChanged
 
-private const val PAGE_COUNT = 365 * 2  // ~1 year before and after
+private const val PAGE_COUNT = 365 * 2 // ~1 year before and after
 private const val CENTER_PAGE = PAGE_COUNT / 2
 
 @Composable

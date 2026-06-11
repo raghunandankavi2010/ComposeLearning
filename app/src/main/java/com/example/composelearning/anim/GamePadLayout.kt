@@ -1,18 +1,18 @@
 package com.example.composelearning.anim
 
 import android.app.Activity
+import android.view.WindowManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-// import androidx.compose.foundation.focusable // Focusable might not be needed for all joystick elements
 import androidx.compose.foundation.gestures.detectDragGestures
-// import androidx.compose.foundation.interaction.MutableInteractionSource // Not directly used in this version
-// import androidx.compose.foundation.interaction.collectIsPressedAsState // Not directly used in this version
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -28,16 +28,11 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-// import androidx.constraintlayout.compose.ConstraintSet // Not used in this direct layout approach
 import androidx.constraintlayout.compose.Dimension
-import android.view.WindowManager
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import com.example.composelearning.R // IMPORTANT: Ensure this R file is correct and drawables exist
+import com.example.composelearning.R
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.pow
-// import kotlin.math.min // Not used in this version
 import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.math.sqrt
@@ -49,15 +44,15 @@ val YButtonColor = Color(0xFF74E2FF)
 val XButtonColor = Color(0xFF0BBB81)
 val BButtonColor = Color(0xFFDC3E72)
 val AButtonColor = Color(0xFFB15EFE)
-val ActionButtonContainerColor = Color.Transparent //Color(0x40FFFFFF) // Semi-transparent for example
-val DPadContainerColor = Color.Transparent //Color(0x40FFFFFF)
+val ActionButtonContainerColor = Color.Transparent // Color(0x40FFFFFF) // Semi-transparent for example
+val DPadContainerColor = Color.Transparent // Color(0x40FFFFFF)
 val DefaultButtonTextColor = Color.White // For text on colored buttons
 
 // Placeholder for your actual drawable resources - REPLACE THESE
 object PlaceholderDrawables {
     // YOU MUST REPLACE THESE WITH YOUR ACTUAL DRAWABLE RESOURCES (e.g., R.drawable.my_analog_bg)
     val ic_analog_bg = R.drawable.ic_launcher_background // REPLACE
-    val ic_analog = R.drawable.ic_launcher_foreground    // REPLACE
+    val ic_analog = R.drawable.ic_launcher_foreground // REPLACE
     val ic_controller = android.R.drawable.ic_menu_send // REPLACE
     // Add other selectors if they are specific images and not just color changes
     // For simplicity, ButtonDefaults.buttonColors handles basic color states.
@@ -115,7 +110,6 @@ fun GamepadLayout() {
         val controllerButtonRef = createRef()
         val toggleButtonRef = createRef()
 
-
         // Guidelines
         val h25 = createGuidelineFromTop(0.06f) // approx 30dp / typical screen height
         val h1 = createGuidelineFromTop(0.52f)
@@ -124,7 +118,6 @@ fun GamepadLayout() {
         val v75 = createGuidelineFromStart(0.75f)
         val vb1 = createGuidelineFromStart(0.4167f)
         val vb2 = createGuidelineFromStart(0.5833f)
-
 
         // --- Left Triggers ---
         Column(
@@ -239,7 +232,7 @@ fun GamepadLayout() {
                 }
                 .pointerInput(Unit) {
                     detectDragGestures(
-                        onDragStart = { offset -> leftStickVisible = true; /* Store initial offset if needed */ },
+                        onDragStart = { offset -> leftStickVisible = true }, // Store initial offset if needed
                         onDragEnd = {
                             leftStickVisible = false
                             leftStickOffset = Offset.Zero
@@ -347,23 +340,36 @@ fun GamepadLayout() {
 
         // --- Control Buttons (Back, Home, Start) ---
         Button(
-            onClick = { /* Back */ }, modifier = Modifier.constrainAs(backButtonRef) {
-                width = Dimension.fillToConstraints; height = Dimension.value(35.dp)
-                start.linkTo(v25, margin = 10.dp); end.linkTo(vb1); top.linkTo(h25)
-            }, colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
+            onClick = { /* Back */ },
+            modifier = Modifier.constrainAs(backButtonRef) {
+                width = Dimension.fillToConstraints
+                height = Dimension.value(35.dp)
+                start.linkTo(v25, margin = 10.dp)
+                end.linkTo(vb1)
+                top.linkTo(h25)
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
         ) { Text("Back", color = ButtonTextColor, fontSize = 12.sp) }
 
         Button(
-            onClick = { /* Home/Select */ }, modifier = Modifier.constrainAs(homeButtonRef) {
-                width = Dimension.fillToConstraints; height = Dimension.value(35.dp)
-                start.linkTo(vb1); end.linkTo(vb2); top.linkTo(h25)
-            }, colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
+            onClick = { /* Home/Select */ },
+            modifier = Modifier.constrainAs(homeButtonRef) {
+                width = Dimension.fillToConstraints
+                height = Dimension.value(35.dp)
+                start.linkTo(vb1)
+                end.linkTo(vb2)
+                top.linkTo(h25)
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
         ) { Text("Select", color = ButtonTextColor, fontSize = 12.sp) }
 
         Button(
-            onClick = { /* Start */ }, modifier = Modifier.constrainAs(startButtonRef) {
-                width = Dimension.fillToConstraints; height = Dimension.value(35.dp)
-                start.linkTo(vb2); end.linkTo(v75) // Adjusted to avoid negative margin for compose
+            onClick = { /* Start */ },
+            modifier = Modifier.constrainAs(startButtonRef) {
+                width = Dimension.fillToConstraints
+                height = Dimension.value(35.dp)
+                start.linkTo(vb2)
+                end.linkTo(v75) // Adjusted to avoid negative margin for compose
                 top.linkTo(h25)
             }.padding(start = 10.dp, end = 20.dp), // Use padding to achieve visual offset of original translationX="-10dp"
             // The XML had end margin 10dp AND translationX -10dp.
@@ -380,7 +386,8 @@ fun GamepadLayout() {
             contentDescription = "Controller Icon",
             modifier = Modifier
                 .constrainAs(controllerButtonRef) {
-                    start.linkTo(vb1); end.linkTo(vb2)
+                    start.linkTo(vb1)
+                    end.linkTo(vb2)
                     top.linkTo(parent.top, margin = 10.dp)
                     width = Dimension.wrapContent
                     height = Dimension.wrapContent
@@ -412,6 +419,6 @@ fun GamepadLayout() {
 
 @Preview(showBackground = true, widthDp = 720, heightDp = 400) // Adjusted from original
 @Composable
-fun PreviewGamepadLayout() {
+private fun PreviewGamepadLayout() {
     GamepadLayout()
 }

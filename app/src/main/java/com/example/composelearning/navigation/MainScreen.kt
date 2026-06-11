@@ -98,7 +98,8 @@ fun NavigationGraph(navController: NavHostController, bottomBarState: MutableSta
         bottomNavWrappedComposable(navController, "favorites", bottomBarState) { entry ->
             FavoritesScreen(navController)
         }
-        composable("details/{itemId}",
+        composable(
+            "details/{itemId}",
             enterTransition = { fadeIn(animationSpec = tween(700)) },
             exitTransition = { fadeOut(animationSpec = tween(700)) }
         ) { backStackEntry ->

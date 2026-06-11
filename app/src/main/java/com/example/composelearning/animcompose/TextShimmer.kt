@@ -175,14 +175,12 @@ fun GradientMaskShimmer(
     // Create animated gradient brush
     val brush = remember(offset) {
         object : ShaderBrush() {
-            override fun createShader(size: Size): androidx.compose.ui.graphics.Shader {
-                return LinearGradientShader(
-                    colors = colors,
-                    from = Offset(offset * size.width * 2 - size.width, 0f),
-                    to = Offset(offset * size.width * 2, 0f),
-                    tileMode = androidx.compose.ui.graphics.TileMode.Mirror
-                )
-            }
+            override fun createShader(size: Size): androidx.compose.ui.graphics.Shader = LinearGradientShader(
+                colors = colors,
+                from = Offset(offset * size.width * 2 - size.width, 0f),
+                to = Offset(offset * size.width * 2, 0f),
+                tileMode = androidx.compose.ui.graphics.TileMode.Mirror
+            )
         }
     }
 
@@ -487,7 +485,7 @@ fun RainbowShimmerText(
 
 @Preview(showBackground = true, backgroundColor = 0xFF0F172A)
 @Composable
-fun ShimmerTextShowcase() {
+private fun ShimmerTextShowcase() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -561,11 +559,9 @@ fun ShimmerTextShowcase() {
 }
 
 // Helper extension
-private fun lerp(start: Color, stop: Color, fraction: Float): Color {
-    return Color(
-        red = androidx.compose.ui.util.lerp(start.red, stop.red, fraction),
-        green = androidx.compose.ui.util.lerp(start.green, stop.green, fraction),
-        blue = androidx.compose.ui.util.lerp(start.blue, stop.blue, fraction),
-        alpha = androidx.compose.ui.util.lerp(start.alpha, stop.alpha, fraction)
-    )
-}
+private fun lerp(start: Color, stop: Color, fraction: Float): Color = Color(
+    red = androidx.compose.ui.util.lerp(start.red, stop.red, fraction),
+    green = androidx.compose.ui.util.lerp(start.green, stop.green, fraction),
+    blue = androidx.compose.ui.util.lerp(start.blue, stop.blue, fraction),
+    alpha = androidx.compose.ui.util.lerp(start.alpha, stop.alpha, fraction)
+)

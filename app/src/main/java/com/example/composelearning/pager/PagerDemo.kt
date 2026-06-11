@@ -1,7 +1,6 @@
 package com.example.composelearning.pager
 
 import android.annotation.SuppressLint
-import com.example.composelearning.R
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -9,12 +8,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.PagerSnapDistance
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -25,9 +24,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import kotlinx.coroutines.launch
+import com.example.composelearning.R
 import kotlin.math.absoluteValue
-
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalFoundationApi::class)
@@ -43,10 +42,9 @@ fun PagerDemo(modifier: Modifier = Modifier) {
 
         val scope = rememberCoroutineScope()
 
-        val mutableInteractionSource  = remember {
+        val mutableInteractionSource = remember {
             MutableInteractionSource()
         }
-
 
         HorizontalPager(
             modifier = modifier.systemGestureExclusion(),
@@ -56,14 +54,16 @@ fun PagerDemo(modifier: Modifier = Modifier) {
                 pagerSnapDistance = PagerSnapDistance.atMost(0)
             ),
             contentPadding = PaddingValues(horizontal = contentPadding),
-            pageSpacing = itemSpacing,
+            pageSpacing = itemSpacing
         ) { page ->
             Box(
                 modifier = Modifier
                     .size(50.dp)
                     .graphicsLayer {
-                        val pageOffset = ((pagerState.currentPage - page) + pagerState
-                            .currentPageOffsetFraction).absoluteValue
+                        val pageOffset = (
+                            (pagerState.currentPage - page) + pagerState
+                                .currentPageOffsetFraction
+                            ).absoluteValue
                         // Set the item alpha and scale based on the distance from the center
                         val percentFromCenter = 1.0f - (pageOffset / (5f / 2f))
                         val itemScale = 0.5f + (percentFromCenter * 0.5f).coerceIn(0f, 1f)
@@ -79,16 +79,16 @@ fun PagerDemo(modifier: Modifier = Modifier) {
                     .clickable(
                         interactionSource = mutableInteractionSource,
                         indication = null,
-                        enabled = true,
+                        enabled = true
                     ) {
                         scope.launch {
                             pagerState.animateScrollToPage(page)
                         }
-                    })
+                    }
+            )
         }
     }
 }
-
 
 private val colors = listOf(
     Color.Red,
@@ -96,16 +96,14 @@ private val colors = listOf(
     Color.Blue,
     Color.Magenta,
     Color.Yellow,
-    Color.Cyan,
+    Color.Cyan
 )
-
 
 @SuppressLint("UnusedBoxWithConstraintsScope", "UnrememberedMutableInteractionSource")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PagerDemo3(modifier: Modifier = Modifier) {
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
-
         val itemSpacing = 16.dp
         val pagerState = rememberPagerState(pageCount = {
             10
@@ -123,15 +121,14 @@ fun PagerDemo3(modifier: Modifier = Modifier) {
             pageSpacing = itemSpacing
         ) { page ->
             val pageOffSet = (
-                    (pagerState.currentPage - page) + pagerState
-                        .currentPageOffsetFraction
-                    ).absoluteValue
+                (pagerState.currentPage - page) + pagerState
+                    .currentPageOffsetFraction
+                ).absoluteValue
             // Calculate alpha based on page offset
             val alpha = lerp(start = 0.5f, stop = 1f, fraction = 1f - pageOffSet.coerceIn(0f, 1f))
 
             // Calculate scaleX and scaleY based on page offset
             val scale = lerp(start = 0.75f, stop = 1f, fraction = 1f - pageOffSet.coerceIn(0f, 1f))
-
 
             Image(
                 painter = painterResource(id = R.drawable.ic_launcher_background),
@@ -143,7 +140,7 @@ fun PagerDemo3(modifier: Modifier = Modifier) {
                     .clickable(
                         interactionSource = MutableInteractionSource(),
                         indication = null,
-                        enabled = true,
+                        enabled = true
                     ) {
                         scope.launch {
                             pagerState.animateScrollToPage(page)

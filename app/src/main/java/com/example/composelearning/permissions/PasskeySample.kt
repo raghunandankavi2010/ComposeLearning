@@ -160,7 +160,6 @@ private suspend fun registerPasskey(
 
         // At this point, 'result.registrationResponseJson' contains the public key to send to your server
         onStatus("Passkey Registered Successfully!")
-
     } catch (e: CreateCredentialException) {
         onStatus("Error: ${e.message}")
     }
@@ -194,7 +193,6 @@ private suspend fun signInWithPasskey(
 
         // 'result.credential' contains the signature to verify on your server
         onStatus("Logged in with Passkey!")
-
     } catch (e: GetCredentialException) {
         onStatus("Error: ${e.message}")
     }
@@ -231,7 +229,7 @@ fun PasskeyInfoCard() {
 
 @Preview(showBackground = true)
 @Composable
-fun PasskeySamplePreview() {
+private fun PasskeySamplePreview() {
     MaterialTheme {
         PasskeySample(onBack = {})
     }

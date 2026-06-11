@@ -1,6 +1,5 @@
 package com.example.composelearning.lists
 
-
 import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FloatSpringSpec
@@ -32,12 +31,12 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.composelearning.ui.theme.ComposeLearningTheme
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 data class CircularListConfig(
     val contentHeight: Float = 0f,
@@ -64,7 +63,7 @@ interface CircularListState {
 }
 
 class CircularListStateImpl(
-    currentOffset: Float = 0f,
+    currentOffset: Float = 0f
 ) : CircularListState {
     private val animatable = Animatable(currentOffset)
     private var itemHeight = 0f
@@ -72,7 +71,7 @@ class CircularListStateImpl(
     private var initialOffset = 0f
     private val decayAnimationSpec = FloatSpringSpec(
         dampingRatio = Spring.DampingRatioLowBouncy,
-        stiffness = Spring.StiffnessLow,
+        stiffness = Spring.StiffnessLow
     )
     private val minOffset: Float
         get() = -(config.numItems - 1) * itemHeight
@@ -88,7 +87,7 @@ class CircularListStateImpl(
         val minOvershoot = -(config.numItems - 1 + config.overshootItems) * itemHeight
         val maxOvershoot = config.overshootItems * itemHeight
         animatable.snapTo(value.coerceIn(minOvershoot, maxOvershoot))
-        Log.d("CircularListVertical","$firstVisibleItem $lastVisibleItem")
+        Log.d("CircularListVertical", "$firstVisibleItem $lastVisibleItem")
     }
 
     override fun alpha(i: Int): Float {
@@ -103,8 +102,8 @@ class CircularListStateImpl(
         val maxOffset = config.contentHeight / 2f
         val y = (verticalOffset + initialOffset + i * itemHeight)
         val deltaFromCenter = (y - initialOffset)
-        val percentFromCenter = 1.0f -abs(deltaFromCenter) / maxOffset
-       return .5f + (percentFromCenter * 0.5f)
+        val percentFromCenter = 1.0f - abs(deltaFromCenter) / maxOffset
+        return .5f + (percentFromCenter * 0.5f)
     }
 
     override suspend fun decayTo(velocity: Float, value: Float) {
@@ -115,7 +114,7 @@ class CircularListStateImpl(
         animatable.animateTo(
             targetValue = -target,
             initialVelocity = velocity,
-            animationSpec = decayAnimationSpec,
+            animationSpec = decayAnimationSpec
         )
     }
 
@@ -130,7 +129,6 @@ class CircularListStateImpl(
     }
 
     override fun offsetFor(index: Int): IntOffset {
-
         val maxOffset = config.contentHeight / 2f + itemHeight / 2f
         val y = (verticalOffset + initialOffset + index * itemHeight)
         val deltaFromCenter = (y - initialOffset)
@@ -196,7 +194,7 @@ fun CircularListVertical(
     state: CircularListState = rememberCircularListState(),
     circularFraction: Float = 1f,
     overshootItems: Int = 3,
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     check(visibleItems > 0) { "Visible items must be positive" }
     check(circularFraction > 0f) { "Circular fraction must be positive" }
@@ -205,9 +203,8 @@ fun CircularListVertical(
         modifier = modifier
             .clipToBounds()
             .drag(state).graphicsLayer {
-
             },
-        content = content,
+        content = content
     ) { measurables, constraints ->
         val itemHeight = constraints.maxHeight / visibleItems
         val itemConstraints = Constraints.fixed(width = constraints.maxWidth, height = itemHeight)
@@ -225,15 +222,13 @@ fun CircularListVertical(
         )
         layout(
             width = constraints.maxWidth,
-            height = constraints.maxHeight,
+            height = constraints.maxHeight
         ) {
             for (i in state.firstVisibleItem..state.lastVisibleItem) {
                 placeables[i].placeRelativeWithLayer(state.offsetFor(i), layerBlock = {
                     alpha = state.alpha(i)
-                   // scaleX = state.scale(i)
-                   // scaleY = state.scale(i)
-
-
+                    // scaleX = state.scale(i)
+                    // scaleY = state.scale(i)
                 })
             }
         }
@@ -241,7 +236,7 @@ fun CircularListVertical(
 }
 
 private fun Modifier.drag(
-    state: CircularListState,
+    state: CircularListState
 ) = pointerInput(Unit) {
     val decay = splineBasedDecay<Float>(this)
     coroutineScope {
@@ -267,25 +262,26 @@ private fun Modifier.drag(
         }
     }
 }
-/////////////// Preview
+
+// ///////////// Preview
 private val colors = listOf(
     Color.Red,
     Color.Green,
     Color.Blue,
     Color.Magenta,
     Color.Yellow,
-    Color.Cyan,
+    Color.Cyan
 )
 
 @Preview(showBackground = true, widthDp = 420)
 @Composable
-fun PreviewCircularListVertical() {
+private fun PreviewCircularListVertical() {
     ComposeLearningTheme {
         Surface {
             CircularListVertical(
                 visibleItems = 5,
                 circularFraction = .65f,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize()
             ) {
                 for (i in 0 until 40) {
                     ListItem(
@@ -304,15 +300,14 @@ fun ListItem(
     modifier: Modifier = Modifier,
     text: String = "",
     color: Color
-
 ) {
     Row(modifier = modifier.width(50.dp)) {
-       Box(
+        Box(
 
             modifier = Modifier
                 .size(50.dp)
                 .clip(shape = CircleShape)
-                .background(color = color),
+                .background(color = color)
         )
 //        Text(modifier = Modifier.wrapContentSize(Alignment.TopStart, false),
 //            text = text,

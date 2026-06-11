@@ -48,6 +48,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color as ComposeColor
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -61,7 +62,6 @@ import androidx.core.view.WindowCompat
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 import de.drick.compose.edgetoedgepreviewlib.EdgeToEdgeTemplate
 import de.drick.compose.edgetoedgepreviewlib.NavigationMode
-import androidx.compose.ui.graphics.Color as ComposeColor
 
 // MainActivity remains the same
 
@@ -93,7 +93,7 @@ class ListActivity : ComponentActivity() {
             ),
             navigationBarStyle = SystemBarStyle.light(
                 Color.TRANSPARENT,
-                Color.TRANSPARENT,
+                Color.TRANSPARENT
             )
         )
 
@@ -121,7 +121,6 @@ class ListActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InboxScreen() {
-
     val lazyListState = rememberLazyListState()
     val density = LocalDensity.current
     val statusBarHeight = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
@@ -167,7 +166,7 @@ fun InboxScreen() {
                 containerColor = ComposeColor.White,
                 titleContentColor = ComposeColor.Black,
                 navigationIconContentColor = ComposeColor.Black,
-                actionIconContentColor = ComposeColor.Black,
+                actionIconContentColor = ComposeColor.Black
             ),
             modifier = Modifier
                 .offset { IntOffset(0, connection.appBarOffset) }
@@ -184,7 +183,6 @@ fun InboxScreen() {
 //                .background(ComposeColor.White)
 //        )
     }
-
 }
 
 // GeneralAlertsList and MainActivity remain the same
@@ -211,7 +209,6 @@ fun GeneralAlertsList(
             bottom = systemBarPadding.calculateBottomPadding()
         )
     ) {
-
         items(items) { item ->
             Card(
                 modifier = Modifier
@@ -233,7 +230,7 @@ fun GeneralAlertsList(
 
 @Preview
 @Composable
-fun PreviewEdgeToEdge() {
+private fun PreviewEdgeToEdge() {
     EdgeToEdgeTemplate(
         isInvertedOrientation = true,
         navMode = NavigationMode.ThreeButton

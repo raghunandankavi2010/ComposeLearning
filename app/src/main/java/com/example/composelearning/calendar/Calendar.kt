@@ -42,13 +42,13 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import com.example.composelearning.calendar.model.CalendarState
-import com.example.composelearning.calendar.model.CalendarUiState
-import com.example.composelearning.calendar.model.Month
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.composelearning.calendar.model.CalendarState
+import com.example.composelearning.calendar.model.CalendarUiState
+import com.example.composelearning.calendar.model.Month
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -75,11 +75,10 @@ fun Calendar(
     // using .animateTo() we animate the percentage selection from 0f - 1f
     LaunchedEffect(numberSelectedDays) {
         if (calendarUiState.hasSelectedDates) {
-
             val animationSpec: TweenSpec<Float> = tween(
                 durationMillis =
-                (numberSelectedDays.coerceAtLeast(0) * DURATION_MILLIS_PER_DAY)
-                    .coerceAtMost(2000),
+                    (numberSelectedDays.coerceAtLeast(0) * DURATION_MILLIS_PER_DAY)
+                        .coerceAtMost(2000),
                 easing = EaseOutQuart
             )
             selectedAnimationPercentage.animateTo(
@@ -99,7 +98,7 @@ fun Calendar(
         // inside the full-width item, and the pill canvas now actually gets the 336.dp it asks for.
         state = scrollState,
         modifier = modifier.consumeWindowInsets(contentPadding),
-        contentPadding = contentPadding,
+        contentPadding = contentPadding
     ) {
         calendarState.listMonths.forEach { month ->
             itemsCalendarMonth(
@@ -118,7 +117,6 @@ fun Calendar(
             )
         }
     }
-
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -129,7 +127,6 @@ private fun LazyListScope.itemsCalendarMonth(
     month: Month
 ) {
     item(month.yearMonth.month.name + month.yearMonth.year + "header") {
-
         val formatter = DateTimeFormatter.ofPattern("MMM yyyy")
 
         val monthName = formatter.format(month.yearMonth)
@@ -153,7 +150,6 @@ private fun LazyListScope.itemsCalendarMonth(
         Spacer(modifier = Modifier.height(12.dp))
     }
 
-
     // A custom key needs to be given to these items so that they can be found in tests that
     // need scrolling. The format of the key is ${year/month/weekNumber}. Thus,
     // the key for the fourth week of December 2020 is "2020/12/4"
@@ -173,7 +169,7 @@ private fun LazyListScope.itemsCalendarMonth(
         Box(modifier = contentModifier) {
             if (calendarUiState.hasSelectedPeriodOverlap(
                     currentDay,
-                    currentDay.plusDays(6),
+                    currentDay.plusDays(6)
                 )
             ) {
                 WeekSelectionPill(
@@ -181,13 +177,13 @@ private fun LazyListScope.itemsCalendarMonth(
                     currentWeekStart = currentDay,
                     widthPerDay = CELL_SIZE,
                     week = week,
-                    selectedPercentageTotalProvider = selectedPercentageProvider,
+                    selectedPercentageTotalProvider = selectedPercentageProvider
                 )
             }
             Week(
                 calendarUiState = calendarUiState,
                 week = week,
-                onDayClicked = onDayClicked,
+                onDayClicked = onDayClicked
             )
         }
     }
@@ -199,7 +195,7 @@ internal val CALENDAR_STARTS_ON = WeekFields.ISO
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
-fun DayPreview() {
+private fun DayPreview() {
     ComposeLearningTheme {
         Calendar(CalendarState(), onDayClicked = { })
     }

@@ -48,7 +48,6 @@ fun OverlappingComposables() {
 
 @Preview(showBackground = true)
 @Composable
-fun OverlappingComposablesPreview() {
+private fun OverlappingComposablesPreview() {
     OverlappingComposables()
-
 }

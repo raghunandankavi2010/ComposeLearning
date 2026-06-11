@@ -13,12 +13,12 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.composelearning.util.LocalAnimationsEnabled
-import kotlinx.coroutines.delay
-import kotlin.random.Random
-import kotlin.math.cos
-import kotlin.math.sin
 import kotlin.math.PI
+import kotlin.math.cos
 import kotlin.math.pow
+import kotlin.math.sin
+import kotlin.random.Random
+import kotlinx.coroutines.delay
 
 // Particle data class remains the same
 data class Particle1(
@@ -38,8 +38,8 @@ fun ContinuousParticleStream(
     minSpawnDelay: Long = 2L,
     maxSpawnDelay: Long = 10L,
     // ⭐ NEW SCALE PARAMETERS ⭐
-    minRadiusDp: Dp = 1.dp,      // Starting size at the center
-    maxRadiusDp: Dp = 6.dp       // Max size reached mid-travel
+    minRadiusDp: Dp = 1.dp, // Starting size at the center
+    maxRadiusDp: Dp = 6.dp // Max size reached mid-travel
 ) {
     // 1. Setup State and Units
     val circleRadiusPx = with(LocalDensity.current) { circleRadiusDp.toPx() }
@@ -137,8 +137,12 @@ fun ContinuousParticleStream(
             // Stay fully opaque (1.0) for the mid-section (0.1 to 0.8)
             // Fade out slowly in the last 20% (0.8 to 1.0)
             val alpha = when {
-                progress <= 0.1f -> progress / 0.1f // Fade in
-                progress >= 0.8f -> 1f - ((progress - 0.8f) / 0.5f) // Fade out
+                progress <= 0.1f -> progress / 0.1f
+
+                // Fade in
+                progress >= 0.8f -> 1f - ((progress - 0.8f) / 0.5f)
+
+                // Fade out
                 else -> 1f // Full opacity
             }.coerceIn(0f, 1f)
 
@@ -151,6 +155,7 @@ fun ContinuousParticleStream(
         }
     }
 }
+
 @Composable
 fun ParticleExplosionScreen() {
     Box(
@@ -166,25 +171,23 @@ fun ParticleExplosionScreen() {
             maxDuration = 1000L,
             // ⭐ Using the new scale parameters for a dramatic effect
             minRadiusDp = 0.5.dp, // Starts very small
-            maxRadiusDp = 8.dp    // Grows significantly
+            maxRadiusDp = 8.dp // Grows significantly
         )
     }
 }
-
-
 
 /**
  * Data class representing a single physical particle.
  */
 data class RealisticParticle(
     val color: Color,
-    val vx: Float,          // Velocity X (pixels per tick)
-    val vy: Float,          // Velocity Y (pixels per tick)
-    val gravity: Float,     // Constant acceleration downward
-    val drag: Float,        // Friction coefficient (0.0 to 1.0)
-    val maxLife: Long,      // Total lifespan in ms
-    val startTime: Long,    // Birth timestamp
-    val initialSize: Float  // Starting radius
+    val vx: Float, // Velocity X (pixels per tick)
+    val vy: Float, // Velocity Y (pixels per tick)
+    val gravity: Float, // Constant acceleration downward
+    val drag: Float, // Friction coefficient (0.0 to 1.0)
+    val maxLife: Long, // Total lifespan in ms
+    val startTime: Long, // Birth timestamp
+    val initialSize: Float // Starting radius
 )
 
 @Composable
@@ -235,8 +238,8 @@ fun ContinuousExplosionSystem() {
                         color = burstColor,
                         vx = cos(angle) * speed,
                         vy = sin(angle) * speed,
-                        gravity = 0.2f,        // Adjust for "heaviness"
-                        drag = 0.96f,           // 0.98 = thin air, 0.90 = thick water
+                        gravity = 0.2f, // Adjust for "heaviness"
+                        drag = 0.96f, // 0.98 = thin air, 0.90 = thick water
                         maxLife = Random.nextLong(800, 1500),
                         startTime = currentTime,
                         initialSize = Random.nextFloat() * 10f + 5f

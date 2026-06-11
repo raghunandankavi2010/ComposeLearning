@@ -67,7 +67,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 @Composable
 fun ImageProcessingScreen(
     onBack: () -> Unit = {},
-    viewModel: ImageProcessingViewModel = viewModel(),
+    viewModel: ImageProcessingViewModel = viewModel()
 ) {
     val ui by viewModel.ui.collectAsStateWithLifecycle()
     val filter by viewModel.filter.collectAsStateWithLifecycle()
@@ -77,7 +77,7 @@ fun ImageProcessingScreen(
     val paramsState = viewModel.params.collectAsStateWithLifecycle()
 
     val photoPicker = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
+        contract = ActivityResultContracts.PickVisualMedia()
     ) { uri -> if (uri != null) viewModel.onImageSelected(uri) }
 
     Scaffold(
@@ -94,9 +94,9 @@ fun ImageProcessingScreen(
                     FilledIconButton(
                         onClick = {
                             photoPicker.launch(
-                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                             )
-                        },
+                        }
                     ) {
                         Icon(Icons.Default.AddPhotoAlternate, contentDescription = "Pick image")
                     }
@@ -105,15 +105,15 @@ fun ImageProcessingScreen(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = Color.White,
                     navigationIconContentColor = Color.White,
-                    actionIconContentColor = Color.White,
-                ),
+                    actionIconContentColor = Color.White
+                )
             )
-        },
+        }
     ) { padding ->
         Column(
             modifier = Modifier
                 .padding(padding)
-                .fillMaxSize(),
+                .fillMaxSize()
         ) {
             PreviewArea(
                 bitmap = ui.sourceBitmap,
@@ -123,18 +123,18 @@ fun ImageProcessingScreen(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
             )
 
             FilterStrip(
                 current = filter,
-                onSelect = viewModel::onFilterChanged,
+                onSelect = viewModel::onFilterChanged
             )
 
             ParamSliders(
                 paramsState = paramsState,
                 onChange = viewModel::onParamsChanged,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             )
         }
     }
@@ -146,21 +146,23 @@ private fun PreviewArea(
     isLoadingSource: Boolean,
     filter: ImageFilter,
     paramsState: State<FilterParams>,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(20.dp))
             .background(MaterialTheme.colorScheme.surfaceVariant),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         when {
             isLoadingSource -> CircularProgressIndicator()
+
             bitmap == null -> Text("Pick an image to filter")
+
             else -> GpuPreview(
                 bitmap = bitmap,
                 filter = filter,
-                paramsState = paramsState,
+                paramsState = paramsState
             )
         }
     }
@@ -170,7 +172,7 @@ private fun PreviewArea(
 private fun GpuPreview(
     bitmap: Bitmap,
     filter: ImageFilter,
-    paramsState: State<FilterParams>,
+    paramsState: State<FilterParams>
 ) {
     val shader = remember { RuntimeShader(FILTER_SHADER) }
     val spec = remember(filter) { filterSpec(filter) }
@@ -178,8 +180,11 @@ private fun GpuPreview(
     // frame even when the filter has no LUT — we bind an identity ramp in that case and gate the
     // lookup with `useLut`.
     val lutBitmap = remember(filter) {
-        if (spec.hasLut) buildLutBitmap(spec.lutR!!, spec.lutG!!, spec.lutB!!)
-        else identityLutBitmap()
+        if (spec.hasLut) {
+            buildLutBitmap(spec.lutR!!, spec.lutG!!, spec.lutB!!)
+        } else {
+            identityLutBitmap()
+        }
     }
     val lutShader = remember(lutBitmap) { lutBitmap.toClampShader() }
     val image = remember(bitmap) { bitmap.asImageBitmap() }
@@ -197,16 +202,31 @@ private fun GpuPreview(
                 val p = paramsState.value
                 shader.setInputShader("lut", lutShader)
                 shader.setFloatUniform(
-                    "matRow0", spec.mat[0], spec.mat[1], spec.mat[2], spec.mat[3],
+                    "matRow0",
+                    spec.mat[0],
+                    spec.mat[1],
+                    spec.mat[2],
+                    spec.mat[3]
                 )
                 shader.setFloatUniform(
-                    "matRow1", spec.mat[4], spec.mat[5], spec.mat[6], spec.mat[7],
+                    "matRow1",
+                    spec.mat[4],
+                    spec.mat[5],
+                    spec.mat[6],
+                    spec.mat[7]
                 )
                 shader.setFloatUniform(
-                    "matRow2", spec.mat[8], spec.mat[9], spec.mat[10], spec.mat[11],
+                    "matRow2",
+                    spec.mat[8],
+                    spec.mat[9],
+                    spec.mat[10],
+                    spec.mat[11]
                 )
                 shader.setFloatUniform(
-                    "matOffset", spec.offset[0], spec.offset[1], spec.offset[2],
+                    "matOffset",
+                    spec.offset[0],
+                    spec.offset[1],
+                    spec.offset[2]
                 )
                 shader.setFloatUniform("useLut", if (spec.hasLut) 1f else 0f)
                 shader.setFloatUniform("intensity", p.intensity)
@@ -220,38 +240,50 @@ private fun GpuPreview(
                 // skipped entirely on the no-kernel fast path.
                 val k = spec.kernel
                 shader.setFloatUniform("useKernel", if (spec.hasKernel) 1f else 0f)
-                shader.setFloatUniform("kRow0",
-                    k?.get(0) ?: 0f, k?.get(1) ?: 0f, k?.get(2) ?: 0f)
-                shader.setFloatUniform("kRow1",
-                    k?.get(3) ?: 0f, k?.get(4) ?: 0f, k?.get(5) ?: 0f)
-                shader.setFloatUniform("kRow2",
-                    k?.get(6) ?: 0f, k?.get(7) ?: 0f, k?.get(8) ?: 0f)
+                shader.setFloatUniform(
+                    "kRow0",
+                    k?.get(0) ?: 0f,
+                    k?.get(1) ?: 0f,
+                    k?.get(2) ?: 0f
+                )
+                shader.setFloatUniform(
+                    "kRow1",
+                    k?.get(3) ?: 0f,
+                    k?.get(4) ?: 0f,
+                    k?.get(5) ?: 0f
+                )
+                shader.setFloatUniform(
+                    "kRow2",
+                    k?.get(6) ?: 0f,
+                    k?.get(7) ?: 0f,
+                    k?.get(8) ?: 0f
+                )
                 shader.setFloatUniform("kernelOffset", spec.kernelOffset)
                 shader.setFloatUniform("pixelateBlock", spec.pixelateBlock)
                 renderEffect = RenderEffect
                     .createRuntimeShaderEffect(shader, "content")
                     .asComposeRenderEffect()
-            },
+            }
     )
 }
 
 @Composable
 private fun FilterStrip(
     current: ImageFilter,
-    onSelect: (ImageFilter) -> Unit,
+    onSelect: (ImageFilter) -> Unit
 ) {
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
         contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(ImageFilter.entries) { f ->
             FilterThumb(
                 filter = f,
                 selected = f == current,
-                onClick = { onSelect(f) },
+                onClick = { onSelect(f) }
             )
         }
     }
@@ -261,7 +293,7 @@ private fun FilterStrip(
 private fun FilterThumb(
     filter: ImageFilter,
     selected: Boolean,
-    onClick: () -> Unit,
+    onClick: () -> Unit
 ) {
     // Swatch is generated once per filter for the lifetime of the composition — the bitmap is tiny
     // (64x64) so memory cost is negligible compared to retaining the same instance.
@@ -275,26 +307,26 @@ private fun FilterThumb(
         if (selected) MaterialTheme.colorScheme.primary else Color.Transparent
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Box(
             modifier = Modifier
                 .size(64.dp)
                 .clip(RoundedCornerShape(14.dp))
                 .border(width = 2.dp, color = borderColor, shape = RoundedCornerShape(14.dp))
-                .clickable(onClick = onClick),
+                .clickable(onClick = onClick)
         ) {
             Image(
                 bitmap = swatch,
                 contentDescription = filter.label,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize()
             )
         }
         Text(
             text = filter.label,
             fontSize = 11.sp,
             fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
-            color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
+            color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -303,42 +335,42 @@ private fun FilterThumb(
 private fun ParamSliders(
     paramsState: State<FilterParams>,
     onChange: ((FilterParams) -> FilterParams) -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val p = paramsState.value
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(2.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         ParamRow(
             label = "Strength",
             value = p.intensity,
             range = 0f..1f,
-            display = "%.2f".format(p.intensity),
+            display = "%.2f".format(p.intensity)
         ) { v -> onChange { it.copy(intensity = v) } }
         ParamRow(
             label = "Brightness",
             value = p.brightness,
             range = -0.4f..0.4f,
-            display = "%+.2f".format(p.brightness),
+            display = "%+.2f".format(p.brightness)
         ) { v -> onChange { it.copy(brightness = v) } }
         ParamRow(
             label = "Contrast",
             value = p.contrast,
             range = 0.5f..1.8f,
-            display = "%.2f".format(p.contrast),
+            display = "%.2f".format(p.contrast)
         ) { v -> onChange { it.copy(contrast = v) } }
         ParamRow(
             label = "Saturation",
             value = p.saturation,
             range = 0f..2f,
-            display = "%.2f".format(p.saturation),
+            display = "%.2f".format(p.saturation)
         ) { v -> onChange { it.copy(saturation = v) } }
         ParamRow(
             label = "Vignette",
             value = p.vignette,
             range = 0f..1f,
-            display = "%.2f".format(p.vignette),
+            display = "%.2f".format(p.vignette)
         ) { v -> onChange { it.copy(vignette = v) } }
     }
 }
@@ -349,27 +381,27 @@ private fun ParamRow(
     value: Float,
     range: ClosedFloatingPointRange<Float>,
     display: String,
-    onChange: (Float) -> Unit,
+    onChange: (Float) -> Unit
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
             label,
             modifier = Modifier.width(86.dp),
             fontSize = 13.sp,
-            fontWeight = FontWeight.Medium,
+            fontWeight = FontWeight.Medium
         )
         Slider(
             value = value,
             onValueChange = onChange,
             valueRange = range,
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f)
         )
         Spacer(Modifier.width(6.dp))
         Text(
             display,
             modifier = Modifier.width(54.dp),
             fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

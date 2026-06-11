@@ -1,6 +1,8 @@
 package com.example.composelearning.shaders
 
+import android.graphics.RenderEffect as AndroidRenderEffect
 import android.graphics.RuntimeShader
+import android.graphics.Shader as AndroidShader
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
@@ -68,11 +70,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.composelearning.sliders.Slider
-import org.intellij.lang.annotations.Language
 import kotlin.math.roundToInt
-import android.graphics.RenderEffect as AndroidRenderEffect
-import android.graphics.Shader as AndroidShader
-
+import org.intellij.lang.annotations.Language
 
 // =================================================================================================
 // HUB SCREEN — entry point. Wire ShadersHubScreen() into your AppNavigation as a destination.
@@ -93,7 +92,7 @@ private enum class ShaderDemo(val title: String, val subtitle: String) {
     Spiral("Spiral shader", "Dynamic polar coordinate spiral"),
     FluidSpring("Fluid Spring (Masterclass)", "Euler physics + Thin-film interference"),
     PageCurl("Page Curl", "Cylindrical fold simulation with two textures"),
-    BlurredGradient("Blurred Gradient", "Dynamic AGSL gradient background"),
+    BlurredGradient("Blurred Gradient", "Dynamic AGSL gradient background")
 }
 
 @Composable
@@ -108,14 +107,14 @@ fun ShadersHubScreen() {
                     .systemBarsPadding()
                     .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 16.dp),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 16.dp)
             ) {
                 item {
                     Text(
                         "AGSL Shader Demos",
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(vertical = 8.dp),
+                        modifier = Modifier.padding(vertical = 8.dp)
                     )
                 }
                 items(ShaderDemo.entries) { demo ->
@@ -123,7 +122,7 @@ fun ShadersHubScreen() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { current = demo },
-                        shape = RoundedCornerShape(16.dp),
+                        shape = RoundedCornerShape(16.dp)
                     ) {
                         Column(Modifier.padding(16.dp)) {
                             Text(demo.title, fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
@@ -162,7 +161,6 @@ fun ShadersHubScreen() {
     }
 }
 
-
 // =================================================================================================
 // HELPERS
 // =================================================================================================
@@ -174,7 +172,7 @@ fun ShadersHubScreen() {
 private fun Modifier.runtimeShaderRenderEffect(
     shader: RuntimeShader,
     sampler: String = "content",
-    setUniforms: RuntimeShader.() -> Unit = {},
+    setUniforms: RuntimeShader.() -> Unit = {}
 ): Modifier = this
     .graphicsLayer {
         clip = true
@@ -202,7 +200,6 @@ private fun rememberShaderTime(): State<Float> = produceState(0f) {
     }
 }
 
-
 // =================================================================================================
 // DEMO 1 — Image blur (fixed radius). The original example had two bugs: the `iChannel0` sampler
 // was never bound, and the uniform name in Kotlin (`iResolution`) did not match the AGSL
@@ -224,11 +221,10 @@ fun BlurImageDemo() {
                 .runtimeShaderRenderEffect(shader) {
                     setFloatUniform("radius", 12f)
                     setFloatUniform("alpha", 1f)
-                },
+                }
         )
     }
 }
-
 
 // =================================================================================================
 // DEMO 2 — Same blur shader, exposed via two sliders. This is the production-shaped pattern:
@@ -247,7 +243,7 @@ fun BlurImageWithControlsDemo() {
             Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             AsyncImage(
                 model = DEMO_PHOTO_URL,
@@ -258,7 +254,7 @@ fun BlurImageWithControlsDemo() {
                     .runtimeShaderRenderEffect(shader) {
                         setFloatUniform("radius", radius)
                         setFloatUniform("alpha", alpha)
-                    },
+                    }
             )
         }
 
@@ -268,7 +264,7 @@ fun BlurImageWithControlsDemo() {
                 value = radius,
                 onValueChange = { radius = it },
                 valueRange = 0f..40f,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
             )
             Spacer(Modifier.height(12.dp))
             Text("Alpha: ${"%.2f".format(alpha)}")
@@ -276,12 +272,11 @@ fun BlurImageWithControlsDemo() {
                 value = alpha,
                 onValueChange = { alpha = it },
                 valueRange = 0f..1f,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
 }
-
 
 // =================================================================================================
 // DEMO 2b — Native blur. Same UI as DEMO 2 (radius + alpha sliders) but routed through Android's
@@ -297,14 +292,16 @@ fun BlurImageWithControlsDemo() {
 // Cost is proportional to radius but vastly cheaper than the AGSL equivalent because the kernel
 // is separable and hardware-vectorized. radiusX/Y are in pixels; Shader.TileMode.CLAMP avoids
 // edge fade at the bounds. Pass radius == 0 to disable (createBlurEffect throws on 0).
-fun Modifier.nativeBlur(radius: Float): Modifier =
-    if (radius <= 0f) this
-    else this.graphicsLayer {
+fun Modifier.nativeBlur(radius: Float): Modifier = if (radius <= 0f) {
+    this
+} else {
+    this.graphicsLayer {
         clip = true
         renderEffect = AndroidRenderEffect
             .createBlurEffect(radius, radius, AndroidShader.TileMode.CLAMP)
             .asComposeRenderEffect()
     }
+}
 
 @Composable
 fun NativeBlurDemo() {
@@ -316,7 +313,7 @@ fun NativeBlurDemo() {
             Modifier
                 .fillMaxWidth()
                 .weight(1f),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             AsyncImage(
                 model = DEMO_PHOTO_URL,
@@ -325,7 +322,7 @@ fun NativeBlurDemo() {
                 alpha = alpha,
                 modifier = Modifier
                     .fillMaxSize()
-                    .nativeBlur(radius),
+                    .nativeBlur(radius)
             )
         }
 
@@ -335,7 +332,7 @@ fun NativeBlurDemo() {
                 value = radius,
                 onValueChange = { radius = it },
                 valueRange = 0f..40f,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
             )
             Spacer(Modifier.height(12.dp))
             Text("Alpha: ${"%.2f".format(alpha)}")
@@ -343,12 +340,11 @@ fun NativeBlurDemo() {
                 value = alpha,
                 onValueChange = { alpha = it },
                 valueRange = 0f..1f,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
 }
-
 
 // =================================================================================================
 // DEMO 3 — Frosted glass card over a photo. The card composable renders the SAME background image
@@ -371,7 +367,7 @@ fun FrostedGlassDemo() {
             model = DEMO_PHOTO_URL,
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
         )
 
         // The frosted card. Stacks: blurred backdrop slice + white tint + content.
@@ -379,7 +375,7 @@ fun FrostedGlassDemo() {
             modifier = Modifier
                 .align(Alignment.Center)
                 .size(cardW, cardH)
-                .clip(RoundedCornerShape(28.dp)),
+                .clip(RoundedCornerShape(28.dp))
         ) {
             val density = LocalDensity.current
             // Offsets so the inner image aligns with what's behind the card. Card is centered, so
@@ -394,27 +390,26 @@ fun FrostedGlassDemo() {
                 modifier = Modifier
                     .size(containerW, containerH)
                     .offset { IntOffset(offsetX, offsetY) }
-                    .nativeBlur(radius = 32f),
+                    .nativeBlur(radius = 32f)
             )
             // Translucent white tint — the "frost" that makes the blur look milky.
             Box(Modifier.fillMaxSize().background(Color.White.copy(alpha = 0.18f)))
 
             Column(
                 Modifier.fillMaxSize().padding(20.dp),
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Center
             ) {
                 Text("Frosted Glass", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
                 Spacer(Modifier.height(6.dp))
                 Text(
                     "Backdrop blurred by an AGSL render effect.",
                     color = Color.White.copy(alpha = 0.85f),
-                    fontSize = 14.sp,
+                    fontSize = 14.sp
                 )
             }
         }
     }
 }
-
 
 // =================================================================================================
 // DEMO 4 — Animated mesh gradient. No content sampler; the shader generates color from scratch
@@ -439,25 +434,24 @@ fun MeshGradientDemo() {
                     drawRect(brush)
                 }
             },
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
                 "Welcome back",
                 color = Color.White,
                 fontSize = 36.sp,
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.Bold
             )
             Spacer(Modifier.height(8.dp))
             Text(
                 "Sign in to continue",
                 color = Color.White.copy(alpha = 0.8f),
-                fontSize = 16.sp,
+                fontSize = 16.sp
             )
         }
     }
 }
-
 
 // =================================================================================================
 // DEMO 5 — Shimmer skeleton. Each placeholder draws a ShaderBrush with a moving diagonal
@@ -473,7 +467,7 @@ fun ShimmerSkeletonDemo() {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         repeat(5) {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -485,14 +479,14 @@ fun ShimmerSkeletonDemo() {
                             .fillMaxWidth(0.7f)
                             .height(14.dp)
                             .clip(RoundedCornerShape(7.dp)),
-                        timeState,
+                        timeState
                     )
                     ShimmerBox(
                         Modifier
                             .fillMaxWidth(0.45f)
                             .height(12.dp)
                             .clip(RoundedCornerShape(6.dp)),
-                        timeState,
+                        timeState
                     )
                 }
             }
@@ -501,7 +495,7 @@ fun ShimmerSkeletonDemo() {
 }
 
 @Composable
-private fun ShimmerBox(modifier: Modifier, timeState: State<Float>) {
+private fun ShimmerBox(modifier: Modifier = Modifier, timeState: State<Float>) {
     val shader = remember { RuntimeShader(SHIMMER_SHADER) }
     val base = MaterialTheme.colorScheme.surfaceVariant
     val highlight = MaterialTheme.colorScheme.surface
@@ -518,10 +512,9 @@ private fun ShimmerBox(modifier: Modifier, timeState: State<Float>) {
                 val paint = android.graphics.Paint().apply { this.shader = shader }
                 canvas.nativeCanvas.drawRect(0f, 0f, size.width, size.height, paint)
             }
-        },
+        }
     )
 }
-
 
 // =================================================================================================
 // DEMO 6 — Liquid button. The render effect samples the button's own content (a flat colored box +
@@ -556,7 +549,7 @@ fun LiquidButtonDemo() {
                             touchState.value = Offset(offset.x / size.width, offset.y / size.height)
                             pressCounter++
                             tryAwaitRelease()
-                        },
+                        }
                     )
                 }
                 .runtimeShaderRenderEffect(shader) {
@@ -565,7 +558,7 @@ fun LiquidButtonDemo() {
                     setFloatUniform("touch", t.x, t.y)
                     setFloatUniform("pressure", ripple.value)
                 },
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             // The "content" the shader will displace. Solid color + label.
             Box(
@@ -573,17 +566,16 @@ fun LiquidButtonDemo() {
                     .fillMaxSize()
                     .background(
                         Brush.horizontalGradient(
-                            listOf(Color(0xFF6A11CB), Color(0xFF2575FC)),
-                        ),
+                            listOf(Color(0xFF6A11CB), Color(0xFF2575FC))
+                        )
                     ),
-                contentAlignment = Alignment.Center,
+                contentAlignment = Alignment.Center
             ) {
                 Text("Press me", color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
             }
         }
     }
 }
-
 
 // =================================================================================================
 // DEMO 7 — Film grain overlay. A modifier you can drop on any composable. The shader samples the
@@ -615,7 +607,7 @@ fun FilmGrainDemo() {
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxSize()
-                    .filmGrain(intensity),
+                    .filmGrain(intensity)
             )
         }
         Column(Modifier.padding(16.dp)) {
@@ -624,12 +616,11 @@ fun FilmGrainDemo() {
                 value = intensity,
                 onValueChange = { intensity = it },
                 valueRange = 0f..0.6f,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
 }
-
 
 // =================================================================================================
 // AGSL SHADERS
@@ -677,7 +668,6 @@ private val BLUR_SHADER = """
     }
 """.trimIndent()
 
-
 // Three colored blobs moving with sin/cos, smoothstep'd for soft edges, plus a tonal palette.
 // Useful pattern: cosine-palette gradients (Inigo Quilez) for cheap procedural colors.
 @Language("AGSL")
@@ -717,7 +707,6 @@ private val MESH_GRADIENT_SHADER = """
     }
 """.trimIndent()
 
-
 // Diagonal highlight sweep over a base color. `time` advances the sweep position.
 @Language("AGSL")
 private val SHIMMER_SHADER = """
@@ -739,7 +728,6 @@ private val SHIMMER_SHADER = """
         return mix(baseColor, highlightColor, intensity);
     }
 """.trimIndent()
-
 
 // Touch-driven displacement: each pixel is shifted along the direction away from the touch
 // point, by a sine wave whose amplitude decays with distance and with `pressure`.
@@ -768,7 +756,6 @@ private val LIQUID_BUTTON_SHADER = """
     }
 """.trimIndent()
 
-
 // Per-pixel pseudo-random noise added to the content. `time` perturbs the hash seed so each
 // frame's grain is different (the characteristic "moving grain" of analog film).
 @Language("AGSL")
@@ -791,7 +778,6 @@ private val FILM_GRAIN_SHADER = """
     }
 """.trimIndent()
 
-
 // =================================================================================================
 // PREVIEWS — each demo previewable in isolation in Android Studio.
 // =================================================================================================
@@ -804,32 +790,48 @@ private fun PreviewHub() {
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 720)
 @Composable
-private fun PreviewBlurImage() { BlurImageDemo() }
+private fun PreviewBlurImage() {
+    BlurImageDemo()
+}
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 720)
 @Composable
-private fun PreviewBlurImageControls() { BlurImageWithControlsDemo() }
+private fun PreviewBlurImageControls() {
+    BlurImageWithControlsDemo()
+}
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 720)
 @Composable
-private fun PreviewNativeBlur() { NativeBlurDemo() }
+private fun PreviewNativeBlur() {
+    NativeBlurDemo()
+}
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 720)
 @Composable
-private fun PreviewFrostedGlass() { FrostedGlassDemo() }
+private fun PreviewFrostedGlass() {
+    FrostedGlassDemo()
+}
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 720)
 @Composable
-private fun PreviewMeshGradient() { MeshGradientDemo() }
+private fun PreviewMeshGradient() {
+    MeshGradientDemo()
+}
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 720)
 @Composable
-private fun PreviewShimmer() { ShimmerSkeletonDemo() }
+private fun PreviewShimmer() {
+    ShimmerSkeletonDemo()
+}
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 720)
 @Composable
-private fun PreviewLiquidButton() { LiquidButtonDemo() }
+private fun PreviewLiquidButton() {
+    LiquidButtonDemo()
+}
 
 @Preview(showBackground = true, widthDp = 360, heightDp = 720)
 @Composable
-private fun PreviewFilmGrain() { FilmGrainDemo() }
+private fun PreviewFilmGrain() {
+    FilmGrainDemo()
+}

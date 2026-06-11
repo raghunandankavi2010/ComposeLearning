@@ -22,11 +22,11 @@ import com.example.composelearning.R
 
 @Composable
 fun CircleProgressInfinite() {
-
     CircularProgressIndicator(
         modifier = Modifier.size(100.dp),
         color = Color.Green,
-        strokeWidth = 10.dp)
+        strokeWidth = 10.dp
+    )
 
     val transition = rememberInfiniteTransition()
     val currentRotation by transition.animateValue(
@@ -42,34 +42,34 @@ fun CircleProgressInfinite() {
     )
 
     val strokeWidth = dimensionResource(R.dimen.stroke)
-    Box(modifier = Modifier
-        .padding(16.dp)
-        .size(100.dp)
-        .drawBehind {
-
-            //background fixed circle
-            drawCircle(
-                color = LightGray,
-                radius = size.width / 2 - strokeWidth.toPx() / 2,
-                style = Stroke(strokeWidth.toPx())
-            )
-
-            val diameterOffset = strokeWidth.toPx() / 2
-            val arcDimen = size.width - 2 * diameterOffset
-
-            //arc with indeterminate animation
-            rotate(currentRotation) {
-                drawArc(
-                    color = Green,
-                    startAngle = 45F,
-                    sweepAngle = 90F,
-                    useCenter = false,
-                    topLeft = Offset(diameterOffset, diameterOffset),
-                    size = Size(arcDimen, arcDimen),
+    Box(
+        modifier = Modifier
+            .padding(16.dp)
+            .size(100.dp)
+            .drawBehind {
+                // background fixed circle
+                drawCircle(
+                    color = LightGray,
+                    radius = size.width / 2 - strokeWidth.toPx() / 2,
                     style = Stroke(strokeWidth.toPx())
                 )
+
+                val diameterOffset = strokeWidth.toPx() / 2
+                val arcDimen = size.width - 2 * diameterOffset
+
+                // arc with indeterminate animation
+                rotate(currentRotation) {
+                    drawArc(
+                        color = Green,
+                        startAngle = 45F,
+                        sweepAngle = 90F,
+                        useCenter = false,
+                        topLeft = Offset(diameterOffset, diameterOffset),
+                        size = Size(arcDimen, arcDimen),
+                        style = Stroke(strokeWidth.toPx())
+                    )
+                }
             }
-        }
 
     )
 }

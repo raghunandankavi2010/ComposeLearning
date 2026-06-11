@@ -38,8 +38,6 @@ val categories = listOf(
     Category("Category 7", listOf("Item 6", "Item 7", "Item 8")),
     Category("Category 8", listOf("Item 6", "Item 7", "Item 8"))
 
-
-
 )
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -56,11 +54,9 @@ fun StickyList() {
     }
     val scale = remember { mutableStateOf(1f) }
 
-
     LazyColumn(
-        state = listState,
+        state = listState
     ) {
-
         categories.forEach { (category, models) ->
             stickyHeader {
                 StickyHeader(
@@ -79,7 +75,6 @@ fun StickyList() {
                 )
             }
         }
-
     }
 }
 

@@ -1,14 +1,11 @@
 package com.example.composelearning.graphics
 
-import com.example.composelearning.ui.theme.AppFontFamilyBlack
-import com.example.composelearning.ui.theme.AppFontFamilyMedium
-
-
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -31,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
@@ -45,8 +43,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composelearning.R
 import com.example.composelearning.customshapes.dpToPx
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.ui.input.pointer.pointerInput
+import com.example.composelearning.ui.theme.AppFontFamilyBlack
+import com.example.composelearning.ui.theme.AppFontFamilyMedium
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -56,7 +54,6 @@ import kotlin.math.sqrt
 fun PieChartPreview(
     onClick: (data: ChartData, index: Int) -> Unit
 ) {
-
     var dismissToolTip by remember {
         mutableStateOf(false)
     }
@@ -76,7 +73,7 @@ fun PieChartPreview(
                 ChartData(Color(0xFFBBCEF5), 6f),
                 ChartData(Color(0xFFB72ABB), 7f),
                 ChartData(Color(0xFFF5A8B8), 26f),
-                ChartData(Color(0xFF8C652C), 30f),
+                ChartData(Color(0xFF8C652C), 30f)
 //                ChartData(Color.LightGray, 25f),
 //                ChartData(Color.Green, 18f),
 //              ChartData(Color.Red, 15f),
@@ -93,7 +90,7 @@ fun PieChartPreview(
             data = data,
             outerRingPercent = 35,
             onClick = { chartData, index ->
-               // onClick(chartData, index)
+                // onClick(chartData, index)
             },
             dimissToolTip = dismissToolTip
         ) {
@@ -104,7 +101,7 @@ fun PieChartPreview(
 
 @Composable
 fun PieChart(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     data: List<ChartData>,
     startAngle: Float = 0f,
     outerRingPercent: Int = 35,
@@ -113,14 +110,11 @@ fun PieChart(
     dimissToolTip: Boolean,
     resetDismiss: (Boolean) -> Unit
 ) {
-
     Box(
         modifier = modifier.clickable(enabled = false) {
-
         },
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
-
         // Was BoxWithConstraints to read maxWidth — but the value was unused, so we paid for
         // an extra subcomposition + measure pass per recomposition for nothing. Plain Box is
         // fine here; the Canvas inside fillMaxWidth + aspectRatio sizes itself.
@@ -130,17 +124,17 @@ fun PieChart(
         val outerStrokeWidthPx = outerRadius - innerRadius
 
         // Outer radius of chart. This is edge of stroke width as
-        //val innerRadius = 74.dp.dpToPx()
-        //val outerRadius = 118.dp.dpToPx()
-        //val radius = (width / 2f) * .9f
+        // val innerRadius = 74.dp.dpToPx()
+        // val outerRadius = 118.dp.dpToPx()
+        // val radius = (width / 2f) * .9f
 
-        //val outerStrokeWidthPx = 44.dp.dpToPx()//outerRadius - innerRadius
-          //  maxOf((outerRadius * outerRingPercent / 100f), 44f).coerceIn(0f, outerRadius)
-        //val outerStrokeWidthPx = 44.dp.dpToPx()
-         //   (outerRadius * outerRingPercent / 100f).coerceIn(0f, radius)
+        // val outerStrokeWidthPx = 44.dp.dpToPx()//outerRadius - innerRadius
+        //  maxOf((outerRadius * outerRingPercent / 100f), 44f).coerceIn(0f, outerRadius)
+        // val outerStrokeWidthPx = 44.dp.dpToPx()
+        //   (outerRadius * outerRingPercent / 100f).coerceIn(0f, radius)
 
         // Inner radius of chart. Semi transparent inner ring
-       // val innerRadius = (radius - outerStrokeWidthPx).coerceIn(0f, radius)
+        // val innerRadius = (radius - outerStrokeWidthPx).coerceIn(0f, radius)
 
         // Start angle of chart. Top center is -90, right center 0,
         // bottom center 90, left center 180
@@ -164,7 +158,6 @@ fun PieChart(
 // Distribute the remaining angle equally among small data points.
         val smallDataAngle = (data.count { it.data <= 6 }) * 20f
         val smallDataCoefficient = smallDataAngle / smallDataCount
-
 
         val coEfficientLarge = (360f - smallDataAngle) / largeDataSum
 
@@ -199,7 +192,6 @@ fun PieChart(
             }
         }
 
-
 //        var currentAngle = 0f
 //        val currentSweepAngle = animatableInitialSweepAngle.value
 //
@@ -219,7 +211,6 @@ fun PieChart(
 //            }
 //        }
 
-
         LaunchedEffect(key1 = animatableInitialSweepAngle) {
             animatableInitialSweepAngle.animateTo(
                 targetValue = chartEndAngle,
@@ -237,15 +228,14 @@ fun PieChart(
                     textMeasurer.measure(
                         text = "${it.data.toInt()}%",
                         style = TextStyle(
-                                fontSize = 11.sp,
-                                lineHeight = 16.5.sp,
-                                fontFamily = AppFontFamilyMedium,
-                                fontWeight = FontWeight(500),
-                                color = Color(0xFF141414),
+                            fontSize = 11.sp,
+                            lineHeight = 16.5.sp,
+                            fontFamily = AppFontFamilyMedium,
+                            fontWeight = FontWeight(500),
+                            color = Color(0xFF141414)
 
-                                )
                         )
-
+                    )
                 }
             }
 
@@ -269,10 +259,12 @@ fun PieChart(
 
                         if (isTouched) {
                             var touchAngle =
-                                (-startAngle + 180f + atan2(
-                                    yPos,
-                                    xPos
-                                ) * 180 / Math.PI) % 360f
+                                (
+                                    -startAngle + 180f + atan2(
+                                        yPos,
+                                        xPos
+                                    ) * 180 / Math.PI
+                                    ) % 360f
 
                             if (touchAngle < 0) {
                                 touchAngle += 360f
@@ -291,9 +283,9 @@ fun PieChart(
                                         onClick?.invoke(
                                             ChartData(
                                                 color = chartData.color,
-                                                data = chartData.data,
+                                                data = chartData.data
                                             ),
-                                            index,
+                                            index
                                         )
                                     }
                                 }
@@ -317,42 +309,41 @@ fun PieChart(
             dimissToolTip = dimissToolTip
         )
 
-Column(modifier = Modifier.align(Alignment.Center),
-    horizontalAlignment = Alignment.CenterHorizontally){
+        Column(
+            modifier = Modifier.align(Alignment.Center),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Theme-aware so the centre labels stay legible in both light and dark mode. The previous
+            // hard-coded near-black colours rendered invisible against the dark surface.
+            val onSurface = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
 
-    // Theme-aware so the centre labels stay legible in both light and dark mode. The previous
-    // hard-coded near-black colours rendered invisible against the dark surface.
-    val onSurface = androidx.compose.material3.MaterialTheme.colorScheme.onSurface
-
-    Text(
-        text = "Total expense",
-        style = TextStyle(
-            fontSize = 12.sp,
-            lineHeight = 16.sp,
-            fontFamily = AppFontFamilyMedium,
-            fontWeight = FontWeight(500),
-            color = onSurface.copy(alpha = 0.65f),
-            textAlign = TextAlign.Center,
+            Text(
+                text = "Total expense",
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    lineHeight = 16.sp,
+                    fontFamily = AppFontFamilyMedium,
+                    fontWeight = FontWeight(500),
+                    color = onSurface.copy(alpha = 0.65f),
+                    textAlign = TextAlign.Center
+                )
             )
-    )
 
-    Text(
-        modifier = Modifier,
-        text = "₹2500000",
-        style = TextStyle(
-            fontSize = 24.sp,
-            lineHeight = 28.sp,
-            fontFamily = AppFontFamilyBlack,
-            fontWeight = FontWeight(900),
-            color = onSurface,
-            textAlign = TextAlign.Center,
-        )
-    )
-}
-
+            Text(
+                modifier = Modifier,
+                text = "₹2500000",
+                style = TextStyle(
+                    fontSize = 24.sp,
+                    lineHeight = 28.sp,
+                    fontFamily = AppFontFamilyBlack,
+                    fontWeight = FontWeight(900),
+                    color = onSurface,
+                    textAlign = TextAlign.Center
+                )
+            )
+        }
     }
 }
-
 
 @Composable
 private fun PieChartImpl(
@@ -373,12 +364,10 @@ private fun PieChartImpl(
     triangleHeight: Int = 8,
     dimissToolTip: Boolean
 ) {
-
     val pointerVector = ImageVector.vectorResource(id = R.drawable.tip)
     val pointerTip = rememberVectorPainter(image = pointerVector)
 
     Canvas(modifier = modifier) {
-
         // Read the animated sweep here, inside the DrawScope. The subscription is captured by
         // the draw layer rather than the surrounding composition, so the animation frames only
         // invalidate the draw — they don't recompose PieChart or PieChartImpl.
@@ -398,9 +387,7 @@ private fun PieChartImpl(
         val halfTriangleWidth = triangleWidth / 2
         val halfTriangleHeight = triangleHeight / 2
 
-
         for (index in 0..chartDataList.lastIndex) {
-
             val chartData = chartDataList[index]
             val range = chartData.range
             val sweepAngle = range.endInclusive - range.start
@@ -420,7 +407,6 @@ private fun PieChartImpl(
             }
 
             if (startAngle <= currentSweepAngle) {
-
                 val color = chartData.color
                 val diff = (width / 2 - outerRadius) / outerRadius
                 val fraction = (chartData.animatable.value - 1f) / diff
@@ -431,7 +417,7 @@ private fun PieChartImpl(
                     fraction
                 )
 
-                //val alphaValue  = if (chartData.isSelected) 1f  else 0.5f
+                // val alphaValue  = if (chartData.isSelected) 1f  else 0.5f
                 drawArc(
                     color = animatedColor,
                     startAngle = startAngle,
@@ -466,7 +452,7 @@ private fun PieChartImpl(
                     drawText(
                         textLayoutResult = textMeasureResult,
                         color = Color(0xFF141414),
-                        topLeft = Offset(clampedX, clampedY),
+                        topLeft = Offset(clampedX, clampedY)
                     )
                 }
 
@@ -536,7 +522,6 @@ private fun PieChartImpl(
 //        }
     }
 }
-
 
 @Immutable
 data class ChartData(val color: Color, val data: Float)

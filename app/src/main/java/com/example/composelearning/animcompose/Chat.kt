@@ -91,9 +91,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 //region --- Composition Locals ---
 
@@ -187,6 +187,7 @@ fun ChatAppNavigation() {
                             }
                         )
                     }
+
                     is ChatScreen.Chat -> {
                         ChatDetailScreen(
                             user = targetScreen.user,
@@ -341,11 +342,13 @@ fun HeaderTabsFinal(
 
     val indicatorX by animateDpAsState(
         targetValue = if (selectedIndex > 0) target.left.toDp(density) - flareWidth else target.left.toDp(density),
-        animationSpec = spring(0.75f, 200f), label = "X"
+        animationSpec = spring(0.75f, 200f),
+        label = "X"
     )
     val indicatorW by animateDpAsState(
         targetValue = target.width.toDp(density) + (if (selectedIndex > 0) flareWidth else 0.dp) + (if (selectedIndex < tabs.size - 1) flareWidth else 0.dp),
-        animationSpec = spring(0.75f, 200f), label = "W"
+        animationSpec = spring(0.75f, 200f),
+        label = "W"
     )
 
     var isSearchActive by remember { mutableStateOf(false) }
@@ -361,10 +364,15 @@ fun HeaderTabsFinal(
     Column(Modifier.fillMaxSize().background(Color(0xFF1C1B2A))) {
         Column(Modifier.fillMaxWidth().background(headerColor).statusBarsPadding()) {
             Box(Modifier.fillMaxWidth().height(80.dp).padding(horizontal = 8.dp)) {
-                Box(Modifier.align(Alignment.CenterStart).padding(start = 8.dp).graphicsLayer {
-                    val s = 1f - searchWidthFraction
-                    scaleX = s; scaleY = s; alpha = s
-                }.size(60.dp).clip(CircleShape).clickable(noRipple, null) {}, contentAlignment = Alignment.Center) {
+                Box(
+                    Modifier.align(Alignment.CenterStart).padding(start = 8.dp).graphicsLayer {
+                        val s = 1f - searchWidthFraction
+                        scaleX = s
+                        scaleY = s
+                        alpha = s
+                    }.size(60.dp).clip(CircleShape).clickable(noRipple, null) {},
+                    contentAlignment = Alignment.Center
+                ) {
                     Icon(Icons.Filled.Add, "Add", tint = Color.White, modifier = Modifier.requiredSize(28.dp))
                 }
 
@@ -372,14 +380,27 @@ fun HeaderTabsFinal(
                     Box(Modifier.width((screenWidth - 24.dp) * searchWidthFraction).height(50.dp).clip(RoundedCornerShape(25.dp)).background(Color.White.copy(0.25f)))
                     if (searchWidthFraction > 0.1f) {
                         BasicTextField(
-                            value = searchText, onValueChange = { searchText = it },
+                            value = searchText,
+                            onValueChange = { searchText = it },
                             modifier = Modifier.width((screenWidth - 24.dp) * searchWidthFraction).padding(start = 20.dp).focusRequester(focusRequester).alpha(searchWidthFraction),
                             textStyle = TextStyle(color = Color.White, fontSize = 20.sp),
-                            cursorBrush = SolidColor(Color.White), singleLine = true
+                            cursorBrush = SolidColor(Color.White),
+                            singleLine = true
                         )
                     }
-                    LaunchedEffect(isSearchActive) { if (isSearchActive) { delay(100); focusRequester.requestFocus() } }
-                    Box(Modifier.size(60.dp).clip(CircleShape).clickable(noRipple, null) { isSearchActive = !isSearchActive; if (!isSearchActive) searchText = "" }, contentAlignment = Alignment.Center) {
+                    LaunchedEffect(isSearchActive) {
+                        if (isSearchActive) {
+                            delay(100)
+                            focusRequester.requestFocus()
+                        }
+                    }
+                    Box(
+                        Modifier.size(60.dp).clip(CircleShape).clickable(noRipple, null) {
+                            isSearchActive = !isSearchActive
+                            if (!isSearchActive) searchText = ""
+                        },
+                        contentAlignment = Alignment.Center
+                    ) {
                         Icon(if (isSearchActive) Icons.Filled.Close else Icons.Filled.Search, null, tint = Color.White, modifier = Modifier.requiredSize(28.dp))
                     }
                 }
@@ -392,10 +413,13 @@ fun HeaderTabsFinal(
             }
             Row(Modifier.fillMaxSize(), verticalAlignment = Alignment.CenterVertically) {
                 tabs.forEachIndexed { index, tab ->
-                    Box(Modifier.weight(1f).fillMaxHeight().clickable(noRipple, null) { onTabSelected(index) }.onGloballyPositioned { coords ->
-                        val pos = coords.positionInParent()
-                        tabBounds = tabBounds.toMutableList().also { it[index] = Rect(pos.x, pos.y, pos.x + coords.size.width, pos.y + coords.size.height) }
-                    }, contentAlignment = Alignment.Center) {
+                    Box(
+                        Modifier.weight(1f).fillMaxHeight().clickable(noRipple, null) { onTabSelected(index) }.onGloballyPositioned { coords ->
+                            val pos = coords.positionInParent()
+                            tabBounds = tabBounds.toMutableList().also { it[index] = Rect(pos.x, pos.y, pos.x + coords.size.width, pos.y + coords.size.height) }
+                        },
+                        contentAlignment = Alignment.Center
+                    ) {
                         Text(tab.title, color = if (index == selectedIndex) Color.White else Color.White.copy(0.5f), style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.SemiBold))
                     }
                 }
@@ -451,7 +475,12 @@ fun FavoritesListShared(items: List<RecentMessage>, state: LazyListState, onChat
                     launch { offsetYAnim.animateTo(0f, spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessLow)) }
                 }
             }
-            Box(Modifier.graphicsLayer { alpha = alphaAnim.value; translationY = offsetYAnim.value.dp.toPx() }) {
+            Box(
+                Modifier.graphicsLayer {
+                    alpha = alphaAnim.value
+                    translationY = offsetYAnim.value.dp.toPx()
+                }
+            ) {
                 DraggableFavoriteItemShared(item, { favorites = favorites.toMutableList().also { it.remove(item) } }, onChatSelected)
             }
         }
@@ -514,7 +543,7 @@ fun DraggableFavoriteItemShared(item: RecentMessage, onDelete: () -> Unit, onCha
                 Icon(Icons.Default.Close, "Delete", tint = Color.White, modifier = Modifier.size(32.dp))
             }
         }
-        Box(Modifier.offset { IntOffset(offsetX.value.roundToInt(), 0) }.draggable(orientation = Orientation.Horizontal,state = rememberDraggableState { delta -> scope.launch { offsetX.snapTo((offsetX.value + delta).coerceIn(maxRevealPx * 1.5f, 0f)) } }, onDragStopped = { scope.launch { offsetX.animateTo(if (offsetX.value < maxRevealPx / 2) maxRevealPx else 0f, spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessLow)) } })) {
+        Box(Modifier.offset { IntOffset(offsetX.value.roundToInt(), 0) }.draggable(orientation = Orientation.Horizontal, state = rememberDraggableState { delta -> scope.launch { offsetX.snapTo((offsetX.value + delta).coerceIn(maxRevealPx * 1.5f, 0f)) } }, onDragStopped = { scope.launch { offsetX.animateTo(if (offsetX.value < maxRevealPx / 2) maxRevealPx else 0f, spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessLow)) } })) {
             SharedRecentItemRow(item, onChatSelected)
         }
     }
@@ -524,8 +553,18 @@ fun DraggableFavoriteItemShared(item: RecentMessage, onDelete: () -> Unit, onCha
 fun MessageBubble(msg: ChatMessage, index: Int) {
     val slideAnim = remember { Animatable(if (msg.isFromMe) 200f else -200f) }
     val alphaAnim = remember { Animatable(0f) }
-    LaunchedEffect(Unit) { delay(index * 100L + 300L); launch { slideAnim.animateTo(0f, spring(0.7f, Spring.StiffnessLow)) }; launch { alphaAnim.animateTo(1f, tween(400)) } }
-    Box(Modifier.fillMaxWidth().graphicsLayer { translationX = slideAnim.value; alpha = alphaAnim.value }, contentAlignment = if (msg.isFromMe) Alignment.CenterEnd else Alignment.CenterStart) {
+    LaunchedEffect(Unit) {
+        delay(index * 100L + 300L)
+        launch { slideAnim.animateTo(0f, spring(0.7f, Spring.StiffnessLow)) }
+        launch { alphaAnim.animateTo(1f, tween(400)) }
+    }
+    Box(
+        Modifier.fillMaxWidth().graphicsLayer {
+            translationX = slideAnim.value
+            alpha = alphaAnim.value
+        },
+        contentAlignment = if (msg.isFromMe) Alignment.CenterEnd else Alignment.CenterStart
+    ) {
         Column(horizontalAlignment = if (msg.isFromMe) Alignment.End else Alignment.Start) {
             Box(Modifier.widthIn(max = 280.dp).clip(if (msg.isFromMe) RoundedCornerShape(20.dp, 20.dp, 4.dp, 20.dp) else RoundedCornerShape(20.dp, 20.dp, 20.dp, 4.dp)).background(if (msg.isFromMe) Color(0xFF6C63FF) else Color(0xFF3E3C4E)).padding(16.dp)) {
                 Text(msg.text, color = Color.White, fontSize = 16.sp)
@@ -537,11 +576,27 @@ fun MessageBubble(msg: ChatMessage, index: Int) {
 }
 
 fun getUltraSmoothedEdgesShape(fw: Float, fh: Float, cs: Float, hasStart: Boolean, hasEnd: Boolean) = GenericShape { size, _ ->
-    val w = size.width; val h = size.height
-    if (hasStart) { moveTo(0f, 0f); cubicTo(fw * 0.8f, 0f, fw, fh * 0.4f, fw, fh); lineTo(fw, h - cs) } else { moveTo(0f, 0f); lineTo(0f, h - cs) }
-    val lx = if (hasStart) fw else 0f; cubicTo(lx, h - (cs * 0.4f), lx + (cs * 0.4f), h, lx + cs, h)
-    val rx = w - (if (hasEnd) fw else 0f); lineTo(rx - cs, h); cubicTo(rx - (cs * 0.4f), h, rx, h - (cs * 0.4f), rx, h - cs)
-    if (hasEnd) { lineTo(rx, fh); cubicTo(rx, fh * 0.4f, rx + (fw * 0.2f), 0f, w, 0f) } else { lineTo(w, 0f) }
+    val w = size.width
+    val h = size.height
+    if (hasStart) {
+        moveTo(0f, 0f)
+        cubicTo(fw * 0.8f, 0f, fw, fh * 0.4f, fw, fh)
+        lineTo(fw, h - cs)
+    } else {
+        moveTo(0f, 0f)
+        lineTo(0f, h - cs)
+    }
+    val lx = if (hasStart) fw else 0f
+    cubicTo(lx, h - (cs * 0.4f), lx + (cs * 0.4f), h, lx + cs, h)
+    val rx = w - (if (hasEnd) fw else 0f)
+    lineTo(rx - cs, h)
+    cubicTo(rx - (cs * 0.4f), h, rx, h - (cs * 0.4f), rx, h - cs)
+    if (hasEnd) {
+        lineTo(rx, fh)
+        cubicTo(rx, fh * 0.4f, rx + (fw * 0.2f), 0f, w, 0f)
+    } else {
+        lineTo(w, 0f)
+    }
     close()
 }
 
@@ -561,7 +616,10 @@ fun BottomNavBar(modifier: Modifier = Modifier) {
 
 fun Float.toDp(density: Density): Dp = with(density) { this@toDp.toDp() }
 
-@Preview @Composable fun AppPreview() { ChatAppNavigation() }
+@Preview @Composable
+private fun AppPreview() {
+    ChatAppNavigation()
+}
 
 val dummyRecents = listOf(
     RecentMessage(1, "Max Hall", "Hello Friend! How are you?", "08:30 pm", true, Icons.Rounded.Person),
@@ -570,7 +628,7 @@ val dummyRecents = listOf(
     RecentMessage(4, "Sarah Woodman", "How about my work?", "Yesterday", false, Icons.Rounded.SentimentSatisfied),
     RecentMessage(5, "Peter Hopper", "At 5 pm", "01.22.201", false, Icons.Rounded.AccountCircle),
     RecentMessage(6, "Denis Ivanov", "Oh, no! Are you sure?", "01.16.201", false, Icons.Rounded.SupervisedUserCircle),
-    RecentMessage(7, "Alice Silver", "Hello Alex!", "01.12.201", false, Icons.Rounded.Face),
+    RecentMessage(7, "Alice Silver", "Hello Alex!", "01.12.201", false, Icons.Rounded.Face)
 )
 val dummyFavorites = dummyRecents.take(4)
 val dummyGroups = listOf(
@@ -578,12 +636,12 @@ val dummyGroups = listOf(
     RecentMessage(11, "Weekend Trip", "Who is bringing the snacks?", "09:15 am", true, Icons.Rounded.DirectionsCar),
     RecentMessage(12, "Family Group", "Mom: Call me when you can", "Yesterday", false, Icons.Rounded.Home),
     RecentMessage(13, "Project Alpha", "Meeting delayed to 4 PM", "Mon", true, Icons.Rounded.Work),
-    RecentMessage(14, "Gaming Squad", "Online tonight?", "Sun", false, Icons.Rounded.SportsEsports),
+    RecentMessage(14, "Gaming Squad", "Online tonight?", "Sun", false, Icons.Rounded.SportsEsports)
 )
 val chatDummyData = listOf(
     ChatMessage(1, "Hello Frank! How are you?", false, "12:30"),
     ChatMessage(2, "Hello I'm fine. Thanks! And you?", true, "12:28"),
     ChatMessage(3, "Fine! I have a question", false, "12:30"),
     ChatMessage(4, "Question?", true, "12:28"),
-    ChatMessage(5, "How about my work?", false, "12:30"),
+    ChatMessage(5, "How about my work?", false, "12:30")
 )

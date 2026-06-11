@@ -35,9 +35,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -118,7 +118,7 @@ fun CustomPager(
                         velocityTracker.addPosition(change.uptimeMillis, change.position)
                         scope.launch {
                             // Boundary checks for the drag
-                            val minOffset = -( (pageCount - 1) * pageWidth)
+                            val minOffset = -((pageCount - 1) * pageWidth)
                             val maxOffset = 0f
                             val newOffset = (offset.value + dragAmount.x).coerceIn(minOffset - 100f, maxOffset + 100f)
                             offset.snapTo(newOffset)
@@ -134,6 +134,7 @@ fun CustomPager(
                             velocity.absoluteValue > velocityThreshold -> {
                                 if (velocity > 0) currentPage.toInt() else currentPage.toInt() + 1
                             }
+
                             // Otherwise, check if we've crossed the 50% threshold
                             else -> currentPage.roundToInt()
                         }.coerceIn(0, pageCount - 1)
@@ -197,7 +198,7 @@ fun PagerLogicExplanation() {
 
 @Preview(showBackground = true)
 @Composable
-fun CustomPagerSamplePreview() {
+private fun CustomPagerSamplePreview() {
     MaterialTheme {
         CustomPagerSample(onBack = {})
     }

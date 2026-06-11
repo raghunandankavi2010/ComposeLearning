@@ -28,7 +28,7 @@ private val DemoColors = listOf(
     Color(0xFFAA66CC),
     Color(0xFF99CC00),
     Color(0xFFFFBB33),
-    Color(0xFFFF4444),
+    Color(0xFFFF4444)
 )
 
 @Composable
@@ -39,15 +39,15 @@ fun SmoothProgressBarScreen() {
             .systemBarsPadding()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 24.dp, vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         Text(
             text = "SmoothProgressBar (Compose port)",
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.headlineSmall
         )
         Text(
             text = "Port of castorflex/SmoothProgressBar — indeterminate horizontal sections that slide with cycling colors and accelerate-easing widths.",
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodyMedium
         )
 
         Sample(title = "Default (Holo blue, 4 sections)") {
@@ -57,7 +57,7 @@ fun SmoothProgressBarScreen() {
         Sample(title = "Multi-color, 5 sections") {
             SmoothProgressBar(
                 colors = DemoColors,
-                sectionsCount = 5,
+                sectionsCount = 5
             )
         }
 
@@ -66,7 +66,7 @@ fun SmoothProgressBarScreen() {
                 colors = DemoColors,
                 speed = 3f,
                 strokeWidth = 10.dp,
-                separatorLength = 6.dp,
+                separatorLength = 6.dp
             )
         }
 
@@ -74,7 +74,7 @@ fun SmoothProgressBarScreen() {
             SmoothProgressBar(
                 colors = DemoColors,
                 speed = 0.4f,
-                strokeWidth = 6.dp,
+                strokeWidth = 6.dp
             )
         }
 
@@ -82,7 +82,7 @@ fun SmoothProgressBarScreen() {
             SmoothProgressBar(
                 colors = DemoColors,
                 mirrorMode = true,
-                strokeWidth = 8.dp,
+                strokeWidth = 8.dp
             )
         }
 
@@ -90,7 +90,7 @@ fun SmoothProgressBarScreen() {
             SmoothProgressBar(
                 colors = DemoColors,
                 reversed = true,
-                strokeWidth = 6.dp,
+                strokeWidth = 6.dp
             )
         }
 
@@ -98,7 +98,7 @@ fun SmoothProgressBarScreen() {
             SmoothProgressBar(
                 colors = DemoColors,
                 easing = { it },
-                strokeWidth = 6.dp,
+                strokeWidth = 6.dp
             )
         }
 
@@ -107,19 +107,19 @@ fun SmoothProgressBarScreen() {
                 colors = DemoColors,
                 sectionsCount = 8,
                 separatorLength = 2.dp,
-                strokeWidth = 6.dp,
+                strokeWidth = 6.dp
             )
         }
 
         Text(
             text = "SmoothCircularProgressBar (the sister library)",
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(top = 12.dp),
+            modifier = Modifier.padding(top = 12.dp)
         )
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             CircularDemo("Default") {
                 SmoothCircularProgressBar()
@@ -128,7 +128,7 @@ fun SmoothProgressBarScreen() {
                 SmoothCircularProgressBar(
                     colors = DemoColors,
                     strokeWidth = 5.dp,
-                    size = 56.dp,
+                    size = 56.dp
                 )
             }
             CircularDemo("Thick + butt") {
@@ -136,14 +136,14 @@ fun SmoothProgressBarScreen() {
                     colors = DemoColors,
                     strokeWidth = 8.dp,
                     rounded = false,
-                    size = 56.dp,
+                    size = 56.dp
                 )
             }
         }
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             CircularDemo("Fast spin") {
                 SmoothCircularProgressBar(
@@ -151,7 +151,7 @@ fun SmoothProgressBarScreen() {
                     rotationSpeed = 2.5f,
                     sweepSpeed = 2f,
                     strokeWidth = 5.dp,
-                    size = 56.dp,
+                    size = 56.dp
                 )
             }
             CircularDemo("Slow / wide arc") {
@@ -160,7 +160,7 @@ fun SmoothProgressBarScreen() {
                     sweepSpeed = 0.6f,
                     maxSweepAngle = 340f,
                     strokeWidth = 5.dp,
-                    size = 56.dp,
+                    size = 56.dp
                 )
             }
             CircularDemo("Narrow arc") {
@@ -169,7 +169,7 @@ fun SmoothProgressBarScreen() {
                     minSweepAngle = 5f,
                     maxSweepAngle = 180f,
                     strokeWidth = 5.dp,
-                    size = 56.dp,
+                    size = 56.dp
                 )
             }
         }
@@ -177,12 +177,12 @@ fun SmoothProgressBarScreen() {
         Text(
             text = "PremiumCircularProgressIndicator",
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(top = 12.dp),
+            modifier = Modifier.padding(top = 12.dp)
         )
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             CircularDemo("Default") {
                 PremiumCircularProgressIndicator()
@@ -206,16 +206,16 @@ fun SmoothProgressBarScreen() {
         Text(
             text = "TriColorCircularProgressIndicator (3 solid segments)",
             style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(top = 12.dp),
+            modifier = Modifier.padding(top = 12.dp)
         )
         Text(
             text = "Same premium head/tail motion, but the progress arc is split into 3 equal sections (e.g. 75° → 25° each), each with its own solid color instead of a gradient.",
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodyMedium
         )
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             CircularDemo("Default") {
                 TriColorCircularProgressIndicator()
@@ -242,7 +242,7 @@ fun SmoothProgressBarScreen() {
 private fun CircularDemo(label: String, content: @Composable () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(6.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         Box(modifier = Modifier.size(64.dp), contentAlignment = Alignment.Center) {
             content()
@@ -257,7 +257,7 @@ private fun Sample(title: String, content: @Composable () -> Unit) {
         Text(
             text = title,
             style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         content()
     }

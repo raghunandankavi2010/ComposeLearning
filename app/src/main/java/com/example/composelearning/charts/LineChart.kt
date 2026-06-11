@@ -42,7 +42,7 @@ data class LineSeries(
     val smoothing: LineSmoothing = LineSmoothing.Cubic,
     val showArea: Boolean = true,
     val showDots: Boolean = false,
-    val dashed: Boolean = false,
+    val dashed: Boolean = false
 )
 
 /** Layout-level spec for [LineChart]. Separated from [LineSeries] so the same series can be drawn
@@ -58,7 +58,7 @@ data class LineChartSpec(
     val leftAxisGutter: Dp = 36.dp,
     val rightAxisGutter: Dp = 12.dp,
     val topAxisGutter: Dp = 12.dp,
-    val bottomAxisGutter: Dp = 28.dp,
+    val bottomAxisGutter: Dp = 28.dp
 )
 
 /**
@@ -77,7 +77,7 @@ fun LineChart(
     modifier: Modifier = Modifier,
     spec: LineChartSpec = LineChartSpec(),
     theme: ChartTheme = ChartDefaults.theme(),
-    onPointSelected: ((seriesIndex: Int, point: LinePoint) -> Unit)? = null,
+    onPointSelected: ((seriesIndex: Int, point: LinePoint) -> Unit)? = null
 ) {
     if (series.isEmpty()) return
     val measurer = rememberTextMeasurer()
@@ -91,7 +91,7 @@ fun LineChart(
 
     val progress by rememberChartProgress(
         key = series.hashCode(),
-        initial = if (spec.animate) 0f else 1f,
+        initial = if (spec.animate) 0f else 1f
     )
 
     var selected by remember(series) { mutableStateOf<Pair<Int, Int>?>(null) }
@@ -134,7 +134,7 @@ fun LineChart(
             theme = theme,
             progress = progress,
             selected = selected,
-            measurer = measurer,
+            measurer = measurer
         )
     }
 }
@@ -147,7 +147,7 @@ private fun DrawScope.drawLineChart(
     theme: ChartTheme,
     progress: Float,
     selected: Pair<Int, Int>?,
-    measurer: TextMeasurer,
+    measurer: TextMeasurer
 ) {
     val plot = plotRect(size, spec)
     drawAxes(plot, xRange, yRange, spec, theme, measurer)
@@ -157,7 +157,7 @@ private fun DrawScope.drawLineChart(
         val points = s.points.map { p ->
             Offset(
                 x = lerpRange(p.x, xRange, plot.left..plot.right),
-                y = lerpRange(p.y, yRange, plot.bottom..plot.top),
+                y = lerpRange(p.y, yRange, plot.bottom..plot.top)
             )
         }
         if (points.isEmpty()) return@forEachIndexed
@@ -173,8 +173,8 @@ private fun DrawScope.drawLineChart(
                 brush = Brush.verticalGradient(
                     colors = listOf(color.copy(alpha = 0.35f), color.copy(alpha = 0f)),
                     startY = plot.top,
-                    endY = plot.bottom,
-                ),
+                    endY = plot.bottom
+                )
             )
         }
 
@@ -182,13 +182,13 @@ private fun DrawScope.drawLineChart(
             width = s.strokeWidth.toPx(),
             cap = StrokeCap.Round,
             join = StrokeJoin.Round,
-            pathEffect = if (s.dashed) PathEffect.dashPathEffect(floatArrayOf(12f, 8f)) else null,
+            pathEffect = if (s.dashed) PathEffect.dashPathEffect(floatArrayOf(12f, 8f)) else null
         )
         clipRect(
             left = plot.left,
             top = plot.top,
             right = plot.left + plot.width * progress,
-            bottom = plot.bottom,
+            bottom = plot.bottom
         ) {
             drawPath(linePath, color = color, style = stroke)
         }
@@ -212,7 +212,7 @@ private fun DrawScope.drawLineChart(
             start = Offset(px, plot.top),
             end = Offset(px, plot.bottom),
             strokeWidth = 1.dp.toPx(),
-            pathEffect = PathEffect.dashPathEffect(floatArrayOf(4f, 4f)),
+            pathEffect = PathEffect.dashPathEffect(floatArrayOf(4f, 4f))
         )
         drawCircle(theme.surface, radius = 6.dp.toPx(), center = Offset(px, py))
         drawCircle(color, radius = 4.dp.toPx(), center = Offset(px, py))
@@ -229,15 +229,15 @@ private fun DrawScope.drawLineChart(
                 color = theme.tooltipBackground,
                 topLeft = Offset(rectLeft, rectTop),
                 size = Size(tooltipWidth, tooltipHeight),
-                cornerRadius = CornerRadius(4.dp.toPx()),
+                cornerRadius = CornerRadius(4.dp.toPx())
             )
             drawText(
                 textLayoutResult = layout,
                 color = theme.tooltipContent,
                 topLeft = Offset(
                     rectLeft + (tooltipWidth - layout.size.width) / 2f,
-                    rectTop + (tooltipHeight - layout.size.height) / 2f,
-                ),
+                    rectTop + (tooltipHeight - layout.size.height) / 2f
+                )
             )
         }
     }
@@ -249,7 +249,7 @@ internal fun DrawScope.drawAxes(
     yRange: AxisRange,
     spec: LineChartSpec,
     theme: ChartTheme,
-    measurer: TextMeasurer,
+    measurer: TextMeasurer
 ) {
     if (spec.yAxis.show && spec.yAxis.showGridLines) {
         val ticks = niceTicks(yRange, spec.yAxis.tickCount)
@@ -259,7 +259,7 @@ internal fun DrawScope.drawAxes(
                 color = theme.gridColor,
                 start = Offset(plot.left, y),
                 end = Offset(plot.right, y),
-                strokeWidth = theme.gridLineWidth.toPx(),
+                strokeWidth = theme.gridLineWidth.toPx()
             )
             if (spec.yAxis.showLabels) {
                 val text = spec.yAxis.labelFormatter(v)
@@ -268,8 +268,8 @@ internal fun DrawScope.drawAxes(
                     textLayoutResult = layout,
                     topLeft = Offset(
                         plot.left - layout.size.width - spec.yAxis.labelGap.toPx(),
-                        y - layout.size.height / 2f,
-                    ),
+                        y - layout.size.height / 2f
+                    )
                 )
             }
         }
@@ -284,8 +284,8 @@ internal fun DrawScope.drawAxes(
                 textLayoutResult = layout,
                 topLeft = Offset(
                     x - layout.size.width / 2f,
-                    plot.bottom + spec.xAxis.labelGap.toPx(),
-                ),
+                    plot.bottom + spec.xAxis.labelGap.toPx()
+                )
             )
         }
     }
@@ -294,7 +294,7 @@ internal fun DrawScope.drawAxes(
             color = theme.axisColor,
             start = Offset(plot.left, plot.bottom),
             end = Offset(plot.right, plot.bottom),
-            strokeWidth = theme.axisLineWidth.toPx(),
+            strokeWidth = theme.axisLineWidth.toPx()
         )
     }
     if (spec.yAxis.show) {
@@ -302,7 +302,7 @@ internal fun DrawScope.drawAxes(
             color = theme.axisColor,
             start = Offset(plot.left, plot.top),
             end = Offset(plot.left, plot.bottom),
-            strokeWidth = theme.axisLineWidth.toPx(),
+            strokeWidth = theme.axisLineWidth.toPx()
         )
     }
 }
@@ -311,33 +311,35 @@ internal fun DrawScope.plotRect(size: Size, spec: LineChartSpec): Rect = Rect(
     left = spec.leftAxisGutter.toPx(),
     top = spec.topAxisGutter.toPx(),
     right = size.width - spec.rightAxisGutter.toPx(),
-    bottom = size.height - spec.bottomAxisGutter.toPx(),
+    bottom = size.height - spec.bottomAxisGutter.toPx()
 )
 
 private fun plotRectPx(
     width: Float,
     height: Float,
     spec: LineChartSpec,
-    density: androidx.compose.ui.unit.Density,
+    density: androidx.compose.ui.unit.Density
 ): Rect = with(density) {
     Rect(
         left = spec.leftAxisGutter.toPx(),
         top = spec.topAxisGutter.toPx(),
         right = width - spec.rightAxisGutter.toPx(),
-        bottom = height - spec.bottomAxisGutter.toPx(),
+        bottom = height - spec.bottomAxisGutter.toPx()
     )
 }
 
 private inline fun computeRange(
     series: List<LineSeries>,
-    selector: (LinePoint) -> Float,
+    selector: (LinePoint) -> Float
 ): AxisRange {
     var lo = Float.POSITIVE_INFINITY
     var hi = Float.NEGATIVE_INFINITY
-    for (s in series) for (p in s.points) {
-        val v = selector(p)
-        if (v < lo) lo = v
-        if (v > hi) hi = v
+    for (s in series) {
+        for (p in s.points) {
+            val v = selector(p)
+            if (v < lo) lo = v
+            if (v > hi) hi = v
+        }
     }
     if (lo == Float.POSITIVE_INFINITY) return AxisRange(0f, 1f)
     if (lo == hi) hi = lo + 1f

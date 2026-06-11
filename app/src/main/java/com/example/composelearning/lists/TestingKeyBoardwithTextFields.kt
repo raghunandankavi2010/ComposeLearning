@@ -38,7 +38,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
-fun TestTextFieldList() {
+private fun TestTextFieldList() {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -75,7 +75,7 @@ fun TestTextFieldList() {
     )
 }
 
-//YourTextField
+// YourTextField
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun YourTextField(index: Int, textFieldValues: MutableMap<Int, String>) {
@@ -101,6 +101,5 @@ fun YourTextField(index: Int, textFieldValues: MutableMap<Int, String>) {
                 }
         )
         Text(text = "Value: ${textFieldValues[index] ?: ""}")
-
     }
 }

@@ -40,12 +40,12 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun FoldCardScreen(
-    viewModel: FoldCardViewModel = viewModel(factory = FoldCardViewModel.Factory()),
+    viewModel: FoldCardViewModel = viewModel(factory = FoldCardViewModel.Factory())
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     Box(
         modifier = Modifier.fillMaxSize().background(Color.Black),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         val card = state.card
         if (state.isLoading || card == null) {
@@ -56,7 +56,7 @@ fun FoldCardScreen(
                 "Pinch vertically to fold",
                 color = Color.White.copy(alpha = 0.55f),
                 fontSize = 14.sp,
-                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 48.dp),
+                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 48.dp)
             )
         }
     }
@@ -95,7 +95,7 @@ private fun FoldCard(card: FoldCardItem) {
                     }
                 }
             },
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         val cardW = maxWidth * 0.72f
         val cardH = cardW * 1.4f
@@ -115,7 +115,7 @@ private fun FoldCard(card: FoldCardItem) {
                         rotationX = 90f * f
                         cameraDistance = camera * density
                     }
-                    .clipToBounds(),
+                    .clipToBounds()
             ) {
                 CardFace(card, Modifier.width(cardW).height(cardH))
                 Shade(f)
@@ -132,7 +132,7 @@ private fun FoldCard(card: FoldCardItem) {
                         rotationX = -90f * f
                         cameraDistance = camera * density
                     }
-                    .clipToBounds(),
+                    .clipToBounds()
             ) {
                 CardFace(card, Modifier.width(cardW).height(cardH).offset(y = -halfH))
                 Shade(f)
@@ -142,32 +142,32 @@ private fun FoldCard(card: FoldCardItem) {
 }
 
 @Composable
-private fun CardFace(card: FoldCardItem, modifier: Modifier) {
+private fun CardFace(card: FoldCardItem, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .background(Brush.linearGradient(listOf(Color(card.gradientStart), Color(card.gradientEnd)))),
+            .background(Brush.linearGradient(listOf(Color(card.gradientStart), Color(card.gradientEnd))))
     ) {
         Text(
             "${card.rank}${card.suit}",
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.TopStart).padding(12.dp),
+            modifier = Modifier.align(Alignment.TopStart).padding(12.dp)
         )
         Text(
             "${card.rank}${card.suit}",
             color = Color.White.copy(alpha = 0.95f),
             fontSize = 96.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.Center),
+            modifier = Modifier.align(Alignment.Center)
         )
         Text(
             "${card.rank}${card.suit}",
             color = Color.White,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.BottomEnd).padding(12.dp),
+            modifier = Modifier.align(Alignment.BottomEnd).padding(12.dp)
         )
     }
 }

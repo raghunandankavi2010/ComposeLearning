@@ -41,17 +41,18 @@ import kotlin.math.atan2
 private val ItemHeight = 46.dp
 private const val TWO_PI = (2.0 * Math.PI).toFloat()
 private const val PI_F = Math.PI.toFloat()
+
 // One list step per this much wheel rotation (≈ 36° → ten items per full turn).
 private val ANGLE_PER_ITEM = PI_F / 5f
 
 @Composable
 fun IpodScreen(
-    viewModel: IpodViewModel = viewModel(factory = IpodViewModel.Factory()),
+    viewModel: IpodViewModel = viewModel(factory = IpodViewModel.Factory())
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     Box(
         modifier = Modifier.fillMaxSize().background(Color(0xFFEDEDED)).systemBarsPadding(),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         if (state.isLoading) {
             CircularProgressIndicator()
@@ -59,7 +60,7 @@ fun IpodScreen(
             Ipod(
                 songs = state.songs,
                 nowPlaying = state.nowPlaying,
-                onSelect = { viewModel.onIntent(IpodIntent.Select(it)) },
+                onSelect = { viewModel.onIntent(IpodIntent.Select(it)) }
             )
         }
     }
@@ -73,7 +74,7 @@ private fun Ipod(songs: List<Song>, nowPlaying: Int?, onSelect: (Int) -> Unit) {
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Screen
         Box(
@@ -81,7 +82,7 @@ private fun Ipod(songs: List<Song>, nowPlaying: Int?, onSelect: (Int) -> Unit) {
                 .fillMaxWidth()
                 .height(280.dp)
                 .clip(RoundedCornerShape(6.dp))
-                .background(Color.White),
+                .background(Color.White)
         ) {
             SongList(songs, highlight, nowPlaying)
             Text(
@@ -93,7 +94,7 @@ private fun Ipod(songs: List<Song>, nowPlaying: Int?, onSelect: (Int) -> Unit) {
                     .background(Color(0xFFB0B0B0))
                     .fillMaxWidth()
                     .padding(vertical = 4.dp),
-                fontSize = 14.sp,
+                fontSize = 14.sp
             )
         }
 
@@ -101,7 +102,7 @@ private fun Ipod(songs: List<Song>, nowPlaying: Int?, onSelect: (Int) -> Unit) {
 
         ClickWheel(
             onRotate = { delta -> rotation = (rotation + delta).coerceAtLeast(0f) },
-            onCenter = { onSelect(highlight) },
+            onCenter = { onSelect(highlight) }
         )
     }
 }
@@ -128,7 +129,7 @@ private fun SongRow(song: Song, active: Boolean, playing: Boolean) {
             .height(ItemHeight)
             .background(if (active) Color(0xFF2980B9) else Color.Transparent)
             .padding(horizontal = 12.dp),
-        contentAlignment = Alignment.CenterStart,
+        contentAlignment = Alignment.CenterStart
     ) {
         Column {
             Text(
@@ -137,14 +138,14 @@ private fun SongRow(song: Song, active: Boolean, playing: Boolean) {
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 15.sp,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+                overflow = TextOverflow.Ellipsis
             )
             Text(
                 song.artist,
                 color = if (active) Color.White.copy(alpha = 0.85f) else Color.Gray,
                 fontSize = 12.sp,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }
@@ -179,19 +180,36 @@ private fun ClickWheel(onRotate: (Float) -> Unit, onCenter: () -> Unit) {
                         if (d < -PI_F) d += TWO_PI
                         prevAngle = a
                         onRotate(d)
-                    },
+                    }
                 )
             },
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
-        Text("MENU", color = Color.White.copy(alpha = 0.7f), fontSize = 13.sp, fontWeight = FontWeight.Bold,
-            modifier = Modifier.align(Alignment.TopCenter).padding(top = 22.dp))
-        Text("⏮", color = Color.White.copy(alpha = 0.7f), fontSize = 20.sp,
-            modifier = Modifier.align(Alignment.CenterStart).padding(start = 26.dp))
-        Text("⏭", color = Color.White.copy(alpha = 0.7f), fontSize = 20.sp,
-            modifier = Modifier.align(Alignment.CenterEnd).padding(end = 26.dp))
-        Text("⏯", color = Color.White.copy(alpha = 0.7f), fontSize = 20.sp,
-            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 22.dp))
+        Text(
+            "MENU",
+            color = Color.White.copy(alpha = 0.7f),
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.align(Alignment.TopCenter).padding(top = 22.dp)
+        )
+        Text(
+            "⏮",
+            color = Color.White.copy(alpha = 0.7f),
+            fontSize = 20.sp,
+            modifier = Modifier.align(Alignment.CenterStart).padding(start = 26.dp)
+        )
+        Text(
+            "⏭",
+            color = Color.White.copy(alpha = 0.7f),
+            fontSize = 20.sp,
+            modifier = Modifier.align(Alignment.CenterEnd).padding(end = 26.dp)
+        )
+        Text(
+            "⏯",
+            color = Color.White.copy(alpha = 0.7f),
+            fontSize = 20.sp,
+            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 22.dp)
+        )
 
         // Centre button (select).
         Box(
@@ -199,7 +217,7 @@ private fun ClickWheel(onRotate: (Float) -> Unit, onCenter: () -> Unit) {
                 .size(108.dp)
                 .clip(CircleShape)
                 .background(Color(0xFF1A1A1A))
-                .clickable { onCenter() },
+                .clickable { onCenter() }
         )
     }
 }

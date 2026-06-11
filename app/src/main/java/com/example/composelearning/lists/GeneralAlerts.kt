@@ -61,7 +61,7 @@ fun getListData(): MutableList<ListData> {
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun GeneralList(modifier: Modifier, lazyListState: LazyListState = rememberLazyListState()) {
+fun GeneralList(modifier: Modifier = Modifier, lazyListState: LazyListState = rememberLazyListState()) {
     val list = getListData()
     val expand = remember { mutableStateMapOf<Int, Boolean>() }
     LazyColumn(
@@ -73,11 +73,14 @@ fun GeneralList(modifier: Modifier, lazyListState: LazyListState = rememberLazyL
         contentPadding = WindowInsets.systemBars.asPaddingValues(),
         state = lazyListState
     ) {
-
         items(list.size, key = { index -> list[index].id }) { index ->
             val isExpanded = expand[index] ?: false
-            GeneralAlerts(alertsData =  list[index], expand = isExpanded, index = index,
-                onExpandClicked = { index, isExpand  -> expand[index] = isExpand })
+            GeneralAlerts(
+                alertsData = list[index],
+                expand = isExpanded,
+                index = index,
+                onExpandClicked = { index, isExpand -> expand[index] = isExpand }
+            )
             Spacer(modifier = Modifier.padding(top = 16.dp))
         }
     }
@@ -88,9 +91,8 @@ fun GeneralAlerts(
     alertsData: ListData,
     expand: Boolean,
     index: Int,
-    onExpandClicked: (Int,Boolean) -> Unit
+    onExpandClicked: (Int, Boolean) -> Unit
 ) {
-
     ElevatedCard(
         modifier = Modifier
             .testTag(
@@ -100,11 +102,10 @@ fun GeneralAlerts(
             .wrapContentHeight()
             .padding(start = 16.dp, end = 16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White,
+            containerColor = Color.White
         ),
         shape = RoundedCornerShape(16.dp)
     ) {
-
         val fontFamily = AppFontFamilyMedium
         val fontFamilyBold = AppFontFamilyBold
         val fontFamilyNormal = AppFontFamilyMedium
@@ -132,7 +133,6 @@ fun GeneralAlerts(
                     text = alertsData.time
                 )
 
-
                 val drawable =
                     if (expand) {
                         R.drawable.icon_up
@@ -146,7 +146,7 @@ fun GeneralAlerts(
                     modifier = Modifier
                         .size(24.dp)
                         .clickable {
-                            onExpandClicked(index,!expand)
+                            onExpandClicked(index, !expand)
                         }
                 )
             }
@@ -163,7 +163,7 @@ fun GeneralAlerts(
             )
 
             val modifier =
-                if (expand ) {
+                if (expand) {
                     Modifier.wrapContentHeight()
                 } else {
                     Spacer(modifier = Modifier.padding(bottom = 16.dp))
@@ -171,9 +171,8 @@ fun GeneralAlerts(
                 }
 
             AnimatedVisibility(
-                visible = expand,
+                visible = expand
             ) {
-
                 Text(
                     modifier = modifier
                         .padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
@@ -183,10 +182,7 @@ fun GeneralAlerts(
                     style = TextStyle(fontSize = 14.sp, fontFamily = fontFamilyNormal),
                     text = alertsData.content
                 )
-
             }
-
         }
-
     }
 }

@@ -37,13 +37,13 @@ import kotlin.math.min
 
 @Composable
 fun WalletScreen(
-    viewModel: WalletViewModel = viewModel(factory = WalletViewModel.Factory()),
+    viewModel: WalletViewModel = viewModel(factory = WalletViewModel.Factory())
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .systemBarsPadding(),
+            .systemBarsPadding()
     ) {
         if (state.isLoading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
@@ -102,26 +102,30 @@ private fun WalletStack(cards: List<WalletCard>) {
                             val stick = y - min(y, index * chPx)
                             // Tiny nudge as a card appears from the bottom.
                             val bottom = interp(
-                                position, isBottom, isAppearing, 0f, -chPx / 4f,
+                                position,
+                                isBottom,
+                                isAppearing,
+                                0f,
+                                -chPx / 4f
                             )
                             translationY = stick + bottom
 
                             val s = interp4(
                                 position, isDisappearing, isTop, isBottom, isAppearing,
-                                0.5f, 1f, 1f, 0.5f,
+                                0.5f, 1f, 1f, 0.5f
                             )
                             scaleX = s
                             scaleY = s
                             alpha = interp4(
                                 position, isDisappearing, isTop, isBottom, isAppearing,
-                                0.5f, 1f, 1f, 0.5f,
+                                0.5f, 1f, 1f, 0.5f
                             ).coerceIn(0f, 1f)
                         },
-                    contentAlignment = Alignment.Center,
+                    contentAlignment = Alignment.Center
                 ) {
                     WalletCardItem(
                         card = card,
-                        modifier = Modifier.width(cardWidthDp).height(cardHeightDp),
+                        modifier = Modifier.width(cardWidthDp).height(cardHeightDp)
                     )
                 }
             }
@@ -137,13 +141,13 @@ private fun WalletCardItem(card: WalletCard, modifier: Modifier = Modifier) {
         modifier = modifier
             .clip(RoundedCornerShape(20.dp))
             .background(
-                Brush.linearGradient(listOf(Color(card.gradientStart), Color(card.gradientEnd))),
+                Brush.linearGradient(listOf(Color(card.gradientStart), Color(card.gradientEnd)))
             )
-            .padding(20.dp),
+            .padding(20.dp)
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Text(card.network, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             // Chip
@@ -151,13 +155,13 @@ private fun WalletCardItem(card: WalletCard, modifier: Modifier = Modifier) {
                 Modifier
                     .size(width = 44.dp, height = 32.dp)
                     .clip(RoundedCornerShape(6.dp))
-                    .background(Color.White.copy(alpha = 0.85f)),
+                    .background(Color.White.copy(alpha = 0.85f))
             )
             Text(
                 "•••• •••• •••• ${card.last4}",
                 color = Color.White,
                 fontSize = 18.sp,
-                fontWeight = FontWeight.Medium,
+                fontWeight = FontWeight.Medium
             )
             Text(card.holder.uppercase(), color = Color.White.copy(alpha = 0.9f), fontSize = 14.sp)
         }
@@ -174,8 +178,14 @@ private fun interp(x: Float, inA: Float, inB: Float, outA: Float, outB: Float): 
 /** Four-stop clamped piecewise interpolation. Assumes i0 < i1 < i2 < i3. */
 private fun interp4(
     x: Float,
-    i0: Float, i1: Float, i2: Float, i3: Float,
-    o0: Float, o1: Float, o2: Float, o3: Float,
+    i0: Float,
+    i1: Float,
+    i2: Float,
+    i3: Float,
+    o0: Float,
+    o1: Float,
+    o2: Float,
+    o3: Float
 ): Float = when {
     x <= i0 -> o0
     x < i1 -> interp(x, i0, i1, o0, o1)

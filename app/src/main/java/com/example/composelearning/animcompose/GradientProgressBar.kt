@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,8 +33,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composelearning.util.LocalAnimationsEnabled
-import androidx.compose.runtime.mutableStateOf
-
 
 /**
  * A composable that displays an indeterminate circular progress arc with a gradient.
@@ -50,7 +49,7 @@ import androidx.compose.runtime.mutableStateOf
 fun GradientArcCircularProgressBar(
     modifier: Modifier = Modifier,
     strokeWidth: Dp = 4.dp,
-    colors: List<Color> = listOf(Color(0xFF4CAF50),Color(0xFFCDDC39), Color(0xFFFD1D1D)),
+    colors: List<Color> = listOf(Color(0xFF4CAF50), Color(0xFFCDDC39), Color(0xFFFD1D1D)),
     durationMillis: Int = 2000,
     arcAngle: Float = 270f // The angle of the arc
 ) {
@@ -102,7 +101,6 @@ fun GradientArcCircularProgressBar(
     }
 }
 
-
 @Composable
 fun MyAwesomeLoadingScreen() {
     Column(
@@ -151,6 +149,6 @@ fun MyAwesomeLoadingScreen() {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewMyAwesomeLoadingScreen() {
+private fun PreviewMyAwesomeLoadingScreen() {
     MyAwesomeLoadingScreen()
 }

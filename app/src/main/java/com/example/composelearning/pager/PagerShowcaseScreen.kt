@@ -27,14 +27,14 @@ fun PagerShowcaseScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .systemBarsPadding(),
+            .systemBarsPadding()
     ) {
         PrimaryTabRow(selectedTabIndex = selected) {
             TABS.forEachIndexed { index, label ->
                 Tab(
                     selected = index == selected,
                     onClick = { selected = index },
-                    text = { Text(label) },
+                    text = { Text(label) }
                 )
             }
         }

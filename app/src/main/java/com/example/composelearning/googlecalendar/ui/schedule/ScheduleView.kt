@@ -141,8 +141,10 @@ fun ScheduleView(
             if (snap.isScrollInProgress && !isProgrammaticScroll) {
                 val scrollingDown =
                     snap.firstVisibleItemIndex > prevIndex ||
-                            (snap.firstVisibleItemIndex == prevIndex &&
-                                    snap.firstVisibleItemScrollOffset > prevOffset)
+                        (
+                            snap.firstVisibleItemIndex == prevIndex &&
+                                snap.firstVisibleItemScrollOffset > prevOffset
+                            )
 
                 if (scrollingDown && latestToolbarExpanded) {
                     latestOnToolbarExpandedChanged(false)
@@ -212,14 +214,11 @@ private data class ScrollSnapshot(
 
 /** Flat list items for the schedule LazyColumn. */
 sealed class ScheduleListItem(val key: String, val date: LocalDate) {
-    class Header(date: LocalDate) :
-        ScheduleListItem("header_$date", date)
+    class Header(date: LocalDate) : ScheduleListItem("header_$date", date)
 
-    class Event(date: LocalDate, val event: CalendarEvent, index: Int) :
-        ScheduleListItem("event_${date}_${event.id}_$index", date)
+    class Event(date: LocalDate, val event: CalendarEvent, index: Int) : ScheduleListItem("event_${date}_${event.id}_$index", date)
 
-    class NoEvents(date: LocalDate) :
-        ScheduleListItem("empty_$date", date)
+    class NoEvents(date: LocalDate) : ScheduleListItem("empty_$date", date)
 }
 
 private fun buildScheduleItems(

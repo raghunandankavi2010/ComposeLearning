@@ -3,7 +3,6 @@ package com.example.composelearning.dropdown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomDropdownMenu() {
@@ -31,8 +30,8 @@ fun CustomDropdownMenu() {
                         onClick = {
                             selectedOption = option
                             exp = false
-                        }
-                    , text = { Text(text = option) }
+                        },
+                        text = { Text(text = option) }
                     )
                 }
             }

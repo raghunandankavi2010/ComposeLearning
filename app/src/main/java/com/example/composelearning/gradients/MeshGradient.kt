@@ -115,7 +115,7 @@ fun Modifier.meshGradient(
                         indices = indicesModifier(pointData.indices)
                     ),
                     blendMode = BlendMode.Dst,
-                    paint = meshPaint,
+                    paint = meshPaint
                 )
             }
             if (showPoints) {
@@ -146,7 +146,7 @@ private val meshPaint = Paint()
 private class PointData(
     private val points: List<List<Pair<Offset, Color>>>,
     private val stepsX: Int,
-    private val stepsY: Int,
+    private val stepsY: Int
 ) {
     val offsets: MutableList<Offset>
     val colors: MutableList<Color>
@@ -170,8 +170,12 @@ private class PointData(
                     val b = a + 1
                     val c = ((y + 1) * xLength) + x
                     val d = c + 1
-                    add(a); add(c); add(d)
-                    add(a); add(b); add(d)
+                    add(a)
+                    add(c)
+                    add(d)
+                    add(a)
+                    add(b)
+                    add(d)
                 }
             }
         }
@@ -202,11 +206,12 @@ private class PointData(
                         val pos = measure.getPosition(i / stepsX.toFloat() * measure.length)
                         setOffset((x * stepsX) + i, y * stepsY, Offset(pos.x, pos.y))
                         setColor(
-                            (x * stepsX) + i, y * stepsY,
+                            (x * stepsX) + i,
+                            y * stepsY,
                             lerp(
                                 points[y][x].second,
                                 points[y][x + 1].second,
-                                i / stepsX.toFloat(),
+                                i / stepsX.toFloat()
                             )
                         )
                     }
@@ -232,11 +237,12 @@ private class PointData(
                     val pos = measure.getPosition(i / stepsY.toFloat() * measure.length)
                     setOffset(x, (y * stepsY) + i, Offset(pos.x, pos.y))
                     setColor(
-                        x, (y * stepsY) + i,
+                        x,
+                        (y * stepsY) + i,
                         lerp(
                             getColor(x, y * stepsY),
                             getColor(x, (y + 1) * stepsY),
-                            i / stepsY.toFloat(),
+                            i / stepsY.toFloat()
                         )
                     )
                 }
@@ -254,29 +260,27 @@ private class PointData(
     }
 }
 
-private fun cubicPathX(point1: Offset, point2: Offset, position: Int): Path =
-    Path().apply {
-        moveTo(point1.x, point1.y)
-        val delta = (point2.x - point1.x) * .5f
-        when (position) {
-            0 -> cubicTo(point1.x, point1.y, point2.x - delta, point2.y, point2.x, point2.y)
-            2 -> cubicTo(point1.x + delta, point1.y, point2.x, point2.y, point2.x, point2.y)
-            else -> cubicTo(point1.x + delta, point1.y, point2.x - delta, point2.y, point2.x, point2.y)
-        }
-        lineTo(point2.x, point2.y)
+private fun cubicPathX(point1: Offset, point2: Offset, position: Int): Path = Path().apply {
+    moveTo(point1.x, point1.y)
+    val delta = (point2.x - point1.x) * .5f
+    when (position) {
+        0 -> cubicTo(point1.x, point1.y, point2.x - delta, point2.y, point2.x, point2.y)
+        2 -> cubicTo(point1.x + delta, point1.y, point2.x, point2.y, point2.x, point2.y)
+        else -> cubicTo(point1.x + delta, point1.y, point2.x - delta, point2.y, point2.x, point2.y)
     }
+    lineTo(point2.x, point2.y)
+}
 
-private fun cubicPathY(point1: Offset, point2: Offset, position: Int): Path =
-    Path().apply {
-        moveTo(point1.x, point1.y)
-        val delta = (point2.y - point1.y) * .5f
-        when (position) {
-            0 -> cubicTo(point1.x, point1.y, point2.x, point2.y - delta, point2.x, point2.y)
-            2 -> cubicTo(point1.x, point1.y + delta, point2.x, point2.y, point2.x, point2.y)
-            else -> cubicTo(point1.x, point1.y + delta, point2.x, point2.y - delta, point2.x, point2.y)
-        }
-        lineTo(point2.x, point2.y)
+private fun cubicPathY(point1: Offset, point2: Offset, position: Int): Path = Path().apply {
+    moveTo(point1.x, point1.y)
+    val delta = (point2.y - point1.y) * .5f
+    when (position) {
+        0 -> cubicTo(point1.x, point1.y, point2.x, point2.y - delta, point2.x, point2.y)
+        2 -> cubicTo(point1.x, point1.y + delta, point2.x, point2.y, point2.x, point2.y)
+        else -> cubicTo(point1.x, point1.y + delta, point2.x, point2.y - delta, point2.x, point2.y)
     }
+    lineTo(point2.x, point2.y)
+}
 
 /* -------------------------------------------------------------------------- */
 /*  Interactive demo — drag the control points                                */
@@ -288,25 +292,24 @@ private val palette = listOf(
     Color(0xFF6A00F4), Color(0xFF8900F2), Color(0xFFA100F2),
     Color(0xFFB100E8), Color(0xFFBC00DD), Color(0xFFD100D1),
     Color(0xFFDB00B6), Color(0xFFE500A4), Color(0xFFF20089),
-    Color(0xFFFF4D6D), Color(0xFFFF7900), Color(0xFFFFD000),
+    Color(0xFFFF4D6D), Color(0xFFFF7900), Color(0xFFFFD000)
 )
 
 /**
  * Builds a [rows] x [cols] grid evenly spread across the unit square. The
  * corners sit exactly on the edges so the gradient always fills the box.
  */
-private fun initialGrid(rows: Int, cols: Int): List<List<MeshPoint>> =
-    List(rows) { y ->
-        List(cols) { x ->
-            MeshPoint(
-                offset = Offset(
-                    x = x / (cols - 1).toFloat(),
-                    y = y / (rows - 1).toFloat(),
-                ),
-                color = palette[(y * cols + x) % palette.size],
-            )
-        }
+private fun initialGrid(rows: Int, cols: Int): List<List<MeshPoint>> = List(rows) { y ->
+    List(cols) { x ->
+        MeshPoint(
+            offset = Offset(
+                x = x / (cols - 1).toFloat(),
+                y = y / (rows - 1).toFloat()
+            ),
+            color = palette[(y * cols + x) % palette.size]
+        )
     }
+}
 
 @Composable
 fun InteractiveMeshGradientScreen() {
@@ -326,11 +329,11 @@ fun InteractiveMeshGradientScreen() {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
             "Drag the dots to reshape the mesh",
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleMedium
         )
 
         BoxWithConstraints(
@@ -343,7 +346,7 @@ fun InteractiveMeshGradientScreen() {
                     points = meshPoints,
                     resolutionX = resolution,
                     resolutionY = resolution,
-                    showPoints = showVertices,
+                    showPoints = showVertices
                 )
         ) {
             val w = constraints.maxWidth.toFloat()
@@ -359,7 +362,7 @@ fun InteractiveMeshGradientScreen() {
                                     val half = (handleSize.toPx() / 2f).roundToInt()
                                     IntOffset(
                                         x = (point.offset.x * w).roundToInt() - half,
-                                        y = (point.offset.y * h).roundToInt() - half,
+                                        y = (point.offset.y * h).roundToInt() - half
                                     )
                                 }
                                 .size(handleSize)
@@ -377,10 +380,12 @@ fun InteractiveMeshGradientScreen() {
                                                             x = (p.offset.x + dragAmount.x / w)
                                                                 .coerceIn(0f, 1f),
                                                             y = (p.offset.y + dragAmount.y / h)
-                                                                .coerceIn(0f, 1f),
+                                                                .coerceIn(0f, 1f)
                                                         )
                                                     )
-                                                } else p
+                                                } else {
+                                                    p
+                                                }
                                             }
                                         }
                                     }
@@ -393,21 +398,21 @@ fun InteractiveMeshGradientScreen() {
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text("Smoothness")
             Slider(
                 value = resolution.toFloat(),
                 onValueChange = { resolution = it.roundToInt() },
                 valueRange = 1f..30f,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f)
             )
             Text("$resolution")
         }
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("Handles")
@@ -447,8 +452,11 @@ fun SineWaveMeshGradientScreen() {
 
     val waveColors = remember {
         listOf(
-            Color(0xFF3A0CA3), Color(0xFF4361EE), Color(0xFF4CC9F0),
-            Color(0xFF4895EF), Color(0xFF560BAD),
+            Color(0xFF3A0CA3),
+            Color(0xFF4361EE),
+            Color(0xFF4CC9F0),
+            Color(0xFF4895EF),
+            Color(0xFF560BAD)
         )
     }
 
@@ -458,9 +466,9 @@ fun SineWaveMeshGradientScreen() {
         targetValue = (2f * PI).toFloat(),
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 7000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart,
+            repeatMode = RepeatMode.Restart
         ),
-        label = "phase",
+        label = "phase"
     )
 
     val meshPoints by remember(phase) {
@@ -477,7 +485,7 @@ fun SineWaveMeshGradientScreen() {
                     val color = lerp(
                         waveColors[y % waveColors.size],
                         waveColors[(y + 1) % waveColors.size],
-                        x / (cols - 1).toFloat(),
+                        x / (cols - 1).toFloat()
                     )
                     Offset(baseX + dx, baseY + dy) to color
                 }
@@ -489,11 +497,11 @@ fun SineWaveMeshGradientScreen() {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
             "Sine wave mesh gradient",
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleMedium
         )
         Box(
             modifier = Modifier
@@ -503,14 +511,14 @@ fun SineWaveMeshGradientScreen() {
                 .meshGradient(
                     points = meshPoints,
                     resolutionX = 20,
-                    resolutionY = 20,
+                    resolutionY = 20
                 )
         )
         Spacer(Modifier.height(4.dp))
         Text(
             "Two sine waves drive a 5×5 control grid that is drawn beyond the " +
                 "edges so the wobbling corners never expose a gap.",
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }

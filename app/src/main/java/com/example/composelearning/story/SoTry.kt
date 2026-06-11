@@ -9,7 +9,6 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -110,12 +109,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.example.composelearning.util.LogCompositions
 import com.example.composelearning.R
+import com.example.composelearning.util.LogCompositions
+import kotlin.math.roundToInt
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
-
 
 enum class ButtonTypes {
     EXTRA_SMALL,
@@ -129,7 +127,7 @@ val ButtonShape = RoundedCornerShape(250.dp)
 
 @Preview
 @Composable
-fun ButtonSandbox() {
+private fun ButtonSandbox() {
     Button(
         enabled = false,
         modifier = Modifier.fillMaxWidth(),
@@ -141,14 +139,13 @@ fun ButtonSandbox() {
     ) {
         CircularProgressIndicator(
             color = MaterialTheme.colorScheme.onPrimary,
-            trackColor = MaterialTheme.colorScheme.onPrimary,
+            trackColor = MaterialTheme.colorScheme.onPrimary
         )
     }
 }
 
-
 @Composable
-fun JKButton2(
+fun CustomButton2(
     modifier: Modifier = Modifier,
     borderColor: Color? = null,
     backgroundColor: Color = MaterialTheme.colorScheme.primary,
@@ -164,7 +161,6 @@ fun JKButton2(
     }
 
     val (finalModifier, paddingValues) = when (buttonTypes) {
-
         ButtonTypes.EXTRA_SMALL -> {
             newModifier.height(24.dp) to PaddingValues(vertical = 4.dp, horizontal = 12.dp)
         }
@@ -175,7 +171,6 @@ fun JKButton2(
 
         ButtonTypes.MEDIUM -> {
             newModifier.height(40.dp) to PaddingValues(vertical = 8.dp, horizontal = 16.dp)
-
         }
 
         ButtonTypes.LARGE -> {
@@ -193,7 +188,8 @@ fun JKButton2(
             .clip(ButtonShape)
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() }) {
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
                 onClick()
             },
         color = backgroundColor,
@@ -203,7 +199,7 @@ fun JKButton2(
             Modifier
                 .padding(paddingValues),
             horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             content()
         }
@@ -233,7 +229,8 @@ fun CustomRoundedButton(
             .clip(ButtonShape)
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() }) {
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
                 onClick()
             },
         color = backgroundColor,
@@ -242,7 +239,7 @@ fun CustomRoundedButton(
         Row(
             Modifier,
             horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             content()
         }
@@ -271,7 +268,7 @@ fun SOTry() {
 //            }
 //        )
 //    }
-//}
+// }
 
     val scope = rememberCoroutineScope()
 
@@ -313,7 +310,7 @@ fun SOTry() {
 
 @Composable
 fun Tracks(
-    tracks: List<Track>?,
+    tracks: List<Track>?
 ) {
     if (tracks.isNullOrEmpty()) return
     var screenWidthSize by remember {
@@ -358,7 +355,7 @@ fun Tracks(
                             playingTrackSize = it
                         }
                     },
-                text = track.name,
+                text = track.name
             )
         }
     }
@@ -394,14 +391,15 @@ fun UI() {
                 }
         )
 
-
-        Column(modifier = Modifier
-            .wrapContentHeight()
-            .constrainAs(columnTexts) {
-                end.linkTo(parent.end)
-                start.linkTo(parent.start)
-                bottom.linkTo(parent.bottom, margin = 16.dp)
-            }) {
+        Column(
+            modifier = Modifier
+                .wrapContentHeight()
+                .constrainAs(columnTexts) {
+                    end.linkTo(parent.end)
+                    start.linkTo(parent.start)
+                    bottom.linkTo(parent.bottom, margin = 16.dp)
+                }
+        ) {
             Text("Text1", modifier = Modifier.wrapContentWidth())
             Text("Text2", modifier = Modifier.wrapContentWidth())
         }
@@ -423,7 +421,8 @@ fun AlternateUI() {
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(300.dp)
-                    .clickable { })
+                    .clickable { }
+            )
         }
         BottomText(
             modifier = Modifier
@@ -434,18 +433,17 @@ fun AlternateUI() {
 }
 
 @Composable
-fun BottomText(modifier: Modifier) {
+fun BottomText(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .wrapContentWidth()
             .wrapContentHeight()
-            .padding(10.dp),
+            .padding(10.dp)
     ) {
         Text(text = "line1", textAlign = TextAlign.Center)
         Text(text = "line2", textAlign = TextAlign.Center)
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -501,7 +499,6 @@ fun CollpasingToolbar() {
     )
 }
 
-
 @OptIn(ExperimentalTextApi::class)
 @Composable
 fun NumberBox(
@@ -517,7 +514,6 @@ fun NumberBox(
     textAlign: TextAlign? = null,
     style: TextStyle = LocalTextStyle.current
 ) {
-
     val mergedStyle = style.merge(
         textAlign?.let {
             TextStyle(
@@ -528,7 +524,7 @@ fun NumberBox(
                 fontFamily = fontFamily,
                 textDecoration = textDecoration,
                 fontStyle = fontStyle,
-                platformStyle = PlatformTextStyle(includeFontPadding = false),
+                platformStyle = PlatformTextStyle(includeFontPadding = false)
             )
         }
     )
@@ -538,24 +534,24 @@ fun NumberBox(
     val result = measurer.measure(
         AnnotatedString(number.toString()),
         style = mergedStyle,
-        maxLines = 1,
+        maxLines = 1
     )
 
     Canvas(modifier = modifier, onDraw = {
-        //drawText(measurer, text = size.toString())
-        //drawText(measurer, text = result.size.height.toString())
+        // drawText(measurer, text = size.toString())
+        // drawText(measurer, text = result.size.height.toString())
         translate(
             left = center.x - result.size.width / 2,
             top = center.y - result.size.height / 2
         ) {
             drawText(
                 textLayoutResult = result,
-                color = Color.Blue,
+                color = Color.Blue
             )
             drawLine(
                 color = Color.Green,
                 start = Offset(0f, result.firstBaseline),
-                end = Offset(size.width, result.firstBaseline),
+                end = Offset(size.width, result.firstBaseline)
             )
             drawRect(
                 color = Color.Red,
@@ -563,18 +559,14 @@ fun NumberBox(
                 style = Stroke()
             )
         }
-
-
     })
 }
 
 @Composable
 fun Avatar(avatarSize: Int = 200) {
-
     val imageBitmapDst = ImageBitmap.imageResource(R.drawable.ic_launcher_background)
 
     val imageBitmapSrc = ImageBitmap.imageResource(R.drawable.droid)
-
 
     Canvas(modifier = Modifier.size(avatarSize.dp)) {
         val dimension = size.height.coerceAtMost(size.width) / 2f
@@ -582,7 +574,7 @@ fun Avatar(avatarSize: Int = 200) {
         val yPos = (size.height - dimension) / 2f
 
         drawImage(
-            image = imageBitmapDst,
+            image = imageBitmapDst
         )
 
         drawImage(
@@ -596,7 +588,8 @@ fun Avatar(avatarSize: Int = 200) {
 
 @Composable
 fun ButtonWithProgress() {
-    Button(modifier = Modifier.size(200.dp, 100.dp),
+    Button(
+        modifier = Modifier.size(200.dp, 100.dp),
         onClick = { }
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -622,7 +615,7 @@ fun MyComponent() {
             modifier = Modifier
                 .clickable {
                     counter++
-                },
+                }
         )
     }
 }
@@ -642,7 +635,7 @@ fun CustomButton(
 @Composable
 fun CustomText(
     text: String,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     LogCompositions("JetpackCompose.app", "CustomText function")
 
@@ -658,7 +651,7 @@ fun CustomText(
 }
 
 @Composable
-fun StandardButton(modifier: Modifier, onClicked: () -> Unit) {
+fun StandardButton(modifier: Modifier = Modifier, onClicked: () -> Unit) {
     OutlinedButton(
         modifier = modifier
             .fillMaxWidth()
@@ -675,7 +668,6 @@ fun StandardButton(modifier: Modifier, onClicked: () -> Unit) {
 
 @Composable
 fun Modifier.topBorder(strokeWidth: Dp, color: Color, cornerRadiusDp: Dp): Modifier {
-
     val density = LocalDensity.current
     val strokeWidthPx = density.run { strokeWidth.toPx() }
     val cornerRadiusPx = density.run { cornerRadiusDp.toPx() }
@@ -826,43 +818,39 @@ fun BoxAnim() {
             modifier = Modifier
                 .width(200.dp)
                 .height(80.dp),
-            onClick = { middleBoxVisible = !middleBoxVisible }) {
+            onClick = { middleBoxVisible = !middleBoxVisible }
+        ) {
             Text(text = "Toggle Middle Box")
         }
     }
-
 }
 
 @Composable
-fun Modifier.circleLayout() =
-    layout { measurable, constraints ->
-        // Measure the composable
-        val placeable = measurable.measure(constraints)
+fun Modifier.circleLayout() = layout { measurable, constraints ->
+    // Measure the composable
+    val placeable = measurable.measure(constraints)
 
-        //get the current max dimension to assign width=height
-        val currentHeight = placeable.height
-        val currentWidth = placeable.width
-        val newDiameter = maxOf(currentHeight, currentWidth)
+    // get the current max dimension to assign width=height
+    val currentHeight = placeable.height
+    val currentWidth = placeable.width
+    val newDiameter = maxOf(currentHeight, currentWidth)
 
-        //assign the dimension and the center position
-        layout(newDiameter, newDiameter) {
-            // Where the composable gets placed
-            placeable.placeRelative(
-                (newDiameter - currentWidth) / 2,
-                (newDiameter - currentHeight) / 2
-            )
-        }
+    // assign the dimension and the center position
+    layout(newDiameter, newDiameter) {
+        // Where the composable gets placed
+        placeable.placeRelative(
+            (newDiameter - currentWidth) / 2,
+            (newDiameter - currentHeight) / 2
+        )
     }
-
+}
 
 @Composable
 fun CircleRowWithTextAndImage() {
-
     Row(
         modifier = Modifier
             .height(60.dp)
             .fillMaxWidth()
-
             .padding(PaddingValues(horizontal = 8.dp))
             .border(
                 border = BorderStroke(2.dp, Color.Green),
@@ -899,36 +887,33 @@ fun CircleRowWithTextAndImage() {
             painter = painterResource(id = R.drawable.ic_launcher_background),
             contentDescription = "A call icon for calling"
         )
-
-
     }
 }
-
 
 @Composable
 fun OverlappingBoxes(
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     Layout(
         modifier = modifier,
-        content = content,
+        content = content
     ) { measurables, constraints ->
         val largeBox = measurables[0]
         val smallBox = measurables[1]
         val looseConstraints = constraints.copy(
             minWidth = 0,
-            minHeight = 0,
+            minHeight = 0
         )
         val largePlaceable = largeBox.measure(looseConstraints)
         val smallPlaceable = smallBox.measure(looseConstraints)
         layout(
             width = constraints.maxWidth,
-            height = largePlaceable.height + smallPlaceable.height / 2,
+            height = largePlaceable.height + smallPlaceable.height / 2
         ) {
             largePlaceable.placeRelative(
                 x = 0,
-                y = 0,
+                y = 0
             )
             val percentageFromTop = 0.3f // 30% from the top
             val yOffset = (largePlaceable.height * percentageFromTop).roundToInt()
@@ -942,7 +927,7 @@ fun OverlappingBoxes(
 
 @Composable
 fun BoxOverlap(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     OverlappingBoxes(modifier = modifier.size(300.dp)) {
         Box(
@@ -959,15 +944,13 @@ fun BoxOverlap(
                 .clip(RoundedCornerShape(16.dp))
                 .background(Color.Blue)
         ) {
-
         }
     }
 }
 
-
 @Preview()
 @Composable
-fun CircleRowWithTextAndImagePreview() {
+private fun CircleRowWithTextAndImagePreview() {
     CircleRowWithTextAndImage()
 }
 
@@ -990,10 +973,11 @@ fun BoxAnim2(clicked: (Boolean) -> Unit) {
     val newWidth = with(LocalDensity.current) { textMeasured.toDp() + 8.dp }
 
     Column {
-        BoxWithConstraints(modifier = Modifier.clickable {
-            clicked(true)
-        }) {
-
+        BoxWithConstraints(
+            modifier = Modifier.clickable {
+                clicked(true)
+            }
+        ) {
             val middleBoxWidth = if (middleBoxVisible) newWidth else 0.dp
             val sideBoxWidth = ((maxWidth) - middleBoxWidth) / 2
 
@@ -1040,16 +1024,15 @@ fun BoxAnim2(clicked: (Boolean) -> Unit) {
             modifier = Modifier
                 .width(200.dp)
                 .height(80.dp),
-            onClick = { middleBoxVisible = !middleBoxVisible }) {
+            onClick = { middleBoxVisible = !middleBoxVisible }
+        ) {
             Text(text = "Toggle Middle Box")
         }
     }
-
 }
 
 @Composable
 fun SOBlur() {
-
     var parent: Offset by remember { mutableStateOf(Offset.Zero) }
     var positionText by remember { mutableStateOf("") }
     var blur by remember { mutableStateOf(0.dp) }
@@ -1058,30 +1041,33 @@ fun SOBlur() {
         Modifier
             .fillMaxSize()
     ) {
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .blur(blur)
-            .clickable {
-                if (blur > 0.dp) {
-                    blur = 0.dp
-                } else {
-                    blur = 4.dp
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .blur(blur)
+                .clickable {
+                    if (blur > 0.dp) {
+                        blur = 0.dp
+                    } else {
+                        blur = 4.dp
+                    }
                 }
-            }) {
-
-
+        ) {
             Text(text = "Hi")
             Text(text = "Hi")
             Text(text = "Hi")
             Text(text = "Hi")
-            Text(text = "Bye", modifier = Modifier.onGloballyPositioned {
-                parent = Offset(
-                    it.positionInParent().x,
-                    it.positionInParent().y
-                )
-                positionText =
-                    "positionInParent: $parent"
-            })
+            Text(
+                text = "Bye",
+                modifier = Modifier.onGloballyPositioned {
+                    parent = Offset(
+                        it.positionInParent().x,
+                        it.positionInParent().y
+                    )
+                    positionText =
+                        "positionInParent: $parent"
+                }
+            )
             Text(text = "Hi")
             Text(text = "Hi")
             Text(text = "Hi")
@@ -1095,7 +1081,6 @@ fun SOBlur() {
                 text = "Byeeeeeee",
                 color = Color.Green
             )
-
         }
     }
 }
@@ -1110,26 +1095,27 @@ fun MyScreen() {
     val firstVisibleItemScrollOffset by remember { derivedStateOf { lazyListState.firstVisibleItemScrollOffset } }
     var showGreenBox by remember { mutableStateOf(false) }
 
-    val heightInPixels = DpToPixels(58.dp)
+    val heightInPixels = dpToPixels(58.dp)
     Column {
         // Green box that appears when the red box is scrolled 58 pixels
         if (showGreenBox) {
-            Box(modifier= Modifier
-                .height(58.dp)
-                .fillMaxWidth()
-                .background(Color.Green)
+            Box(
+                modifier = Modifier
+                    .height(58.dp)
+                    .fillMaxWidth()
+                    .background(Color.Green)
             )
         }
 
         LazyColumn(state = lazyListState) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .height(300.dp)
-                            .fillMaxWidth()
-                            .background(Color.Red)
-                    )
-                }
+            item {
+                Box(
+                    modifier = Modifier
+                        .height(300.dp)
+                        .fillMaxWidth()
+                        .background(Color.Red)
+                )
+            }
             items(list) { item ->
                 Text(
                     text = item,
@@ -1143,8 +1129,7 @@ fun MyScreen() {
 
         // Check if scroll offset reaches 58 pixels and update showGreenBox
         LaunchedEffect(firstVisibleItemScrollOffset) {
-
-            Log.d(".....","$firstVisibleItemScrollOffset")
+            Log.d(".....", "$firstVisibleItemScrollOffset")
             if (firstVisibleItemScrollOffset >= 696) {
                 showGreenBox = true
             } else {
@@ -1154,10 +1139,8 @@ fun MyScreen() {
     }
 }
 
-
-
 @Composable
-fun DpToPixels(dpValue: Dp): Float {
+fun dpToPixels(dpValue: Dp): Float {
     val density = LocalDensity.current
     return with(density) { dpValue.toPx() }
 }

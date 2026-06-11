@@ -96,7 +96,6 @@ fun GoogleCallingScreenAnimation(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-
             // Layout order changes dynamically depending on direction
             if (isSwipeUpToAnswer) {
                 ArrowIndicatorTrack(infiniteTransition = infiniteTransition, arrowUp = true)
@@ -234,12 +233,14 @@ fun ArrowIndicatorTrack(
 }
 
 // Math logic to calculate smooth fade-in -> fade-out ranges
-private fun calculateArrowAlpha(progress: Float): Float {
-    return when {
-        progress < 0.2f -> progress / 0.2f // Quick fade in
-        progress < 0.6f -> 1f - ((progress - 0.2f) / 0.4f) // Smooth fade out
-        else -> 0f // Invisible for remainder of window frame
-    }
+private fun calculateArrowAlpha(progress: Float): Float = when {
+    progress < 0.2f -> progress / 0.2f
+
+    // Quick fade in
+    progress < 0.6f -> 1f - ((progress - 0.2f) / 0.4f)
+
+    // Smooth fade out
+    else -> 0f // Invisible for remainder of window frame
 }
 
 // Math logic to transform loop progress into subtle physical directional shifts
@@ -251,7 +252,7 @@ private fun calculateArrowSlide(progress: Float, movingUp: Boolean): Float {
 
 @Preview(showBackground = true, name = "Light Mode")
 @Composable
-fun GoogleCallingAnimationPreview_Light() {
+private fun GoogleCallingAnimationPreview_Light() {
     MaterialTheme {
         GoogleCallingScreenAnimation()
     }
@@ -259,7 +260,7 @@ fun GoogleCallingAnimationPreview_Light() {
 
 @Preview(showBackground = true, name = "Dark Mode", backgroundColor = 0xFF121212)
 @Composable
-fun GoogleCallingAnimationPreview_Dark() {
+private fun GoogleCallingAnimationPreview_Dark() {
     MaterialTheme(colorScheme = darkColorScheme()) {
         GoogleCallingScreenAnimation()
     }
@@ -267,7 +268,7 @@ fun GoogleCallingAnimationPreview_Dark() {
 
 @Preview(showBackground = true, name = "Decline Mode")
 @Composable
-fun GoogleCallingAnimationPreview_Decline() {
+private fun GoogleCallingAnimationPreview_Decline() {
     MaterialTheme {
         GoogleCallingScreenAnimation(isSwipeUpToAnswer = false)
     }

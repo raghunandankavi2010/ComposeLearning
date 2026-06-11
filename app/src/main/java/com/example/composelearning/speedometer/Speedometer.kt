@@ -36,22 +36,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.composelearning.util.LogCompositions
 import com.example.composelearning.R
 import com.example.composelearning.customshapes.dpToPx
-
 import com.example.composelearning.graphics.drawRoundedRightEndArc
 import com.example.composelearning.shaders.nativeBlur
-import kotlinx.coroutines.launch
+import com.example.composelearning.util.LogCompositions
 import kotlin.math.PI
 import kotlin.math.asin
 import kotlin.math.cos
 import kotlin.math.sin
-
+import kotlinx.coroutines.launch
 
 @Composable
 fun Speedometer(
-    progress: Int,
+    progress: Int
 ) {
     LogCompositions("Speedometer", "Running")
     val arcDegrees = 275
@@ -198,23 +196,19 @@ val CustomEaseOutBounce: Easing = Easing { fraction ->
     } else {
         1.250f * fraction * fraction - 2 * fraction + 1.750f
     }
-
 }
-
 
 @Composable
 fun SpeedometerTry(
     modifier: Modifier = Modifier,
-    progress: Int,
+    progress: Int
 ) {
-
     BoxWithConstraints(
         modifier = Modifier
             .padding(top = 25.dp)
             .width(300.dp)
             .height(130.dp)
     ) {
-
         LogCompositions("Speedometer", "Running")
         val textMeasurer = rememberTextMeasurer()
 
@@ -227,7 +221,6 @@ fun SpeedometerTry(
         }
 
         LaunchedEffect(progress) {
-
             launch {
                 progressAnimation.animateTo(
                     targetValue = progress.toFloat(),
@@ -237,8 +230,7 @@ fun SpeedometerTry(
         }
         val innerRadius = 60.dp.dpToPx()
         val outerRadius = 114.dp.dpToPx()
-        val cornerRadius = 12.dp.dpToPx() //(outerRadius - innerRadius) /
-
+        val cornerRadius = 12.dp.dpToPx() // (outerRadius - innerRadius) /
 
         val drawEntireArc = remember {
             Path().apply {
@@ -248,9 +240,9 @@ fun SpeedometerTry(
                     sweepAngleDegrees = 180f,
                     innerRadius = innerRadius,
                     outerRadius = outerRadius,
-                    cornerRadius = cornerRadius,
+                    cornerRadius = cornerRadius
 
-                    )
+                )
             }
         }
 
@@ -346,7 +338,6 @@ fun SpeedometerTry(
                             }
                         }
                     }
-
                 }
             }
         )
@@ -366,7 +357,7 @@ val DefaultSpeedSegments: List<SpeedSegment> = listOf(
     SpeedSegment(0.16f, Color(0xFFAEEA00)), // lime
     SpeedSegment(0.16f, Color(0xFFFFD600)), // yellow
     SpeedSegment(0.16f, Color(0xFFFF9100)), // orange
-    SpeedSegment(0.16f, Color(0xFFDD2C00)), // red
+    SpeedSegment(0.16f, Color(0xFFDD2C00)) // red
 )
 
 @Composable
@@ -376,9 +367,8 @@ fun VehicleSpeedometer(
     segments: List<SpeedSegment> = DefaultSpeedSegments,
     needleColor: Color = Color(0xFF102A43),
     tickColor: Color = Color(0xFF37474F),
-    maxValue: Int = 100,
+    maxValue: Int = 100
 ) {
-
     BoxWithConstraints(
         modifier = modifier
             .fillMaxWidth()
@@ -386,7 +376,6 @@ fun VehicleSpeedometer(
             .height(200.dp)
     )
     {
-
         LogCompositions("Speedometer", "Running")
         val textMeasurer = rememberTextMeasurer()
 
@@ -399,12 +388,12 @@ fun VehicleSpeedometer(
         }
 
         LaunchedEffect(progress) {
-            //launch {
+            // launch {
             progressAnimation.animateTo(
                 targetValue = progress.toFloat(),
                 animationSpec = tween(durationMillis = 3000, easing = CustomEaseOutBounce)
             )
-            //}
+            // }
         }
         val innerRadius = 60.dp.dpToPx()
         val outerRadius = 114.dp.dpToPx()
@@ -428,7 +417,7 @@ fun VehicleSpeedometer(
                             sweepAngleDegrees = sweep,
                             innerRadius = innerRadius,
                             outerRadius = outerRadius,
-                            cornerRadius = cornerRadius,
+                            cornerRadius = cornerRadius
                         )
 
                         segments.lastIndex -> addRoundedEndBox(
@@ -437,7 +426,7 @@ fun VehicleSpeedometer(
                             sweepAngleDegrees = sweep,
                             innerRadius = innerRadius,
                             outerRadius = outerRadius,
-                            cornerRadius = cornerRadius,
+                            cornerRadius = cornerRadius
                         )
 
                         else -> addRoundedPolarBoxAllSides(
@@ -446,7 +435,7 @@ fun VehicleSpeedometer(
                             sweepAngleDegrees = sweep,
                             innerRadius = innerRadius,
                             outerRadius = outerRadius,
-                            cornerRadius = 0.1f,
+                            cornerRadius = 0.1f
                         )
                     }
                 }
@@ -459,7 +448,7 @@ fun VehicleSpeedometer(
         val labelStyle = TextStyle(
             color = tickColor,
             fontSize = 10.sp,
-            fontWeight = FontWeight.SemiBold,
+            fontWeight = FontWeight.SemiBold
         )
         Canvas(
             modifier = Modifier
@@ -493,18 +482,18 @@ fun VehicleSpeedometer(
                         val tickWidth = if (isMajor) 3.dp.toPx() else 1.5.dp.toPx()
                         val outerPoint = Offset(
                             (centerOffset.x + tickOuter * ca).toFloat(),
-                            (centerOffset.y + tickOuter * sa).toFloat(),
+                            (centerOffset.y + tickOuter * sa).toFloat()
                         )
                         val innerPoint = Offset(
                             (centerOffset.x + (tickOuter - len) * ca).toFloat(),
-                            (centerOffset.y + (tickOuter - len) * sa).toFloat(),
+                            (centerOffset.y + (tickOuter - len) * sa).toFloat()
                         )
                         drawLine(
                             color = tickColor,
                             start = innerPoint,
                             end = outerPoint,
                             strokeWidth = tickWidth,
-                            cap = StrokeCap.Round,
+                            cap = StrokeCap.Round
                         )
                         if (isMajor) {
                             val value = (frac * maxValue).toInt().toString()
@@ -515,8 +504,8 @@ fun VehicleSpeedometer(
                                 textLayoutResult = layout,
                                 topLeft = Offset(
                                     lx - layout.size.width / 2f,
-                                    ly - layout.size.height / 2f,
-                                ),
+                                    ly - layout.size.height / 2f
+                                )
                             )
                         }
                     }
@@ -526,7 +515,7 @@ fun VehicleSpeedometer(
                     // the pivot. At rotation 0 it points left (the min value).
                     rotate(
                         progressAnimation.value * (arcDegrees) / maxValue,
-                        pivot = centerOffset,
+                        pivot = centerOffset
                     ) {
                         val cx = centerOffset.x
                         val cy = centerOffset.y
@@ -534,9 +523,9 @@ fun VehicleSpeedometer(
                         val tailLen = 24.dp.toPx()
                         val baseHalf = 9.dp.toPx()
                         val needle = Path().apply {
-                            moveTo(cx - tipLen, cy)              // sharp tip
-                            lineTo(cx + tailLen, cy - baseHalf)  // back-top (counterweight)
-                            lineTo(cx + tailLen, cy + baseHalf)  // back-bottom
+                            moveTo(cx - tipLen, cy) // sharp tip
+                            lineTo(cx + tailLen, cy - baseHalf) // back-top (counterweight)
+                            lineTo(cx + tailLen, cy + baseHalf) // back-bottom
                             close()
                         }
                         // Rounded counterweight at the tail.
@@ -560,7 +549,7 @@ fun Path.addRoundedPolarBox(
     sweepAngleDegrees: Float,
     innerRadius: Float,
     outerRadius: Float,
-    cornerRadius: Float,
+    cornerRadius: Float
 ) {
     val endAngleDegrees = startAngleDegrees + sweepAngleDegrees.toDouble()
     val innerRadiusShift = innerRadius + cornerRadius.toDouble()
@@ -571,42 +560,41 @@ fun Path.addRoundedPolarBox(
         rect = Rect(
             center = Offset(
                 x = (center.x + innerRadiusShift * cos((startAngleDegrees + innerAngleShift) * PI / 180)).toFloat(),
-                y = (center.y + innerRadiusShift * sin((startAngleDegrees + innerAngleShift) * PI / 180)).toFloat(),
+                y = (center.y + innerRadiusShift * sin((startAngleDegrees + innerAngleShift) * PI / 180)).toFloat()
             ),
-            radius = cornerRadius,
+            radius = cornerRadius
         ),
         startAngleDegrees = startAngleDegrees - 90,
         sweepAngleDegrees = (innerAngleShift - 90).toFloat(),
-        forceMoveTo = true,
+        forceMoveTo = true
     )
     arcTo(
         rect = Rect(center = center, radius = innerRadius),
         startAngleDegrees = (startAngleDegrees + innerAngleShift).toFloat(),
         sweepAngleDegrees = (sweepAngleDegrees - innerAngleShift).toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
 
     arcTo(
         rect = Rect(center = center, radius = outerRadius),
         startAngleDegrees = (endAngleDegrees).toFloat(),
         sweepAngleDegrees = -(sweepAngleDegrees - 2 * outerAngleShift).toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
     arcTo(
         rect = Rect(
             center = Offset(
                 x = (center.x + outerRadiusShift * cos((startAngleDegrees + outerAngleShift) * PI / 180)).toFloat(),
-                y = (center.y + outerRadiusShift * sin((startAngleDegrees + outerAngleShift) * PI / 180)).toFloat(),
+                y = (center.y + outerRadiusShift * sin((startAngleDegrees + outerAngleShift) * PI / 180)).toFloat()
             ),
-            radius = cornerRadius,
+            radius = cornerRadius
         ),
         startAngleDegrees = (startAngleDegrees + outerAngleShift).toFloat(),
         sweepAngleDegrees = -(outerAngleShift + 90).toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
     close()
 }
-
 
 fun Path.addRoundedPolarBoxAllSides(
     center: Offset,
@@ -614,7 +602,7 @@ fun Path.addRoundedPolarBoxAllSides(
     sweepAngleDegrees: Float,
     innerRadius: Float,
     outerRadius: Float,
-    cornerRadius: Float,
+    cornerRadius: Float
 ) {
     val endAngleDegrees = startAngleDegrees + sweepAngleDegrees.toDouble()
     val innerRadiusShift = innerRadius + cornerRadius.toDouble()
@@ -625,65 +613,64 @@ fun Path.addRoundedPolarBoxAllSides(
         rect = Rect(
             center = Offset(
                 x = (center.x + innerRadiusShift * cos((startAngleDegrees + innerAngleShift) * PI / 180)).toFloat(),
-                y = (center.y + innerRadiusShift * sin((startAngleDegrees + innerAngleShift) * PI / 180)).toFloat(),
+                y = (center.y + innerRadiusShift * sin((startAngleDegrees + innerAngleShift) * PI / 180)).toFloat()
             ),
-            radius = cornerRadius,
+            radius = cornerRadius
         ),
         startAngleDegrees = startAngleDegrees - 90,
         sweepAngleDegrees = (innerAngleShift - 90).toFloat(),
-        forceMoveTo = true,
+        forceMoveTo = true
     )
     arcTo(
         rect = Rect(center = center, radius = innerRadius),
         startAngleDegrees = (startAngleDegrees + innerAngleShift).toFloat(),
         sweepAngleDegrees = (sweepAngleDegrees - innerAngleShift).toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
     arcTo(
         rect = Rect(
             center = Offset(
                 x = (center.x + innerRadiusShift * cos((endAngleDegrees - innerAngleShift) * PI / 180)).toFloat(),
-                y = (center.y + innerRadiusShift * sin((endAngleDegrees - innerAngleShift) * PI / 180)).toFloat(),
+                y = (center.y + innerRadiusShift * sin((endAngleDegrees - innerAngleShift) * PI / 180)).toFloat()
             ),
-            radius = cornerRadius,
+            radius = cornerRadius
         ),
         startAngleDegrees = (endAngleDegrees - innerAngleShift + 180).toFloat(),
         sweepAngleDegrees = (innerAngleShift - 90).toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
     arcTo(
         rect = Rect(
             center = Offset(
                 x = (center.x + outerRadiusShift * cos((endAngleDegrees - outerAngleShift) * PI / 180)).toFloat(),
-                y = (center.y + outerRadiusShift * sin((endAngleDegrees - outerAngleShift) * PI / 180)).toFloat(),
+                y = (center.y + outerRadiusShift * sin((endAngleDegrees - outerAngleShift) * PI / 180)).toFloat()
             ),
-            radius = cornerRadius,
+            radius = cornerRadius
         ),
         startAngleDegrees = (endAngleDegrees + 90).toFloat(),
         sweepAngleDegrees = -(outerAngleShift + 90).toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
     arcTo(
         rect = Rect(center = center, radius = outerRadius),
         startAngleDegrees = (endAngleDegrees).toFloat(),
         sweepAngleDegrees = -(sweepAngleDegrees - 2 * outerAngleShift).toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
     arcTo(
         rect = Rect(
             center = Offset(
                 x = (center.x + outerRadiusShift * cos((startAngleDegrees + outerAngleShift) * PI / 180)).toFloat(),
-                y = (center.y + outerRadiusShift * sin((startAngleDegrees + outerAngleShift) * PI / 180)).toFloat(),
+                y = (center.y + outerRadiusShift * sin((startAngleDegrees + outerAngleShift) * PI / 180)).toFloat()
             ),
-            radius = cornerRadius,
+            radius = cornerRadius
         ),
         startAngleDegrees = (startAngleDegrees + outerAngleShift).toFloat(),
         sweepAngleDegrees = -(outerAngleShift + 90).toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
     close()
 }
-
 
 fun Path.addRoundedEndBox(
     center: Offset,
@@ -691,7 +678,7 @@ fun Path.addRoundedEndBox(
     sweepAngleDegrees: Float,
     innerRadius: Float,
     outerRadius: Float,
-    cornerRadius: Float,
+    cornerRadius: Float
 ) {
     val endAngleDegrees = startAngleDegrees + sweepAngleDegrees.toDouble()
     val innerRadiusShift = innerRadius + cornerRadius.toDouble()
@@ -705,59 +692,59 @@ fun Path.addRoundedEndBox(
         rect = Rect(
             center = Offset(
                 x = (center.x + innerRadiusShift * cos((startAngleDegrees) * PI / 180)).toFloat(),
-                y = (center.y + innerRadiusShift * sin((startAngleDegrees) * PI / 180)).toFloat(),
+                y = (center.y + innerRadiusShift * sin((startAngleDegrees) * PI / 180)).toFloat()
             ),
-            radius = 0.1f,
+            radius = 0.1f
         ),
         startAngleDegrees = startAngleDegrees,
         sweepAngleDegrees = (90).toFloat(),
-        forceMoveTo = true,
+        forceMoveTo = true
     )
     // arc from start to sweep minus the arc part ie start to sweep angle arc
     arcTo(
         rect = Rect(center = center, radius = innerRadius),
         startAngleDegrees = (startAngleDegrees).toFloat(),
         sweepAngleDegrees = (sweepAngleDegrees - 2 * innerAngleShift).toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
     // arc of inner circle which is at the end of arc ie left bottom arc
     arcTo(
         rect = Rect(
             center = Offset(
                 x = (center.x + innerRadiusShift * cos((endAngleDegrees - innerAngleShift) * PI / 180)).toFloat(),
-                y = (center.y + innerRadiusShift * sin((endAngleDegrees - innerAngleShift) * PI / 180)).toFloat(),
+                y = (center.y + innerRadiusShift * sin((endAngleDegrees - innerAngleShift) * PI / 180)).toFloat()
             ),
-            radius = cornerRadius,
+            radius = cornerRadius
         ),
         startAngleDegrees = (endAngleDegrees - innerAngleShift + 180).toFloat(),
         sweepAngleDegrees = (innerAngleShift - 90).toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
     // out arc with rounded arc ie right bottom arc
     arcTo(
         rect = Rect(
             center = Offset(
                 x = (center.x + outerRadiusShift * cos((endAngleDegrees - outerAngleShift) * PI / 180)).toFloat(),
-                y = (center.y + outerRadiusShift * sin((endAngleDegrees - outerAngleShift) * PI / 180)).toFloat(),
+                y = (center.y + outerRadiusShift * sin((endAngleDegrees - outerAngleShift) * PI / 180)).toFloat()
             ),
-            radius = cornerRadius,
+            radius = cornerRadius
         ),
         startAngleDegrees = (endAngleDegrees + 90).toFloat(),
         sweepAngleDegrees = -(outerAngleShift + 90).toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
     // left top arc
     arcTo(
         rect = Rect(center = center, radius = outerRadius),
         startAngleDegrees = (endAngleDegrees - innerAngleShift).toFloat(),
         sweepAngleDegrees = -(sweepAngleDegrees - innerAngleShift).toFloat(),
-        forceMoveTo = false,
+        forceMoveTo = false
     )
 
     close()
 }
 
-//drawCircle(Color.Black, 5f, centerOffset)
+// drawCircle(Color.Black, 5f, centerOffset)
 // draw pointer
 //                val r = w / 4f
 //                val x = (r - 30f) * cos(pointerAnimation.value) + w / 2
@@ -795,18 +782,18 @@ fun Path.addRoundedEndBox(
 //                   // }
 //
 //                    //rotate(rotationAngle , pivot = Offset(tx.toFloat(),ty.toFloat())) {
-////                    drawContext.canvas.nativeCanvas.apply {
-////                        drawText(
-////                            "$textValue",
-////                            tx.toFloat() - (tSize.width) / 2f,
-////                            ty.toFloat() ,
-////                            Paint().apply {
-////                                textSize = 20.sp.toPx()
-////                                color = android.graphics.Color.BLACK
-////                                textAlign = Paint.Align.CENTER
-////                            }
-////                        )
-////                    }
+// //                    drawContext.canvas.nativeCanvas.apply {
+// //                        drawText(
+// //                            "$textValue",
+// //                            tx.toFloat() - (tSize.width) / 2f,
+// //                            ty.toFloat() ,
+// //                            Paint().apply {
+// //                                textSize = 20.sp.toPx()
+// //                                color = android.graphics.Color.BLACK
+// //                                textAlign = Paint.Align.CENTER
+// //                            }
+// //                        )
+// //                    }
 //                    // }
 //                    textValue += 45
 //                    drawLine(
@@ -820,7 +807,6 @@ fun Path.addRoundedEndBox(
 //                    angleStart += 45
 //                }
 
-
 //                drawArc(
 //                    Color.Blue,
 //                    startArcAngle + 90,
@@ -831,7 +817,6 @@ fun Path.addRoundedEndBox(
 //                    style = centerArcStroke
 //                )
 
-
 //                drawArc(
 //                    Color.Red,
 //                    startArcAngle,
@@ -841,7 +826,6 @@ fun Path.addRoundedEndBox(
 //                    size = centerArcSize,
 //                    style = Stroke(80f, 0f, StrokeCap.Round)
 //                )
-
 
 //                drawArc(
 //                    Color.Green,
@@ -874,22 +858,22 @@ fun Path.addRoundedEndBox(
 //                )
 // Drawing the pointer circle
 
-//val markerAngleRadians = 25 * (PI / 180f)
-//val tx = ((innerRadius + outerRadius + 25.dp.toPx()) * cos( markerAngleRadians))
-//val ty = ((innerRadius + outerRadius +  5.dp.toPx()) * sin( markerAngleRadians))
+// val markerAngleRadians = 25 * (PI / 180f)
+// val tx = ((innerRadius + outerRadius + 25.dp.toPx()) * cos( markerAngleRadians))
+// val ty = ((innerRadius + outerRadius +  5.dp.toPx()) * sin( markerAngleRadians))
 //
-//val textLayoutResult = textMeasurer.measure(
+// val textLayoutResult = textMeasurer.measure(
 //    AnnotatedString("25")
-//)
+// )
 //
-//val tSize = textLayoutResult.size
+// val tSize = textLayoutResult.size
 //
 //
-//drawText(
-//textMeasurer = textMeasurer,
-//text = "25",
-//topLeft = Offset(
-//tx.toFloat() - (tSize.width) / 2f,
-//ty.toFloat() - (tSize.height) / 2f
-//),
-//)
+// drawText(
+// textMeasurer = textMeasurer,
+// text = "25",
+// topLeft = Offset(
+// tx.toFloat() - (tSize.width) / 2f,
+// ty.toFloat() - (tSize.height) / 2f
+// ),
+// )

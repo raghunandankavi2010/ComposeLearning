@@ -60,7 +60,6 @@ fun FullParallaxBackgroundListScreen() {
 
     // Outer Box stacks the background image and the list on top of each other
     Box(modifier = Modifier.fillMaxSize()) {
-
         // LAYER 1: Fixed/Slow-Moving Background
         AsyncImage(
             model = "https://picsum.photos/id/26/1000/1200", // Using a taller image to handle movement

@@ -1,6 +1,5 @@
 package com.example.composelearning.pager
 
-
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -12,9 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -35,7 +34,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.composelearning.R
-
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -73,7 +71,6 @@ fun PagerIndicatorDemo() {
                 )
             }
         }
-
 
         Row(
             Modifier
@@ -129,7 +126,6 @@ fun PagerIndicatorDemo() {
     }
 }
 
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PagerIndicator(
@@ -184,9 +180,7 @@ fun PagerIndicator(
 
 // To get scrolled offset from snap position
 @OptIn(ExperimentalFoundationApi::class)
-fun PagerState.calculateCurrentOffsetForPage(page: Int): Float {
-    return (currentPage - page) + currentPageOffsetFraction
-}
+fun PagerState.calculateCurrentOffsetForPage(page: Int): Float = (currentPage - page) + currentPageOffsetFraction
 
 @OptIn(ExperimentalFoundationApi::class)
 val PagerState.pageOffset: Float

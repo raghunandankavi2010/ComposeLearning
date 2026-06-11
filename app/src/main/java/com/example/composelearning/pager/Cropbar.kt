@@ -23,10 +23,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.composelearning.util.LogCompositions
 import com.example.composelearning.R
 import com.example.composelearning.pager.TabRowDefaults.tabIndicatorOffset
 import com.example.composelearning.story.CustomButton
+import com.example.composelearning.util.LogCompositions
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
@@ -57,14 +57,14 @@ private val colors = listOf(
     Color.Magenta
 )
 
-//@Composable
-//fun CropBar(
+// @Composable
+// fun CropBar(
 //    modifier: Modifier = Modifier,
 //    pages: List<String>,
 //    onCropClicked: (Int) -> Unit,
 //    selectedIndex: Int,
 //    tabSelected: (Int) -> Unit
-//) {
+// ) {
 //
 //    val isSelected = { index: Int -> index == selectedIndex }
 //    Column {
@@ -83,12 +83,12 @@ private val colors = listOf(
 //            selectedTabIndex = 0,
 //            backgroundColor = Color(0xFF03753C),
 //            indicator = { tabPositions ->
-////                TabRowDefaults.Indicator(
-////                    color = Color.Black,
-////                    modifier = Modifier
-////                        .tabIndicatorOffset(tabPositions[selectedIndex])
-////                        .fillMaxWidth()
-////                )
+// //                TabRowDefaults.Indicator(
+// //                    color = Color.Black,
+// //                    modifier = Modifier
+// //                        .tabIndicatorOffset(tabPositions[selectedIndex])
+// //                        .fillMaxWidth()
+// //                )
 //            },
 //            minItemWidth = 58.dp,
 //            edgePadding = 0.dp,
@@ -118,11 +118,10 @@ private val colors = listOf(
 //
 //        }
 //    }
-//}
+// }
 
-
-//@Composable
-//private fun CustomIndicator(tabPositions: List<TabPosition>, selectedIndex: Int, color: Color) {
+// @Composable
+// private fun CustomIndicator(tabPositions: List<TabPosition>, selectedIndex: Int, color: Color) {
 //
 //    val transition = updateTransition(selectedIndex, label = "transition")
 //
@@ -162,7 +161,7 @@ private val colors = listOf(
 //            )
 //            .zIndex(1f)
 //    )
-//}
+// }
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
@@ -172,7 +171,7 @@ fun SampleImage() {
 //        modifier = Modifier.wrapContentSize(),
 //    ) {
 
-    LogCompositions(tag = "CropBar", msg = "Test" )
+    LogCompositions(tag = "CropBar", msg = "Test")
     Image(
         modifier = Modifier
             .width(42.dp)
@@ -247,12 +246,12 @@ fun TabScreen() {
         "B",
         "C"
     )
-    //val tabs = listOf("Home", "About", "Settings", "More", "Something", "Everything")
+    // val tabs = listOf("Home", "About", "Settings", "More", "Something", "Everything")
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        MyScrollableTabRow(selectedTabIndex = tabIndex,
+        MyScrollableTabRow(
+            selectedTabIndex = tabIndex,
             divider = {
-
             },
 
             indicator = { tabPositions ->
@@ -272,39 +271,34 @@ fun TabScreen() {
                     painter = painterResource(id = R.drawable.ic_launcher_background),
                     contentDescription = "Image"
                 )
-            }) {
+            }
+        ) {
             tabs.forEachIndexed { index, title ->
                 Tab(
                     text = { SampleImage() },
                     selected = tabIndex == index,
-                    onClick = { tabIndex = index },
+                    onClick = { tabIndex = index }
                 )
             }
         }
 
         when (tabIndex) {
-            0 -> CustomButton(onClick = {  }) {
-
+            0 -> CustomButton(onClick = { }) {
             }
 
-            1 -> CustomButton(onClick = {  }) {
-
+            1 -> CustomButton(onClick = { }) {
             }
 
-            2 -> CustomButton(onClick = {  }) {
-
+            2 -> CustomButton(onClick = { }) {
             }
 
-            3 -> CustomButton(onClick = {  }) {
-
+            3 -> CustomButton(onClick = { }) {
             }
 
-            4 -> CustomButton(onClick = {  }) {
-
+            4 -> CustomButton(onClick = { }) {
             }
 
-            5 -> CustomButton(onClick = {  }) {
-
+            5 -> CustomButton(onClick = { }) {
             }
         }
     }

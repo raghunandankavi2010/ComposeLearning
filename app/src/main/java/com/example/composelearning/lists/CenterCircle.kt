@@ -21,7 +21,6 @@ fun CenterCircle(
         modifier = modifier
             .size(75.dp)
     ) {
-
         drawArc(
             color = fillColor,
             0f,
@@ -31,5 +30,4 @@ fun CenterCircle(
             size = Size(size.width, size.height)
         )
     }
-
 }

@@ -14,9 +14,9 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathMeasure
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.delay
 import kotlin.math.PI
 import kotlin.math.sin
+import kotlinx.coroutines.delay
 
 @Composable
 fun SinWave() {
@@ -35,14 +35,12 @@ fun SinWave() {
     }
 }
 
-
 /**
  * Animation of path using segments inspired from beloq
  * https://stackoverflow.com/questions/75745905/rectangle-border-progress-bar/75747893#75747893
  */
 @Composable
 fun TutorialContent() {
-
     val startDurationInSeconds = 20
     var currentTime by remember {
         mutableStateOf(startDurationInSeconds)
@@ -69,7 +67,6 @@ fun TutorialContent() {
             }
         }
         timerStarted = false
-
     }
 
     Column(
@@ -92,19 +89,20 @@ fun TutorialContent() {
         }
 
         Box(contentAlignment = Alignment.Center) {
-            Canvas(modifier = Modifier
-                .fillMaxWidth()
-                .height(400.dp)
-                .clickable {
-                    if (currentTime > 0) {
-                        targetValue = 100f
-                        timerStarted = true
-                    } else {
-                        currentTime = startDurationInSeconds
-                        timerStarted = true
+            Canvas(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(400.dp)
+                    .clickable {
+                        if (currentTime > 0) {
+                            targetValue = 100f
+                            timerStarted = true
+                        } else {
+                            currentTime = startDurationInSeconds
+                            timerStarted = true
+                        }
                     }
-                }) {
-
+            ) {
                 if (path.isEmpty) {
                     val amplitude = 100f
                     val frequency = 5f
@@ -143,8 +141,6 @@ fun TutorialContent() {
                     color = Color.Blue
                 )
             }
-
         }
     }
-
 }

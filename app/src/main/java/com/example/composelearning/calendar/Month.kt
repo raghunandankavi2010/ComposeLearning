@@ -16,8 +16,6 @@
 
 package com.example.composelearning.calendar
 
-import com.example.composelearning.ui.theme.AppFontFamilyBlack
-
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,21 +29,24 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.composelearning.R
+import com.example.composelearning.ui.theme.AppFontFamilyBlack
 import java.time.format.DateTimeFormatter
 
 @Composable
 internal fun MonthHeader(modifier: Modifier = Modifier, month: String, year: String) {
-    Row(modifier = modifier.clearAndSetSemantics { },
-        verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = modifier.clearAndSetSemantics { },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text(
             text = month,
-            style =  TextStyle(
+            style = TextStyle(
                 fontSize = 16.sp,
                 lineHeight = 20.sp,
                 fontFamily = AppFontFamilyBlack,
                 fontWeight = FontWeight(900),
-                color = Color(0xFF141414),
-                )
+                color = Color(0xFF141414)
+            )
         )
     }
 }

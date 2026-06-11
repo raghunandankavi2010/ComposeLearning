@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import kotlin.math.cos
 import kotlin.math.sin
 
-
 @Composable
 fun CircularMenuScreenWithFullAnimation() {
     val showMenu = remember { mutableStateOf(false) }
@@ -56,7 +55,7 @@ fun CircularMenuScreenWithFullAnimation() {
         // Center Button
         Button(
             onClick = {
-                if(animationProgress.value ==0f || animationProgress.value == 1f) {
+                if (animationProgress.value == 0f || animationProgress.value == 1f) {
                     showMenu.value = !showMenu.value
                 }
             },
@@ -127,7 +126,7 @@ fun PeripheralButton(modifier: Modifier = Modifier, text: String) {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewCircularMenuScreenWithFullAnimation() {
+private fun PreviewCircularMenuScreenWithFullAnimation() {
     MaterialTheme {
         CircularMenuScreenWithFullAnimation()
     }

@@ -22,19 +22,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-
 @Composable
 fun LazyRowLikePager() {
-
     BoxWithConstraints {
         val boxWithConstraintsScope = this
         val itemWidth = boxWithConstraintsScope.maxWidth * 0.8f // 80% of screen width
         val listState = rememberLazyListState()
 
-
         val snappingLayout = remember(listState) { SnapLayoutInfoProvider(listState) }
         val flingBehavior = rememberSnapFlingBehavior(snappingLayout)
-
 
         LazyRow(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -47,10 +43,10 @@ fun LazyRowLikePager() {
             items(200) { index ->
                 Box(
                     modifier =
-                    Modifier
-                        .width(itemWidth)
-                        .height(400.dp)
-                        .background(Color.Gray)
+                        Modifier
+                            .width(itemWidth)
+                            .height(400.dp)
+                            .background(Color.Gray)
 
                 ) {
                     Text(

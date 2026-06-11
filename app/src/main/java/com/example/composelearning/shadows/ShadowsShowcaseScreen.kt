@@ -76,17 +76,17 @@ fun ShadowsShowcaseScreen() {
             TopAppBar(
                 title = { Text("Shadow playground") },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                ),
+                    containerColor = MaterialTheme.colorScheme.background
+                )
             )
-        },
+        }
     ) { padding ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
             contentPadding = PaddingValues(horizontal = 20.dp, vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(28.dp),
+            verticalArrangement = Arrangement.spacedBy(28.dp)
         ) {
             item { Section(title = "1. Elevation steps", caption = "Modifier.shadow with increasing elevation") { ElevationStepsDemo() } }
             item { Section(title = "2. Animated elevation", caption = "Drag the slider — graphicsLayer-backed Modifier.shadow") { AnimatedElevationDemo() } }
@@ -111,13 +111,13 @@ private fun Section(title: String, caption: String, content: @Composable () -> U
             text = title,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onSurface,
+            color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(Modifier.height(4.dp))
         Text(
             text = caption,
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Spacer(Modifier.height(18.dp))
         content()
@@ -130,7 +130,7 @@ private fun ElevationStepsDemo() {
     val shape = RoundedCornerShape(18.dp)
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         listOf(1.dp, 4.dp, 10.dp, 18.dp, 28.dp).forEach { elevation ->
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -138,13 +138,13 @@ private fun ElevationStepsDemo() {
                     modifier = Modifier
                         .size(56.dp)
                         .shadow(elevation = elevation, shape = shape)
-                        .background(surface, shape),
+                        .background(surface, shape)
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
                     text = "${elevation.value.toInt()}dp",
                     style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
@@ -164,19 +164,19 @@ private fun AnimatedElevationDemo() {
                 .padding(horizontal = 24.dp)
                 .shadow(elevation.dp, shape)
                 .background(surface, shape),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             Text(
                 text = "${elevation.toInt()} dp",
                 style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.SemiBold,
+                fontWeight = FontWeight.SemiBold
             )
         }
         Spacer(Modifier.height(12.dp))
         Slider(
             value = elevation,
             onValueChange = { elevation = it },
-            valueRange = 0f..40f,
+            valueRange = 0f..40f
         )
     }
 }
@@ -188,7 +188,7 @@ private fun ColoredElevationDemo() {
     val swatches = listOf(NeonPink, NeonCyan, NeonAmber, NeonViolet)
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(14.dp),
+        horizontalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         swatches.forEach { color ->
             Box(
@@ -199,9 +199,9 @@ private fun ColoredElevationDemo() {
                         elevation = 18.dp,
                         shape = shape,
                         ambientColor = color,
-                        spotColor = color,
+                        spotColor = color
                     )
-                    .background(surface, shape),
+                    .background(surface, shape)
             )
         }
     }
@@ -213,7 +213,7 @@ private fun StaticDropShadowDemo() {
     val shape = RoundedCornerShape(24.dp)
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         ShadowedTile(
             label = "soft",
@@ -225,10 +225,10 @@ private fun StaticDropShadowDemo() {
                     shadow = Shadow(
                         radius = 30.dp,
                         color = Color.Black.copy(alpha = 0.22f),
-                        offset = DpOffset(0.dp, 10.dp),
-                    ),
+                        offset = DpOffset(0.dp, 10.dp)
+                    )
                 )
-                .background(surface, shape),
+                .background(surface, shape)
         )
         ShadowedTile(
             label = "long",
@@ -241,10 +241,10 @@ private fun StaticDropShadowDemo() {
                         radius = 16.dp,
                         color = Color.Black.copy(alpha = 0.35f),
                         offset = DpOffset(14.dp, 18.dp),
-                        spread = 0.dp,
-                    ),
+                        spread = 0.dp
+                    )
                 )
-                .background(surface, shape),
+                .background(surface, shape)
         )
     }
 }
@@ -262,7 +262,7 @@ private fun StackedDropShadowsDemo() {
             .dropShadow(shape, Shadow(radius = 24.dp, color = Color.Black.copy(alpha = 0.16f), offset = DpOffset(0.dp, 12.dp)))
             .dropShadow(shape, Shadow(radius = 6.dp, color = Color.Black.copy(alpha = 0.12f), offset = DpOffset(0.dp, 3.dp)))
             .background(surface, shape),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Text("3 stacked shadows", style = MaterialTheme.typography.titleMedium)
     }
@@ -271,7 +271,7 @@ private fun StackedDropShadowsDemo() {
 @Composable
 private fun BrushDropShadowDemo() {
     val brush = Brush.linearGradient(
-        colors = listOf(NeonPink, NeonViolet, NeonCyan),
+        colors = listOf(NeonPink, NeonViolet, NeonCyan)
     )
     val surface = MaterialTheme.colorScheme.surface
     val shape = RoundedCornerShape(28.dp)
@@ -286,11 +286,11 @@ private fun BrushDropShadowDemo() {
                     radius = 36.dp,
                     brush = brush,
                     offset = DpOffset(0.dp, 18.dp),
-                    alpha = 0.85f,
-                ),
+                    alpha = 0.85f
+                )
             )
             .background(surface, shape),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Text("brush shadow", style = MaterialTheme.typography.titleMedium)
     }
@@ -304,9 +304,9 @@ private fun AnimatedDropShadowDemo() {
         targetValue = (Math.PI * 2).toFloat(),
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 3200, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart,
+            repeatMode = RepeatMode.Restart
         ),
-        label = "angle",
+        label = "angle"
     )
     val primary = MaterialTheme.colorScheme.primary
     val surface = MaterialTheme.colorScheme.surface
@@ -327,12 +327,12 @@ private fun AnimatedDropShadowDemo() {
                 this.alpha = 0.55f
             }
             .background(surface, shape),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Icon(
             imageVector = Icons.Default.PlayArrow,
             contentDescription = null,
-            tint = primary,
+            tint = primary
         )
     }
 }
@@ -343,7 +343,7 @@ private fun InnerShadowDemo() {
     val shape = RoundedCornerShape(24.dp)
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Box(
             modifier = Modifier
@@ -355,10 +355,10 @@ private fun InnerShadowDemo() {
                     shadow = Shadow(
                         radius = 22.dp,
                         color = Color.Black.copy(alpha = 0.45f),
-                        offset = DpOffset(0.dp, 6.dp),
-                    ),
+                        offset = DpOffset(0.dp, 6.dp)
+                    )
                 ),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             Text("inset", color = MaterialTheme.colorScheme.onSurface)
         }
@@ -373,10 +373,10 @@ private fun InnerShadowDemo() {
                         radius = 18.dp,
                         brush = Brush.linearGradient(listOf(NeonViolet, NeonPink)),
                         offset = DpOffset(0.dp, 8.dp),
-                        alpha = 0.7f,
-                    ),
+                        alpha = 0.7f
+                    )
                 ),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             Text("brush inset", color = MaterialTheme.colorScheme.onSurface)
         }
@@ -391,7 +391,7 @@ private fun NeumorphismDemo() {
             .fillMaxWidth()
             .background(Neuro)
             .padding(20.dp),
-        horizontalArrangement = Arrangement.spacedBy(20.dp),
+        horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         // Raised
         Box(
@@ -401,7 +401,7 @@ private fun NeumorphismDemo() {
                 .dropShadow(shape, Shadow(radius = 18.dp, color = NeuroLight, offset = DpOffset((-8).dp, (-8).dp)))
                 .dropShadow(shape, Shadow(radius = 18.dp, color = NeuroDark, offset = DpOffset(8.dp, 8.dp), alpha = 0.6f))
                 .background(Neuro, shape),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             Text("raised", color = Color(0xFF334155))
         }
@@ -413,7 +413,7 @@ private fun NeumorphismDemo() {
                 .background(Neuro, shape)
                 .innerShadow(shape, Shadow(radius = 14.dp, color = NeuroDark, offset = DpOffset(6.dp, 6.dp), alpha = 0.6f))
                 .innerShadow(shape, Shadow(radius = 14.dp, color = NeuroLight, offset = DpOffset((-6).dp, (-6).dp))),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             Text("inset", color = Color(0xFF334155))
         }
@@ -444,7 +444,7 @@ private fun PressToLiftDemo() {
                         pressed = true
                         tryAwaitRelease()
                         pressed = false
-                    },
+                    }
                 )
             }
             .dropShadow(shape) {
@@ -454,11 +454,11 @@ private fun PressToLiftDemo() {
                 this.alpha = alpha
             }
             .background(surface, shape),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Text(
             text = if (pressed) "pressed" else "press & hold",
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleMedium
         )
     }
 }
@@ -470,14 +470,14 @@ private fun ShapeVariantsDemo() {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         // Circle
         Box(
             modifier = Modifier
                 .size(96.dp)
                 .dropShadow(CircleShape, Shadow(radius = 26.dp, color = accent, offset = DpOffset(0.dp, 12.dp), alpha = 0.55f))
-                .background(surface, CircleShape),
+                .background(surface, CircleShape)
         )
         Spacer(Modifier.width(4.dp))
         // Pill
@@ -487,7 +487,7 @@ private fun ShapeVariantsDemo() {
                 .weight(1f)
                 .dropShadow(RoundedCornerShape(percent = 50), Shadow(radius = 22.dp, color = NeonCyan, offset = DpOffset(0.dp, 10.dp), alpha = 0.5f))
                 .background(surface, RoundedCornerShape(percent = 50)),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             Text("pill", style = MaterialTheme.typography.titleMedium)
         }
@@ -507,13 +507,13 @@ private fun ShapeVariantsDemo() {
             modifier = Modifier
                 .size(96.dp)
                 .dropShadow(blobShape, Shadow(radius = 26.dp, color = NeonAmber, offset = DpOffset(0.dp, 12.dp), alpha = 0.6f))
-                .background(surface, blobShape),
+                .background(surface, blobShape)
         )
     }
 }
 
 @Composable
-private fun ShadowedTile(label: String, modifier: Modifier) {
+private fun ShadowedTile(label: String, modifier: Modifier = Modifier) {
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         Text(label, style = MaterialTheme.typography.titleMedium)
     }

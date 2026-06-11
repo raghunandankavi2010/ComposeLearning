@@ -41,11 +41,11 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import com.example.composelearning.R
+import kotlin.math.abs
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlin.math.abs
 
 /**
  * Sliders allow users to make selections from a range of values.
@@ -311,20 +311,20 @@ private fun SliderImpl(
     colors: SliderColors,
     width: Float,
     interactionSource: MutableInteractionSource,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     val widthDp = with(LocalDensity.current) {
         width.toDp()
     }
     Box(modifier.then(DefaultSliderConstraints)) {
-        val thumbSize = 32.dp//ThumbRadius * 2
-        val offset =  (widthDp - thumbSize) * positionFraction
+        val thumbSize = 32.dp // ThumbRadius * 2
+        val offset = (widthDp - thumbSize) * positionFraction
         val center = Modifier.align(Alignment.CenterStart)
         val trackStrokeWidth: Float
         val thumbPx: Float
         with(LocalDensity.current) {
             trackStrokeWidth = TrackHeight.toPx()
-            thumbPx = (thumbSize / 2).toPx()//ThumbRadius.toPx()
+            thumbPx = (thumbSize / 2).toPx() // ThumbRadius.toPx()
         }
         Track(
             center.fillMaxSize(),
@@ -382,7 +382,7 @@ private fun SliderImpl(
 
 @Composable
 private fun Track(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     colors: SliderColors,
     enabled: Boolean,
     positionFraction: Float,
@@ -407,7 +407,7 @@ private fun Track(
             color = inactiveTrackColor.value,
             topLeft = Offset(sliderStart.x / 2, rectY),
             size = Size(width = sliderEnd.x, height = TrackHeight.toPx()),
-            cornerRadius = CornerRadius(5.dp.toPx(), 5.dp.toPx()),
+            cornerRadius = CornerRadius(5.dp.toPx(), 5.dp.toPx())
         )
 //        drawLine(
 //            inactiveTrackColor.value,
@@ -421,12 +421,11 @@ private fun Track(
             center.y
         )
 
-
         drawRoundRect(
             color = activeTrackColor.value,
             topLeft = Offset(sliderStart.x / 2, rectY),
             size = Size(width = sliderValue.x, height = TrackHeight.toPx()),
-            cornerRadius = CornerRadius(5.dp.toPx(), 5.dp.toPx()),
+            cornerRadius = CornerRadius(5.dp.toPx(), 5.dp.toPx())
         )
 //        drawLine(
 //            activeTrackColor.value,
@@ -450,12 +449,10 @@ private fun Track(
 }
 
 // Scale x1 from a1..b1 range to a2..b2 range
-private fun scale(a1: Float, b1: Float, x1: Float, a2: Float, b2: Float) =
-    lerp(a2, b2, calcFraction(a1, b1, x1))
+private fun scale(a1: Float, b1: Float, x1: Float, a2: Float, b2: Float) = lerp(a2, b2, calcFraction(a1, b1, x1))
 
 // Calculate the 0..1 fraction that `pos` value represents between `a` and `b`
-private fun calcFraction(a: Float, b: Float, pos: Float) =
-    (if (b - a == 0f) 0f else (pos - a) / (b - a)).coerceIn(0f, 1f)
+private fun calcFraction(a: Float, b: Float, pos: Float) = (if (b - a == 0f) 0f else (pos - a) / (b - a)).coerceIn(0f, 1f)
 
 private fun Modifier.sliderSemantics(
     value: Float,
@@ -575,31 +572,25 @@ private class DefaultSliderColors(
     private val disabledInactiveTickColor: Color
 ) : SliderColors {
     @Composable
-    override fun thumbColor(enabled: Boolean): State<Color> {
-        return rememberUpdatedState(if (enabled) thumbColor else disabledThumbColor)
-    }
+    override fun thumbColor(enabled: Boolean): State<Color> = rememberUpdatedState(if (enabled) thumbColor else disabledThumbColor)
 
     @Composable
-    override fun trackColor(enabled: Boolean, active: Boolean): State<Color> {
-        return rememberUpdatedState(
-            if (enabled) {
-                if (active) activeTrackColor else inactiveTrackColor
-            } else {
-                if (active) disabledActiveTrackColor else disabledInactiveTrackColor
-            }
-        )
-    }
+    override fun trackColor(enabled: Boolean, active: Boolean): State<Color> = rememberUpdatedState(
+        if (enabled) {
+            if (active) activeTrackColor else inactiveTrackColor
+        } else {
+            if (active) disabledActiveTrackColor else disabledInactiveTrackColor
+        }
+    )
 
     @Composable
-    override fun tickColor(enabled: Boolean, active: Boolean): State<Color> {
-        return rememberUpdatedState(
-            if (enabled) {
-                if (active) activeTickColor else inactiveTickColor
-            } else {
-                if (active) disabledActiveTickColor else disabledInactiveTickColor
-            }
-        )
-    }
+    override fun tickColor(enabled: Boolean, active: Boolean): State<Color> = rememberUpdatedState(
+        if (enabled) {
+            if (active) activeTickColor else inactiveTickColor
+        } else {
+            if (active) disabledActiveTickColor else disabledInactiveTickColor
+        }
+    )
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -637,7 +628,7 @@ private class DefaultSliderColors(
 }
 
 // Internal to be referred to in tests
-//internal val ThumbRadius = 10.dp
+// internal val ThumbRadius = 10.dp
 private val ThumbRippleRadius = 30.dp
 private val ThumbDefaultElevation = 1.dp
 private val ThumbPressedElevation = 6.dp

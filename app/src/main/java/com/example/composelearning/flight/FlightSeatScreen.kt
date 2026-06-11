@@ -34,7 +34,7 @@ fun FlightSeatScreen() {
         modifier = Modifier
             .fillMaxSize()
             .systemBarsPadding()
-            .background(colors.sky),
+            .background(colors.sky)
     ) {
         // Title bar matching the FlightSeat app
         Box(
@@ -42,38 +42,38 @@ fun FlightSeatScreen() {
                 .fillMaxWidth()
                 .height(48.dp)
                 .padding(horizontal = 16.dp),
-            contentAlignment = Alignment.CenterStart,
+            contentAlignment = Alignment.CenterStart
         ) {
             Text(
                 text = "FlightSeat",
                 color = Color.White,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 18.sp,
+                fontSize = 18.sp
             )
         }
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f),
+                .weight(1f)
         ) {
             FlightSeatView(
                 state = state,
                 colors = colors,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize()
             )
         }
 
         // Bottom action bar — CLEAR | counter | OK
         Surface(
             color = Color(0xFFE9EBED),
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 4.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 TextButton(onClick = { state.reset() }) {
                     Text("CLEAR", color = Color(0xFF6C7480), fontWeight = FontWeight.SemiBold)
@@ -82,12 +82,12 @@ fun FlightSeatScreen() {
                 Text(
                     text = "${state.selectingCount} selecting · ${state.selectedCount} booked",
                     style = MaterialTheme.typography.labelMedium,
-                    color = Color(0xFF6C7480),
+                    color = Color(0xFF6C7480)
                 )
                 Spacer(Modifier.weight(1f))
                 TextButton(
                     onClick = { state.confirmSelection() },
-                    enabled = state.selectingCount > 0,
+                    enabled = state.selectingCount > 0
                 ) {
                     Text("OK", color = Color(0xFF6C7480), fontWeight = FontWeight.SemiBold)
                 }
@@ -101,7 +101,7 @@ fun FlightSeatScreen() {
 private fun LegendChip(label: String, color: Color) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         Box(modifier = Modifier.size(14.dp), contentAlignment = Alignment.Center) {
             Surface(color = color, shape = RoundedCornerShape(3.dp), modifier = Modifier.fillMaxSize()) {}

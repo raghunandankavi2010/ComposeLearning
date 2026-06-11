@@ -15,18 +15,18 @@ import androidx.compose.ui.unit.dp
 
 @Preview(widthDp = 200, heightDp = 50)
 @Composable
-fun PreViewButton() {
+private fun PreViewButton() {
     ButtonWithBorder("Get Started") {
-
     }
 }
+
 @Composable
 fun ButtonWithBorder(
     text: String,
     modifier: Modifier = Modifier,
-    backgroundColor : Color = Color(0xFFF0F0F0),
-    borderColor: Color =  Color(0xFF4E617E),
-    textColor: Color =  Color(0xFF4E617E),
+    backgroundColor: Color = Color(0xFFF0F0F0),
+    borderColor: Color = Color(0xFF4E617E),
+    textColor: Color = Color(0xFF4E617E),
     cornerRadius: Dp = 5.dp,
     strokeWidth: Dp = 1.dp,
     onClick: () -> Unit
@@ -43,7 +43,8 @@ fun ButtonWithBorder(
         ),
         colors = ButtonDefaults.outlinedButtonColors(
             containerColor = backgroundColor,
-            contentColor = textColor)
+            contentColor = textColor
+        )
     ) {
         Text(text = text)
     }

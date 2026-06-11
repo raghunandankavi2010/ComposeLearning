@@ -54,7 +54,7 @@ private const val DEFAULT_SERVER_URL = "http://localhost:8080"
 @Composable
 fun ProtobufDemoRoute(
     onBack: () -> Unit,
-    viewModel: ProtobufContactsViewModel = viewModel(),
+    viewModel: ProtobufContactsViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var serverUrl by rememberSaveable { mutableStateOf(DEFAULT_SERVER_URL) }
@@ -67,16 +67,16 @@ fun ProtobufDemoRoute(
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
-                },
+                }
             )
-        },
+        }
     ) { padding ->
         ProtobufDemoScreen(
             uiState = uiState,
             serverUrl = serverUrl,
             onServerUrlChange = { serverUrl = it },
             onFetch = { viewModel.load(serverUrl) },
-            modifier = Modifier.padding(padding),
+            modifier = Modifier.padding(padding)
         )
     }
 }
@@ -87,19 +87,19 @@ fun ProtobufDemoScreen(
     serverUrl: String,
     onServerUrlChange: (String) -> Unit,
     onFetch: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
             text = "Run the desktop server with ./gradlew :server:run, then fetch. " +
                 "The list below is decoded from raw protobuf bytes.",
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         OutlinedTextField(
@@ -107,13 +107,13 @@ fun ProtobufDemoScreen(
             onValueChange = onServerUrlChange,
             label = { Text("Server URL") },
             singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
         )
 
         Button(
             onClick = onFetch,
             enabled = uiState !is ContactsUiState.Loading,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
         ) {
             Text("Fetch contacts")
         }
@@ -132,7 +132,7 @@ private fun EmptyHint() {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Text(
             "Tap \"Fetch contacts\" to load the list over protobuf.",
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -153,7 +153,7 @@ private fun ErrorState(message: String) {
             Text(
                 "Is the server running? Try ./gradlew :server:run on your machine.",
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
@@ -164,7 +164,7 @@ private fun SuccessState(state: ContactsUiState.Success) {
     Text(
         text = "${state.contacts.size} contacts decoded from ${state.payloadBytes} protobuf bytes",
         style = MaterialTheme.typography.labelLarge,
-        color = MaterialTheme.colorScheme.primary,
+        color = MaterialTheme.colorScheme.primary
     )
     LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         items(state.contacts, key = { it.id }) { contact ->
@@ -180,7 +180,7 @@ private fun ContactRow(contact: ContactUi) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Avatar(contact.name)
             Spacer(Modifier.width(16.dp))
@@ -189,12 +189,12 @@ private fun ContactRow(contact: ContactUi) {
                 Text(
                     contact.email,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
                     contact.phone,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             Column(horizontalAlignment = Alignment.End) {
@@ -206,7 +206,7 @@ private fun ContactRow(contact: ContactUi) {
                         MaterialTheme.colorScheme.primary
                     } else {
                         MaterialTheme.colorScheme.onSurfaceVariant
-                    },
+                    }
                 )
             }
         }
@@ -218,14 +218,14 @@ private fun Avatar(name: String) {
     Surface(
         modifier = Modifier.size(44.dp),
         shape = CircleShape,
-        color = MaterialTheme.colorScheme.secondaryContainer,
+        color = MaterialTheme.colorScheme.secondaryContainer
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(
                 text = name.firstOrNull()?.uppercase() ?: "?",
                 color = MaterialTheme.colorScheme.onSecondaryContainer,
                 fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Default,
+                fontFamily = FontFamily.Default
             )
         }
     }

@@ -283,6 +283,7 @@ fun MultiStateTransitionDemo() {
         transitionSpec = {
             when (targetState) {
                 AnimationState.SUCCESS -> spring(dampingRatio = Spring.DampingRatioLowBouncy, stiffness = Spring.StiffnessMedium)
+
                 AnimationState.ERROR -> keyframes {
                     durationMillis = 600
                     1f at 0
@@ -291,6 +292,7 @@ fun MultiStateTransitionDemo() {
                     1.1f at 300
                     1f at 600
                 }
+
                 else -> spring()
             }
         },
@@ -356,6 +358,7 @@ fun MultiStateTransitionDemo() {
                         AnimationState.IDLE -> {
                             drawCircle(Color.White, 15.dp.toPx(), center)
                         }
+
                         AnimationState.LOADING -> {
                             for (i in 0 until 8) {
                                 val angle = i * 45f
@@ -373,6 +376,7 @@ fun MultiStateTransitionDemo() {
                                 }
                             }
                         }
+
                         AnimationState.SUCCESS -> {
                             val checkPath = Path().apply {
                                 moveTo(center.x - 15.dp.toPx(), center.y)
@@ -385,10 +389,12 @@ fun MultiStateTransitionDemo() {
                                 style = Stroke(width = 6.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
                             )
                         }
+
                         AnimationState.ERROR -> {
                             drawLine(Color.White, center + Offset(-15.dp.toPx(), -15.dp.toPx()), center + Offset(15.dp.toPx(), 15.dp.toPx()), 6.dp.toPx(), StrokeCap.Round)
                             drawLine(Color.White, center + Offset(15.dp.toPx(), -15.dp.toPx()), center + Offset(-15.dp.toPx(), 15.dp.toPx()), 6.dp.toPx(), StrokeCap.Round)
                         }
+
                         AnimationState.WARNING -> {
                             drawLine(Color.White, center + Offset(0f, -15.dp.toPx()), center + Offset(0f, 5.dp.toPx()), 4.dp.toPx(), StrokeCap.Round)
                             drawCircle(Color.White, 3.dp.toPx(), center + Offset(0f, 12.dp.toPx()))
@@ -501,7 +507,9 @@ fun ConditionalTransitionDemo() {
             for (i in 0..10) {
                 val barHeight = if (i < animatedCount) {
                     (i + 1).toFloat() / 10f * maxBarHeight
-                } else 0f
+                } else {
+                    0f
+                }
                 val x = i * barWidth + barWidth / 2
                 val barColor = if (i < 5) Color.Blue else Color.Red
                 val alpha = if (i < animatedCount) 1f else 0.3f

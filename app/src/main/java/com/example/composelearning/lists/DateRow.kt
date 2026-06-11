@@ -1,8 +1,5 @@
 package com.example.composelearning.lists
 
-import com.example.composelearning.ui.theme.AppFontFamilyBold
-import com.example.composelearning.ui.theme.AppFontFamilyMedium
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.animateScrollBy
@@ -38,10 +35,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composelearning.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import com.example.composelearning.ui.theme.AppFontFamilyBold
+import com.example.composelearning.ui.theme.AppFontFamilyMedium
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 /**
  *
@@ -76,7 +75,7 @@ fun CalendarLazyRow() {
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         itemsIndexed(initialDates, key = { _, date -> date.date.dayOfMonth }) { index, date ->
-            DateCard(index, isSelected(index), dateFormatter.format(date.date),dateFormatter2.format(date.date)) {
+            DateCard(index, isSelected(index), dateFormatter.format(date.date), dateFormatter2.format(date.date)) {
                 selectedDate = it
             }
         }
@@ -101,13 +100,13 @@ fun DateCard(
 ) {
     Card(
         modifier =
-        Modifier
-            .width(54.dp)
-            .height(72.dp)
-            .background(color = Color(0xFFF5F5F5), shape = RoundedCornerShape(size = 8.dp))
-            .clickable {
-                dateSelected(index)
-            }
+            Modifier
+                .width(54.dp)
+                .height(72.dp)
+                .background(color = Color(0xFFF5F5F5), shape = RoundedCornerShape(size = 8.dp))
+                .clickable {
+                    dateSelected(index)
+                }
     ) {
         Box {
             Column(
@@ -116,7 +115,6 @@ fun DateCard(
                     .padding(vertical = 10.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 Text(
                     text = date,
                     modifier = Modifier
@@ -127,7 +125,7 @@ fun DateCard(
                         fontFamily = AppFontFamilyBold
                     ),
                     color = Color(0xA6000000),
-                    textAlign = TextAlign.Center,
+                    textAlign = TextAlign.Center
                 )
                 Box(
                     modifier = Modifier
@@ -143,12 +141,10 @@ fun DateCard(
                             fontFamily = AppFontFamilyMedium,
                             fontWeight = FontWeight(700),
                             color = Color(0xA6000000),
-                            textAlign = TextAlign.Center,
+                            textAlign = TextAlign.Center
                         )
                     )
                 }
-
-
             }
 
             if (isSelected) {
@@ -163,11 +159,9 @@ fun DateCard(
                         )
                 )
             }
-
         }
     }
 }
-
 
 fun getDatesBetween(startDate: LocalDate, endDate: LocalDate): List<DateRange> {
     val dates = mutableListOf<DateRange>()
@@ -176,8 +170,8 @@ fun getDatesBetween(startDate: LocalDate, endDate: LocalDate): List<DateRange> {
     var index = 0
 
     while (currentDate <= endDate) {
-        index ++
-        val dateRange = DateRange(currentDate,index)
+        index++
+        val dateRange = DateRange(currentDate, index)
         dates.add(dateRange)
         currentDate = currentDate.plusDays(1)
     }
@@ -200,6 +194,4 @@ fun LazyListState.animateScrollAndCentralizeItem(index: Int, scope: CoroutineSco
     }
 }
 
-fun dateToKey(date: LocalDate): String {
-    return "${date.year}${date.monthValue.toString().padStart(2, '0')}${date.dayOfMonth.toString().padStart(2, '0')}"
-}
+fun dateToKey(date: LocalDate): String = "${date.year}${date.monthValue.toString().padStart(2, '0')}${date.dayOfMonth.toString().padStart(2, '0')}"

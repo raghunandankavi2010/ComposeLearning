@@ -174,7 +174,9 @@ private fun DateItem(
                 val itemCenter = visibleItem.offset + visibleItem.size / 2
                 val distance = abs(viewportCenter - itemCenter).toFloat()
                 (distance / 200f).coerceIn(0f, 1f)
-            } else 1f
+            } else {
+                1f
+            }
         }
     }
 

@@ -5,13 +5,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -61,6 +61,7 @@ class GoogleCalendarActivity : ComponentActivity() {
                             onDarkThemeToggle = { darkTheme = it },
                             onBack = { showSettings = false }
                         )
+
                         showAddEvent -> AddEventScreen(
                             initialDate = viewModel.uiState.value.selectedDate,
                             onSave = { newEvent ->
@@ -69,6 +70,7 @@ class GoogleCalendarActivity : ComponentActivity() {
                             },
                             onCancel = { showAddEvent = false }
                         )
+
                         else -> CalendarWithPermission(
                             viewModel = viewModel,
                             onOpenSettings = { showSettings = true },
@@ -122,10 +124,11 @@ private fun PermissionRequest(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = if (showRationale)
+            text = if (showRationale) {
                 "Calendar permission is needed to display your events. Please grant it to continue."
-            else
-                "This app needs access to your calendar to show events.",
+            } else {
+                "This app needs access to your calendar to show events."
+            },
             style = MaterialTheme.typography.bodyLarge
         )
 

@@ -37,8 +37,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.launch
 import kotlin.math.*
+import kotlinx.coroutines.launch
 
 /**
  * An improved ArcList implementation with drag-to-rotate support, physics-based flinging,
@@ -227,7 +227,7 @@ fun <T> ArcList(
 
 @Preview(showBackground = true)
 @Composable
-fun ArcListSamplePreview() {
+private fun ArcListSamplePreview() {
     MaterialTheme {
         ArcListSample(onBack = {})
     }

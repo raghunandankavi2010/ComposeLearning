@@ -269,6 +269,7 @@ fun InteractiveShapeDrawer() {
                             center = shape.position
                         )
                     }
+
                     ShapeType.RECTANGLE -> {
                         drawRect(
                             color = shape.color,
@@ -279,6 +280,7 @@ fun InteractiveShapeDrawer() {
                             size = Size(shape.size * 2, shape.size * 2)
                         )
                     }
+
                     ShapeType.TRIANGLE -> {
                         val path = Path().apply {
                             moveTo(shape.position.x, shape.position.y - shape.size)

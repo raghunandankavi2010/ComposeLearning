@@ -1,6 +1,5 @@
 package com.example.composelearning.lists
 
-
 import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
@@ -59,15 +58,13 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
-import com.example.composelearning.util.LogCompositions
 import com.example.composelearning.R
+import com.example.composelearning.util.LogCompositions
 import kotlin.math.roundToInt
-
 
 @Composable
 fun EquiRow() {
     val selectedIndex = remember { mutableStateOf(0) }
-
 
     val colors = listOf(
         Color.Magenta,
@@ -90,7 +87,6 @@ fun EquiRow() {
     val borderColor = remember {
         mutableStateOf(Color.Transparent)
     }
-
 
     val first = remember {
         mutableStateOf(true)
@@ -121,7 +117,8 @@ fun EquiRow() {
 
     LaunchedEffect(key1 = offsetX) {
         offsetAnim.animateTo(
-            targetValue = offsetX, animationSpec = tween(
+            targetValue = offsetX,
+            animationSpec = tween(
                 durationMillis = 500,
                 easing = LinearEasing
             )
@@ -143,18 +140,18 @@ fun EquiRow() {
             .height(60.dp)
             .padding(start = 16.dp, end = 16.dp)
             .drawBehind {
-               val colorFilter = if(selectedIndex.value == 3) {
-                   ColorFilter.tint(Color.Blue)
+                val colorFilter = if (selectedIndex.value == 3) {
+                    ColorFilter.tint(Color.Blue)
                 } else {
                     ColorFilter.tint(Color.Red)
                 }
                 drawArc(
-                color = Color.Gray,
-                startAngle = 135f,
-                sweepAngle = 270f,
-                useCenter = false,
-                topLeft = Offset(animValue - 37.dp.toPx()  , offsetY  - 37.dp.toPx() ),
-                size = Size(74.dp.toPx(), 74.dp.toPx())
+                    color = Color.Gray,
+                    startAngle = 135f,
+                    sweepAngle = 270f,
+                    useCenter = false,
+                    topLeft = Offset(animValue - 37.dp.toPx(), offsetY - 37.dp.toPx()),
+                    size = Size(74.dp.toPx(), 74.dp.toPx())
                 )
 
 //                drawImage(
@@ -174,7 +171,6 @@ fun EquiRow() {
             },
         horizontalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-
         // scroll row only first time initially to the selected index
         LaunchedEffect(key1 = scrollToPosition) {
             scrollState.animateScrollTo(scrollToPosition.roundToInt())
@@ -183,7 +179,7 @@ fun EquiRow() {
         colors.forEachIndexed { index, color ->
 
             LogCompositions(tag = "For Loop", msg = "Running")
-            if(index == 3) {
+            if (index == 3) {
                 borderColor.value = Color.Red
             } else {
                 borderColor.value = Color.Blue
@@ -223,17 +219,14 @@ fun EquiRow() {
                     placeholder = painterResource(R.drawable.droid),
                     contentDescription = "Crop Image",
                     contentScale = ContentScale.Crop,
-                    modifier  = Modifier
+                    modifier = Modifier
                         .clip(CircleShape)
                         .height(54.dp)
                 )
             }
-
         }
-
     }
 }
-
 
 @Composable
 fun CenteredCustomLayout() {
@@ -276,10 +269,9 @@ fun MyApp() {
 
 @Preview
 @Composable
-fun PreviewMyApp() {
+private fun PreviewMyApp() {
     MyApp()
 }
-
 
 //            BoxWithConstraints(
 //                modifier = Modifier

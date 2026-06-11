@@ -25,76 +25,74 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 
-//border color = #5d6474
+// border color = #5d6474
 // card color = #333d51
-fun drawTicketPath(size: Size, cornerRadius: Float): Path {
-    return Path().apply {
-        reset()
-        // Top left arc
+fun drawTicketPath(size: Size, cornerRadius: Float): Path = Path().apply {
+    reset()
+    // Top left arc
 
-        arcTo(
-            rect = Rect(
-                left = -cornerRadius,
-                top = -cornerRadius,
-                right = cornerRadius,
-                bottom = cornerRadius
-            ),
-            startAngleDegrees = 90.0f,
-            sweepAngleDegrees = -90.0f,
-            forceMoveTo = false
-        )
-        lineTo(x = size.width - cornerRadius, y = 0f)
-        // Top right arc
-        arcTo(
-            rect = Rect(
-                left = size.width - cornerRadius,
-                top = -cornerRadius,
-                right = size.width + cornerRadius,
-                bottom = cornerRadius
-            ),
-            startAngleDegrees = 180.0f,
-            sweepAngleDegrees = -90.0f,
-            forceMoveTo = false
-        )
-        lineTo(x = size.width, y = size.height - cornerRadius)
-        // Bottom right arc
-        arcTo(
-            rect = Rect(
-                left = size.width - cornerRadius,
-                top = size.height - cornerRadius,
-                right = size.width + cornerRadius,
-                bottom = size.height + cornerRadius
-            ),
-            startAngleDegrees = 270.0f,
-            sweepAngleDegrees = -90.0f,
-            forceMoveTo = false
-        )
-        lineTo(x = cornerRadius, y = size.height)
-        // Bottom left arc
-        arcTo(
-            rect = Rect(
-                left = -cornerRadius,
-                top = size.height - cornerRadius,
-                right = cornerRadius,
-                bottom = size.height + cornerRadius
-            ),
-            startAngleDegrees = 0.0f,
-            sweepAngleDegrees = -90.0f,
-            forceMoveTo = false
-        )
-        lineTo(x = 0f, y = cornerRadius)
-        close()
-    }
+    arcTo(
+        rect = Rect(
+            left = -cornerRadius,
+            top = -cornerRadius,
+            right = cornerRadius,
+            bottom = cornerRadius
+        ),
+        startAngleDegrees = 90.0f,
+        sweepAngleDegrees = -90.0f,
+        forceMoveTo = false
+    )
+    lineTo(x = size.width - cornerRadius, y = 0f)
+    // Top right arc
+    arcTo(
+        rect = Rect(
+            left = size.width - cornerRadius,
+            top = -cornerRadius,
+            right = size.width + cornerRadius,
+            bottom = cornerRadius
+        ),
+        startAngleDegrees = 180.0f,
+        sweepAngleDegrees = -90.0f,
+        forceMoveTo = false
+    )
+    lineTo(x = size.width, y = size.height - cornerRadius)
+    // Bottom right arc
+    arcTo(
+        rect = Rect(
+            left = size.width - cornerRadius,
+            top = size.height - cornerRadius,
+            right = size.width + cornerRadius,
+            bottom = size.height + cornerRadius
+        ),
+        startAngleDegrees = 270.0f,
+        sweepAngleDegrees = -90.0f,
+        forceMoveTo = false
+    )
+    lineTo(x = cornerRadius, y = size.height)
+    // Bottom left arc
+    arcTo(
+        rect = Rect(
+            left = -cornerRadius,
+            top = size.height - cornerRadius,
+            right = cornerRadius,
+            bottom = size.height + cornerRadius
+        ),
+        startAngleDegrees = 0.0f,
+        sweepAngleDegrees = -90.0f,
+        forceMoveTo = false
+    )
+    lineTo(x = 0f, y = cornerRadius)
+    close()
 }
 
 @Composable
-fun TicketComposable(modifier: Modifier) {
+fun TicketComposable(modifier: Modifier = Modifier) {
     Text(
         text = "\uD83C\uDF89 CINEMA TICKET \uD83C\uDF89",
         style = TextStyle(
             color = Color.White,
             fontSize = 16.sp,
-            fontWeight = FontWeight.Black,
+            fontWeight = FontWeight.Black
         ),
         textAlign = TextAlign.Center,
         modifier = modifier
@@ -130,56 +128,51 @@ fun TicketComposable(modifier: Modifier) {
     )
 }
 
-fun drawTicketPathVariation(size: Size, cornerRadius: Float): Path {
-    return Path().apply {
-        reset()
-        moveTo(0f, 0f)
-        lineTo(x = size.width, y = 0f)
-        lineTo(x = size.width, y = size.height / 2 - cornerRadius)
-        arcTo(
-            rect = Rect(
-                left = size.width - cornerRadius,
-                top = size.height / 2 - cornerRadius,
-                right = size.width + cornerRadius,
-                bottom = size.height / 2 + cornerRadius
-            ),
-            startAngleDegrees = 270f,
-            sweepAngleDegrees = -180f,
-            forceMoveTo = false
-        )
+fun drawTicketPathVariation(size: Size, cornerRadius: Float): Path = Path().apply {
+    reset()
+    moveTo(0f, 0f)
+    lineTo(x = size.width, y = 0f)
+    lineTo(x = size.width, y = size.height / 2 - cornerRadius)
+    arcTo(
+        rect = Rect(
+            left = size.width - cornerRadius,
+            top = size.height / 2 - cornerRadius,
+            right = size.width + cornerRadius,
+            bottom = size.height / 2 + cornerRadius
+        ),
+        startAngleDegrees = 270f,
+        sweepAngleDegrees = -180f,
+        forceMoveTo = false
+    )
 
-        lineTo(x = size.width, y = size.height)
-        lineTo(x = 0f, y = size.height)
-        lineTo(x = 0f, y = size.height / 2 - cornerRadius)
-        arcTo(
-            rect = Rect(
-                left = -cornerRadius,
-                top = size.height / 2 - cornerRadius,
-                right = cornerRadius,
-                bottom = size.height / 2 + cornerRadius
-            ),
-            startAngleDegrees = 90f,
-            sweepAngleDegrees = -180f,
-            forceMoveTo = false
-        )
+    lineTo(x = size.width, y = size.height)
+    lineTo(x = 0f, y = size.height)
+    lineTo(x = 0f, y = size.height / 2 - cornerRadius)
+    arcTo(
+        rect = Rect(
+            left = -cornerRadius,
+            top = size.height / 2 - cornerRadius,
+            right = cornerRadius,
+            bottom = size.height / 2 + cornerRadius
+        ),
+        startAngleDegrees = 90f,
+        sweepAngleDegrees = -180f,
+        forceMoveTo = false
+    )
 
-        lineTo(x = 0f, y = 0f)
-        close()
-    }
+    lineTo(x = 0f, y = 0f)
+    close()
 }
-
 
 class TicketShape(private val cornerRadius: Float) : Shape {
     override fun createOutline(
         size: Size,
         layoutDirection: LayoutDirection,
-        density: Density,
-    ): Outline {
-        return Outline.Generic(
-            // Draw your custom path here
-            path = drawTicketPathVariation(size = size, cornerRadius = cornerRadius)
-        )
-    }
+        density: Density
+    ): Outline = Outline.Generic(
+        // Draw your custom path here
+        path = drawTicketPathVariation(size = size, cornerRadius = cornerRadius)
+    )
 }
 
 class CustomTopArcShape(private val radius: Float) : Shape {
@@ -187,28 +180,23 @@ class CustomTopArcShape(private val radius: Float) : Shape {
         size: Size,
         layoutDirection: LayoutDirection,
         density: Density
-    ): Outline {
-        return Outline.Generic(
-            path = drawCustomArc(size, radius)
-        )
-    }
+    ): Outline = Outline.Generic(
+        path = drawCustomArc(size, radius)
+    )
 }
 
 /**
  * Replicating the below
  * https://stackoverflow.com/questions/75050982/how-to-draw-one-side-curve-of-box-in-jetpack-compose-android#comment132925899_75050982
  */
-fun drawCustomArc(size: Size, radius: Float): Path {
-    return Path().apply {
-        reset()
+fun drawCustomArc(size: Size, radius: Float): Path = Path().apply {
+    reset()
 
-        cubicTo(0f, 0f, size.width / 2, size.height / 2, size.width, 0f)
+    cubicTo(0f, 0f, size.width / 2, size.height / 2, size.width, 0f)
 
-        lineTo(size.width, size.height)
-        lineTo(0f, size.height)
-        lineTo(0f, 0f)
-
-    }
+    lineTo(size.width, size.height)
+    lineTo(0f, size.height)
+    lineTo(0f, 0f)
 }
 
 //            .graphicsLayer {
@@ -216,19 +204,19 @@ fun drawCustomArc(size: Size, radius: Float): Path {
 //                clip = true
 //            }
 @Composable
-fun CustomTopArcShapeComposable(modifier: Modifier) {
-
-    Card(modifier = modifier
-        .height(300.dp)
-        .width(400.dp)
-        .graphicsLayer {
-            this.transformOrigin = TransformOrigin(0f, 0f)
-            this.rotationY = 5f
-        },
-        border = BorderStroke(5.dp,Color(0xff5d6474)),
-        colors = CardDefaults.cardColors(),shape = RoundedCornerShape(25.dp.dpToPx())
-    ){
-
+fun CustomTopArcShapeComposable(modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier
+            .height(300.dp)
+            .width(400.dp)
+            .graphicsLayer {
+                this.transformOrigin = TransformOrigin(0f, 0f)
+                this.rotationY = 5f
+            },
+        border = BorderStroke(5.dp, Color(0xff5d6474)),
+        colors = CardDefaults.cardColors(),
+        shape = RoundedCornerShape(25.dp.dpToPx())
+    ) {
     }
 //    Box(
 //        modifier = modifier
@@ -241,130 +229,121 @@ fun CustomTopArcShapeComposable(modifier: Modifier) {
 //    )
 }
 
-
-fun drawCardShape(size: Size, cornerRadius: Float): Path {
-    return Path().apply {
-        reset()
-        // Top left arc
-        arcTo(
-            rect = Rect(
-                left = 0f,
-                top = 0f,
-                right = cornerRadius,
-                bottom = cornerRadius
-            ),
-            startAngleDegrees = 180.0f,
-            sweepAngleDegrees = 90.0f,
-            forceMoveTo = false
-        )
-        lineTo(x = size.width - cornerRadius, y = 0f)
-        // Top right arc
-        arcTo(
-            rect = Rect(
-                left = size.width - cornerRadius,
-                top = 0f,
-                right = size.width,
-                bottom = cornerRadius
-            ),
-            startAngleDegrees = 270.0f,
-            sweepAngleDegrees = 90.0f,
-            forceMoveTo = false
-        )
-        lineTo(x = size.width, y = size.height - cornerRadius)
-        // Bottom right arc
-        arcTo(
-            rect = Rect(
-                left = size.width - cornerRadius,
-                top = size.height - cornerRadius,
-                right = size.width,
-                bottom = size.height
-            ),
-            startAngleDegrees = 0.0f,
-            sweepAngleDegrees = 90.0f,
-            forceMoveTo = false
-        )
-        lineTo(x = cornerRadius, y = size.height)
-        // Bottom left arc
-        arcTo(
-            rect = Rect(
-                left = 0f,
-                top = size.height - cornerRadius,
-                right = cornerRadius,
-                bottom = size.height
-            ),
-            startAngleDegrees = 90.0f,
-            sweepAngleDegrees = 90.0f,
-            forceMoveTo = false
-        )
-        lineTo(x = 0f, y = cornerRadius)
-        close()
-    }
+fun drawCardShape(size: Size, cornerRadius: Float): Path = Path().apply {
+    reset()
+    // Top left arc
+    arcTo(
+        rect = Rect(
+            left = 0f,
+            top = 0f,
+            right = cornerRadius,
+            bottom = cornerRadius
+        ),
+        startAngleDegrees = 180.0f,
+        sweepAngleDegrees = 90.0f,
+        forceMoveTo = false
+    )
+    lineTo(x = size.width - cornerRadius, y = 0f)
+    // Top right arc
+    arcTo(
+        rect = Rect(
+            left = size.width - cornerRadius,
+            top = 0f,
+            right = size.width,
+            bottom = cornerRadius
+        ),
+        startAngleDegrees = 270.0f,
+        sweepAngleDegrees = 90.0f,
+        forceMoveTo = false
+    )
+    lineTo(x = size.width, y = size.height - cornerRadius)
+    // Bottom right arc
+    arcTo(
+        rect = Rect(
+            left = size.width - cornerRadius,
+            top = size.height - cornerRadius,
+            right = size.width,
+            bottom = size.height
+        ),
+        startAngleDegrees = 0.0f,
+        sweepAngleDegrees = 90.0f,
+        forceMoveTo = false
+    )
+    lineTo(x = cornerRadius, y = size.height)
+    // Bottom left arc
+    arcTo(
+        rect = Rect(
+            left = 0f,
+            top = size.height - cornerRadius,
+            right = cornerRadius,
+            bottom = size.height
+        ),
+        startAngleDegrees = 90.0f,
+        sweepAngleDegrees = 90.0f,
+        forceMoveTo = false
+    )
+    lineTo(x = 0f, y = cornerRadius)
+    close()
 }
-
 
 class CustomCardShape(private val radius: Float) : Shape {
     override fun createOutline(
         size: Size,
         layoutDirection: LayoutDirection,
         density: Density
-    ): Outline {
-        return Outline.Generic(
-            path = drawCardShape(size, radius)
-        )
-    }
+    ): Outline = Outline.Generic(
+        path = drawCardShape(size, radius)
+    )
 }
 
 @Composable
 fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 
-
-//border color = #5d6474
+// border color = #5d6474
 // card color = #333d51
-fun drawTopRoundedRectPath(size: Size, cornerRadius: Float): Path {
-    return Path().apply {
-        // Start at the point where the top-left arc begins after its curve
-        // Or, more explicitly, move to the starting point for the top edge
-        moveTo(x = cornerRadius, y = 0f) // Start drawing from after the arc's initial curve
+fun drawTopRoundedRectPath(size: Size, cornerRadius: Float): Path = Path().apply {
+    // Start at the point where the top-left arc begins after its curve
+    // Or, more explicitly, move to the starting point for the top edge
+    moveTo(x = cornerRadius, y = 0f) // Start drawing from after the arc's initial curve
 
-        // Line to the start of the top-left arc
-        lineTo(x = size.width - cornerRadius, y = 0f)
+    // Line to the start of the top-left arc
+    lineTo(x = size.width - cornerRadius, y = 0f)
 
-        // Top right arc
-        arcTo(
-            rect = Rect(
-                left = size.width - cornerRadius,
-                top = 0f, // Adjusted top to be 0 for consistency
-                right = size.width + cornerRadius,
-                bottom = 2 * cornerRadius // This defines the height of the bounding box for the arc
-            ),
-            startAngleDegrees = 270.0f, // Start at the top point of the circle
-            sweepAngleDegrees = 90.0f,  // Sweep clockwise to the right
-            forceMoveTo = false
-        )
+    // Top right arc
+    arcTo(
+        rect = Rect(
+            left = size.width - cornerRadius,
+            top = 0f, // Adjusted top to be 0 for consistency
+            right = size.width + cornerRadius,
+            bottom = 2 * cornerRadius // This defines the height of the bounding box for the arc
+        ),
+        startAngleDegrees = 270.0f, // Start at the top point of the circle
+        sweepAngleDegrees = 90.0f, // Sweep clockwise to the right
+        forceMoveTo = false
+    )
 
-        // Line down the right side
-        lineTo(x = size.width, y = size.height)
+    // Line down the right side
+    lineTo(x = size.width, y = size.height)
 
-        // Line across the bottom
-        lineTo(x = 0f, y = size.height)
+    // Line across the bottom
+    lineTo(x = 0f, y = size.height)
 
-        // Line up the left side
-        lineTo(x = 0f, y = cornerRadius)
+    // Line up the left side
+    lineTo(x = 0f, y = cornerRadius)
 
-        // Top left arc
-        arcTo(
-            rect = Rect(
-                left = -cornerRadius,
-                top = 0f, // Adjusted top to be 0 for consistency
-                right = cornerRadius,
-                bottom = 2 * cornerRadius // This defines the height of the bounding box for the arc
-            ),
-            startAngleDegrees = 180.0f, // Start at the left point of the circle
-            sweepAngleDegrees = 90.0f,  // Sweep clockwise upwards
-            forceMoveTo = false
-        )
-        close()
-    }
+    // Top left arc
+    arcTo(
+        rect = Rect(
+            left = -cornerRadius,
+            top = 0f, // Adjusted top to be 0 for consistency
+            right = cornerRadius,
+            bottom = 2 * cornerRadius // This defines the height of the bounding box for the arc
+        ),
+        startAngleDegrees = 180.0f, // Start at the left point of the circle
+        sweepAngleDegrees = 90.0f, // Sweep clockwise upwards
+        forceMoveTo = false
+    )
+    close()
 }
 
 class TopRoundedRectShape(private val cornerRadius: Dp) : Shape {
@@ -380,42 +359,39 @@ class TopRoundedRectShape(private val cornerRadius: Dp) : Shape {
     }
 }
 
-
 // Your custom Path drawing function - refined for only top-left and top-right arcs
-fun drawOnlyTopArcsPath(size: Size, cornerRadius: Float): Path {
-    return Path().apply {
-        reset()
-        moveTo(x = cornerRadius, y = 0f)
-        lineTo(x = size.width - cornerRadius, y = 0f)
-        arcTo(
-            rect = Rect(
-                left = size.width - 2 * cornerRadius,
-                top = 0f,
-                right = size.width,
-                bottom = 2 * cornerRadius
-            ),
-            startAngleDegrees = 270.0f,
-            sweepAngleDegrees = 90.0f,
-            forceMoveTo = false
-        )
+fun drawOnlyTopArcsPath(size: Size, cornerRadius: Float): Path = Path().apply {
+    reset()
+    moveTo(x = cornerRadius, y = 0f)
+    lineTo(x = size.width - cornerRadius, y = 0f)
+    arcTo(
+        rect = Rect(
+            left = size.width - 2 * cornerRadius,
+            top = 0f,
+            right = size.width,
+            bottom = 2 * cornerRadius
+        ),
+        startAngleDegrees = 270.0f,
+        sweepAngleDegrees = 90.0f,
+        forceMoveTo = false
+    )
 
-        lineTo(x = size.width, y = size.height)
-        lineTo(x = 0f, y = size.height)
-        lineTo(x = 0f, y = cornerRadius)
+    lineTo(x = size.width, y = size.height)
+    lineTo(x = 0f, y = size.height)
+    lineTo(x = 0f, y = cornerRadius)
 
-        arcTo(
-            rect = Rect(
-                left = 0f,
-                top = 0f,
-                right = 2 * cornerRadius,
-                bottom = 2 * cornerRadius
-            ),
-            startAngleDegrees = 180.0f,
-            sweepAngleDegrees = 90.0f,
-            forceMoveTo = false
-        )
-        close()
-    }
+    arcTo(
+        rect = Rect(
+            left = 0f,
+            top = 0f,
+            right = 2 * cornerRadius,
+            bottom = 2 * cornerRadius
+        ),
+        startAngleDegrees = 180.0f,
+        sweepAngleDegrees = 90.0f,
+        forceMoveTo = false
+    )
+    close()
 }
 
 class OnlyTopArcsShape(private val cornerRadius: Dp) : Shape {

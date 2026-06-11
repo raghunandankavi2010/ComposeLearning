@@ -35,11 +35,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.composelearning.ui.theme.ComposeLearningTheme
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @Stable
 interface CircularRowState {
@@ -62,11 +62,11 @@ data class CircularRowConfig(
     val numItems: Int = 0,
     val visibleItems: Int = 0,
     val overshootItems: Int = 0,
-    val itemWidth: Int = 0,
+    val itemWidth: Int = 0
 )
 
 class CircularRowStateImpl(
-    currentOffset: Float = 0f,
+    currentOffset: Float = 0f
 ) : CircularRowState {
     private val animatable = Animatable(currentOffset)
     private var itemWidth = 0f
@@ -74,7 +74,7 @@ class CircularRowStateImpl(
     private var initialOffset = 0f
     private val decayAnimationSpec = FloatSpringSpec(
         dampingRatio = Spring.DampingRatioLowBouncy,
-        stiffness = Spring.StiffnessLow,
+        stiffness = Spring.StiffnessLow
     )
 
     private val minOffset: Float
@@ -93,8 +93,8 @@ class CircularRowStateImpl(
         val minOvershoot = -(config.numItems - 1 + config.overshootItems) * itemWidth
         val maxOvershoot = config.overshootItems * itemWidth
         animatable.snapTo(value.coerceIn(minOvershoot, maxOvershoot))
-        val index = ((-horizontalOffset - initialOffset ) / itemWidth).toInt().coerceAtLeast(0)
-        Log.d("CircularList","$firstVisibleItem $lastVisibleItem $index")
+        val index = ((-horizontalOffset - initialOffset) / itemWidth).toInt().coerceAtLeast(0)
+        Log.d("CircularList", "$firstVisibleItem $lastVisibleItem $index")
     }
 
     override suspend fun decayTo(velocity: Float, value: Float) {
@@ -105,7 +105,7 @@ class CircularRowStateImpl(
         animatable.animateTo(
             targetValue = -target,
             initialVelocity = velocity,
-            animationSpec = decayAnimationSpec,
+            animationSpec = decayAnimationSpec
         )
     }
 
@@ -183,12 +183,14 @@ class CircularRowStateImpl(
 @Composable
 fun RowItem(
     modifier: Modifier = Modifier,
-    color: Color,
+    color: Color
 ) {
-    Box(modifier = Modifier
-        .size(55.dp)
-        .clip(shape = CircleShape)
-        .background(color))
+    Box(
+        modifier = Modifier
+            .size(55.dp)
+            .clip(shape = CircleShape)
+            .background(color)
+    )
 //    Image(
 //        painter = painterResource(id = com.example.composelearning.R.drawable.ic_launcher_background),
 //        contentDescription = null,
@@ -198,7 +200,6 @@ fun RowItem(
 //        contentScale = ContentScale.Crop
 //    )
 }
-
 
 @SuppressLint("MultipleAwaitPointerEventScopes", "ReturnFromAwaitPointerEventScope")
 private fun Modifier.drag(
@@ -239,7 +240,6 @@ fun CircularList(
     overshootItems: Int = 3,
     currentIndex: (Int) -> Unit,
     content: @Composable () -> Unit
-
 ) {
     check(visibleItems > 0) { "Visible items must be positive" }
     val itemWidth = with(LocalDensity.current) { itemWidthDp.toPx() }
@@ -247,13 +247,12 @@ fun CircularList(
     Layout(
         modifier = modifier
             .clipToBounds()
-            .drag(state,visibleItems),
-        content = content,
+            .drag(state, visibleItems),
+        content = content
     ) { measurables, constraints ->
         val itemConstraints =
             Constraints.fixed(width = itemWidth.roundToInt(), height = constraints.maxHeight)
         val placeables = measurables.map { measurable -> measurable.measure(itemConstraints) }
-
 
         state.setup(
             CircularRowConfig(
@@ -266,11 +265,9 @@ fun CircularList(
         )
         layout(
             width = constraints.maxWidth,
-            height = constraints.maxHeight,
+            height = constraints.maxHeight
         ) {
-
             for (i in state.firstVisibleItem..state.lastVisibleItem) {
-
                 placeables[i].placeRelativeWithLayer(state.offsetFor(i), layerBlock = {
                     alpha = state.alpha(i)
                     scaleX = state.scale(i)
@@ -278,7 +275,6 @@ fun CircularList(
                 })
             }
         }
-
     }
 }
 
@@ -296,12 +292,12 @@ private val colors = listOf(
     Color.Blue,
     Color.Magenta,
     Color.Yellow,
-    Color.Cyan,
+    Color.Cyan
 )
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewCircularList() {
+private fun PreviewCircularList() {
     ComposeLearningTheme {
         Surface {
             CircularList(
@@ -312,12 +308,11 @@ fun PreviewCircularList() {
                     .height(50.dp)
                     .background(Color.Black),
                 currentIndex = {
-
                 }
             ) {
                 for (i in 0 until 40) {
                     RowItem(
-                        color = colors[i % colors.size],
+                        color = colors[i % colors.size]
                     )
                 }
             }

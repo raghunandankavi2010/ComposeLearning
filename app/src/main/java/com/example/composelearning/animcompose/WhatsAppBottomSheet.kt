@@ -51,7 +51,7 @@ fun CircularReveal() {
 
                 moveTo(
                     x = centerH - centerH * progress * multiplierW,
-                    y = size.height,
+                    y = size.height
                 )
 
                 val currentWidth = (centerH * progress * multiplierW * 2.5f)
@@ -62,14 +62,14 @@ fun CircularReveal() {
                     x2 = centerH + centerH * progress * 1.5f,
                     y2 = size.height - currentWidth * 0.5f,
                     x3 = centerH + centerH * progress * multiplierW,
-                    y3 = size.height,
+                    y3 = size.height
                 )
 
                 close()
             }
         }
 
-        if(animationProgress != 0f) {
+        if (animationProgress != 0f) {
             BottomSheet(
                 modifier = Modifier
                     .padding(8.dp)
@@ -80,7 +80,6 @@ fun CircularReveal() {
             )
         }
 
-
         Button(
             onClick = { visible = !visible },
             modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -90,6 +89,4 @@ fun CircularReveal() {
     }
 }
 
-private fun lerp(start: Float, stop: Float, fraction: Float): Float {
-    return start + fraction * (stop - start)
-}
+private fun lerp(start: Float, stop: Float, fraction: Float): Float = start + fraction * (stop - start)

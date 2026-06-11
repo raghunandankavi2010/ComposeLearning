@@ -97,8 +97,11 @@ fun BasicPathDemo() {
                 val x = centerX + (cos(angle) * radius)
                 val y = centerY + (sin(angle) * radius)
 
-                if (i == 0) moveTo(x, y)
-                else lineTo(x, y)
+                if (i == 0) {
+                    moveTo(x, y)
+                } else {
+                    lineTo(x, y)
+                }
             }
             close()
         }
@@ -122,16 +125,22 @@ fun BasicPathDemo() {
 
             // Left curve
             cubicTo(
-                centerX - width / 2, centerY - height / 4,
-                centerX - width / 2, centerY + height / 8,
-                centerX, centerY + height / 2
+                centerX - width / 2,
+                centerY - height / 4,
+                centerX - width / 2,
+                centerY + height / 8,
+                centerX,
+                centerY + height / 2
             )
 
             // Right curve
             cubicTo(
-                centerX + width / 2, centerY + height / 8,
-                centerX + width / 2, centerY - height / 4,
-                centerX, centerY + height / 4
+                centerX + width / 2,
+                centerY + height / 8,
+                centerX + width / 2,
+                centerY - height / 4,
+                centerX,
+                centerY + height / 4
             )
         }
         drawPath(
@@ -179,8 +188,10 @@ fun QuadraticBezierDemo() {
         val path = Path().apply {
             moveTo(startPoint.x, startPoint.y)
             quadraticTo(
-                controlPoint.x, controlPoint.y,
-                endPoint.x, endPoint.y
+                controlPoint.x,
+                controlPoint.y,
+                endPoint.x,
+                endPoint.y
             )
         }
         drawPath(
@@ -237,9 +248,12 @@ fun CubicBezierDemo() {
         val path = Path().apply {
             moveTo(startPoint.x, startPoint.y)
             cubicTo(
-                controlPoint1.x, controlPoint1.y,
-                controlPoint2.x, controlPoint2.y,
-                endPoint.x, endPoint.y
+                controlPoint1.x,
+                controlPoint1.y,
+                controlPoint2.x,
+                controlPoint2.y,
+                endPoint.x,
+                endPoint.y
             )
         }
         drawPath(path, Color.Black, style = Stroke(width = 3.dp.toPx()))
@@ -270,16 +284,22 @@ fun HeartShapeDemo() {
 
             // Right side
             cubicTo(
-                centerX + heartWidth / 2, centerY - heartHeight / 2,
-                centerX + heartWidth / 4, centerY - heartHeight,
-                centerX, centerY - heartHeight / 4
+                centerX + heartWidth / 2,
+                centerY - heartHeight / 2,
+                centerX + heartWidth / 4,
+                centerY - heartHeight,
+                centerX,
+                centerY - heartHeight / 4
             )
 
             // Left side
             cubicTo(
-                centerX - heartWidth / 4, centerY - heartHeight,
-                centerX - heartWidth / 2, centerY - heartHeight / 2,
-                centerX, centerY + heartHeight / 2
+                centerX - heartWidth / 4,
+                centerY - heartHeight,
+                centerX - heartWidth / 2,
+                centerY - heartHeight / 2,
+                centerX,
+                centerY + heartHeight / 2
             )
             close()
         }

@@ -24,7 +24,7 @@ fun FitnessLineChartScreen(onBack: () -> Unit) {
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = Color.White
-                ),
+                )
             )
         }
     ) { padding ->
@@ -40,7 +40,7 @@ fun LineChartContent(modifier: Modifier = Modifier) {
         Text(
             text = "Scroll horizontally to load older history.",
             style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(horizontal = 16.dp),
+            modifier = Modifier.padding(horizontal = 16.dp)
         )
         Spacer(Modifier.height(12.dp))
         FitnessLineChart()
@@ -56,20 +56,20 @@ private fun ExampleLineChartCard() {
             LineSeries(
                 label = "Heart rate (resting)",
                 points = (0..23).map { LinePoint(it.toFloat(), (58 + Random(it).nextInt(-3, 6)).toFloat()) },
-                smoothing = LineSmoothing.Cubic,
+                smoothing = LineSmoothing.Cubic
             ),
             LineSeries(
                 label = "Heart rate (active avg)",
                 points = (0..23).map { LinePoint(it.toFloat(), (88 + Random(it + 100).nextInt(-5, 12)).toFloat()) },
                 smoothing = LineSmoothing.Cubic,
                 showArea = false,
-                dashed = true,
-            ),
+                dashed = true
+            )
         )
     }
     Card(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(Modifier.padding(16.dp)) {
             Text("Heart rate (24h)", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
@@ -79,8 +79,8 @@ private fun ExampleLineChartCard() {
                 modifier = Modifier.fillMaxWidth().height(220.dp),
                 spec = LineChartSpec(
                     xAxis = ChartAxis(tickCount = 6, labelFormatter = { "${it.toInt()}h" }),
-                    yAxis = ChartAxis(tickCount = 4, labelFormatter = { "${it.toInt()}" }),
-                ),
+                    yAxis = ChartAxis(tickCount = 4, labelFormatter = { "${it.toInt()}" })
+                )
             )
         }
     }
@@ -97,7 +97,7 @@ fun BarChartShowcaseScreen(onBack: () -> Unit) {
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = Color.White
-                ),
+                )
             )
         }
     ) { padding ->
@@ -116,7 +116,7 @@ fun BarChartContent(modifier: Modifier = Modifier) {
             BarEntry("Thu", listOf(9100f, 5100f, 2700f)),
             BarEntry("Fri", listOf(7600f, 4400f, 1900f)),
             BarEntry("Sat", listOf(10400f, 3900f, 3300f)),
-            BarEntry("Sun", listOf(4800f, 3100f, 2500f)),
+            BarEntry("Sun", listOf(4800f, 3100f, 2500f))
         )
     }
     Column(modifier.fillMaxSize().padding(16.dp)) {
@@ -124,13 +124,13 @@ fun BarChartContent(modifier: Modifier = Modifier) {
             FilterChip(
                 selected = mode == BarMode.Grouped,
                 onClick = { mode = BarMode.Grouped },
-                label = { Text("Grouped") },
+                label = { Text("Grouped") }
             )
             Spacer(Modifier.width(8.dp))
             FilterChip(
                 selected = mode == BarMode.Stacked,
                 onClick = { mode = BarMode.Stacked },
-                label = { Text("Stacked") },
+                label = { Text("Stacked") }
             )
         }
         Spacer(Modifier.height(16.dp))
@@ -140,8 +140,8 @@ fun BarChartContent(modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxWidth().height(280.dp),
             spec = BarChartSpec(
                 mode = mode,
-                yAxis = ChartAxis(tickCount = 4, labelFormatter = { "${(it / 1000).toInt()}k" }),
-            ),
+                yAxis = ChartAxis(tickCount = 4, labelFormatter = { "${(it / 1000).toInt()}k" })
+            )
         )
     }
 }
@@ -157,7 +157,7 @@ fun DonutChartShowcaseScreen(onBack: () -> Unit) {
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = Color.White
-                ),
+                )
             )
         }
     ) { padding ->
@@ -172,7 +172,7 @@ fun DonutChartContent(modifier: Modifier = Modifier) {
             DonutSlice("Running", 42f),
             DonutSlice("Cycling", 30f),
             DonutSlice("Walking", 18f),
-            DonutSlice("Strength", 10f),
+            DonutSlice("Strength", 10f)
         )
     }
     Column(modifier.fillMaxSize().padding(16.dp)) {
@@ -180,7 +180,7 @@ fun DonutChartContent(modifier: Modifier = Modifier) {
         Spacer(Modifier.height(16.dp))
         DonutChart(
             slices = slices,
-            modifier = Modifier.fillMaxWidth().aspectRatio(1f),
+            modifier = Modifier.fillMaxWidth().aspectRatio(1f)
         )
         Spacer(Modifier.height(24.dp))
         DonutLegend(slices = slices)
@@ -198,7 +198,7 @@ fun PieChartShowcaseScreen(onBack: () -> Unit) {
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = Color.White
-                ),
+                )
             )
         }
     ) { padding ->
@@ -226,7 +226,7 @@ fun CandleChartShowcaseScreen(onBack: () -> Unit) {
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = Color.White
-                ),
+                )
             )
         }
     ) { padding ->
@@ -258,8 +258,8 @@ fun CandleChartContent(modifier: Modifier = Modifier) {
             modifier = Modifier.fillMaxWidth().height(360.dp),
             spec = CandleChartSpec(
                 showVolume = true,
-                yAxis = ChartAxis(tickCount = 5, labelFormatter = { "$${"%.0f".format(it)}" }),
-            ),
+                yAxis = ChartAxis(tickCount = 5, labelFormatter = { "$${"%.0f".format(it)}" })
+            )
         )
     }
 }
@@ -275,7 +275,7 @@ fun TemperatureShowcaseScreen(onBack: () -> Unit) {
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = Color.White
-                ),
+                )
             )
         }
     ) { padding ->
@@ -294,7 +294,7 @@ fun TemperatureContent(modifier: Modifier = Modifier) {
                 Tab(
                     selected = selectedTab == index,
                     onClick = { selectedTab = index },
-                    text = { Text(title) },
+                    text = { Text(title) }
                 )
             }
         }
@@ -320,7 +320,7 @@ private fun TemperatureScaleTab() {
         Spacer(Modifier.height(8.dp))
         Text(
             "Red = freezing, blue = cold, green = comfortable, orange = warm, red = too hot.",
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodySmall
         )
         Spacer(Modifier.height(24.dp))
         com.example.composelearning.graphics.TemperatureChart3(
@@ -329,7 +329,7 @@ private fun TemperatureScaleTab() {
                 .height(150.dp),
             temp = temp,
             minTemp = -20,
-            maxTemp = 40,
+            maxTemp = 40
         )
     }
 }
@@ -348,7 +348,7 @@ private fun TemperatureGaugeTab() {
         TemperatureGaugeV2(
             value = temp,
             onValueChange = { temp = it },
-            spec = TemperatureGaugeSpec(minValue = 0f, maxValue = 60f),
+            spec = TemperatureGaugeSpec(minValue = 0f, maxValue = 60f)
         )
         Spacer(Modifier.height(24.dp))
         Text("Reading: ${temp.toInt()} °C", style = MaterialTheme.typography.bodyLarge)
@@ -368,13 +368,13 @@ private fun ThermometerV2Tab() {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f),
+                .weight(1f)
         ) {
             ThermometerV2(
                 value = thermometerValue,
                 modifier = Modifier.fillMaxSize(),
                 spec = ThermometerSpec(minValue = 0f, maxValue = 100f),
-                label = "Body",
+                label = "Body"
             )
         }
     }
@@ -391,7 +391,7 @@ fun BezierShowcaseScreen(onBack: () -> Unit) {
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = Color.White
-                ),
+                )
             )
         }
     ) { padding ->
@@ -410,14 +410,15 @@ fun BezierContent(modifier: Modifier = Modifier) {
                 Tab(
                     selected = selectedTab == index,
                     onClick = { selectedTab = index },
-                    text = { Text(title) },
+                    text = { Text(title) }
                 )
             }
         }
         when (selectedTab) {
             0 -> com.example.composelearning.graphics.BezierCurveSampleContent(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize()
             )
+
             else -> com.example.composelearning.animcompose.BezierCurveExplorerScreen()
         }
     }
@@ -434,7 +435,7 @@ fun SpeedometerNavScreen(onBack: () -> Unit) {
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = Color.White
-                ),
+                )
             )
         }
     ) { padding ->
@@ -449,7 +450,7 @@ fun SpeedometerContent(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         SpeedometerSection(title = "Speedometer1 — slider + animation") {
             com.example.composelearning.speedometer.SpeedometerScreen()
@@ -462,7 +463,7 @@ fun SpeedometerContent(modifier: Modifier = Modifier) {
                 SpeedometerProgressChips(
                     options = listOf(0, 25, 50, 75, 100),
                     selected = progress,
-                    onSelect = { progress = it },
+                    onSelect = { progress = it }
                 )
             }
         }
@@ -474,7 +475,7 @@ fun SpeedometerContent(modifier: Modifier = Modifier) {
                 SpeedometerProgressChips(
                     options = listOf(0, 25, 50, 75, 100),
                     selected = progress,
-                    onSelect = { progress = it },
+                    onSelect = { progress = it }
                 )
             }
         }
@@ -486,14 +487,14 @@ fun SpeedometerContent(modifier: Modifier = Modifier) {
                 SpeedometerProgressChips(
                     options = listOf(0, 25, 50, 75, 100),
                     selected = progress,
-                    onSelect = { progress = it },
+                    onSelect = { progress = it }
                 )
             }
         }
         SpeedometerSection(title = "VehicleSpeedometer — multi-segment polar path") {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 com.example.composelearning.speedometer.VehicleSpeedometer(
-                    progress = 75,
+                    progress = 75
                 )
             }
         }
@@ -513,14 +514,14 @@ private fun SpeedometerSection(title: String, content: @Composable () -> Unit) {
 private fun SpeedometerProgressChips(
     options: List<Int>,
     selected: Int,
-    onSelect: (Int) -> Unit,
+    onSelect: (Int) -> Unit
 ) {
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         options.forEach { value ->
             FilterChip(
                 selected = value == selected,
                 onClick = { onSelect(value) },
-                label = { Text("$value") },
+                label = { Text("$value") }
             )
         }
     }

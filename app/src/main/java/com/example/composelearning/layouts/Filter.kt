@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun Filters() {
     val filters = listOf(
-        "Washer/Dryer", "Ramp access", "Garden", "Cats OK", "Dogs OK", "Smoke-free","Dry2","Dry2","Wet Washer","Dry Washer"
+        "Washer/Dryer", "Ramp access", "Garden", "Cats OK", "Dogs OK", "Smoke-free", "Dry2", "Dry2", "Wet Washer", "Dry Washer"
     )
     FlowRow(
         modifier = Modifier

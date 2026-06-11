@@ -10,14 +10,14 @@ import androidx.compose.ui.unit.Dp
 
 @Composable
 fun SquareProfileImage(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     drawable: Int,
-    radii: Dp,
+    radii: Dp
 ) {
     Image(
         painter = painterResource(id = drawable),
         contentDescription = null,
         modifier = modifier
-            .clip(RoundedCornerShape(radii)),
+            .clip(RoundedCornerShape(radii))
     )
 }

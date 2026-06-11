@@ -78,8 +78,11 @@ fun ParticleAnimationsHubScreen() {
             when (selectedTab) {
                 // We pass the padding to the screens so they can offset their HUDs/text
                 0 -> ParticleExpExplosion3D(contentPadding = padding)
+
                 1 -> Box(Modifier.padding(padding)) { ParticleExplosionScreen() }
+
                 2 -> Box(Modifier.padding(padding)) { RealisticExplosionScreen() }
+
                 3 -> Box(Modifier.padding(padding)) { NewYearsEveFireworksScreen() }
             }
         }

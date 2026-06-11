@@ -219,9 +219,9 @@ fun MathExplanation() {
             Text("The logic flow:", fontWeight = FontWeight.SemiBold)
             Text(
                 "1. Loop through `getStringAnnotations` to find specific parts.\n" +
-                "2. For each part, find which lines it spans using `getLineForOffset`.\n" +
-                "3. For each line, get the `startX` and `endX` using `getHorizontalPosition`.\n" +
-                "4. Draw the sine wave between those points at `getLineBottom`.",
+                    "2. For each part, find which lines it spans using `getLineForOffset`.\n" +
+                    "3. For each line, get the `startX` and `endX` using `getHorizontalPosition`.\n" +
+                    "4. Draw the sine wave between those points at `getLineBottom`.",
                 style = MaterialTheme.typography.bodySmall
             )
         }
@@ -230,8 +230,8 @@ fun MathExplanation() {
 
 @Preview(showBackground = true)
 @Composable
-fun SquigglySpanSamplePreview() {
+private fun SquigglySpanSamplePreview() {
     MaterialTheme {
-         SquigglySpanSample(onBack = {})
+        SquigglySpanSample(onBack = {})
     }
 }

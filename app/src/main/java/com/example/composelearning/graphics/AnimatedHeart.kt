@@ -1,6 +1,5 @@
 package com.example.composelearning.graphics
 
-
 import android.annotation.SuppressLint
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -50,7 +49,8 @@ fun AnimatedHeartShape() {
             animationSpec = infiniteRepeatable(
                 animation = tween(2000, easing = LinearEasing),
                 repeatMode = RepeatMode.Restart
-            ), label = "Sample AnimatedFloat"
+            ),
+            label = "Sample AnimatedFloat"
         )
 
         val continuousScale = infiniteTransition.animateFloat(
@@ -59,7 +59,8 @@ fun AnimatedHeartShape() {
             animationSpec = infiniteRepeatable(
                 animation = tween(500, easing = LinearEasing),
                 repeatMode = RepeatMode.Reverse
-            ), label = "Sample AnimatedFloat"
+            ),
+            label = "Sample AnimatedFloat"
         )
 
         val disappearScale by animateFloatAsState(
@@ -67,7 +68,8 @@ fun AnimatedHeartShape() {
             animationSpec = tween(
                 durationMillis = 500,
                 easing = LinearOutSlowInEasing
-            ), label = "Sample Float As State"
+            ),
+            label = "Sample Float As State"
         )
 
         Canvas(

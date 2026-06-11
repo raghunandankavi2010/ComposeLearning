@@ -254,8 +254,8 @@ fun VideoDescriptionPane() {
         Text("Big Buck Bunny", style = MaterialTheme.typography.headlineSmall)
         Text(
             "Big Buck Bunny tells the story of a giant rabbit with a heart bigger than himself. " +
-            "When one sunny day three rodents rudely harass him, something snaps... " +
-            "and the giant rabbit takes a revenge in a comical way!",
+                "When one sunny day three rodents rudely harass him, something snaps... " +
+                "and the giant rabbit takes a revenge in a comical way!",
             style = MaterialTheme.typography.bodyMedium
         )
         Spacer(Modifier.height(16.dp))
@@ -425,7 +425,7 @@ fun MorphingShapeDemo() {
             }
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-           // Content inside the morphing shape
+            // Content inside the morphing shape
         }
     }
 }

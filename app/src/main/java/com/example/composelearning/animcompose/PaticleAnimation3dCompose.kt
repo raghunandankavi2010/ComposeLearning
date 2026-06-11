@@ -37,12 +37,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composelearning.util.LocalAnimationsEnabled
-import kotlinx.coroutines.isActive
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.random.Random
+import kotlinx.coroutines.isActive
 
 // ====================================================================================
 // Particle3D DATA CLASS (Optimized)
@@ -218,11 +218,13 @@ fun ParticleExpExplosion3D(
     }
 
     Box(modifier = modifier.fillMaxSize().background(Color.Black)) {
-        Canvas(modifier = Modifier.fillMaxSize().pointerInput(Unit) {
-            detectTapGestures { offset ->
-                explosions.add(ExplosionSystem.createExplosion(offset.x, offset.y))
+        Canvas(
+            modifier = Modifier.fillMaxSize().pointerInput(Unit) {
+                detectTapGestures { offset ->
+                    explosions.add(ExplosionSystem.createExplosion(offset.x, offset.y))
+                }
             }
-        }) {
+        ) {
             for (i in explosions.indices) {
                 val pList = explosions[i].particles
                 for (j in pList.indices) {

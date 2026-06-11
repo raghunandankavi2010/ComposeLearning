@@ -216,6 +216,7 @@ fun ClippingDemo() {
                         style = Stroke(width = 2.dp.toPx())
                     )
                 }
+
                 ClipType.CIRCLE -> {
                     clipPath(
                         Path().apply {
@@ -232,6 +233,7 @@ fun ClippingDemo() {
                         style = Stroke(width = 2.dp.toPx())
                     )
                 }
+
                 ClipType.STAR -> {
                     val starPath = createStarPath(center, 100.dp.toPx(), 50.dp.toPx(), 6)
                     clipPath(starPath) {
@@ -244,6 +246,7 @@ fun ClippingDemo() {
                         style = Stroke(width = 2.dp.toPx())
                     )
                 }
+
                 ClipType.NONE -> {
                     drawColorfulCircles()
                 }
@@ -265,17 +268,15 @@ fun DrawScope.drawColorfulCircles() {
     }
 }
 
-fun createStarPath(center: Offset, outerRadius: Float, innerRadius: Float, points: Int): Path {
-    return Path().apply {
-        for (i in 0 until points * 2) {
-            val angle = (i * Math.PI / points - Math.PI / 2).toFloat()
-            val radius = if (i % 2 == 0) outerRadius else innerRadius
-            val x = center.x + cos(angle) * radius
-            val y = center.y + sin(angle) * radius
-            if (i == 0) moveTo(x, y) else lineTo(x, y)
-        }
-        close()
+fun createStarPath(center: Offset, outerRadius: Float, innerRadius: Float, points: Int): Path = Path().apply {
+    for (i in 0 until points * 2) {
+        val angle = (i * Math.PI / points - Math.PI / 2).toFloat()
+        val radius = if (i % 2 == 0) outerRadius else innerRadius
+        val x = center.x + cos(angle) * radius
+        val y = center.y + sin(angle) * radius
+        if (i == 0) moveTo(x, y) else lineTo(x, y)
     }
+    close()
 }
 
 data class CanvasState(

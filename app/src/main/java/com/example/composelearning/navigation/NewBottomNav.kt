@@ -35,7 +35,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
-
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun SampleBottomNavWithSharedElementTransition() {
@@ -49,11 +48,11 @@ fun SampleBottomNavWithSharedElementTransition() {
                     CompositionLocalProvider(
                         LocalNavAnimatedVisibilityScope provides this
                     ) {
-                        HomeScreen(navController,onSnackSelected = { navController.navigate("detail") })
+                        HomeScreen(navController, onSnackSelected = { navController.navigate("detail") })
                     }
                 }
                 composable(
-                    "detail",
+                    "detail"
                 ) {
                     DetailScreen()
                 }
@@ -72,7 +71,6 @@ fun HomeScreen(navController: NavHostController, onSnackSelected: () -> Unit) {
 
     var selectedTab by remember { mutableStateOf("home") }
 
-
     Scaffold(
         bottomBar = {
             with(animatedVisibilityScope) {
@@ -88,7 +86,7 @@ fun HomeScreen(navController: NavHostController, onSnackSelected: () -> Unit) {
                             onClick = {
                                 if (selectedTab != "home ") {
                                     selectedTab = "home"
-                                    //navController.navigate("home")
+                                    // navController.navigate("home")
                                 }
                             }
                         )
@@ -99,7 +97,7 @@ fun HomeScreen(navController: NavHostController, onSnackSelected: () -> Unit) {
                             onClick = {
                                 if (selectedTab != "settings ") {
                                     selectedTab = "settings"
-                                    //navController.navigate("settings")
+                                    // navController.navigate("settings")
                                 }
                             }
                         )

@@ -29,8 +29,8 @@ import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
-import kotlinx.coroutines.launch
 import kotlin.math.max
+import kotlinx.coroutines.launch
 
 private const val MinScale = 1f
 private const val MaxScale = 3.5f
@@ -51,7 +51,7 @@ fun FlightSeatView(
     state: FlightSeatState,
     modifier: Modifier = Modifier,
     colors: FlightSeatColors = FlightSeatDefaults.colors(),
-    maxSelections: Int = 10,
+    maxSelections: Int = 10
 ) {
     val scope = rememberCoroutineScope()
     val scale = remember { Animatable(1f) }
@@ -77,7 +77,7 @@ fun FlightSeatView(
                         val cy = size.height / 2f
                         val planeTap = Offset(
                             (tap.x - cx - offsetX.value) / s + cx,
-                            (tap.y - cy - offsetY.value) / s + cy,
+                            (tap.y - cy - offsetY.value) / s + cy
                         )
                         seatHits.firstOrNull { it.rect.contains(planeTap) }
                             ?.let { state.toggleSeat(it.key, maxSelections) }
@@ -96,7 +96,7 @@ fun FlightSeatView(
                             offsetY.snapTo(newY)
                         }
                     }
-                },
+                }
         ) {
             drawRect(colors.sky, size = size)
             withTransform({
@@ -130,7 +130,9 @@ class FlightSeatState(initialSections: List<CabinSection>) {
         val current = seatStates.value
         when (current[key] ?: SeatState.Available) {
             SeatState.Selected -> return
+
             SeatState.Selecting -> seatStates.value = current - key
+
             SeatState.Available -> {
                 if (current.count { it.value == SeatState.Selecting } >= maxSelections) return
                 seatStates.value = current + (key to SeatState.Selecting)
@@ -151,7 +153,7 @@ class FlightSeatState(initialSections: List<CabinSection>) {
 
 @Composable
 fun rememberFlightSeatState(
-    sections: List<CabinSection> = FlightSeatDefaults.sections(),
+    sections: List<CabinSection> = FlightSeatDefaults.sections()
 ): FlightSeatState = remember(sections) { FlightSeatState(sections) }
 
 @Immutable
@@ -159,7 +161,7 @@ data class CabinSection(
     val name: String,
     val rows: Int,
     val columnGroups: List<Int>,
-    val sectionIndex: Int,
+    val sectionIndex: Int
 )
 
 @Immutable
@@ -182,7 +184,7 @@ data class FlightSeatColors(
     val seatAvailableFill: Color,
     val seatSelecting: Color,
     val seatBooked: Color,
-    val viewportIndicator: Color,
+    val viewportIndicator: Color
 )
 
 object FlightSeatDefaults {
@@ -198,14 +200,14 @@ object FlightSeatDefaults {
         seatAvailableFill = Color(0xFFFFFFFF),
         seatSelecting = Color(0xFF3F8AD6),
         seatBooked = Color(0xFF3FB35F),
-        viewportIndicator = Color(0xFFE0492C),
+        viewportIndicator = Color(0xFFE0492C)
     )
 
     fun sections(): List<CabinSection> = listOf(
         CabinSection("First", rows = 4, columnGroups = listOf(2, 3, 2), sectionIndex = 0),
         CabinSection("Premium", rows = 3, columnGroups = listOf(2, 3, 2), sectionIndex = 1),
         CabinSection("Economy", rows = 20, columnGroups = listOf(3, 3), sectionIndex = 2),
-        CabinSection("Tail", rows = 6, columnGroups = listOf(3, 3), sectionIndex = 3),
+        CabinSection("Tail", rows = 6, columnGroups = listOf(3, 3), sectionIndex = 3)
     )
 }
 
@@ -215,20 +217,20 @@ private data class SectionLayout(
     val name: String,
     val rect: Rect,
     val seats: List<SeatHit>,
-    val galleyAbove: GalleyRow?,
+    val galleyAbove: GalleyRow?
 )
 
 /** Three side-by-side galley boxes (WC | WiFi center | WC) between cabin sections. */
 private data class GalleyRow(
     val left: Rect,
     val center: Rect,
-    val right: Rect,
+    val right: Rect
 )
 
 private data class PlaneLayout(
     val canvasSize: Size,
-    val outerBody: Path,        // pale-blue halo around the cabin
-    val cabin: Path,            // the white cabin capsule, drawn on top
+    val outerBody: Path, // pale-blue halo around the cabin
+    val cabin: Path, // the white cabin capsule, drawn on top
     val leftWing: Path,
     val rightWing: Path,
     val leftPylons: List<Path>,
@@ -236,17 +238,17 @@ private data class PlaneLayout(
     val leftTailWing: Path,
     val rightTailWing: Path,
     val verticalFin: Path,
-    val cockpitWindow: Path,    // tiny pill at top of cabin
-    val cockpitArrow: Path,     // chevron inside the cockpit window
+    val cockpitWindow: Path, // tiny pill at top of cabin
+    val cockpitArrow: Path, // chevron inside the cockpit window
     val bodyRect: Rect,
-    val sections: List<SectionLayout>,
+    val sections: List<SectionLayout>
 )
 
 private fun PlaneLayout.allSeatHits(): List<SeatHit> = sections.flatMap { it.seats }
 
 private fun computePlaneLayout(
     canvasSize: Size,
-    sections: List<CabinSection>,
+    sections: List<CabinSection>
 ): PlaneLayout {
     val w = canvasSize.width
     val h = canvasSize.height
@@ -258,15 +260,15 @@ private fun computePlaneLayout(
     //  - cabin: a smaller white capsule sitting inside the outer body, only as long as the seat
     //    area (does NOT extend into the tail cone). This gives the back-of-plane its natural
     //    tapered "airliner" look.
-    val bodyHalfW = w * 0.090f         // full body half-width
+    val bodyHalfW = w * 0.090f // full body half-width
     val bodyConeHalfW = bodyHalfW * 0.32f // tail cone half-width (narrow end)
-    val cabinHalfW = w * 0.076f        // white cabin half-width
-    val bodyTop = h * 0.050f           // tip of nose
-    val bodyShoulderY = h * 0.135f     // body reaches full width here
-    val bodyNarrowStartY = h * 0.815f  // outer body starts narrowing into tail cone
-    val bodyConeEndY = h * 0.915f      // bottom of the tail cone (rounded)
+    val cabinHalfW = w * 0.076f // white cabin half-width
+    val bodyTop = h * 0.050f // tip of nose
+    val bodyShoulderY = h * 0.135f // body reaches full width here
+    val bodyNarrowStartY = h * 0.815f // outer body starts narrowing into tail cone
+    val bodyConeEndY = h * 0.915f // bottom of the tail cone (rounded)
     val cabinTop = h * 0.072f
-    val cabinBottom = h * 0.840f       // cabin ends well above the tail cone
+    val cabinBottom = h * 0.840f // cabin ends well above the tail cone
     val finBottomY = h * 0.985f
 
     val bodyRect = Rect(midX - cabinHalfW, cabinTop, midX + cabinHalfW, cabinBottom)
@@ -277,35 +279,49 @@ private fun computePlaneLayout(
         moveTo(midX, bodyTop)
         // Curve out to right shoulder
         cubicTo(
-            midX + bodyHalfW * 0.55f, bodyTop + (bodyShoulderY - bodyTop) * 0.25f,
-            midX + bodyHalfW * 0.95f, bodyTop + (bodyShoulderY - bodyTop) * 0.65f,
-            midX + bodyHalfW, bodyShoulderY,
+            midX + bodyHalfW * 0.55f,
+            bodyTop + (bodyShoulderY - bodyTop) * 0.25f,
+            midX + bodyHalfW * 0.95f,
+            bodyTop + (bodyShoulderY - bodyTop) * 0.65f,
+            midX + bodyHalfW,
+            bodyShoulderY
         )
         // Straight down right side to where the tail cone starts
         lineTo(midX + bodyHalfW, bodyNarrowStartY)
         // Smoothly narrow from full body width into the tail cone
         cubicTo(
-            midX + bodyHalfW, bodyNarrowStartY + (bodyConeEndY - bodyNarrowStartY) * 0.40f,
-            midX + bodyConeHalfW * 1.7f, bodyConeEndY - bodyConeHalfW * 1.3f,
-            midX + bodyConeHalfW, bodyConeEndY - bodyConeHalfW * 0.4f,
+            midX + bodyHalfW,
+            bodyNarrowStartY + (bodyConeEndY - bodyNarrowStartY) * 0.40f,
+            midX + bodyConeHalfW * 1.7f,
+            bodyConeEndY - bodyConeHalfW * 1.3f,
+            midX + bodyConeHalfW,
+            bodyConeEndY - bodyConeHalfW * 0.4f
         )
         // Round the bottom of the tail cone
         quadraticTo(midX + bodyConeHalfW, bodyConeEndY, midX, bodyConeEndY)
         // Mirror back up the left side
         quadraticTo(
-            midX - bodyConeHalfW, bodyConeEndY,
-            midX - bodyConeHalfW, bodyConeEndY - bodyConeHalfW * 0.4f,
+            midX - bodyConeHalfW,
+            bodyConeEndY,
+            midX - bodyConeHalfW,
+            bodyConeEndY - bodyConeHalfW * 0.4f
         )
         cubicTo(
-            midX - bodyConeHalfW * 1.7f, bodyConeEndY - bodyConeHalfW * 1.3f,
-            midX - bodyHalfW, bodyNarrowStartY + (bodyConeEndY - bodyNarrowStartY) * 0.40f,
-            midX - bodyHalfW, bodyNarrowStartY,
+            midX - bodyConeHalfW * 1.7f,
+            bodyConeEndY - bodyConeHalfW * 1.3f,
+            midX - bodyHalfW,
+            bodyNarrowStartY + (bodyConeEndY - bodyNarrowStartY) * 0.40f,
+            midX - bodyHalfW,
+            bodyNarrowStartY
         )
         lineTo(midX - bodyHalfW, bodyShoulderY)
         cubicTo(
-            midX - bodyHalfW * 0.95f, bodyTop + (bodyShoulderY - bodyTop) * 0.65f,
-            midX - bodyHalfW * 0.55f, bodyTop + (bodyShoulderY - bodyTop) * 0.25f,
-            midX, bodyTop,
+            midX - bodyHalfW * 0.95f,
+            bodyTop + (bodyShoulderY - bodyTop) * 0.65f,
+            midX - bodyHalfW * 0.55f,
+            bodyTop + (bodyShoulderY - bodyTop) * 0.25f,
+            midX,
+            bodyTop
         )
         close()
     }
@@ -314,9 +330,12 @@ private fun computePlaneLayout(
     val cabin = Path().apply {
         addRoundRect(
             androidx.compose.ui.geometry.RoundRect(
-                midX - cabinHalfW, cabinTop, midX + cabinHalfW, cabinBottom,
-                cornerRadius = CornerRadius(cabinHalfW, cabinHalfW),
-            ),
+                midX - cabinHalfW,
+                cabinTop,
+                midX + cabinHalfW,
+                cabinBottom,
+                cornerRadius = CornerRadius(cabinHalfW, cabinHalfW)
+            )
         )
     }
 
@@ -328,10 +347,12 @@ private fun computePlaneLayout(
     val cockpitWindow = Path().apply {
         addRoundRect(
             androidx.compose.ui.geometry.RoundRect(
-                cockpitCx - cockpitWidth / 2f, cockpitCy - cockpitHeight / 2f,
-                cockpitCx + cockpitWidth / 2f, cockpitCy + cockpitHeight / 2f,
-                cornerRadius = CornerRadius(cockpitHeight / 2f, cockpitHeight / 2f),
-            ),
+                cockpitCx - cockpitWidth / 2f,
+                cockpitCy - cockpitHeight / 2f,
+                cockpitCx + cockpitWidth / 2f,
+                cockpitCy + cockpitHeight / 2f,
+                cornerRadius = CornerRadius(cockpitHeight / 2f, cockpitHeight / 2f)
+            )
         )
     }
     val cockpitArrow = Path().apply {
@@ -348,8 +369,8 @@ private fun computePlaneLayout(
     val wingRootTopY = h * 0.38f
     val wingRootBottomY = h * 0.50f
     val wingTipX = w * 0.99f
-    val wingTipY = h * 0.66f       // leading-edge tip
-    val wingTrailingX = w * 0.86f  // trailing edge crank
+    val wingTipY = h * 0.66f // leading-edge tip
+    val wingTrailingX = w * 0.86f // trailing edge crank
     val wingTrailingY = h * 0.65f
 
     val rightWing = Path().apply {
@@ -467,10 +488,18 @@ private fun computePlaneLayout(
         val gStartX = midX - totalW / 2f
         return GalleyRow(
             left = Rect(gStartX, top, gStartX + sideW, top + galleyBoxH),
-            center = Rect(gStartX + sideW + gap, top,
-                gStartX + sideW + gap + centerW, top + galleyBoxH),
-            right = Rect(gStartX + sideW + gap + centerW + gap, top,
-                gStartX + sideW + gap + centerW + gap + sideW, top + galleyBoxH),
+            center = Rect(
+                gStartX + sideW + gap,
+                top,
+                gStartX + sideW + gap + centerW,
+                top + galleyBoxH
+            ),
+            right = Rect(
+                gStartX + sideW + gap + centerW + gap,
+                top,
+                gStartX + sideW + gap + centerW + gap + sideW,
+                top + galleyBoxH
+            )
         )
     }
 
@@ -481,7 +510,9 @@ private fun computePlaneLayout(
             val row = buildGalleyRow(galleyTop)
             y = galleyTop + galleyBoxH + galleyMargin
             row
-        } else null
+        } else {
+            null
+        }
 
         val sectionH = section.rows * rowH
         val sectionRect = Rect(midX - cabinHalfW * 0.95f, y, midX + cabinHalfW * 0.95f, y + sectionH)
@@ -513,7 +544,7 @@ private fun computePlaneLayout(
             name = section.name,
             rect = sectionRect,
             seats = seats,
-            galleyAbove = galleyAbove,
+            galleyAbove = galleyAbove
         ).also { y = sectionRect.bottom }
     }
 
@@ -531,7 +562,7 @@ private fun computePlaneLayout(
         cockpitWindow = cockpitWindow,
         cockpitArrow = cockpitArrow,
         bodyRect = bodyRect,
-        sections = sectionLayouts,
+        sections = sectionLayouts
     )
 }
 
@@ -555,14 +586,14 @@ private fun DrawScope.drawPlane(plane: PlaneLayout, colors: FlightSeatColors) {
     drawPath(
         plane.cockpitArrow,
         colors.galleyText,
-        style = Stroke(width = 2f, cap = androidx.compose.ui.graphics.StrokeCap.Round),
+        style = Stroke(width = 2f, cap = androidx.compose.ui.graphics.StrokeCap.Round)
     )
 }
 
 private fun DrawScope.drawCabin(
     plane: PlaneLayout,
     state: FlightSeatState,
-    colors: FlightSeatColors,
+    colors: FlightSeatColors
 ) {
     plane.sections.forEach { section ->
         section.galleyAbove?.let { drawGalleyRow(it, colors) }
@@ -578,9 +609,12 @@ private fun DrawScope.drawSeat(rect: Rect, state: SeatState, key: SeatKey, color
     val path = Path().apply {
         addRoundRect(
             RoundRect(
-                rect.left, rect.top, rect.right, rect.bottom,
-                cornerRadius = CornerRadius(radius),
-            ),
+                rect.left,
+                rect.top,
+                rect.right,
+                rect.bottom,
+                cornerRadius = CornerRadius(radius)
+            )
         )
     }
     when (state) {
@@ -588,7 +622,9 @@ private fun DrawScope.drawSeat(rect: Rect, state: SeatState, key: SeatKey, color
             drawPath(path, colors.seatAvailableFill)
             drawPath(path, colors.seatAvailableOutline, style = Stroke(width = 1f))
         }
+
         SeatState.Selecting -> drawPath(path, colors.seatSelecting)
+
         SeatState.Selected -> {
             drawPath(path, colors.seatBooked)
             // Row,col label only readable when zoomed; tiny text is fine at scale 1
@@ -599,7 +635,7 @@ private fun DrawScope.drawSeat(rect: Rect, state: SeatState, key: SeatKey, color
                 color = Color.White,
                 size = rect.height * 0.45f,
                 centerX = true,
-                bold = true,
+                bold = true
             )
         }
     }
@@ -615,7 +651,7 @@ private fun DrawScope.drawGalleyBox(rect: Rect, label: String, colors: FlightSea
     val r = rect.height * 0.18f
     val rounded = Path().apply {
         addRoundRect(
-            RoundRect(rect.left, rect.top, rect.right, rect.bottom, cornerRadius = CornerRadius(r)),
+            RoundRect(rect.left, rect.top, rect.right, rect.bottom, cornerRadius = CornerRadius(r))
         )
     }
     drawPath(rounded, colors.galleyFill)
@@ -627,7 +663,7 @@ private fun DrawScope.drawGalleyBox(rect: Rect, label: String, colors: FlightSea
         color = colors.galleyText,
         size = rect.height * 0.42f,
         centerX = true,
-        bold = true,
+        bold = true
     )
 }
 
@@ -635,7 +671,7 @@ private fun DrawScope.drawGalleyWifi(rect: Rect, colors: FlightSeatColors) {
     val r = rect.height * 0.18f
     val rounded = Path().apply {
         addRoundRect(
-            RoundRect(rect.left, rect.top, rect.right, rect.bottom, cornerRadius = CornerRadius(r)),
+            RoundRect(rect.left, rect.top, rect.right, rect.bottom, cornerRadius = CornerRadius(r))
         )
     }
     drawPath(rounded, colors.galleyFill)
@@ -656,7 +692,10 @@ private fun DrawScope.drawGalleyWifi(rect: Rect, colors: FlightSeatColors) {
         val rr = maxR * (1f - i * 0.3f)
         nc.drawArc(
             android.graphics.RectF(cx - rr, cy - rr, cx + rr, cy + rr),
-            -135f, 90f, false, paint,
+            -135f,
+            90f,
+            false,
+            paint
         )
     }
     paint.style = android.graphics.Paint.Style.FILL
@@ -668,7 +707,7 @@ private fun DrawScope.drawViewportIndicator(
     offsetX: Float,
     offsetY: Float,
     canvas: Size,
-    colors: FlightSeatColors,
+    colors: FlightSeatColors
 ) {
     // Strip on left edge showing where the viewport sits relative to the whole plane.
     val stripW = canvas.width * 0.022f
@@ -687,13 +726,16 @@ private fun DrawScope.drawViewportIndicator(
         Path().apply {
             addRoundRect(
                 RoundRect(
-                    stripLeft, indTop, stripLeft + stripW, indBottom,
-                    cornerRadius = CornerRadius(2f),
-                ),
+                    stripLeft,
+                    indTop,
+                    stripLeft + stripW,
+                    indBottom,
+                    cornerRadius = CornerRadius(2f)
+                )
             )
         },
         colors.viewportIndicator,
-        style = Stroke(width = 2f),
+        style = Stroke(width = 2f)
     )
 }
 
@@ -704,14 +746,17 @@ private fun DrawScope.drawText(
     color: Color,
     size: Float,
     centerX: Boolean = false,
-    bold: Boolean = false,
+    bold: Boolean = false
 ) {
     val paint = android.graphics.Paint().apply {
         this.color = color.toArgbInt()
         isAntiAlias = true
         textSize = size
-        typeface = if (bold) android.graphics.Typeface.DEFAULT_BOLD
-        else android.graphics.Typeface.DEFAULT
+        typeface = if (bold) {
+            android.graphics.Typeface.DEFAULT_BOLD
+        } else {
+            android.graphics.Typeface.DEFAULT
+        }
         if (centerX) textAlign = android.graphics.Paint.Align.CENTER
     }
     drawContext.canvas.nativeCanvas.drawText(text, x, y, paint)
@@ -721,5 +766,5 @@ private fun Color.toArgbInt(): Int = android.graphics.Color.argb(
     (alpha * 255).toInt(),
     (red * 255).toInt(),
     (green * 255).toInt(),
-    (blue * 255).toInt(),
+    (blue * 255).toInt()
 )

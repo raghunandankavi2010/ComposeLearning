@@ -40,12 +40,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.example.composelearning.calendar.model.CalendarState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import com.example.composelearning.calendar.model.CalendarState
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -128,15 +128,15 @@ private fun CalendarTopAppBar(
                 IconButton(onClick = { onBackPressed() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
+                        contentDescription = "Back"
                     )
                 }
             },
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.White,
-                scrolledContainerColor = Color.White,
+                scrolledContainerColor = Color.White
             ),
-            scrollBehavior = scrollBehavior,
+            scrollBehavior = scrollBehavior
         )
     }
 }

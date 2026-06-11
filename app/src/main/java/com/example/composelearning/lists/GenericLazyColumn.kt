@@ -49,8 +49,10 @@ fun <T> GenericLazyColumn(
             )
         }
 
-        items(items.size,
-            key = { index -> itemKey(items[index])  }) { index ->
+        items(
+            items.size,
+            key = { index -> itemKey(items[index]) }
+        ) { index ->
             val product = items[index]
             Box(modifier = Modifier.clickable { onItemClick(product) }) {
                 itemContent(product)
@@ -91,7 +93,6 @@ fun ProductListScreen() {
                 modifier = Modifier.padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 AsyncImage(
                     model = product.imageUrl,
                     contentDescription = null,
@@ -102,7 +103,9 @@ fun ProductListScreen() {
                                 // Check Logcat for "CoilError"
                                 Log.e("CoilError", "Failed with: ${state.result.throwable.message}")
                             }
+
                             is AsyncImagePainter.State.Success -> Log.d("CoilSuccess", "Image Loaded")
+
                             else -> {}
                         }
                     }

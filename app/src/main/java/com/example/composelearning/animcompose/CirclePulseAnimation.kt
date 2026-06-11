@@ -48,9 +48,9 @@ fun MapsStylePulsatingCircle() {
             // We draw 3 ripple layers using the same progress but with different offsets
             // to create a continuous outward ripple effect.
             val ripples = listOf(
-                progress,             // Ripple 1
+                progress, // Ripple 1
                 (progress + 0.33f) % 1f, // Ripple 2 (staggered)
-                (progress + 0.66f) % 1f  // Ripple 3 (staggered)
+                (progress + 0.66f) % 1f // Ripple 3 (staggered)
             )
 
             ripples.forEach { rippleProgress ->

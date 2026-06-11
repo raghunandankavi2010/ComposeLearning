@@ -39,7 +39,7 @@ import kotlin.math.hypot
 data class DonutSlice(
     val label: String,
     val value: Float,
-    val color: Color? = null,
+    val color: Color? = null
 )
 
 @Immutable
@@ -48,7 +48,7 @@ data class DonutChartSpec(
     val sliceGapDegrees: Float = 2f,
     val animate: Boolean = true,
     val selectedExtraRadius: Dp = 6.dp,
-    val startAngle: Float = -90f,
+    val startAngle: Float = -90f
 )
 
 /**
@@ -67,7 +67,7 @@ fun DonutChart(
     centerContent: @Composable (selectedIndex: Int?) -> Unit = { idx ->
         DefaultDonutCenter(slices = slices, selectedIndex = idx, theme = theme)
     },
-    onSliceSelected: ((index: Int) -> Unit)? = null,
+    onSliceSelected: ((index: Int) -> Unit)? = null
 ) {
     if (slices.isEmpty()) return
     val total = remember(slices) { slices.sumOf { it.value.toDouble() }.toFloat().coerceAtLeast(0.0001f) }
@@ -96,7 +96,8 @@ fun DonutChart(
                     for (i in slices.indices) {
                         val sweep = slices[i].value / total * 360f
                         if (normalized in cursor..(cursor + sweep)) {
-                            hit = i; break
+                            hit = i
+                            break
                         }
                         cursor += sweep
                     }
@@ -126,7 +127,7 @@ fun DonutChart(
                     useCenter = false,
                     topLeft = effectiveTopLeft,
                     size = effectiveSize,
-                    style = Stroke(width = stroke),
+                    style = Stroke(width = stroke)
                 )
                 startAngle += slice.value / total * 360f
             }
@@ -139,12 +140,12 @@ fun DonutChart(
 private fun DefaultDonutCenter(
     slices: List<DonutSlice>,
     selectedIndex: Int?,
-    theme: ChartTheme,
+    theme: ChartTheme
 ) {
     val total = remember(slices) { slices.sumOf { it.value.toDouble() }.toFloat().coerceAtLeast(0.0001f) }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Center
     ) {
         if (selectedIndex != null) {
             val s = slices[selectedIndex]
@@ -163,7 +164,7 @@ private fun DefaultDonutCenter(
 fun DonutLegend(
     slices: List<DonutSlice>,
     modifier: Modifier = Modifier,
-    theme: ChartTheme = ChartDefaults.theme(),
+    theme: ChartTheme = ChartDefaults.theme()
 ) {
     Column(modifier, verticalArrangement = Arrangement.spacedBy(6.dp)) {
         slices.forEachIndexed { i, s ->
@@ -171,7 +172,7 @@ fun DonutLegend(
                 Box(
                     modifier = Modifier
                         .size(10.dp)
-                        .clip(CircleShape),
+                        .clip(CircleShape)
                 ) {
                     Canvas(modifier = Modifier.fillMaxSize()) {
                         drawCircle(s.color ?: theme.palette[i % theme.palette.size])

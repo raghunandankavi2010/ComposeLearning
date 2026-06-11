@@ -25,7 +25,8 @@ fun SpiralShaderScreen() {
         animationSpec = infiniteRepeatable(
             animation = tween(1000000, easing = LinearEasing),
             repeatMode = RepeatMode.Restart
-        ), label = "time"
+        ),
+        label = "time"
     )
 
     val shaderCode = """ // AGSL requires uniforms to be declared at the top

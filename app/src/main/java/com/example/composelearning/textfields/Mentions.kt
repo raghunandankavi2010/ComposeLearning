@@ -19,7 +19,9 @@ import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlin.time.Duration.Companion.milliseconds
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -52,9 +54,11 @@ fun MentionTextField(
     val coroutineScope = rememberCoroutineScope()
     var searchJob: Job? by remember { mutableStateOf(null) }
 
-    Column(modifier = modifier.fillMaxSize(),
+    Column(
+        modifier = modifier.fillMaxSize(),
 
-        verticalArrangement = Arrangement.Center) {
+        verticalArrangement = Arrangement.Center
+    ) {
         BasicTextField(
             value = textFieldValue,
             onValueChange = { newValue ->
@@ -83,7 +87,7 @@ fun MentionTextField(
                     currentSearchTerm = currentWord.substring(1)
                     searchJob?.cancel()
                     searchJob = coroutineScope.launch {
-                        delay(300) // Debounce search
+                        delay(300.milliseconds) // Debounce search
                         val filteredUsers = users.filter { it.username.contains(currentSearchTerm, ignoreCase = true) }
                         currentSuggestions = filteredUsers.map { "@${it.username}" }
                         suggestionPopupShown = currentSuggestions.isNotEmpty()
@@ -138,8 +142,8 @@ fun MentionTextField(
 
                             if (lastTriggerIndex != -1) {
                                 val newText = text.substring(0, lastTriggerIndex) +
-                                        suggestion + " " + // Add a space after inserting
-                                        text.substring(cursorPosition)
+                                    suggestion + " " + // Add a space after inserting
+                                    text.substring(cursorPosition)
 
                                 val newSelection = TextRange(lastTriggerIndex + suggestion.length + 1) // Move cursor past the inserted text + space
 
@@ -161,34 +165,33 @@ fun MentionTextField(
 }
 
 // Helper function to apply styling
-fun highlightMentionsAndHashtags(text: String): AnnotatedString {
-    return buildAnnotatedString {
-        append(text)
+fun highlightMentionsAndHashtags(text: String): AnnotatedString = buildAnnotatedString {
+    append(text)
 
-        // Regex to find @mentions and #hashtags
-        val mentionRegex = Regex("""@\w+""")
-        val hashtagRegex = Regex("""#\w+""")
+    // Regex to find @mentions and #hashtags
+    val mentionRegex = Regex("""@\w+""")
+    val hashtagRegex = Regex("""#\w+""")
 
-        mentionRegex.findAll(text).forEach { matchResult ->
-            val (start, end) = matchResult.range.first to matchResult.range.last + 1
-            withStyle(style = SpanStyle(color = Color.Blue, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)) {
-                // Add an annotation to store the actual mention content if needed later
-                addStringAnnotation("mention", matchResult.value.substring(1), start, end)
-            }
+    mentionRegex.findAll(text).forEach { matchResult ->
+        val (start, end) = matchResult.range.first to matchResult.range.last + 1
+        withStyle(style = SpanStyle(color = Color.Blue, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)) {
+            // Add an annotation to store the actual mention content if needed later
+            addStringAnnotation("mention", matchResult.value.substring(1), start, end)
         }
+    }
 
-        hashtagRegex.findAll(text).forEach { matchResult ->
-            val (start, end) = matchResult.range.first to matchResult.range.last + 1
-            withStyle(style = SpanStyle(color = Color.Green, fontStyle = androidx.compose.ui.text.font.FontStyle.Italic)) {
-                // Add an annotation to store the actual hashtag content if needed later
-                addStringAnnotation("hashtag", matchResult.value.substring(1), start, end)
-            }
+    hashtagRegex.findAll(text).forEach { matchResult ->
+        val (start, end) = matchResult.range.first to matchResult.range.last + 1
+        withStyle(style = SpanStyle(color = Color.Green, fontStyle = androidx.compose.ui.text.font.FontStyle.Italic)) {
+            // Add an annotation to store the actual hashtag content if needed later
+            addStringAnnotation("hashtag", matchResult.value.substring(1), start, end)
         }
     }
 }
 
+@Preview
 @Composable
-fun MyScreen() {
+private fun MyScreen() {
     Column {
         Text("Compose Mention Input Example", modifier = Modifier.padding(16.dp))
         MentionTextField(modifier = Modifier.fillMaxWidth())

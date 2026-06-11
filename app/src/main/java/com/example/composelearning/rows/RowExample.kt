@@ -15,22 +15,21 @@ import kotlin.math.max
 
 @Composable
 fun MaxWidthText() {
-
     var item1WidthPx by remember { mutableStateOf(0) }
     var item2WidthPx by remember { mutableStateOf(0) }
     val maxItemWidth = max(item1WidthPx, item2WidthPx)
         .let { with(LocalDensity.current) { it.toDp() } }
 
-    Row(modifier = Modifier.widthIn(min=300.dp).background(Color.Black), horizontalArrangement = Arrangement.SpaceEvenly) {
+    Row(modifier = Modifier.widthIn(min = 300.dp).background(Color.Black), horizontalArrangement = Arrangement.SpaceEvenly) {
         Text(
-            text ="Smart Search",
+            text = "Smart Search",
             modifier = Modifier
                 .onPlaced { item1WidthPx = it.size.width }
                 .widthIn(min = maxItemWidth)
                 .background(Color(0xFFFFB74D))
         )
         Text(
-            text ="Character Search",
+            text = "Character Search",
             modifier = Modifier
                 .onPlaced { item2WidthPx = it.size.width }
                 .widthIn(min = maxItemWidth)

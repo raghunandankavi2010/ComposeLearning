@@ -22,18 +22,16 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 
-
 @Composable
 fun LazyListPaginated() {
     Row(
         modifier = Modifier
-            .padding(top=16.dp)
+            .padding(top = 16.dp)
             .fillMaxWidth()
             .height(148.dp),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         AsyncImage(
             model = "https://example.com/image.jpg",
             contentDescription = null,
@@ -53,10 +51,9 @@ fun LazyListPaginated() {
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(start = 16.dp),
+                .padding(start = 16.dp)
 
         ) {
-
             TextHeaderFooter(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -83,15 +80,13 @@ fun LazyListPaginated() {
                     .padding(bottom = 16.dp),
                 text = "Your Text 2"
             )
-
         }
     }
-
 }
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewImageWithRedDot() {
+private fun PreviewImageWithRedDot() {
     ComposeLearningTheme {
         LazyListPaginated()
     }

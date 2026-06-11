@@ -47,6 +47,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.lerp as lerpColor
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
@@ -54,12 +55,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
-import androidx.compose.ui.graphics.lerp as lerpColor
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 private val StravaOrange = Color(0xFFFC4C02)
 private val StravaOrangeMid = Color(0xFFFF6B35)
@@ -223,9 +223,12 @@ private fun SaveActivityTransition(
                 val blobPath = Path().apply {
                     moveTo(size.width * 0.2f, size.height)
                     cubicTo(
-                        size.width * 2.1f, size.height * 0.75f,
-                        size.width * 0.0f, size.height * 0.35f,
-                        size.width * 0.20f, 0.0f
+                        size.width * 2.1f,
+                        size.height * 0.75f,
+                        size.width * 0.0f,
+                        size.height * 0.35f,
+                        size.width * 0.20f,
+                        0.0f
                     )
                 }
 
@@ -235,15 +238,21 @@ private fun SaveActivityTransition(
                 val leadPath = Path().apply {
                     moveTo(size.width * 0.9f, -size.height * 0.05f)
                     cubicTo(
-                        size.width * 1.1f, size.height * 0.25f,
-                        -size.width * 1f, size.height * 0.4f,
-                        -size.width * 0.25f, size.height * 0.55f
+                        size.width * 1.1f,
+                        size.height * 0.25f,
+                        -size.width * 1f,
+                        size.height * 0.4f,
+                        -size.width * 0.25f,
+                        size.height * 0.55f
                     )
                     lineTo(-size.width, 0f)
                     cubicTo(
-                        -size.width * 1.1f, size.height * 0.75f,
-                        size.width * 0.5f, size.height,
-                        size.width * 1.1f, size.height * 0.75f
+                        -size.width * 1.1f,
+                        size.height * 0.75f,
+                        size.width * 0.5f,
+                        size.height,
+                        size.width * 1.1f,
+                        size.height * 0.75f
                     )
                 }
 
@@ -286,7 +295,9 @@ private fun SaveActivityTransition(
                         val blobHeadPos = blobMeasure.getPosition(blobStroke * blobPathLength)
                         val upwardPull = if (liquidRise == 1f) {
                             (size.height - blobHeadPos.y).coerceAtLeast(0f) * 0.2f
-                        } else 0f
+                        } else {
+                            0f
+                        }
                         val liquidPeakY = surfaceY - upwardPull
 
                         liquidSurfacePath.apply {
@@ -294,9 +305,12 @@ private fun SaveActivityTransition(
                             moveTo(0f, size.height)
                             lineTo(0f, liquidPeakY + (upwardPull * 0.25f))
                             cubicTo(
-                                size.width * 0.25f, liquidPeakY + upwardPull,
-                                size.width * 0.75f, liquidPeakY + upwardPull,
-                                size.width, liquidPeakY - upwardPull
+                                size.width * 0.25f,
+                                liquidPeakY + upwardPull,
+                                size.width * 0.75f,
+                                liquidPeakY + upwardPull,
+                                size.width,
+                                liquidPeakY - upwardPull
                             )
                             lineTo(size.width, size.height)
                             close()
@@ -364,9 +378,11 @@ private fun SaveActivityTransition(
 
                                 if (iconProgress > 0f) {
                                     val scale = (iconProgress * 2f) *
-                                            if (iconProgress > 0.95f) {
-                                                (1f - iconProgress) * 20f
-                                            } else 1f
+                                        if (iconProgress > 0.95f) {
+                                            (1f - iconProgress) * 20f
+                                        } else {
+                                            1f
+                                        }
 
                                     val travelDist =
                                         burstOriginRadius + icon.speed * iconProgress

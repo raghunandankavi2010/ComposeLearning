@@ -23,17 +23,18 @@ fun SwipeToCancel(
     closeScreen: () -> Unit,
     isExpandedScreen: Boolean
 ) {
-
     val state = rememberSwipeToDismissBoxState(
         confirmValueChange = {
-            when(it) {
+            when (it) {
                 SwipeToDismissBoxValue.StartToEnd -> {
                     closeScreen()
-                    //Toast.makeText(context, "Item deleted", Toast.LENGTH_SHORT).show()
+                    // Toast.makeText(context, "Item deleted", Toast.LENGTH_SHORT).show()
                 }
+
                 SwipeToDismissBoxValue.EndToStart -> {
                     closeScreen()
                 }
+
                 SwipeToDismissBoxValue.Settled -> return@rememberSwipeToDismissBoxState false
             }
             return@rememberSwipeToDismissBoxState true
@@ -56,14 +57,16 @@ fun SwipeToCancel(
                     MaterialTheme.colorScheme.inverseSurface
                 } else {
                     MaterialTheme.colorScheme.error
-                }, label = ""
+                },
+                label = ""
             )
             val contentColor by animateColorAsState(
                 if (state.targetValue == SwipeToDismissBoxValue.Settled) {
                     MaterialTheme.colorScheme.inverseOnSurface
                 } else {
                     MaterialTheme.colorScheme.onError
-                }, label = ""
+                },
+                label = ""
             )
             Box(
                 Modifier

@@ -39,7 +39,7 @@ fun AvatarPreview() {
 
 @Preview
 @Composable
-fun AvatarPreview2() {
+private fun AvatarPreview2() {
     Box(
         modifier = Modifier
             .size(100.dp)
@@ -58,7 +58,7 @@ fun AvatarPreview2() {
 
 @Preview
 @Composable
-fun AvatarPreview3() {
+private fun AvatarPreview3() {
     Box(
         modifier = Modifier
             .size(100.dp)
@@ -77,7 +77,7 @@ fun AvatarPreview3() {
 
 @Preview
 @Composable
-fun AvatarPreview4() {
+private fun AvatarPreview4() {
     Box(
         modifier = Modifier
             .size(100.dp)
@@ -96,7 +96,7 @@ fun AvatarPreview4() {
 
 @Preview
 @Composable
-fun AvatarPreview5() {
+private fun AvatarPreview5() {
     Box(
         modifier = Modifier
             .size(100.dp)
@@ -113,10 +113,9 @@ fun AvatarPreview5() {
     }
 }
 
-
 @Preview
 @Composable
-fun AvatarPreview6() {
+private fun AvatarPreview6() {
     Box(
         modifier = Modifier
             .size(100.dp)
@@ -128,16 +127,15 @@ fun AvatarPreview6() {
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .clip(CircleShape)
-                .offset(20.dp,20.dp)
+                .offset(20.dp, 20.dp)
 
         )
     }
 }
 
-
 @Preview
 @Composable
-fun AvatarPreview7() {
+private fun AvatarPreview7() {
     Box(
         modifier = Modifier
             .size(100.dp)
@@ -147,7 +145,7 @@ fun AvatarPreview7() {
             painter = painterResource(id = R.drawable.ic_launcher_background),
             contentDescription = null,
             modifier = Modifier
-                .offset(20.dp,20.dp)
+                .offset(20.dp, 20.dp)
                 .fillMaxSize()
                 .background(Color.Blue)
 
@@ -157,7 +155,7 @@ fun AvatarPreview7() {
 
 @Preview
 @Composable
-fun AvatarPreview8() {
+private fun AvatarPreview8() {
     Box(
         modifier = Modifier
             .size(100.dp)
@@ -177,7 +175,7 @@ fun AvatarPreview8() {
 
 @Preview
 @Composable
-fun AvatarPreview9() {
+private fun AvatarPreview9() {
     Box(
         modifier = Modifier
             .size(100.dp)
@@ -195,10 +193,9 @@ fun AvatarPreview9() {
     }
 }
 
-
 @Preview
 @Composable
-fun AvatarPreview10() {
+private fun AvatarPreview10() {
     Box(
         modifier = Modifier
             .size(100.dp)
@@ -218,7 +215,7 @@ fun AvatarPreview10() {
 
 @Preview
 @Composable
-fun AvatarPreview11() {
+private fun AvatarPreview11() {
     Box(
         modifier = Modifier
             .size(100.dp)
@@ -231,7 +228,6 @@ fun AvatarPreview11() {
                 .border(3.dp, Color.Blue)
                 .border(3.dp, Color.Black)
                 .clip(CircleShape)
-
 
         )
     }

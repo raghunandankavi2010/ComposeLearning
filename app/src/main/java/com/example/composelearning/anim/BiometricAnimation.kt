@@ -1,6 +1,5 @@
 package com.example.composelearning.anim
 
-
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
@@ -66,18 +65,18 @@ fun BiometricRecognitionAnimation(
     ringThickness: Dp = 5.dp,
     baseColor: Color = MaterialTheme.colorScheme.primary,
     successColor: Color = Color(0xFF2ecc71),
-    errorColor: Color = Color(0xFFe74c3c),
+    errorColor: Color = Color(0xFFe74c3c)
 ) {
     val stroke = with(LocalDensity.current) { ringThickness.toPx() }
 
     var angleDeg by remember { mutableFloatStateOf(0f) }
     var pulseScale by remember { mutableFloatStateOf(1f) }
-    var scanPhase by remember { mutableFloatStateOf(0f) }  // radians
+    var scanPhase by remember { mutableFloatStateOf(0f) } // radians
 
-    val orbitDegPerSec = 180f       // dot orbit speed
-    val pulseFreqHz = 0.8f          // pulse cycles per second
-    val scanFreqHz = 0.75f          // vertical scan cycles per second
-    val pulseAmp = 0.04f            // +/- 4%
+    val orbitDegPerSec = 180f // dot orbit speed
+    val pulseFreqHz = 0.8f // pulse cycles per second
+    val scanFreqHz = 0.75f // vertical scan cycles per second
+    val pulseAmp = 0.04f // +/- 4%
 
     val animationsEnabled = LocalAnimationsEnabled.current
 
@@ -171,7 +170,7 @@ fun BiometricRecognitionAnimation(
                     drawCircle(
                         color = ringColor.copy(alpha = overlayAlpha),
                         radius = r,
-                        center = center,
+                        center = center
                     )
                 }
         )
@@ -404,7 +403,7 @@ private fun DemoChip(text: String, onClick: () -> Unit) {
         modifier = Modifier
             .height(40.dp)
             .padding(horizontal = 2.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant,
+        color = MaterialTheme.colorScheme.surfaceVariant
     ) {
         Box(Modifier.padding(horizontal = 14.dp), contentAlignment = Alignment.Center) {
             androidx.compose.material3.Text(

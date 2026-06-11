@@ -25,10 +25,10 @@ import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.systemGestureExclusion
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -36,10 +36,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -259,7 +259,7 @@ private fun DiagonalArcItem(
                 .size(bubbleSize)
                 .background(
                     Brush.radialGradient(
-                        colors = listOf(MaterialTheme.colorScheme.tertiaryContainer, MaterialTheme.colorScheme.tertiary),
+                        colors = listOf(MaterialTheme.colorScheme.tertiaryContainer, MaterialTheme.colorScheme.tertiary)
                     ),
                     CircleShape
                 )
@@ -288,12 +288,12 @@ fun ArcCarousel(
     modifier: Modifier = Modifier,
     itemSize: Dp = 64.dp,
     itemSpacing: Dp = 18.dp,
-    arcDepth: Dp = 20.dp,
+    arcDepth: Dp = 20.dp
 ) {
     val state = rememberLazyListState()
     val flingBehavior = rememberSnapFlingBehavior(
         lazyListState = state,
-        snapPosition = SnapPosition.Center,
+        snapPosition = SnapPosition.Center
     )
     val arcDepthPx = with(LocalDensity.current) { arcDepth.toPx() }
 
@@ -326,7 +326,7 @@ fun ArcCarousel(
                         isActive = index == activeIndex,
                         bubbleSize = itemSize,
                         arcDepthPx = arcDepthPx,
-                        state = state,
+                        state = state
                     )
                 }
             }
@@ -341,7 +341,7 @@ private fun ArcItemView(
     isActive: Boolean,
     bubbleSize: Dp,
     arcDepthPx: Float,
-    state: LazyListState,
+    state: LazyListState
 ) {
     val activeBorder = MaterialTheme.colorScheme.primary
     val bubbleFill = MaterialTheme.colorScheme.surfaceVariant
@@ -370,11 +370,15 @@ private fun ArcItemView(
                 .clip(CircleShape)
                 .background(bubbleFill)
                 .then(
-                    if (isActive) Modifier.border(
-                        width = 2.dp,
-                        color = activeBorder,
-                        shape = CircleShape
-                    ) else Modifier
+                    if (isActive) {
+                        Modifier.border(
+                            width = 2.dp,
+                            color = activeBorder,
+                            shape = CircleShape
+                        )
+                    } else {
+                        Modifier
+                    }
                 )
         ) {
             Text(text = item.emoji, fontSize = 26.sp)
@@ -394,7 +398,7 @@ private fun ArcItemView(
 
 @Preview(showBackground = true)
 @Composable
-fun ArcCarouselScreenPreview() {
+private fun ArcCarouselScreenPreview() {
     MaterialTheme {
         ArcCarouselScreen(onBack = {})
     }

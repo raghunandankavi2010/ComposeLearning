@@ -29,12 +29,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composelearning.googlecalendar.util.DateUtils
-import kotlinx.coroutines.flow.distinctUntilChanged
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 /**
  * Fully-collapsible month grid with horizontal month paging.
@@ -48,7 +48,7 @@ import java.util.Locale
 private val WEEK_ROW_HEIGHT: Dp = 48.dp
 private val DAY_HEADER_HEIGHT: Dp = 28.dp
 private const val MAX_WEEKS = 6
-private const val MONTH_PAGE_COUNT = 25   // ±12 months
+private const val MONTH_PAGE_COUNT = 25 // ±12 months
 private const val MONTH_CENTER_PAGE = 12
 
 @Composable
@@ -133,7 +133,9 @@ fun MonthToolbar(
                             (0L..6L).map { start.plusDays(it) }
                         }
                         weeks + extra
-                    } else weeks
+                    } else {
+                        weeks
+                    }
                 }
 
                 Column(modifier = Modifier.fillMaxWidth()) {
@@ -161,8 +163,12 @@ fun MonthToolbar(
 private fun DayOfWeekHeader(modifier: Modifier = Modifier) {
     val days = remember {
         listOf(
-            DayOfWeek.SUNDAY, DayOfWeek.MONDAY, DayOfWeek.TUESDAY,
-            DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY,
+            DayOfWeek.SUNDAY,
+            DayOfWeek.MONDAY,
+            DayOfWeek.TUESDAY,
+            DayOfWeek.WEDNESDAY,
+            DayOfWeek.THURSDAY,
+            DayOfWeek.FRIDAY,
             DayOfWeek.SATURDAY
         )
     }
@@ -190,10 +196,6 @@ private fun DayOfWeekHeader(modifier: Modifier = Modifier) {
 // Utilities
 // ─────────────────────────────────────────────────────────────────────
 
-private fun monthDiff(from: YearMonth, to: YearMonth): Int {
-    return (to.year - from.year) * 12 + (to.monthValue - from.monthValue)
-}
+private fun monthDiff(from: YearMonth, to: YearMonth): Int = (to.year - from.year) * 12 + (to.monthValue - from.monthValue)
 
-private fun isSameMonth(date: LocalDate, month: YearMonth): Boolean {
-    return date.year == month.year && date.monthValue == month.monthValue
-}
+private fun isSameMonth(date: LocalDate, month: YearMonth): Boolean = date.year == month.year && date.monthValue == month.monthValue

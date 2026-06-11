@@ -17,10 +17,10 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.platform.LocalLocale
 
 @Composable
 fun ThermometerAnimation() {
@@ -114,7 +114,7 @@ fun ThermometerAnimation() {
 }
 
 @Composable
-private fun PresetButton(label: String, temp: Float, modifier: Modifier, onClick: (Float) -> Unit) {
+private fun PresetButton(label: String, temp: Float, modifier: Modifier = Modifier, onClick: (Float) -> Unit) {
     OutlinedButton(
         onClick = { onClick(temp) },
         modifier = modifier,

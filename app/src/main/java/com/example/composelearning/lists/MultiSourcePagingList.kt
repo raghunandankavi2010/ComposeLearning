@@ -14,7 +14,6 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 
-
 @Composable
 fun MultiSourceListScreen(viewModel: MultiSourceViewModel = viewModel()) {
     val lazyPagingItems = viewModel.items.collectAsLazyPagingItems()
@@ -24,7 +23,6 @@ fun MultiSourceListScreen(viewModel: MultiSourceViewModel = viewModel()) {
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-
         items(
             lazyPagingItems.itemCount,
             key = lazyPagingItems.itemKey { it.id }

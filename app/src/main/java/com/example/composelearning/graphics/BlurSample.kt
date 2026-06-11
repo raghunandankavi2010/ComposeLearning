@@ -29,16 +29,13 @@ import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
 
-
 @Composable
 fun BlurSample(modifier: Modifier = Modifier) {
-
     Box {
         VehicleSpeedometer(modifier.blur(10.dp, BlurredEdgeTreatment.Unbounded), progress = 50)
         Text("Testing Blur in compose", Modifier.align(Alignment.Center))
     }
 }
-
 
 @OptIn(ExperimentalHazeMaterialsApi::class)
 @Composable
@@ -50,10 +47,10 @@ fun BlurSampleWithHaze(modifier: Modifier = Modifier) {
                 .hazeSource(state = hazeState)
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            progress = 50,
+            progress = 50
         )
 
-       val style=  HazeStyle(backgroundColor = Color.Transparent, tints =  emptyList<HazeTint>(), blurRadius = 10.dp)
+        val style = HazeStyle(backgroundColor = Color.Transparent, tints = emptyList<HazeTint>(), blurRadius = 10.dp)
         Box(
             modifier = modifier
                 .hazeEffect(state = hazeState, style = HazeMaterials.regular())
@@ -76,9 +73,12 @@ fun BlurSampleWithHaze(modifier: Modifier = Modifier) {
 @Composable
 fun BlurWithRenderEffect(modifier: Modifier = Modifier) {
     Box {
-        VehicleSpeedometer(modifier.graphicsLayer(
-            renderEffect = RenderEffect.createBlurEffect(25f,25f, Shader.TileMode.DECAL).asComposeRenderEffect()
-        ), progress = 50)
+        VehicleSpeedometer(
+            modifier.graphicsLayer(
+                renderEffect = RenderEffect.createBlurEffect(25f, 25f, Shader.TileMode.DECAL).asComposeRenderEffect()
+            ),
+            progress = 50
+        )
         Text("Testing Blur in compose", modifier.align(Alignment.Center))
     }
 }

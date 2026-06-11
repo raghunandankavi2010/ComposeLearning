@@ -24,7 +24,6 @@ import com.example.composelearning.ui.theme.ComposeLearningTheme
 
 @Composable
 fun ImageWithRedDot() {
-
     Image(
         painter = painterResource(id = R.drawable.ic_launcher_background),
         contentDescription = "Dog",
@@ -32,7 +31,6 @@ fun ImageWithRedDot() {
         modifier = Modifier
             .size(120.dp)
             .aspectRatio(1f)
-
             .padding(8.dp)
             .graphicsLayer {
                 compositingStrategy = CompositingStrategy.Offscreen
@@ -64,7 +62,8 @@ fun ImageWithRedDot() {
                     )
                     // draw the red circle indication
                     drawCircle(
-                        Color(0xFFEF5350), radius = dotSize * 0.8f,
+                        Color(0xFFEF5350),
+                        radius = dotSize * 0.8f,
                         center = Offset(
                             x = size.width - dotSize,
                             y = size.height - dotSize
@@ -77,7 +76,7 @@ fun ImageWithRedDot() {
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewImageWithRedDot() {
+private fun PreviewImageWithRedDot() {
     ComposeLearningTheme {
         ImageWithRedDot()
     }

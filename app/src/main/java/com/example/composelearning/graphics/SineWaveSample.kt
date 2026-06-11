@@ -218,8 +218,8 @@ private fun InfoSection() {
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "We use rememberInfiniteTransition to animate the 'phase' (φ) of the sine wave. " +
-                   "The Canvas then redraws the Path on every frame. " +
-                   "The dot's position is calculated using the same sine formula, ensuring it stays perfectly on the curve.",
+                "The Canvas then redraws the Path on every frame. " +
+                "The dot's position is calculated using the same sine formula, ensuring it stays perfectly on the curve.",
             style = MaterialTheme.typography.bodyMedium
         )
     }
@@ -227,7 +227,7 @@ private fun InfoSection() {
 
 @Preview(showBackground = true)
 @Composable
-fun SineWaveSamplePreview() {
+private fun SineWaveSamplePreview() {
     MaterialTheme {
         SineWaveSample(onBack = {})
     }

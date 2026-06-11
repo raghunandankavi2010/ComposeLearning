@@ -1,6 +1,5 @@
 package com.example.composelearning.lists
 
-
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -28,8 +27,8 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
+import kotlinx.coroutines.launch
 
 /**
  * Answering
@@ -43,7 +42,7 @@ fun NumberPicker(modifier: Modifier = Modifier) {
         val contentPadding = (maxWidth - 50.dp) / 2
         val offSet = maxWidth / 5
         val itemSpacing = offSet - 50.dp
-        val list =  (0..200).toList()
+        val list = (0..200).toList()
         val pagerState = rememberPagerState(pageCount = {
             list.size
         })
@@ -53,7 +52,7 @@ fun NumberPicker(modifier: Modifier = Modifier) {
         LaunchedEffect(pagerState) {
             // Collect from the a snapshotFlow reading the currentPage
             snapshotFlow { pagerState.settledPage }.collect { page ->
-                Toast.makeText(context,"${list[page]}",Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "${list[page]}", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -79,14 +78,16 @@ fun NumberPicker(modifier: Modifier = Modifier) {
                 pagerSnapDistance = PagerSnapDistance.atMost(0)
             ),
             contentPadding = PaddingValues(horizontal = contentPadding),
-            pageSpacing = itemSpacing,
+            pageSpacing = itemSpacing
         ) { page ->
             Box(
                 modifier = Modifier
                     .size(50.dp)
                     .graphicsLayer {
-                        val pageOffset = ((pagerState.currentPage - page) + pagerState
-                            .currentPageOffsetFraction).absoluteValue
+                        val pageOffset = (
+                            (pagerState.currentPage - page) + pagerState
+                                .currentPageOffsetFraction
+                            ).absoluteValue
                         // Set the item alpha based on the distance from the center
                         val percentFromCenter = 1.0f - (pageOffset / (5f / 2f))
                         val opacity = 0.25f + (percentFromCenter * 0.75f).coerceIn(0f, 1f)
@@ -97,12 +98,13 @@ fun NumberPicker(modifier: Modifier = Modifier) {
                     .clickable(
                         interactionSource = mutableInteractionSource,
                         indication = null,
-                        enabled = true,
+                        enabled = true
                     ) {
                         scope.launch {
                             pagerState.animateScrollToPage(page)
                         }
-                    }) {
+                    }
+            ) {
                 Text(
                     text = "${list[page]}",
                     color = Color.Black,

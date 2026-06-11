@@ -40,28 +40,31 @@ import com.example.composelearning.pager.TabRowDefaults.tabIndicatorOffset
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-
-
 @Composable
 @UiComposable
 fun MyScrollableTabRow(
     selectedTabIndex: Int,
     modifier: Modifier = Modifier,
-    minItemWidth:Dp = ScrollableTabRowMinimumTabWidth,
+    minItemWidth: Dp = ScrollableTabRowMinimumTabWidth,
     backgroundColor: Color = MaterialTheme.colorScheme.primary,
     contentColor: Color = contentColorFor(backgroundColor),
     edgePadding: Dp = TabRowDefaults.ScrollableTabRowPadding,
-    indicator: @Composable @UiComposable
-        (tabPositions: List<TabPosition>) -> Unit = @Composable { tabPositions ->
+    indicator:
+    @Composable @UiComposable
+    (tabPositions: List<TabPosition>) -> Unit = @Composable { tabPositions ->
         TabRowDefaults.Indicator(
             Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex])
         )
     },
-    divider: @Composable @UiComposable () -> Unit =
+    divider:
+    @Composable @UiComposable
+    () -> Unit =
         @Composable {
             TabRowDefaults.Divider()
         },
-    tabs: @Composable @UiComposable () -> Unit
+    tabs:
+    @Composable @UiComposable
+    () -> Unit
 ) {
     Surface(
         modifier = modifier,
@@ -165,9 +168,7 @@ class TabPosition internal constructor(val left: Dp, val width: Dp) {
         return result
     }
 
-    override fun toString(): String {
-        return "TabPosition(left=$left, right=$right, width=$width)"
-    }
+    override fun toString(): String = "TabPosition(left=$left, right=$right, width=$width)"
 }
 
 object TabRowDefaults {

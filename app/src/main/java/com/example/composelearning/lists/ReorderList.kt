@@ -93,8 +93,8 @@ fun ReOrderList() {
                         val targetItem =
                             stateList.layoutInfo.visibleItemsInfo.find { item ->
                                 middleOffset.toInt() in item.offset..item.offset + item.size &&
-                                        currentDraggingItem.index != item.index &&
-                                        item.contentType is DraggableItem
+                                    currentDraggingItem.index != item.index &&
+                                    item.contentType is DraggableItem
                             }
 
                         if (targetItem != null) {
@@ -131,7 +131,7 @@ fun ReOrderList() {
                         draggingItem = null
                         draggingItemIndex = null
                         delta = 0f
-                    },
+                    }
                 )
             },
         state = stateList,
@@ -144,7 +144,8 @@ fun ReOrderList() {
 
         itemsIndexed(
             items = list1,
-            contentType = { index, _ -> DraggableItem(index = index) }) { index, item ->
+            contentType = { index, _ -> DraggableItem(index = index) }
+        ) { index, item ->
             val modifier = if (draggingItemIndex == index) {
                 Modifier
                     .zIndex(1f)
@@ -156,7 +157,7 @@ fun ReOrderList() {
             }
             Item(
                 modifier = modifier,
-                index = item,
+                index = item
             )
         }
 
@@ -167,10 +168,8 @@ fun ReOrderList() {
         itemsIndexed(list2, key = { _, item -> item }) { _, item ->
             Item(index = item)
         }
-
     }
 }
-
 
 @Composable
 private fun Item(modifier: Modifier = Modifier, index: Int) {

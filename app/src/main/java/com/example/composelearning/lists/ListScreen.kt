@@ -40,7 +40,7 @@ fun ListScreen(navController: NavController) {
     } else {
         LazyColumn(
             state = listState,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
         ) {
             items(items) { item ->
                 Text(

@@ -16,8 +16,6 @@
 
 package com.example.composelearning.calendar
 
-import com.example.composelearning.ui.theme.AppFontFamilyMedium
-
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -37,7 +35,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import com.example.composelearning.calendar.model.CalendarUiState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,6 +58,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composelearning.R
+import com.example.composelearning.calendar.model.CalendarUiState
+import com.example.composelearning.ui.theme.AppFontFamilyMedium
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
@@ -68,26 +67,25 @@ import java.time.YearMonth
 @Composable
 internal fun DayOfWeekHeading(day: String) {
     WeekContainer {
-    Text(
-        modifier = Modifier
-            .width(48.dp)
-            .height(24.dp)
-            .wrapContentHeight(Alignment.CenterVertically),
-        textAlign = TextAlign.Center,
-        text = day,
-        // en/Mobile/Body/S-bold
-        style = TextStyle(
-            fontSize = 16.sp,
-            lineHeight = 24.sp,
-            fontFamily = AppFontFamilyMedium,
-            fontWeight = FontWeight(700),
-            color = Color(0xA6000000),
+        Text(
+            modifier = Modifier
+                .width(48.dp)
+                .height(24.dp)
+                .wrapContentHeight(Alignment.CenterVertically),
             textAlign = TextAlign.Center,
+            text = day,
+            // en/Mobile/Body/S-bold
+            style = TextStyle(
+                fontSize = 16.sp,
+                lineHeight = 24.sp,
+                fontFamily = AppFontFamilyMedium,
+                fontWeight = FontWeight(700),
+                color = Color(0xA6000000),
+                textAlign = TextAlign.Center
+            )
         )
-    )
-     }
+    }
 }
-
 
 @Composable
 private fun WeekContainer(
@@ -99,7 +97,7 @@ private fun WeekContainer(
     onClickLabel: String? = null,
     content: @Composable () -> Unit
 ) {
-    val stateDescriptionLabel = "" //stringResource(
+    val stateDescriptionLabel = "" // stringResource(
     //   if (selected) R.string.state_descr_selected else R.string.state_descr_not_selected
     // )
     Box(
@@ -136,7 +134,7 @@ private fun DayContainer(
     onClickLabel: String? = null,
     content: @Composable () -> Unit
 ) {
-    val stateDescriptionLabel = "" //stringResource(
+    val stateDescriptionLabel = "" // stringResource(
     //   if (selected) R.string.state_descr_selected else R.string.state_descr_not_selected
     // )
     Box(
@@ -177,7 +175,7 @@ internal fun Day(
         modifier = modifier.semantics {
             text = AnnotatedString(
                 "${month.month.name.lowercase().capitalize(Locale.current)} " +
-                        "${day.dayOfMonth} ${month.year}"
+                    "${day.dayOfMonth} ${month.year}"
             )
             dayStatusProperty = selected
         },
@@ -189,7 +187,6 @@ internal fun Day(
         },
         onClickLabel = "select"
     ) {
-
         val today = LocalDate.now()
         val isToday = day == today
 
@@ -217,7 +214,7 @@ internal fun Day(
                         fontSize = 16.sp,
                         lineHeight = 24.sp,
                         fontFamily = AppFontFamilyMedium,
-                        fontWeight = FontWeight(700),
+                        fontWeight = FontWeight(700)
                     ),
                     color = Color.White
                 )
@@ -239,7 +236,7 @@ internal fun Day(
                         fontSize = 16.sp,
                         lineHeight = 24.sp,
                         fontFamily = AppFontFamilyMedium,
-                        fontWeight = FontWeight(700),
+                        fontWeight = FontWeight(700)
                     ),
                     color = Color(0xFF03753C)
                 )
@@ -255,7 +252,7 @@ internal fun Day(
                     fontSize = 16.sp,
                     lineHeight = 24.sp,
                     fontFamily = AppFontFamilyMedium,
-                    fontWeight = FontWeight(700),
+                    fontWeight = FontWeight(700)
                 ),
                 color = color
             )

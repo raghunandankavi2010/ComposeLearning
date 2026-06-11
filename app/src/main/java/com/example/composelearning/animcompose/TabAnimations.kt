@@ -70,9 +70,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 import kotlin.math.roundToInt
+import kotlinx.coroutines.launch
 
 /**
  * Premium fluid tab bar with morphing indicators, per-tab colors, and spring physics.
@@ -96,28 +96,28 @@ fun FluidTabBarShowcase() {
                 Icons.Rounded.Home,
                 Color(0xFF6366F1), // Indigo
                 Color(0xFF8B5CF6), // Purple
-                Color(0xFFA78BFA)  // Light purple
+                Color(0xFFA78BFA) // Light purple
             ),
             FluidTab(
                 "Explore",
                 Icons.Rounded.Explore,
                 Color(0xFF06B6D4), // Cyan
                 Color(0xFF3B82F6), // Blue
-                Color(0xFF67E8F9)  // Light cyan
+                Color(0xFF67E8F9) // Light cyan
             ),
             FluidTab(
                 "Favorites",
                 Icons.Rounded.Favorite,
                 Color(0xFFEC4899), // Pink
                 Color(0xFFF43F5E), // Rose
-                Color(0xFFFBCFE8)  // Light pink
+                Color(0xFFFBCFE8) // Light pink
             ),
             FluidTab(
                 "Profile",
                 Icons.Rounded.Person,
                 Color(0xFF10B981), // Emerald
                 Color(0xFF059669), // Green
-                Color(0xFF6EE7B7)  // Light emerald
+                Color(0xFF6EE7B7) // Light emerald
             )
         )
     }
@@ -461,6 +461,6 @@ fun ContentCard(
 
 @Preview
 @Composable
-fun FluidTabBarPreview() {
+private fun FluidTabBarPreview() {
     FluidTabBarShowcase()
 }

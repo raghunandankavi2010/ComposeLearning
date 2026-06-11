@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,7 +22,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.example.composelearning.R
-
 
 @Composable
 fun OffsetAnim() {
@@ -49,7 +47,6 @@ fun OffsetAnim() {
         LaunchButton(modifier = Modifier.align(Alignment.BottomCenter), state.value) {
             state.value = it
         }
-
     }
 }
 
@@ -71,12 +68,11 @@ fun OffsetAnim(offset: Dp) {
             .offset { IntOffset(x = offset.value.toInt(), y = 0) }
 
     )
-
 }
 
 @Composable
 fun LaunchButton(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     animationState: State,
     onToggleAnimationState: (State) -> Unit
 ) {
@@ -99,7 +95,7 @@ fun LaunchButton(
             }
         } else {
             Button(
-                onClick = { onToggleAnimationState(State.Start) },
+                onClick = { onToggleAnimationState(State.Start) }
             ) {
                 Text(text = "STOP")
             }

@@ -1,6 +1,5 @@
 package com.example.composelearning.speedometer
 
-
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.tween
@@ -39,7 +38,7 @@ fun SpeedometerScreen() {
                     targetValue = intValue,
                     animationSpec = tween(
                         durationMillis = 1000,
-                        easing = FastOutLinearInEasing,
+                        easing = FastOutLinearInEasing
                     )
                 )
             }
@@ -52,7 +51,7 @@ fun SpeedometerScreen() {
 
 @Composable
 fun Speedometer1(
-    progress: Int,
+    progress: Int
 ) {
     val arcDegrees = 275
     val startArcAngle = 135f
@@ -75,8 +74,10 @@ fun Speedometer1(
                 val (mainColor, secondaryColor) = when {
                     progress < 20 -> // Red
                         Color(0xFFD32F2F) to Color(0xFFFFCDD2)
+
                     progress < 40 -> // Orange
                         Color(0xFFF57C00) to Color(0xFFFFE0B2)
+
                     else -> // Green
                         Color(0xFF388E3C) to Color(0xFFC8E6C9)
                 }

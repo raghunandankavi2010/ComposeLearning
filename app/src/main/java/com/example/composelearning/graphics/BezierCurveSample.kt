@@ -34,11 +34,11 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.text.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,7 +57,7 @@ fun BezierCurveSample(onBack: () -> Unit) {
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         BezierCurveSampleContent(
-            modifier = Modifier.padding(innerPadding).fillMaxSize(),
+            modifier = Modifier.padding(innerPadding).fillMaxSize()
         )
     }
 }
@@ -198,14 +198,17 @@ fun InteractiveBezierDemo() {
                                 p0Norm = updatePoint(p0, dragAmount)
                                 change.consume()
                             }
+
                             (pos - p1).getDistance() < threshold -> {
                                 p1Norm = updatePoint(p1, dragAmount)
                                 change.consume()
                             }
+
                             (pos - p2).getDistance() < threshold -> {
                                 p2Norm = updatePoint(p2, dragAmount)
                                 change.consume()
                             }
+
                             isCubic && (pos - p3).getDistance() < threshold -> {
                                 p3Norm = updatePoint(p3, dragAmount)
                                 change.consume()
@@ -280,13 +283,13 @@ fun FigmaDeepDiveSection() {
         DeepDiveItem(
             title = "1. The Anatomy of a Segment",
             description = "Figma vector 'Segments' consist of an Anchor and two Handles. " +
-                          "A single Cubic Bezier in Compose (`cubicTo`) spans between TWO Anchors. " +
-                          "Handle 1 of Anchor A and Handle 2 of Anchor B are your Control Points (P1, P2)."
+                "A single Cubic Bezier in Compose (`cubicTo`) spans between TWO Anchors. " +
+                "Handle 1 of Anchor A and Handle 2 of Anchor B are your Control Points (P1, P2)."
         )
         DeepDiveItem(
             title = "2. Concatenation (Chaining)",
             description = "Complex curves like 'S-waves' are just multiple `cubicTo` calls. " +
-                          "The End Point (P3) of the first segment automatically becomes the Start Point (P0) of the next segment."
+                "The End Point (P3) of the first segment automatically becomes the Start Point (P0) of the next segment."
         )
         DeepDiveItem(
             title = "3. Smoothness Rule",
@@ -340,12 +343,12 @@ fun ComplexFigmaExample() {
                 val s1_p0 = Offset(0f, h * 0.5f)
                 val s1_p1 = Offset(w * 0.25f, h * 0.1f) // Handle 1
                 val s1_p2 = Offset(w * 0.25f, h * 0.9f) // Handle 2
-                val s1_p3 = Offset(w * 0.5f, h * 0.5f)  // Middle Anchor
+                val s1_p3 = Offset(w * 0.5f, h * 0.5f) // Middle Anchor
 
                 // Segment 2 (Middle to Right)
                 val s2_p1 = Offset(w * 0.75f, h * 0.1f) // Handle 1
                 val s2_p2 = Offset(w * 0.75f, h * 0.9f) // Handle 2
-                val s2_p3 = Offset(w, h * 0.5f)         // End Anchor
+                val s2_p3 = Offset(w, h * 0.5f) // End Anchor
 
                 val path = Path().apply {
                     moveTo(s1_p0.x, s1_p0.y)
@@ -421,7 +424,7 @@ fun FigmaToComposeSection() {
 
 @Preview(showBackground = true)
 @Composable
-fun BezierCurveSamplePreview() {
+private fun BezierCurveSamplePreview() {
     MaterialTheme {
         BezierCurveSample(onBack = {})
     }

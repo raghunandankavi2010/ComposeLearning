@@ -14,10 +14,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import coil3.SingletonImageLoader
-import coil3.toBitmap
 import coil3.request.ImageRequest
 import coil3.request.SuccessResult
 import coil3.request.allowHardware
+import coil3.toBitmap
 
 /**
  * AGSL Page Curl Implementation
@@ -36,7 +36,6 @@ fun PageCurlShaderScreen() {
 
     var frontBitmap by remember { mutableStateOf<Bitmap?>(null) }
     var backBitmap by remember { mutableStateOf<Bitmap?>(null) }
-
 
     // Fetch bitmaps
     LaunchedEffect(frontPageUrl, backPageUrl) {

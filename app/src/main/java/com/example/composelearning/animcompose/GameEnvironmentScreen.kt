@@ -130,6 +130,7 @@ fun GameEnvironmentScreen() {
                     }
                 )
             }
+
             GameState.PLAYING -> {
                 BubbleGameScreen(
                     bubbles = bubbles,
@@ -147,8 +148,11 @@ fun GameEnvironmentScreen() {
                             popEffects = popEffects + createPopEffect(tappedBubble)
                             when (tappedBubble.type) {
                                 BubbleType.NORMAL -> score += 10
+
                                 BubbleType.BONUS -> score += 25
+
                                 BubbleType.GOLDEN -> score += 50
+
                                 BubbleType.BOMB -> {
                                     lives--
                                     score = (score - 20).coerceAtLeast(0)
@@ -162,6 +166,7 @@ fun GameEnvironmentScreen() {
                     }
                 )
             }
+
             GameState.GAME_OVER -> {
                 GameOverScreen(
                     score = score,

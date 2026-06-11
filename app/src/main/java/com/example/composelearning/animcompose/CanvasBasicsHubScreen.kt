@@ -34,7 +34,13 @@ import androidx.compose.ui.unit.dp
 fun CanvasBasicsHubScreen() {
     var selectedTab by remember { mutableIntStateOf(0) }
     val tabs = listOf(
-        "Math", "Draw", "Shapes", "Paths", "Images", "State", "Touch"
+        "Math",
+        "Draw",
+        "Shapes",
+        "Paths",
+        "Images",
+        "State",
+        "Touch"
     )
 
     Scaffold(

@@ -12,9 +12,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.unit.dp import com.example.composelearning.customshapes.TicketComposable
-import kotlinx.coroutines.delay
+import androidx.compose.ui.unit.dp
+import com.example.composelearning.customshapes.TicketComposable
 import kotlin.random.Random
+import kotlinx.coroutines.delay
 
 @Composable
 fun LinesShapesArcsScreen() {
@@ -252,7 +253,7 @@ fun TicketDemo() {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        contentAlignment = androidx.compose.ui.Alignment.Center,
+        contentAlignment = androidx.compose.ui.Alignment.Center
     ) {
         TicketComposable(modifier = Modifier)
     }

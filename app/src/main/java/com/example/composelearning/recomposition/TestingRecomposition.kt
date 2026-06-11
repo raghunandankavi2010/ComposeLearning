@@ -1,7 +1,5 @@
 package com.example.composelearning.recomposition
 
-import com.example.composelearning.ui.theme.AppFontFamilyBlack
-
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -26,12 +24,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.composelearning.R
-
+import com.example.composelearning.ui.theme.AppFontFamilyBlack
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TextWidth(modifier: Modifier = Modifier) {
-
     val headingSmall: TextStyle = TextStyle(
         fontSize = 32.sp,
         lineHeight = 32.sp,
@@ -41,22 +38,19 @@ fun TextWidth(modifier: Modifier = Modifier) {
 
     Row {
         BoxWithConstraints(modifier = Modifier.weight(1f)) {
-        constraints.minWidth
+            constraints.minWidth
             val text = "Hello World. this is a very long text.............................."
             val measuredText = text.measureTextWidth(headingSmall)
             val width = DpToInt(measuredText)
-            if(width <= constraints.maxWidth) {
+            if (width <= constraints.maxWidth) {
                 Text(text, maxLines = 1)
             } else {
                 Text(text, maxLines = 1, modifier = Modifier.basicMarquee())
             }
         }
 
-
         Image(painter = painterResource(id = R.drawable.ic_launcher_background), contentDescription = "")
-
     }
-
 }
 
 @Composable
@@ -65,7 +59,6 @@ fun DpToInt(dpValue: Dp): Int {
     return with(density) { dpValue.toPx() }.toInt()
 }
 
-
 @Composable
 fun String.measureTextWidth(style: TextStyle): Dp {
     val textMeasurer = rememberTextMeasurer()
@@ -73,15 +66,13 @@ fun String.measureTextWidth(style: TextStyle): Dp {
     return with(LocalDensity.current) { widthInPixels.toDp() }
 }
 
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateAlertDialog() {
     val openDialog = remember { mutableStateOf(false) }
-        println( "Composing Screen Initial")
+    println("Composing Screen Initial")
     Column {
-        println( "Composing Screen")
+        println("Composing Screen")
 
         ButtonComposable {
             openDialog.value = true
@@ -102,8 +93,7 @@ fun CreateAlertDialog() {
 
 @Composable
 fun ButtonComposable(openDialog: () -> Unit) {
-
-   println("Button Composable")
+    println("Button Composable")
 
     Button(
         onClick = {
@@ -118,18 +108,18 @@ fun ButtonComposable(openDialog: () -> Unit) {
     }
 }
 
-//@Composable
-//fun ParentComposable() {
+// @Composable
+// fun ParentComposable() {
 //    val openDialog = remember { mutableStateOf(false) }
 //
 //    CreateAlertDialog(openDialog.value) {
 //        openDialog.value = it
 //    }
-//}
+// }
 
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Composable
-//fun CreateAlertDialog() {
+// @OptIn(ExperimentalMaterial3Api::class)
+// @Composable
+// fun CreateAlertDialog() {
 //    var openDialog by remember { mutableStateOf(false) }
 //    Column {
 //        LogCompositions(tag = "Surface", msg = "Column recomposing")
@@ -155,15 +145,15 @@ fun ButtonComposable(openDialog: () -> Unit) {
 //            }
 //        }
 //    }
-//}
+// }
 
 @Composable
 fun MiddleText() {
     Text(text = "Middle Text")
 }
 
-//@Composable
-//inline fun ButtonComposable(crossinline openDialog: () -> Unit) {
+// @Composable
+// inline fun ButtonComposable(crossinline openDialog: () -> Unit) {
 //
 //    LogCompositions(tag = "Surface", msg = "Button recomposing")
 //
@@ -179,7 +169,7 @@ fun MiddleText() {
 //        Text(text = "Open Dialog")
 //    }
 //
-//}
+// }
 
 @Composable
 fun CounterApp() {

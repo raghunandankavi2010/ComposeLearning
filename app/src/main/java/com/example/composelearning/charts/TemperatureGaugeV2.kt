@@ -17,16 +17,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
-import androidx.compose.ui.geometry.RoundRect
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlin.math.roundToInt
@@ -40,12 +40,12 @@ data class TemperatureGaugeSpec(
     val tickCount: Int = 7,
     val indicatorWidth: Dp = 12.dp,
     val indicatorOverhang: Dp = 6.dp,
-    val barColor: Color = Color(0xFF169B4A),   // green  (comfortable)
-    val midColor: Color = Color(0xFFFB8C00),   // orange (warm)
-    val highColor: Color = Color(0xFFD32F2F),  // red    (too hot)
+    val barColor: Color = Color(0xFF169B4A), // green  (comfortable)
+    val midColor: Color = Color(0xFFFB8C00), // orange (warm)
+    val highColor: Color = Color(0xFFD32F2F), // red    (too hot)
     val indicatorColor: Color = Color(0xFFFFFFFF),
     val showGradient: Boolean = true,
-    val animateDrag: Boolean = true,
+    val animateDrag: Boolean = true
 )
 
 /**
@@ -65,7 +65,7 @@ fun TemperatureGaugeV2(
     onValueChange: (Float) -> Unit,
     modifier: Modifier = Modifier,
     spec: TemperatureGaugeSpec,
-    theme: ChartTheme = ChartDefaults.theme(),
+    theme: ChartTheme = ChartDefaults.theme()
 ) {
     val measurer = rememberTextMeasurer()
     var internalValue by remember { mutableFloatStateOf(value) }
@@ -76,7 +76,7 @@ fun TemperatureGaugeV2(
             .fillMaxWidth()
             .height(spec.barHeight + 28.dp)
             .padding(horizontal = 6.dp)
-            .semantics { contentDescription = "Temperature ${internalValue.roundToInt()}" },
+            .semantics { contentDescription = "Temperature ${internalValue.roundToInt()}" }
     ) {
         Canvas(
             modifier = Modifier
@@ -90,7 +90,7 @@ fun TemperatureGaugeV2(
                             val deltaValue = drag.x / effectiveWidth * span
                             internalValue = (internalValue + deltaValue).coerceIn(spec.minValue, spec.maxValue)
                             onValueChange(internalValue)
-                        },
+                        }
                     )
                     detectTapGestures { offset ->
                         val span = spec.maxValue - spec.minValue
@@ -98,7 +98,7 @@ fun TemperatureGaugeV2(
                         internalValue = spec.minValue + ratio * span
                         onValueChange(internalValue)
                     }
-                },
+                }
         ) {
             val barH = spec.barHeight.toPx()
             val r = spec.cornerRadius.toPx()
@@ -120,7 +120,7 @@ fun TemperatureGaugeV2(
                 drawRoundRect(
                     color = barColor,
                     size = Size(size.width, barH),
-                    cornerRadius = CornerRadius(r, r),
+                    cornerRadius = CornerRadius(r, r)
                 )
             }
 
@@ -134,7 +134,7 @@ fun TemperatureGaugeV2(
                 color = spec.indicatorColor,
                 topLeft = Offset(indicatorLeft, -overhang),
                 size = Size(indicatorW, barH + overhang * 2f),
-                cornerRadius = CornerRadius(indicatorW / 2f, indicatorW / 2f),
+                cornerRadius = CornerRadius(indicatorW / 2f, indicatorW / 2f)
             )
 
             // Ticks + labels
@@ -146,7 +146,7 @@ fun TemperatureGaugeV2(
                     color = theme.axisColor,
                     start = Offset(xCenter, barH + 4.dp.toPx()),
                     end = Offset(xCenter, barH + 12.dp.toPx()),
-                    strokeWidth = 1.5.dp.toPx(),
+                    strokeWidth = 1.5.dp.toPx()
                 )
                 val v = spec.minValue + tt * (spec.maxValue - spec.minValue)
                 val label = v.roundToInt().toString()
@@ -155,8 +155,8 @@ fun TemperatureGaugeV2(
                     textLayoutResult = layout,
                     topLeft = Offset(
                         xCenter - layout.size.width / 2f,
-                        barH + 14.dp.toPx(),
-                    ),
+                        barH + 14.dp.toPx()
+                    )
                 )
             }
         }

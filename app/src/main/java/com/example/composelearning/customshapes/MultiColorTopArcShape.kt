@@ -79,7 +79,6 @@ fun MultiColoredTopArcsShape(
 //        }
 //        drawPath(path = path5, color = Color.Transparent, style = pathStroke)
 
-
         // Segment 6: Top Left Arc (Yellow)
         val path6 = Path().apply {
             moveTo(x = 0f, y = cornerRadius) // Start where the previous segment ended
@@ -96,14 +95,11 @@ fun MultiColoredTopArcsShape(
             )
         }
         drawPath(path = path6, color = Color.Red, style = pathStroke)
-
-
     }
 }
 
-
 @Preview(showBackground = true, widthDp = 300, heightDp = 200)
 @Composable
-fun MultiColoredTopArcsShapePreview() {
+private fun MultiColoredTopArcsShapePreview() {
     MultiColoredTopArcsShape()
 }

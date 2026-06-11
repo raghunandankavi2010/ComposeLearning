@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 
 data class Message(
     val id: Int,
-    val message: String,
+    val message: String
 )
 
 fun getList(): MutableList<Message> {
@@ -30,16 +30,16 @@ fun getList(): MutableList<Message> {
 }
 
 @Composable
-fun SingleSelectableItem(messages : MutableList<Message>) {
+fun SingleSelectableItem(messages: MutableList<Message>) {
     val listState = rememberLazyListState()
     var selectedIndex by remember { mutableStateOf(-1) }
 
-    val onItemClick = { index: Int -> selectedIndex = index}
+    val onItemClick = { index: Int -> selectedIndex = index }
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-    ){
-        itemsIndexed(messages,key = ::itemKey){ index,message, ->
+        modifier = Modifier.fillMaxSize()
+    ) {
+        itemsIndexed(messages, key = ::itemKey) { index, message ->
             ItemView(
                 message = message.message,
                 selected = selectedIndex == index,
@@ -50,13 +50,10 @@ fun SingleSelectableItem(messages : MutableList<Message>) {
     }
 }
 
-
-fun itemKey(index: Int, message: Message): Int {
-    return message.id
-}
+fun itemKey(index: Int, message: Message): Int = message.id
 
 @Composable
-fun ItemView(message: String, selected: Boolean, onClick: (Int) -> Unit, index: Int){
+fun ItemView(message: String, selected: Boolean, onClick: (Int) -> Unit, index: Int) {
     Text(
         text = message,
         modifier = Modifier

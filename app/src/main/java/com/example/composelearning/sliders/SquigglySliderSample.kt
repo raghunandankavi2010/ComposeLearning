@@ -190,7 +190,7 @@ fun SquigglySlider(
 
                 // Ensure it ends exactly at thumb position
                 if (limitX > 0f) {
-                   activePath.lineTo(limitX, centerY + ampPx * sin((2f * piFloat * limitX / wavePx) + phase))
+                    activePath.lineTo(limitX, centerY + ampPx * sin((2f * piFloat * limitX / wavePx) + phase))
                 }
 
                 drawPath(
@@ -212,7 +212,7 @@ fun SquigglySlider(
 
 @Preview(showBackground = true)
 @Composable
-fun SquigglySliderSamplePreview() {
+private fun SquigglySliderSamplePreview() {
     MaterialTheme {
         SquigglySliderSample(onBack = {})
     }

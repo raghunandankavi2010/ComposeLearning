@@ -53,8 +53,10 @@ import com.example.composelearning.ui.theme.ComposeLearningTheme
 fun overlappingRowMeasurePolicy(overlapFactor: Float) = MeasurePolicy { measurables, constraints ->
     val placeables = measurables.map { measurable -> measurable.measure(constraints) }
     val height = placeables.maxOf { it.height }
-    val width = (placeables.subList(1, placeables.size)
-        .sumOf { it.width } * overlapFactor + placeables[0].width).toInt()
+    val width = (
+        placeables.subList(1, placeables.size)
+            .sumOf { it.width } * overlapFactor + placeables[0].width
+        ).toInt()
     layout(width, height) {
         var xPos = 0
         for (placeable in placeables) {
@@ -68,11 +70,13 @@ fun overlappingRowMeasurePolicy(overlapFactor: Float) = MeasurePolicy { measurab
 fun OverlappingRow(
     modifier: Modifier = Modifier,
     @FloatRange(from = 0.1, to = 1.0) overlapFactor: Float = 0.5f,
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     val measurePolicy = overlappingRowMeasurePolicy(overlapFactor)
     Layout(
-        measurePolicy = measurePolicy, content = content, modifier = modifier
+        measurePolicy = measurePolicy,
+        content = content,
+        modifier = modifier
     )
 }
 
@@ -109,8 +113,9 @@ fun CropImage(
         val iconModifier = if (isRemoveIconShow) {
             Modifier
                 .clickable {
-                    if (onRemove != null && currentIndex != -1)
+                    if (onRemove != null && currentIndex != -1) {
                         onRemove(cropId, currentIndex)
+                    }
                 }
         } else {
             Modifier
@@ -125,8 +130,9 @@ fun CropImage(
                 .clip(RoundedCornerShape(size = 16.dp)) //
                 .then(modifier)
                 .clickable {
-                    if (onClick != null)
+                    if (onClick != null) {
                         onClick(!selected, cropId)
+                    }
                 },
             painter = painterResource(id = cropImage),
             contentDescription = "image description",
@@ -179,14 +185,13 @@ private fun BannerPreview() {
                 selected = true,
                 cropImage = R.drawable.droid,
                 { selected, index ->
-
                 },
                 { id, index ->
-                })
+                }
+            )
         }
     }
 }
-
 
 @Composable
 fun ImageWithAction(
@@ -210,7 +215,7 @@ fun ImageWithAction(
     val selectUnselect = remember { mutableStateOf(false) }
     val vectorImageBounds = rememberImageBounds()
 
-    val borderModifier = if (selected|| isRemoveIconShow) {
+    val borderModifier = if (selected || isRemoveIconShow) {
         Modifier.border(
             width = 2.dp,
             color = Color(0xFF03753C),
@@ -260,9 +265,10 @@ fun ImageWithAction(
                             Toast
                                 .makeText(context, "Remove clicked", Toast.LENGTH_SHORT)
                                 .show()
-                            if (onRemove != null && currentIndex != -1)
+                            if (onRemove != null && currentIndex != -1) {
                                 onRemove(cropId, currentIndex)
-                        } else if (onClick != null ) { // crop clicked
+                            }
+                        } else if (onClick != null) { // crop clicked
                             selectUnselect.value = !selectUnselect.value
                             onClick(selectUnselect.value, cropId)
                         }
@@ -275,7 +281,6 @@ fun ImageWithAction(
             )
     )
 }
-
 
 @Composable
 fun rememberImageBounds(): Rect {

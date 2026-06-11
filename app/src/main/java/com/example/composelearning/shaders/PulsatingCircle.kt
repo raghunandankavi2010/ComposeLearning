@@ -1,6 +1,5 @@
 package com.example.composelearning.shaders
 
-
 import android.graphics.RuntimeShader
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.LinearEasing
@@ -126,9 +125,8 @@ fun PulsatingCircleShader() {
     )
 }
 
-
-//@Composable
-//fun PulsatingCircleShader() {
+// @Composable
+// fun PulsatingCircleShader() {
 //    // Create and remember the RuntimeShader and ShaderBrush
 //    val runtimeShader = remember { RuntimeShader(blurShader) }
 //    //val shaderBrush = remember { ShaderBrush(runtimeShader) }
@@ -155,15 +153,15 @@ fun PulsatingCircleShader() {
 //            "iColor",
 //            RED.toArgb() // Correctly converts the RED color object to the required ARGB integer
 //        )
-////        runtimeShader.setColorUniform(
-////            "iColor",
-////            android.graphics.Color.valueOf(
-////                RED.red,
-////                BLUE.blue,
-////                GREEN.blue,
-////                RED.alpha
-////            )
-////        )
+// //        runtimeShader.setColorUniform(
+// //            "iColor",
+// //            android.graphics.Color.valueOf(
+// //                RED.red,
+// //                BLUE.blue,
+// //                GREEN.blue,
+// //                RED.alpha
+// //            )
+// //        )
 //        // Pass uniforms to the shader
 //        runtimeShader.setFloatUniform("iResolution_x", size.width)
 //        runtimeShader.setFloatUniform("iResolution_y", size.height)
@@ -177,4 +175,4 @@ fun PulsatingCircleShader() {
 //            center = center
 //        )
 //    }
-//}
+// }

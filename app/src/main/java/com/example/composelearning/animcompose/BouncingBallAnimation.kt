@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun BouncingBallAnimation() {
-
     BoxWithConstraints(
         modifier = Modifier
             .padding(WindowInsets.systemBars.asPaddingValues())
@@ -46,7 +45,7 @@ fun BouncingBallAnimation() {
         val navBarInsets = WindowInsets.navigationBars.asPaddingValues()
         val bottomInsetPx = with(density) { navBarInsets.calculateBottomPadding().toPx() }
 
-        val xOffset = maxWidthPx/2 - circleSizePx / 2
+        val xOffset = maxWidthPx / 2 - circleSizePx / 2
         val xOffsetDp = remember { with(density) { xOffset.toDp() } }
 
         val maxOffsetPx = remember(maxHeightPx, bottomInsetPx) {

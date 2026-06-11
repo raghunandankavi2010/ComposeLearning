@@ -36,8 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-private fun lerp(a: Offset, b: Offset, t: Float): Offset =
-    Offset(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t)
+private fun lerp(a: Offset, b: Offset, t: Float): Offset = Offset(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t)
 
 @Composable
 fun BezierCurveExplorerScreen() {
@@ -296,9 +295,12 @@ private fun FigmaCurveDemo() {
             lineTo(w, 0f)
             lineTo(w, h * 0.70f)
             cubicTo(
-                w * 0.75f, h,
-                w * 0.25f, h * 0.40f,
-                0f, h * 0.70f
+                w * 0.75f,
+                h,
+                w * 0.25f,
+                h * 0.40f,
+                0f,
+                h * 0.70f
             )
             close()
         }
