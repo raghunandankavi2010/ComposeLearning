@@ -46,6 +46,7 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import androidx.core.graphics.toColorInt
 
 /**
  * Inspired from https://fvilarino.medium.com/recreating-google-podcasts-speed-selector-in-jetpack-compose-7623203a009d
@@ -159,7 +160,6 @@ fun InstagramCarousel(
     modifier: Modifier = Modifier,
     state: CarouselState = rememberCarouselState(),
     numSegments: Int = 5,
-    circleColor: Color = MaterialTheme.colorScheme.onSurface,
     currentValueLabel: @Composable (Int) -> Unit = { value -> Text(value.toString()) }
 ) {
     val context = LocalContext.current
@@ -179,7 +179,7 @@ fun InstagramCarousel(
         ) {
             CenterCircle(
                 modifier = Modifier.align(Alignment.Center),
-                fillColor = Color(android.graphics.Color.parseColor("#4DB6AC")),
+                fillColor = Color("#4DB6AC".toColorInt()),
                 strokeWidth = 5.dp
             )
             val segmentWidth = maxWidth / numSegments
