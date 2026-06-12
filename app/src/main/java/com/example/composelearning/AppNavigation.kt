@@ -313,6 +313,8 @@ sealed interface AnimScreen :
 
     @Serializable data object WaveLoadingCircle : AnimScreen
 
+    @Serializable data object ShortsFeed : AnimScreen
+
     /** Second-level home screen listing all demos of one [com.example.composelearning.animcompose.FeatureGroup]. */
     @Serializable @Parcelize
     data class Group(val groupId: String) : AnimScreen
@@ -520,6 +522,7 @@ fun AppNavigation(
         entry<AnimScreen.SolarSystem> { SolarSystemSimulation() }
         entry<AnimScreen.GradientHeartFill> { com.example.composelearning.heartfill.GradientHeartFill() }
         entry<AnimScreen.WaveLoadingCircle> { com.example.composelearning.progress.WaveLoadingCircleScreen() }
+        entry<AnimScreen.ShortsFeed> { com.example.composelearning.shortsfeed.presentation.ShortsFeedRoute() }
         entry<AnimScreen.Group> { key ->
             com.example.composelearning.animcompose.GroupFeaturesScreen(
                 groupId = key.groupId,

@@ -312,6 +312,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
 
     // ── Lists, Layouts & Pagers ─────────────────────────────────────────────
     AnimationCategory(
+        "Shorts Video Feed",
+        "TikTok-style endless VerticalPager feed: one shared ExoPlayer hopping between SurfaceViews, LRU disk cache pre-buffering the next clip.",
+        AnimScreen.ShortsFeed,
+        FeatureGroup.LISTS_LAYOUTS_PAGERS
+    ),
+    AnimationCategory(
         "Lists Showcase",
         "12 tabbed list demos: alerts, products, sticky, reorder, swipe, staggered, news, circular.",
         AnimScreen.ListsShowcase,
