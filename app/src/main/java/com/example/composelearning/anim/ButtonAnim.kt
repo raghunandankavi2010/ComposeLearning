@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 
 @Preview
 @Composable
-private fun ButtonAnimationTest() {
+fun ButtonAnimationTest() {
     var show by remember { mutableStateOf(false) }
 
     val progress by animateFloatAsState(

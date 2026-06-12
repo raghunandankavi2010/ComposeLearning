@@ -384,8 +384,8 @@ fun NeonPulseShimmer(
 
 @Composable
 fun SkeletonShimmer(
-    lines: Int = 3,
     modifier: Modifier = Modifier,
+    lines: Int = 3,
     baseColor: Color = Color(0xFFE2E8F0),
     shimmerColor: Color = Color(0xFFF8FAFC),
     durationMillis: Int = 1500
@@ -485,7 +485,7 @@ fun RainbowShimmerText(
 
 @Preview(showBackground = true, backgroundColor = 0xFF0F172A)
 @Composable
-private fun ShimmerTextShowcase() {
+fun ShimmerTextShowcase() {
     Column(
         modifier = Modifier
             .fillMaxSize()

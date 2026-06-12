@@ -7,6 +7,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.splineBasedDecay
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.verticalDrag
 import androidx.compose.foundation.layout.*
@@ -19,9 +20,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.consumePositionChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.input.pointer.util.VelocityTracker
@@ -237,27 +238,35 @@ fun CircularListVertical(
 
 private fun Modifier.drag(
     state: CircularListState
-) = pointerInput(Unit) {
+) = pointerInput(state) {
     val decay = splineBasedDecay<Float>(this)
+    val tracker = VelocityTracker()
     coroutineScope {
-        while (true) {
-            val pointerId = awaitPointerEventScope { awaitFirstDown().id }
-            state.stop()
-            val tracker = VelocityTracker()
-            awaitPointerEventScope {
-                verticalDrag(pointerId) { change ->
+        awaitEachGesture {
+            val down = awaitFirstDown(requireUnconsumed = false)
+            launch {
+                state.stop()
+            }
+            tracker.resetTracking()
+            tracker.addPosition(down.uptimeMillis, down.position)
+            var dragSuccessful = false
+            try {
+                dragSuccessful = verticalDrag(down.id) { change ->
                     val verticalDragOffset = state.verticalOffset + change.positionChange().y
                     launch {
                         state.snapTo(verticalDragOffset)
                     }
                     tracker.addPosition(change.uptimeMillis, change.position)
-                    change.consumePositionChange()
+                    if (change.positionChange() != Offset.Zero) change.consume()
                 }
-            }
-            val velocity = tracker.calculateVelocity().y
-            val targetValue = decay.calculateTargetValue(state.verticalOffset, velocity)
-            launch {
-                state.decayTo(velocity, targetValue)
+            } finally {
+                if (dragSuccessful) {
+                    val velocity = tracker.calculateVelocity().y
+                    val targetValue = decay.calculateTargetValue(state.verticalOffset, velocity)
+                    launch {
+                        state.decayTo(velocity, targetValue)
+                    }
+                }
             }
         }
     }
@@ -275,7 +284,7 @@ private val colors = listOf(
 
 @Preview(showBackground = true, widthDp = 420)
 @Composable
-private fun PreviewCircularListVertical() {
+fun PreviewCircularListVertical() {
     ComposeLearningTheme {
         Surface {
             CircularListVertical(
@@ -285,7 +294,6 @@ private fun PreviewCircularListVertical() {
             ) {
                 for (i in 0 until 40) {
                     ListItem(
-                        text = "Item #$i",
                         color = colors[i % colors.size],
                         modifier = Modifier.size(50.dp)
                     )
@@ -298,7 +306,6 @@ private fun PreviewCircularListVertical() {
 @Composable
 fun ListItem(
     modifier: Modifier = Modifier,
-    text: String = "",
     color: Color
 ) {
     Row(modifier = modifier.width(50.dp)) {

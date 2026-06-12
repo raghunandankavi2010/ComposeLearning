@@ -182,7 +182,6 @@ class CircularRowStateImpl(
 
 @Composable
 fun RowItem(
-    modifier: Modifier = Modifier,
     color: Color
 ) {
     Box(
@@ -204,7 +203,6 @@ fun RowItem(
 @SuppressLint("MultipleAwaitPointerEventScopes", "ReturnFromAwaitPointerEventScope")
 private fun Modifier.drag(
     state: CircularRowState,
-    numItems: Int
 ) = pointerInput(Unit) {
     val decay = splineBasedDecay<Float>(this)
     coroutineScope {
@@ -238,7 +236,6 @@ fun CircularList(
     modifier: Modifier = Modifier,
     state: CircularRowState = rememberCircularRowState(),
     overshootItems: Int = 3,
-    currentIndex: (Int) -> Unit,
     content: @Composable () -> Unit
 ) {
     check(visibleItems > 0) { "Visible items must be positive" }
@@ -247,7 +244,7 @@ fun CircularList(
     Layout(
         modifier = modifier
             .clipToBounds()
-            .drag(state, visibleItems),
+            .drag(state),
         content = content
     ) { measurables, constraints ->
         val itemConstraints =
@@ -297,7 +294,7 @@ private val colors = listOf(
 
 @Preview(showBackground = true)
 @Composable
-private fun PreviewCircularList() {
+fun PreviewCircularList() {
     ComposeLearningTheme {
         Surface {
             CircularList(
@@ -307,8 +304,6 @@ private fun PreviewCircularList() {
                     .fillMaxWidth()
                     .height(50.dp)
                     .background(Color.Black),
-                currentIndex = {
-                }
             ) {
                 for (i in 0 until 40) {
                     RowItem(

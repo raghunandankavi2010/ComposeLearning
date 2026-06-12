@@ -424,6 +424,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         FeatureGroup.PROGRESS_BUTTONS
     ),
     AnimationCategory(
+        "Wave Loading Circle",
+        "Liquid-fill circular loader — a sine wave rises from 0 to 100% inside a circle clip, with amplitude damped near empty and full.",
+        AnimScreen.WaveLoadingCircle,
+        FeatureGroup.PROGRESS_BUTTONS
+    ),
+    AnimationCategory(
         "Gradient Progress Bar",
         "Arc-based progress with linear gradient",
         AnimScreen.GradientProgress,

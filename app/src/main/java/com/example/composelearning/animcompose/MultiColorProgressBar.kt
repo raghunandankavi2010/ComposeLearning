@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 
 // Constants for the animation, inspired by Material's CircularProgressIndicator
 private const val DURATION_MILLIS = 1332
-private const val NUM_SEGMENTS = 3
 private const val SWEEP_ANGLE_PER_SEGMENT = 30f
 private const val GAP_ANGLE = 5f // A small gap between segments
 private const val START_ANGLE_OFFSET = -90f // Start at 12 o'clock
@@ -44,9 +43,9 @@ private const val START_ANGLE_OFFSET = -90f // Start at 12 o'clock
  */
 @Composable
 fun MultiColorIndeterminateCircularProgressBar(
+    modifier: Modifier = Modifier,
     colors: List<Color>,
     strokeWidth: Dp = 16.dp,
-    modifier: Modifier = Modifier,
     animationDuration: Int = DURATION_MILLIS
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "multi-color progress")
@@ -130,7 +129,7 @@ fun MultiColorIndeterminateCircularProgressBar(
 
 @Preview(showBackground = true)
 @Composable
-private fun MultiColorIndeterminateCircularProgressBarPreview() {
+fun MultiColorIndeterminateCircularProgressBarPreview() {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center

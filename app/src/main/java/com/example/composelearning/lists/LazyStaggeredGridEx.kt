@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 
 @Preview
 @Composable
-private fun LazyStaggeredGridSample() {
+fun LazyStaggeredGridSample() {
     val itemCount = 100
     val itemHeight = 100.dp
     val verticalItemSpacing = 4.dp

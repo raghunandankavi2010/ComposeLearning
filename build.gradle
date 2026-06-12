@@ -19,11 +19,11 @@ def ktlintOverrides = [
     'max_line_length': 'off',
     'ktlint_function_naming_ignore_when_annotated_with': 'Composable, Preview',
     // Standard rules relaxed for this sample/learning codebase
-    'ktlint_standard_no-wildcard-imports': 'disabled',
+    'ktlint_standard_no-wildcard-imports': 'enabled',
     'ktlint_standard_value-parameter-comment': 'disabled',
     'ktlint_standard_value-argument-comment': 'disabled',
     'ktlint_standard_property-naming': 'disabled',
-    'ktlint_standard_backing-property-naming': 'disabled',
+    'ktlint_standard_backing-property-naming': 'enabled',
     'ktlint_standard_kdoc': 'disabled',
     'ktlint_standard_no-empty-file': 'disabled',
     // CompositionLocals intentionally defined in this project
@@ -46,6 +46,8 @@ def ktlintOverrides = [
     'ktlint_compose_mutable-state-autoboxing': 'disabled',
     'ktlint_compose_multiple-emitters-check': 'disabled',
     'ktlint_compose_state-param-check': 'disabled',
+    // Showcase screens reuse @Preview composables across files, so they must stay public
+    'ktlint_compose_preview-public-check': 'disabled',
 ]
 
 allprojects {

@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 // ============================================
 // DATA CLASSES
@@ -60,7 +61,7 @@ fun FileManagerScreen() {
                     id = "file_$index",
                     name = listOf("Report.pdf", "Photo.jpg", "Video.mp4", "Music.mp3")[index % 4],
                     size = "${(100..5000).random()} KB",
-                    type = FileType.values()[index % 6],
+                    type = FileType.entries[index % 6],
                     date = "2024-03-${10 + index}"
                 )
             }
@@ -119,7 +120,7 @@ fun FileManagerScreen() {
 
                                 scope.launch {
                                     // Phase 1: Lift (wait a bit)
-                                    delay(200)
+                                    delay(200.milliseconds)
 
                                     // Phase 2: Animate to bin
                                     val anim = Animatable(0f)
@@ -425,7 +426,7 @@ private fun FileIcon(type: FileType, isDeleting: Boolean) {
 
 @Preview(showBackground = true)
 @Composable
-private fun FileManagerPreview() {
+fun FileManagerPreview() {
     MaterialTheme {
         FileManagerScreen()
     }

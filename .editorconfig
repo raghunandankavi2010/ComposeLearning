@@ -39,6 +39,8 @@ ktlint_compose_lambda-param-in-effect = disabled
 ktlint_compose_lambda-param-event-trailing = disabled
 ktlint_compose_vm-forwarding-check = disabled
 ktlint_compose_mutable-state-param-check = disabled
+# Showcase screens reuse @Preview composables across files, so they must stay public
+ktlint_compose_preview-public-check = disabled
 
 [*.{yml,yaml,json}]
 indent_size = 2

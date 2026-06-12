@@ -1,7 +1,6 @@
 package com.example.composelearning.lists
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FloatSpringSpec
@@ -12,7 +11,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.horizontalDrag
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -34,8 +41,8 @@ import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.input.pointer.util.VelocityTracker
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColorInt
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -178,10 +185,8 @@ fun InstagramCarousel2(
     modifier: Modifier = Modifier,
     state: CarouselState2 = rememberCarouselState2(),
     numSegments: Int = 5,
-    circleColor: Color = MaterialTheme.colorScheme.onSurface, // This parameter is unused, can be removed.
     currentValueLabel: @Composable (Int) -> Unit = { value -> Text(value.toString()) }
 ) {
-    val context = LocalContext.current
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -198,8 +203,7 @@ fun InstagramCarousel2(
         ) {
             CenterCircle2(
                 modifier = Modifier.align(Alignment.Center),
-                fillColor = Color(android.graphics.Color.parseColor("#4DB6AC")),
-                strokeWidth = 5.dp
+                fillColor = Color("#4DB6AC".toColorInt())
             )
             val segmentWidth = maxWidth / numSegments
             val segmentWidthPx = constraints.maxWidth.toFloat() / numSegments.toFloat()
@@ -256,8 +260,7 @@ fun InstagramCarousel2(
 @Composable
 fun CenterCircle2(
     modifier: Modifier = Modifier,
-    fillColor: Color,
-    strokeWidth: Dp
+    fillColor: Color
 ) {
     Box(
         modifier = modifier
@@ -305,7 +308,7 @@ private fun Modifier.drag(
 
 @Preview(widthDp = 420)
 @Composable
-private fun InstagramCarouselPreview2() {
+fun InstagramCarouselPreview2() {
     ComposeLearningTheme {
         Surface(modifier = Modifier.fillMaxWidth()) {
             // Demonstrate usage of the new callback
