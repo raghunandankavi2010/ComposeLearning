@@ -16,14 +16,11 @@
 
 package com.example.composelearning.calendar
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.EaseOutQuart
 import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -56,8 +53,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjusters
 import java.time.temporal.WeekFields
 
-@RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalLayoutApi::class)
+
 @Composable
 fun Calendar(
     calendarState: CalendarState,
@@ -119,7 +115,6 @@ fun Calendar(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 private fun LazyListScope.itemsCalendarMonth(
     calendarUiState: CalendarUiState,
     onDayClicked: (LocalDate) -> Unit,
@@ -189,10 +184,8 @@ private fun LazyListScope.itemsCalendarMonth(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 internal val CALENDAR_STARTS_ON = WeekFields.ISO
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 private fun DayPreview() {

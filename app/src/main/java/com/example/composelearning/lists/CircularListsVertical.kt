@@ -226,7 +226,8 @@ fun CircularListVertical(
             height = constraints.maxHeight
         ) {
             for (i in state.firstVisibleItem..state.lastVisibleItem) {
-                placeables[i].placeRelativeWithLayer(state.offsetFor(i), layerBlock = {
+                placeables[i].placeRelativeWithLayer(state.offsetFor(i),
+                    layerBlock = {
                     alpha = state.alpha(i)
                     // scaleX = state.scale(i)
                     // scaleY = state.scale(i)

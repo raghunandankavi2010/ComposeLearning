@@ -9,6 +9,9 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 
 [*.{kt,kts}]
+# Tells IntelliJ / KtLint to never group imports into '*' wildcards
+ij_kotlin_name_count_to_use_star_import = 99
+ij_kotlin_name_count_to_use_star_import_for_members = 99
 # Android Kotlin style guide
 ktlint_code_style = android_studio
 # Long lines are common in demo/sample code; don't fail the build on them
