@@ -148,6 +148,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         FeatureGroup.CANVAS_GRAPHICS
     ),
     AnimationCategory(
+        "Disintegration (Thanos snap)",
+        "Capture any composable's pixels via GraphicsLayer, then dissolve it into drifting dust. A position-keyed wavefront erodes image strips while sampled particles fly off — heavy pixel work runs off the main thread.",
+        AnimScreen.Disintegration,
+        FeatureGroup.CANVAS_GRAPHICS
+    ),
+    AnimationCategory(
         "Mesh Gradient",
         "Demo for mesh gradient using compose",
         AnimScreen.MeshGradient,

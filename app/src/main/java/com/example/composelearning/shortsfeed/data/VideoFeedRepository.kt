@@ -1,7 +1,7 @@
 package com.example.composelearning.shortsfeed.data
 
-import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.delay
 
 /** A single playable item in the shorts feed. */
 data class VideoItem(

@@ -22,11 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.composelearning.animcompose.SidePanelArrangement
-import com.example.composelearning.animcompose.SidePanelLayout
-import com.example.composelearning.animcompose.SidePanelState
-import com.example.composelearning.animcompose.SpotlightDemoScreen
-import com.example.composelearning.animcompose.rememberSidePanelState
 import kotlinx.coroutines.launch
 
 class SidePanelActivity : ComponentActivity() {

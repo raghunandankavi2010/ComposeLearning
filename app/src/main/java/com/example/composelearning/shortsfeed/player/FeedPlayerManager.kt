@@ -93,10 +93,14 @@ class FeedPlayerManager(context: Context) {
         .setLoadControl(
             DefaultLoadControl.Builder()
                 .setBufferDurationsMs(
-                    /* minBufferMs = */ 5_000,
-                    /* maxBufferMs = */ 20_000,
-                    /* bufferForPlaybackMs = */ 1_000,
-                    /* bufferForPlaybackAfterRebufferMs = */ 2_000
+                    /* minBufferMs = */
+                    5_000,
+                    /* maxBufferMs = */
+                    20_000,
+                    /* bufferForPlaybackMs = */
+                    1_000,
+                    /* bufferForPlaybackAfterRebufferMs = */
+                    2_000
                 )
                 .build()
         )
@@ -105,7 +109,8 @@ class FeedPlayerManager(context: Context) {
                 .setUsage(C.USAGE_MEDIA)
                 .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
                 .build(),
-            /* handleAudioFocus = */ true
+            /* handleAudioFocus = */
+            true
         )
         .setHandleAudioBecomingNoisy(true)
         .build()
@@ -150,7 +155,6 @@ class FeedPlayerManager(context: Context) {
         return (player.currentPosition.toFloat() / duration).coerceIn(0f, 1f)
     }
 
-
     // ── Pre-caching ─────────────────────────────────────────────────────────
 
     private val precacheScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -178,8 +182,10 @@ class FeedPlayerManager(context: Context) {
             val writer = CacheWriter(
                 cacheDataSourceFactory.createDataSource(),
                 dataSpec,
-                /* temporaryBuffer = */ null,
-                /* progressListener = */ null
+                /* temporaryBuffer = */
+                null,
+                /* progressListener = */
+                null
             )
             activeCacheWriter = writer
             try {

@@ -33,10 +33,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.progressSemantics
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -750,12 +748,14 @@ object ProgressIndicatorDefaults {
     val linearColor: Color @Composable get() = Color.Green
 
     /** Default color for a circular progress indicator. */
-    val circularColor: Color @Composable get() =
-        Color.Red
+    val circularColor: Color
+        @Composable get() =
+            Color.Red
 
     /** Default track color for a linear progress indicator. */
-    val linearTrackColor: Color @Composable get() =
-        Color.Gray
+    val linearTrackColor: Color
+        @Composable get() =
+            Color.Gray
 
     /** Default track color for a circular progress indicator. */
     val circularTrackColor: Color @Composable get() = Color.Transparent

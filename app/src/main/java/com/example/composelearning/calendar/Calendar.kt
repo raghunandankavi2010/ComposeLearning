@@ -53,7 +53,6 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjusters
 import java.time.temporal.WeekFields
 
-
 @Composable
 fun Calendar(
     calendarState: CalendarState,

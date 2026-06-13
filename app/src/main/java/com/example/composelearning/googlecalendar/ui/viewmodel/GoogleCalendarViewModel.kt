@@ -118,7 +118,9 @@ class GoogleCalendarViewModel(
             try {
                 val dots = getEventsUseCase.getEventDatesForMonth(yearMonth)
                 _uiState.update { it.copy(eventDotsByDate = dots) }
-            } catch (_: Exception) { /* Silently ignore dot loading failures */ }
+            } catch (_: Exception) {
+                /* Silently ignore dot loading failures */
+            }
         }
     }
 

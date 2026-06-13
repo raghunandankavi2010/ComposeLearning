@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.composelearning.customshapes.dpToPx
 import com.example.composelearning.speedometer.addRoundedPolarBox
 import kotlin.math.PI
 import kotlin.math.asin

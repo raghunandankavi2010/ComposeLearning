@@ -2,7 +2,6 @@ package com.example.composelearning.animcompose
 
 import android.app.Activity
 import android.graphics.Rect
-import android.os.Build
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FiniteAnimationSpec
 import androidx.compose.animation.core.Spring
@@ -36,23 +35,6 @@ import kotlinx.coroutines.launch
 
 private const val DRAG_THRESHOLD = 0.5f
 
-/*
- * A simplified side panel layout with drag gestures to change its width.
- *
- * Features:
- * - Smooth drag gesture handling to adjust panel width.
- * - Panel expands from the right (or left based on arrangement).
- * - No complex animations (rainbow, arc, etc.).
- *
- * @param modifier Modifier to be applied to the layout. IMPORTANT: If you set a fixed width (e.g., .width(300.dp)),
- *                  that width will be used as the maximum expansion width for the panel.
- * @param state State holder for managing the side panel state
- * @param arrangement Placement of the side panel (Start or End)
- * @param containerColor Background color of the side panel container
- * @param dragHandleContent Composable content for the drag handle
- * @param content Composable content inside the side panel (currently not used for drawing as per request)
- */
-
 /**
  * A simplified side panel layout with drag gestures to change its width.
  *
@@ -73,7 +55,7 @@ private const val DRAG_THRESHOLD = 0.5f
 fun SidePanelLayout(
     modifier: Modifier = Modifier,
     state: SidePanelStateHolder,
-    maxPanelWidth: Dp, // <--- NEW PARAMETER
+    maxPanelWidth: Dp,
     arrangement: SidePanelArrangement = SidePanelArrangement.End,
     containerColor: Color = Color.Green,
     dragHandleContent: @Composable (isExpanded: Boolean, progress: Float) -> Unit,
@@ -142,7 +124,6 @@ fun SidePanelLayout(
                 arrangement = arrangement,
                 currentWidth = state.animatedWidth.toInt(),
                 screenWidth = screenWidthPx.toInt(),
-                sheetWidth = sheetPlaceable.width, // This is the width due to current animation
                 dragHandleWidth = dragHandlePlaceable.width,
                 maxHeight = constraints.maxHeight,
                 sheetHeight = sheetPlaceable.height,
@@ -200,8 +181,8 @@ class SidePanelStateHolder internal constructor(
     initialState: SidePanelState,
     private val animationSpec: FiniteAnimationSpec<Float>
 ) {
-    private val _state = mutableStateOf(initialState)
-    val currentState: SidePanelState by _state
+    private val _currentState = mutableStateOf(initialState)
+    val currentState: SidePanelState by _currentState
 
     private val currentSheetWidth = Animatable(0f)
     private var maxSheetWidthPx by mutableFloatStateOf(0f)
@@ -236,7 +217,7 @@ class SidePanelStateHolder internal constructor(
 
         val targetWidth = if (state == SidePanelState.Expanded) maxSheetWidthPx else 0f
         currentSheetWidth.animateTo(targetWidth, animationSpec)
-        _state.value = state
+        _currentState.value = state
     }
 
     suspend fun expand() = animateTo(SidePanelState.Expanded)
@@ -304,7 +285,6 @@ private fun calculatePositions(
     arrangement: SidePanelArrangement,
     currentWidth: Int,
     screenWidth: Int,
-    sheetWidth: Int, // The current animated width of the sheet
     dragHandleWidth: Int,
     maxHeight: Int,
     sheetHeight: Int,
@@ -338,10 +318,8 @@ private fun ExcludeDragHandleRectFromGesture(dragHandleRect: Rect) {
     val context = LocalContext.current
 
     LaunchedEffect(dragHandleRect) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val activity = context as? Activity ?: return@LaunchedEffect
-            val decorView = activity.window?.decorView ?: return@LaunchedEffect
-            decorView.systemGestureExclusionRects = listOf(dragHandleRect)
-        }
+        val activity = context as? Activity ?: return@LaunchedEffect
+        val decorView = activity.window?.decorView ?: return@LaunchedEffect
+        decorView.systemGestureExclusionRects = listOf(dragHandleRect)
     }
 }

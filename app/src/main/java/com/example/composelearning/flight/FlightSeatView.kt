@@ -1,7 +1,6 @@
 package com.example.composelearning.flight
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
@@ -10,11 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
@@ -400,6 +397,7 @@ private fun computePlaneLayout(
         lineTo(rootX + tipDx, rootY + pylonH)
         close()
     }
+
     fun engineCenter(t: Float, leftSide: Boolean): Offset {
         // t along trailing edge from root to crank
         val rootX = if (leftSide) midX - bodyHalfW * 0.35f else midX + bodyHalfW * 0.35f
@@ -408,6 +406,7 @@ private fun computePlaneLayout(
         val tipY = wingTrailingY
         return Offset(rootX + (tipX - rootX) * t, rootY + (tipY - rootY) * t)
     }
+
     val leftPylons = listOf(0.35f, 0.70f).map { t ->
         val c = engineCenter(t, leftSide = true)
         pylonAt(c.x, c.y, tipDx = -pylonW * 0.35f)

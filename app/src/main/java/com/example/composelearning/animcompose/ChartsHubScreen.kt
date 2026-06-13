@@ -17,14 +17,37 @@
 package com.example.composelearning.animcompose
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PrimaryScrollableTabRow
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SecondaryTabRow
+import androidx.compose.material3.Tab
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.composelearning.charts.*
+import com.example.composelearning.charts.BarChartContent
+import com.example.composelearning.charts.BezierContent
+import com.example.composelearning.charts.CandleChartContent
+import com.example.composelearning.charts.DonutChartContent
+import com.example.composelearning.charts.LineChartContent
+import com.example.composelearning.charts.PieChartContent
+import com.example.composelearning.charts.SpeedometerContent
+import com.example.composelearning.charts.TemperatureContent
 import com.example.composelearning.graphics.SineWaveSample
 
 /**

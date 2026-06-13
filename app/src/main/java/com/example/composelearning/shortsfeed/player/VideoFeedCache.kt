@@ -27,29 +27,27 @@ object VideoFeedCache {
     @Volatile
     private var cache: SimpleCache? = null
 
-    fun get(context: Context): SimpleCache =
-        cache ?: synchronized(this) {
-            cache ?: SimpleCache(
-                File(context.applicationContext.cacheDir, CACHE_DIR),
-                LeastRecentlyUsedCacheEvictor(MAX_CACHE_BYTES),
-                StandaloneDatabaseProvider(context.applicationContext)
-            ).also { cache = it }
-        }
+    fun get(context: Context): SimpleCache = cache ?: synchronized(this) {
+        cache ?: SimpleCache(
+            File(context.applicationContext.cacheDir, CACHE_DIR),
+            LeastRecentlyUsedCacheEvictor(MAX_CACHE_BYTES),
+            StandaloneDatabaseProvider(context.applicationContext)
+        ).also { cache = it }
+    }
 
     /**
      * DataSource factory used by BOTH playback and pre-caching, so bytes written by the
      * pre-cacher are read back by the player (same cache, same default cache-key = URI).
      */
-    fun dataSourceFactory(context: Context): CacheDataSource.Factory =
-        CacheDataSource.Factory()
-            .setCache(get(context))
-            .setUpstreamDataSourceFactory(
-                DefaultHttpDataSource.Factory()
-                    .setUserAgent(Util.getUserAgent(context, "ComposeLearning"))
-                    .setAllowCrossProtocolRedirects(true)
-                    .setConnectTimeoutMs(10_000)
-                    .setReadTimeoutMs(10_000)
-            )
-            // A corrupt/locked cache must degrade to plain network, never break playback.
-            .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
+    fun dataSourceFactory(context: Context): CacheDataSource.Factory = CacheDataSource.Factory()
+        .setCache(get(context))
+        .setUpstreamDataSourceFactory(
+            DefaultHttpDataSource.Factory()
+                .setUserAgent(Util.getUserAgent(context, "ComposeLearning"))
+                .setAllowCrossProtocolRedirects(true)
+                .setConnectTimeoutMs(10_000)
+                .setReadTimeoutMs(10_000)
+        )
+        // A corrupt/locked cache must degrade to plain network, never break playback.
+        .setFlags(CacheDataSource.FLAG_IGNORE_CACHE_ON_ERROR)
 }

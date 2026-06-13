@@ -81,15 +81,19 @@ class ShortsFeedViewModel(application: Application) : ViewModel() {
     fun onEvent(event: ShortsFeedEvent) {
         when (event) {
             is ShortsFeedEvent.PageSettled -> onPageSettled(event.page)
+
             ShortsFeedEvent.TogglePlayPause -> {
                 val paused = !userPaused.value
                 userPaused.value = paused
                 if (paused) playerManager.pause() else playerManager.resume()
             }
+
             ShortsFeedEvent.AppForegrounded ->
                 if (!userPaused.value) playerManager.resume()
+
             ShortsFeedEvent.AppBackgrounded ->
                 playerManager.pause()
+
             ShortsFeedEvent.RetryPlayback ->
                 playerManager.retry()
         }

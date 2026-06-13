@@ -36,6 +36,8 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.composelearning.pager.TabRowDefaults.Divider
+import com.example.composelearning.pager.TabRowDefaults.Indicator
 import com.example.composelearning.pager.TabRowDefaults.tabIndicatorOffset
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

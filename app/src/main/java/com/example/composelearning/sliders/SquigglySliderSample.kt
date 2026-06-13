@@ -16,16 +16,40 @@
 
 package com.example.composelearning.sliders
 
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -134,7 +158,10 @@ fun SquigglySlider(
 ) {
     val animationsEnabled = LocalAnimationsEnabled.current
     val infiniteTransition = rememberInfiniteTransition(label = "SquigglyTransition")
-    val phase by if (animationsEnabled) {
+
+    // Optimization: Use a State object and read its value only inside the Canvas.
+    // This prevents the entire Slider from recomposing on every animation frame.
+    val phaseProvider = if (animationsEnabled) {
         infiniteTransition.animateFloat(
             initialValue = 0f,
             targetValue = 2f * PI.toFloat(),
@@ -145,10 +172,13 @@ fun SquigglySlider(
             label = "SquigglyPhase"
         )
     } else {
-        remember { mutableStateOf(0f) }
+        remember { mutableFloatStateOf(0f) }
     }
 
     val interactionSource = remember { MutableInteractionSource() }
+
+    // Optimization: Reuse the Path object to avoid allocations during draw calls.
+    val activePath = remember { Path() }
 
     Slider(
         value = value,
@@ -161,50 +191,52 @@ fun SquigglySlider(
                     .fillMaxWidth()
                     .height(48.dp)
             ) {
+                val phase = phaseProvider.value
                 val width = size.width
                 val centerY = size.height / 2
+                val limitX = width * value
 
                 val ampPx = amplitude.dp.toPx()
                 val wavePx = wavelength.dp.toPx()
-                val piFloat = PI.toFloat()
 
-                // 1. Draw the Inactive Track (Full Width, Straight)
+                // 1. Draw the Inactive Track (Straight)
+                // Drawing from limitX onwards avoids overlapping with the active wavy track.
                 drawLine(
                     color = inactiveColor,
-                    start = Offset(0f, centerY),
+                    start = Offset(limitX, centerY),
                     end = Offset(width, centerY),
                     strokeWidth = 4.dp.toPx(),
                     cap = StrokeCap.Round
                 )
 
-                // 2. Draw the Active Track (Up to slider value, Wavy)
-                val activePath = Path()
-                val limitX = width * value
-                var x = 0f
-                activePath.moveTo(0f, centerY + ampPx * sin(phase))
-                while (x <= limitX) {
-                    val y = centerY + ampPx * sin((2f * piFloat * x / wavePx) + phase)
-                    activePath.lineTo(x, y)
-                    x += 2f
-                }
+                // 2. Draw the Active Track (Wavy)
+                if (wavePx > 0f && limitX > 0f) {
+                    activePath.reset()
+                    var x = 0f
+                    activePath.moveTo(0f, centerY + ampPx * sin(phase))
 
-                // Ensure it ends exactly at thumb position
-                if (limitX > 0f) {
-                    activePath.lineTo(limitX, centerY + ampPx * sin((2f * piFloat * limitX / wavePx) + phase))
-                }
+                    // Use a density-aware step for a smooth curve across different screen densities.
+                    val step = 1.dp.toPx()
+                    val frequency = (2f * PI.toFloat()) / wavePx
 
-                drawPath(
-                    path = activePath,
-                    color = activeColor,
-                    style = Stroke(width = 6.dp.toPx(), cap = StrokeCap.Round)
-                )
+                    while (x < limitX) {
+                        x = (x + step).coerceAtMost(limitX)
+                        val y = centerY + ampPx * sin((frequency * x) + phase)
+                        activePath.lineTo(x, y)
+                    }
+
+                    drawPath(
+                        path = activePath,
+                        color = activeColor,
+                        style = Stroke(width = 6.dp.toPx(), cap = StrokeCap.Round)
+                    )
+                }
             }
         },
         thumb = {
-            // Material 3 default thumb
-            androidx.compose.material3.SliderDefaults.Thumb(
+            SliderDefaults.Thumb(
                 interactionSource = interactionSource,
-                colors = androidx.compose.material3.SliderDefaults.colors(thumbColor = activeColor)
+                colors = SliderDefaults.colors(thumbColor = activeColor)
             )
         }
     )

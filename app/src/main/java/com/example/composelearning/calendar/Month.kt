@@ -24,13 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.example.composelearning.R
 import com.example.composelearning.ui.theme.AppFontFamilyBlack
-import java.time.format.DateTimeFormatter
 
 @Composable
 internal fun MonthHeader(modifier: Modifier = Modifier, month: String, year: String) {

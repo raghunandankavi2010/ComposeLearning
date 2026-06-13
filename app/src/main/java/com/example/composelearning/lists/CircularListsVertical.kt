@@ -10,7 +10,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.verticalDrag
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -226,12 +230,14 @@ fun CircularListVertical(
             height = constraints.maxHeight
         ) {
             for (i in state.firstVisibleItem..state.lastVisibleItem) {
-                placeables[i].placeRelativeWithLayer(state.offsetFor(i),
+                placeables[i].placeRelativeWithLayer(
+                    state.offsetFor(i),
                     layerBlock = {
-                    alpha = state.alpha(i)
-                    // scaleX = state.scale(i)
-                    // scaleY = state.scale(i)
-                })
+                        alpha = state.alpha(i)
+                        // scaleX = state.scale(i)
+                        // scaleY = state.scale(i)
+                    }
+                )
             }
         }
     }

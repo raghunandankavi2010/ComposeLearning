@@ -34,6 +34,7 @@ sealed interface ContactsUiState {
         /** Size of the protobuf payload we decoded — shown so the saving is visible. */
         val payloadBytes: Int
     ) : ContactsUiState
+
     data class Error(val message: String) : ContactsUiState
 }
 
