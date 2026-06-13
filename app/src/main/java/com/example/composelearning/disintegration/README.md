@@ -74,6 +74,8 @@ mapping is why strips can be drawn back at their original coordinates with no sc
 
 ## 3. Splitting the image: strips + particles
 
+![Strips plus particles overlay](images/02-layers.svg)
+
 Drawing *every* pixel as an independent flying particle would be tens of thousands of draw
 calls per frame. Instead the image is represented two cheap ways simultaneously:
 
@@ -110,6 +112,8 @@ math needs.
 
 ### Particles
 
+![Bitmap sampled into a particle grid](images/04-grid.svg)
+
 `buildEffect` walks a grid of cells of side `cell`. The cell size is **auto-derived** so the
 particle count stays under `maxParticles` regardless of image resolution:
 
@@ -143,6 +147,8 @@ avoid per-object allocation and keep the hot loop cache-friendly.
 ---
 
 ## 4. The wavefront — the core math
+
+![The wavefront band sweeping across the image](images/01-wavefront.svg)
 
 A single front sweeps **left → right**. For any normalized x-position `seed ∈ [0,1]`, the
 **local dissolve fraction** `f` is:
@@ -217,6 +223,8 @@ for (i in 0 until count) {
     drawRect(Color(color[i]), topLeft = Offset(x, y), size = Size(cell, cell), alpha = alpha)
 }
 ```
+
+![Travel and opacity curves as functions of f](images/03-curves.svg)
 
 **Travel — `f²`.** Quadratic easing: a particle barely moves as it detaches, then accelerates
 away. Position is purely a function of `f`, so there is no integration/state to maintain between
@@ -302,3 +310,5 @@ content has fully dissolved. `reset()` flips `triggered` back to `false` and the
   `buildEffect`, and the strip/particle draw helpers.
 - `DisintegrationScreen.kt` — demo: switch between image / text / full-layout targets and
   play / reset the dissolve.
+- `images/` — the explanatory SVG diagrams embedded above (`01-wavefront`, `02-layers`,
+  `03-curves`, `04-grid`).

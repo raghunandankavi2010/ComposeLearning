@@ -1,0 +1,102 @@
+<svg font-family="-apple-system, Segoe UI, Roboto, sans-serif" height="380" viewBox="0 0 820 380" width="820"
+    xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <!-- the "image" content: a colourful gradient so it reads like a photo -->
+        <linearGradient id="img" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stop-color="#0A84FF" />
+            <stop offset="0.4" stop-color="#BF5AF2" />
+            <stop offset="0.7" stop-color="#FF453A" />
+            <stop offset="1" stop-color="#FF9F0A" />
+        </linearGradient>
+        <!-- dissolve mask: opaque bg on the left (gone), fading through the band, clear on the right (solid) -->
+        <linearGradient id="fade" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stop-color="#FBFBFD" stop-opacity="1" />
+            <stop offset="0.23" stop-color="#FBFBFD" stop-opacity="1" />
+            <stop offset="0.63" stop-color="#FBFBFD" stop-opacity="0" />
+            <stop offset="1" stop-color="#FBFBFD" stop-opacity="0" />
+        </linearGradient>
+    </defs>
+
+    <rect fill="#FBFBFD" height="380" width="820" />
+    <text fill="#1d1d1f" font-size="22" font-weight="700" x="60" y="44">The wavefront sweeps left →
+        right
+    </text>
+    <text fill="#6e6e73" font-size="14" x="60" y="68">snapshot at progress = 0.45, band = 0.40
+    </text>
+
+    <!-- the image strip -->
+    <rect fill="url(#img)" height="120" rx="8" width="700" x="60" y="100" />
+    <rect fill="url(#fade)" height="120" rx="8" width="700" x="60" y="100" />
+    <rect fill="none" height="120" rx="8" stroke="#d2d2d7" stroke-width="1.5" width="700" x="60"
+        y="100" />
+
+    <!-- gone region outline -->
+    <rect fill="none" height="120" rx="8" stroke="#c7c7cc" stroke-dasharray="5 5" stroke-width="1.5" width="161"
+        x="60" y="100" />
+
+    <!-- band edges -->
+    <line stroke="#1d1d1f" stroke-dasharray="4 4" stroke-width="1.5" x1="221" x2="221" y1="92"
+        y2="252" />
+    <line stroke="#1d1d1f" stroke-dasharray="4 4" stroke-width="1.5" x1="501" x2="501" y1="92"
+        y2="252" />
+
+    <!-- drifting particles in/above the band -->
+    <g>
+        <rect fill="#BF5AF2" height="7" opacity="0.9" width="7" x="300" y="92" />
+        <rect fill="#FF453A" height="6" opacity="0.8" width="6" x="345" y="80" />
+        <rect fill="#FF9F0A" height="6" opacity="0.7" width="6" x="395" y="70" />
+        <rect fill="#FF453A" height="5" opacity="0.55" width="5" x="440" y="62" />
+        <rect fill="#FF9F0A" height="5" opacity="0.4" width="5" x="480" y="55" />
+        <rect fill="#BF5AF2" height="7" opacity="0.85" width="7" x="330" y="104" />
+        <rect fill="#FF453A" height="6" opacity="0.7" width="6" x="375" y="96" />
+        <rect fill="#FF9F0A" height="6" opacity="0.6" width="6" x="420" y="86" />
+        <rect fill="#FF453A" height="5" opacity="0.45" width="5" x="460" y="78" />
+    </g>
+
+    <!-- region labels -->
+    <text fill="#86868b" font-size="14" font-weight="700" text-anchor="middle" x="140" y="170">f =
+        1
+    </text>
+    <text fill="#86868b" font-size="12" text-anchor="middle" x="140" y="190">gone</text>
+
+    <text fill="#1d1d1f" font-size="14" font-weight="700" text-anchor="middle" x="361" y="170">0
+        &lt; f &lt; 1
+    </text>
+    <text fill="#1d1d1f" font-size="12" text-anchor="middle" x="361" y="190">dissolving band</text>
+
+    <text fill="#ffffff" font-size="14" font-weight="700" text-anchor="middle" x="630" y="170">f =
+        0
+    </text>
+    <text fill="#ffffff" font-size="12" text-anchor="middle" x="630" y="190">solid</text>
+
+    <!-- band width bracket -->
+    <line stroke="#0A84FF" stroke-width="2" x1="221" x2="501" y1="266" y2="266" />
+    <line stroke="#0A84FF" stroke-width="2" x1="221" x2="221" y1="261" y2="271" />
+    <line stroke="#0A84FF" stroke-width="2" x1="501" x2="501" y1="261" y2="271" />
+    <text fill="#0A84FF" font-size="13" font-weight="600" text-anchor="middle" x="361" y="284">band
+        width = 0.40
+    </text>
+
+    <!-- progress arrow -->
+    <line marker-end="url(#arr)" stroke="#1d1d1f" stroke-width="2" x1="221" x2="501" y1="232"
+        y2="232" />
+    <text fill="#1d1d1f" font-size="12" x="245" y="226">front direction</text>
+    <defs>
+        <marker id="arr" markerHeight="10" markerWidth="10" orient="auto" refX="7" refY="3">
+            <path d="M0,0 L7,3 L0,6 Z" fill="#1d1d1f" />
+        </marker>
+    </defs>
+
+    <!-- seed axis -->
+    <line stroke="#d2d2d7" stroke-width="1.5" x1="60" x2="760" y1="312" y2="312" />
+    <text fill="#86868b" font-size="12" text-anchor="middle" x="60" y="334">seed 0.0</text>
+    <text fill="#86868b" font-size="12" text-anchor="middle" x="760" y="334">1.0</text>
+    <text fill="#6e6e73" font-size="13" text-anchor="middle" x="410" y="358">normalized x-position
+        of each column / particle
+    </text>
+
+    <!-- formula -->
+    <text fill="#1d1d1f" font-family="monospace" font-size="13" x="60" y="372">f =
+        ((progress·(1+band) − seed) / band).coerceIn(0,1)
+    </text>
+</svg>

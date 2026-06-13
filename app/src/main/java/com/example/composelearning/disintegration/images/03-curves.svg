@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="380" viewBox="0 0 820 380" font-family="-apple-system, Segoe UI, Roboto, sans-serif">
+  <rect width="820" height="380" fill="#FBFBFD"/>
+  <text x="60" y="40" font-size="22" font-weight="700" fill="#1d1d1f">Per-particle flight is closed-form in f</text>
+  <text x="60" y="64" font-size="14" fill="#6e6e73">no physics loop — position &amp; opacity are pure functions of the dissolve fraction</text>
+
+  <!-- axes -->
+  <line x1="90" y1="60"  x2="90"  y2="280" stroke="#d2d2d7" stroke-width="1.5"/>
+  <line x1="90" y1="280" x2="760" y2="280" stroke="#d2d2d7" stroke-width="1.5"/>
+
+  <!-- y gridlines -->
+  <line x1="90" y1="60"  x2="760" y2="60"  stroke="#eeeef0" stroke-width="1"/>
+  <line x1="90" y1="170" x2="760" y2="170" stroke="#eeeef0" stroke-width="1"/>
+  <text x="82" y="64"  font-size="12" fill="#86868b" text-anchor="end">1.0</text>
+  <text x="82" y="174" font-size="12" fill="#86868b" text-anchor="end">0.5</text>
+  <text x="82" y="284" font-size="12" fill="#86868b" text-anchor="end">0.0</text>
+
+  <!-- x labels -->
+  <text x="90"  y="300" font-size="12" fill="#86868b" text-anchor="middle">f = 0</text>
+  <text x="425" y="300" font-size="12" fill="#86868b" text-anchor="middle">0.5</text>
+  <text x="760" y="300" font-size="12" fill="#86868b" text-anchor="middle">1.0</text>
+  <text x="425" y="322" font-size="13" fill="#6e6e73" text-anchor="middle">dissolve fraction f  (0 = just detached, 1 = fully dispersed)</text>
+
+  <!-- travel = f^2  (accelerating) -->
+  <polyline fill="none" stroke="#0A84FF" stroke-width="3"
+    points="90,280 157,277.8 224,271.2 291,260.2 358,244.8 425,225 492,200.8 559,172.2 626,139.2 693,101.8 760,60"/>
+
+  <!-- alpha = 4 f (1-f)  (bell) -->
+  <polyline fill="none" stroke="#FF9F0A" stroke-width="3"
+    points="90,280 157,200.8 224,139.2 291,95.2 358,68.8 425,60 492,68.8 559,95.2 626,139.2 693,200.8 760,280"/>
+
+  <!-- peak marker for alpha -->
+  <circle cx="425" cy="60" r="4" fill="#FF9F0A"/>
+  <line x1="425" y1="60" x2="425" y2="280" stroke="#FF9F0A" stroke-width="1" stroke-dasharray="3 4" opacity="0.5"/>
+  <text x="435" y="54" font-size="12" fill="#FF9F0A">peak alpha = 1 at f = 0.5</text>
+
+  <!-- endpoint marker for travel -->
+  <circle cx="760" cy="60" r="4" fill="#0A84FF"/>
+
+  <!-- legend -->
+  <rect x="560" y="78" width="16" height="6" fill="#0A84FF"/>
+  <text x="584" y="85" font-size="13" font-weight="600" fill="#1d1d1f">travel = f²</text>
+  <text x="584" y="102" font-size="11" fill="#6e6e73">ease-in: barely moves, then whips away</text>
+
+  <rect x="560" y="120" width="16" height="6" fill="#FF9F0A"/>
+  <text x="584" y="127" font-size="13" font-weight="600" fill="#1d1d1f">alpha = 4·f·(1−f)</text>
+  <text x="584" y="144" font-size="11" fill="#6e6e73">fades in, brightest mid-flight, fades out</text>
+
+  <!-- bottom note -->
+  <text x="60" y="352" font-size="13" font-family="monospace" fill="#1d1d1f">x = startX + driftX·travel     y = startY + driftY·travel     (driftX &gt; 0 right, driftY &lt; 0 up)</text>
+</svg>
