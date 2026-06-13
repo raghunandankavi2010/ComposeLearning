@@ -86,6 +86,12 @@ The strips carry the bulk of the visual fidelity for free (they're just the bitm
 *sampled* subset of pixels becomes particles — enough to read as "breaking into dust" without
 drawing the whole image as particles.
 
+> **Why the illusion holds with so few particles.** Blending a *macro* fade-out (the strips) with
+> *micro* floating elements (the particles) is enough to fool the eye: your brain perceives a solid
+> object crumbling into dust even though the dust is quite sparse. Pure particles would need
+> hundreds of thousands of squares to look crisp and would tank the frame rate; the strips supply
+> the crisp body for free, so the particles only have to sell the *edge* where things break apart.
+
 ### Strips
 
 The width is sliced into contiguous columns of `stripWidthPx` (default 3px):
@@ -116,6 +122,11 @@ rows = ⌊height / cell⌋
 > Solving `cols · rows ≈ (w/cell)(h/cell) = w·h/cell² ≤ maxParticles` for `cell` gives
 > `cell ≥ sqrt(w·h / maxParticles)`. That keeps the draw loop bounded: a 4 MP photo and a
 > 0.2 MP one both yield ≈ `maxParticles` squares.
+>
+> **Worked example.** A full-screen `1080 × 1920` layout is ≈ 2,073,600 px. With
+> `maxParticles = 4500`: `cell = sqrt(2,073,600 / 4500) ≈ 21.4 px`. So the grid samples one pixel
+> from the centre of each ≈ `21 × 21` block — skipping it if transparent, or emitting a particle if
+> it has colour.
 
 For each cell we sample the pixel at its centre. **Fully transparent pixels are skipped**
 (`alpha < 0.05`), which is exactly what makes the effect work for text and irregular layouts —
