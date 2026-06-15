@@ -216,6 +216,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         FeatureGroup.SHADERS_IMAGES
     ),
     AnimationCategory(
+        "Image Cropper",
+        "Production cropper: pinch-zoom, resize a rule-of-thirds frame, crop to rectangle/circle/star, save as PNG.",
+        AnimScreen.ImageCropper,
+        FeatureGroup.SHADERS_IMAGES
+    ),
+    AnimationCategory(
         "Blur Effects",
         "Modifier.blur and Haze frosted-glass demos",
         AnimScreen.BlurEffects,
