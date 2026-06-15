@@ -53,12 +53,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.lerp as lerpDp
+import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
-import kotlinx.coroutines.launch
+import androidx.compose.ui.unit.lerp as lerpDp
 
 /**
  * Parallax onboarding where **each page is its own self-contained sky scene**
@@ -233,6 +233,7 @@ private fun WeatherScene(
         val off = pageOffset()
         val w = size.width
         val h = size.height
+
         // The one source of motion: each layer's parallax shift for this page.
         fun shift(speed: Float) = -off * w * speed
 
@@ -280,7 +281,8 @@ private fun DrawScope.drawSun(center: Offset, radius: Float) {
     val rays = 12
     repeat(rays) { i ->
         val a = Math.toRadians(i * (360.0 / rays))
-        val c = cos(a).toFloat(); val s = sin(a).toFloat()
+        val c = cos(a).toFloat();
+        val s = sin(a).toFloat()
         drawLine(
             color = sun.copy(alpha = 0.55f),
             start = Offset(center.x + c * radius * 1.35f, center.y + s * radius * 1.35f),
@@ -317,8 +319,8 @@ private fun DrawScope.drawBird(center: Offset, s: Float, lift: Float) {
     val wing = s * lift
     val path = Path().apply {
         moveTo(center.x - s, center.y)
-        quadraticBezierTo(center.x - s * 0.4f, center.y - wing, center.x, center.y)
-        quadraticBezierTo(center.x + s * 0.4f, center.y - wing, center.x + s, center.y)
+        quadraticTo(center.x - s * 0.4f, center.y - wing, center.x, center.y)
+        quadraticTo(center.x + s * 0.4f, center.y - wing, center.x + s, center.y)
     }
     drawPath(path = path, color = Color(0xFF2B3147).copy(alpha = 0.8f), style = Stroke(width = s * 0.18f, cap = StrokeCap.Round))
 }
@@ -346,7 +348,7 @@ private fun DrawScope.drawHill(
             val cx = startX + step * (i + 0.5f)
             val nx = startX + step * (i + 1)
             val peak = baseY - amp * h * (0.5f + 0.5f * sin(i * 1.7f + phaseShift))
-            quadraticBezierTo(cx, peak, nx, baseY)
+            quadraticTo(cx, peak, nx, baseY)
         }
         lineTo(endX, h)
         lineTo(startX, h)
