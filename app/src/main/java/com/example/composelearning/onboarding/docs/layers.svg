@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="430" viewBox="0 0 760 430" font-family="-apple-system, Segoe UI, Roboto, sans-serif">
+  <rect width="760" height="430" fill="#0f0b1f"/>
+  <text x="380" y="30" fill="#ffffff" font-size="18" font-weight="700" text-anchor="middle">Same swipe, different shift per layer  (translationX = &#8722;pageOffset &#215; width &#215; depth)</text>
+  <text x="380" y="52" fill="#8b84a8" font-size="13" text-anchor="middle">shown for pageOffset = +1 (page leaving to the left). Bigger depth &#8594; longer arrow &#8594; feels closer.</text>
+
+  <!-- swipe direction hint -->
+  <text x="690" y="95" fill="#6C5CE7" font-size="12" text-anchor="end" font-weight="700">swipe &#8592;</text>
+
+  <!-- rows: label, depth, arrow length = depth*300 -->
+  <!-- icon depth 0.65 -->
+  <g>
+    <text x="40" y="120" fill="#ffffff" font-size="14" font-weight="700">icon</text>
+    <text x="40" y="138" fill="#8b84a8" font-size="11">depth 0.65 (foreground)</text>
+    <line x1="430" y1="124" x2="235" y2="124" stroke="#FFA502" stroke-width="6"/>
+    <polygon points="225,124 240,116 240,132" fill="#FFA502"/>
+    <circle cx="430" cy="124" r="6" fill="#FFA502"/>
+  </g>
+  <!-- title depth 0.45 -->
+  <g>
+    <text x="40" y="180" fill="#ffffff" font-size="14" font-weight="700">title</text>
+    <text x="40" y="198" fill="#8b84a8" font-size="11">depth 0.45</text>
+    <line x1="430" y1="184" x2="295" y2="184" stroke="#FF6B81" stroke-width="6"/>
+    <polygon points="285,184 300,176 300,192" fill="#FF6B81"/>
+    <circle cx="430" cy="184" r="6" fill="#FF6B81"/>
+  </g>
+  <!-- subtitle depth 0.30 -->
+  <g>
+    <text x="40" y="240" fill="#ffffff" font-size="14" font-weight="700">subtitle</text>
+    <text x="40" y="258" fill="#8b84a8" font-size="11">depth 0.30</text>
+    <line x1="430" y1="244" x2="340" y2="244" stroke="#00B8A9" stroke-width="6"/>
+    <polygon points="330,244 345,236 345,252" fill="#00B8A9"/>
+    <circle cx="430" cy="244" r="6" fill="#00B8A9"/>
+  </g>
+  <!-- mid blob depth 0.28 -->
+  <g>
+    <text x="40" y="300" fill="#ffffff" font-size="14" font-weight="700">mid blob</text>
+    <text x="40" y="318" fill="#8b84a8" font-size="11">depth 0.28</text>
+    <line x1="430" y1="304" x2="346" y2="304" stroke="#6C5CE7" stroke-width="6"/>
+    <polygon points="336,304 351,296 351,312" fill="#6C5CE7"/>
+    <circle cx="430" cy="304" r="6" fill="#6C5CE7"/>
+  </g>
+  <!-- far blob depth 0.10 -->
+  <g>
+    <text x="40" y="360" fill="#ffffff" font-size="14" font-weight="700">far blob</text>
+    <text x="40" y="378" fill="#8b84a8" font-size="11">depth 0.10 (background)</text>
+    <line x1="430" y1="364" x2="400" y2="364" stroke="#5a5570" stroke-width="6"/>
+    <polygon points="390,364 405,356 405,372" fill="#5a5570"/>
+    <circle cx="430" cy="364" r="6" fill="#5a5570"/>
+  </g>
+
+  <!-- center reference line (page-centered position) -->
+  <line x1="430" y1="100" x2="430" y2="390" stroke="#3a3550" stroke-width="2" stroke-dasharray="4 4"/>
+  <text x="438" y="408" fill="#6f6a88" font-size="11">layer's resting x (pageOffset = 0)</text>
+</svg>
