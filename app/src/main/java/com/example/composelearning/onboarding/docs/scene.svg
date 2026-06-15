@@ -40,12 +40,12 @@
   <g transform="translate(500,70)" font-size="13">
     <text x="0" y="0" fill="#ffffff" font-weight="700">layer — speed</text>
     <g fill="#cfc9e6">
-      <circle cx="8" cy="28" r="4" fill="#ffffff"/><text x="24" y="32">stars — 0.05</text>
-      <circle cx="8" cy="58" r="6" fill="#FFE08A"/><text x="24" y="62">sun / moon — 0.08</text>
-      <rect x="2" y="82" width="12" height="12" fill="#5C7CA8"/><text x="24" y="92">back hills — 0.15</text>
-      <circle cx="8" cy="118" r="6" fill="#ffffff"/><text x="24" y="122">clouds — 0.30</text>
-      <rect x="2" y="142" width="12" height="12" fill="#2F4A39"/><text x="24" y="152">front hills — 0.45</text>
-      <path d="M2,180 Q8,174 14,180" stroke="#2B3147" stroke-width="3" fill="none"/><text x="24" y="184">birds — 0.60</text>
+      <circle cx="8" cy="28" r="4" fill="#ffffff"/><text x="24" y="32">stars — 0.06</text>
+      <circle cx="8" cy="58" r="6" fill="#FFE08A"/><text x="24" y="62">sun / moon — 0.10</text>
+      <rect x="2" y="82" width="12" height="12" fill="#5C7CA8"/><text x="24" y="92">back hills — 0.22</text>
+      <circle cx="8" cy="118" r="6" fill="#ffffff"/><text x="24" y="122">clouds — 0.40</text>
+      <rect x="2" y="142" width="12" height="12" fill="#2F4A39"/><text x="24" y="152">front hills — 0.55</text>
+      <path d="M2,180 Q8,174 14,180" stroke="#2B3147" stroke-width="3" fill="none"/><text x="24" y="184">birds — 0.78</text>
       <rect x="2" y="202" width="12" height="12" fill="#F2A65A"/><text x="24" y="212">text/icon — rides pager</text>
     </g>
     <text x="0" y="248" fill="#8b84a8" font-size="11">smaller speed = farther = drifts slower</text>

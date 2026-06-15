@@ -1,61 +1,61 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="760" height="430" viewBox="0 0 760 430" font-family="-apple-system, Segoe UI, Roboto, sans-serif">
   <rect width="760" height="430" fill="#0f0b1f"/>
-  <text x="380" y="30" fill="#ffffff" font-size="18" font-weight="700" text-anchor="middle">One page of swipe, different shift per layer  (shift = &#8722;position &#215; width &#215; speed)</text>
-  <text x="380" y="52" fill="#8b84a8" font-size="13" text-anchor="middle">arrow length &#8733; speed. Bigger speed &#8594; longer arrow &#8594; feels closer.</text>
+  <text x="380" y="30" fill="#ffffff" font-size="18" font-weight="700" text-anchor="middle">One swipe, different shift per layer  (shift = &#8722;pageOffset &#215; width &#215; speed)</text>
+  <text x="380" y="52" fill="#8b84a8" font-size="13" text-anchor="middle">shown for pageOffset = +1 (page leaving). Arrow length &#8733; speed &#8594; bigger speed feels closer.</text>
 
   <text x="690" y="95" fill="#6C5CE7" font-size="12" text-anchor="end" font-weight="700">swipe &#8592;</text>
 
-  <!-- rows: arrow length = speed * 520 -->
-  <!-- birds 0.60 -->
+  <!-- arrow length = speed * 410, from x=430 leftward -->
+  <!-- birds 0.78 -->
   <g>
     <text x="40" y="120" fill="#ffffff" font-size="14" font-weight="700">birds</text>
-    <text x="40" y="138" fill="#8b84a8" font-size="11">speed 0.60 (closest)</text>
-    <line x1="430" y1="124" x2="118" y2="124" stroke="#2B3147" stroke-width="6"/>
-    <polygon points="108,124 123,116 123,132" fill="#2B3147"/>
+    <text x="40" y="138" fill="#8b84a8" font-size="11">speed 0.78 (closest)</text>
+    <line x1="430" y1="124" x2="110" y2="124" stroke="#2B3147" stroke-width="6"/>
+    <polygon points="100,124 115,116 115,132" fill="#2B3147"/>
     <circle cx="430" cy="124" r="6" fill="#2B3147"/>
   </g>
-  <!-- front hills 0.45 -->
+  <!-- front hills 0.55 -->
   <g>
     <text x="40" y="172" fill="#ffffff" font-size="14" font-weight="700">front hills</text>
-    <text x="40" y="190" fill="#8b84a8" font-size="11">speed 0.45</text>
-    <line x1="430" y1="176" x2="196" y2="176" stroke="#2F4A39" stroke-width="6"/>
-    <polygon points="186,176 201,168 201,184" fill="#2F4A39"/>
+    <text x="40" y="190" fill="#8b84a8" font-size="11">speed 0.55</text>
+    <line x1="430" y1="176" x2="204" y2="176" stroke="#2F4A39" stroke-width="6"/>
+    <polygon points="194,176 209,168 209,184" fill="#2F4A39"/>
     <circle cx="430" cy="176" r="6" fill="#2F4A39"/>
   </g>
-  <!-- clouds 0.30 -->
+  <!-- clouds 0.40 -->
   <g>
     <text x="40" y="224" fill="#ffffff" font-size="14" font-weight="700">clouds</text>
-    <text x="40" y="242" fill="#8b84a8" font-size="11">speed 0.30</text>
-    <line x1="430" y1="228" x2="274" y2="228" stroke="#cfc9e6" stroke-width="6"/>
-    <polygon points="264,228 279,220 279,236" fill="#cfc9e6"/>
+    <text x="40" y="242" fill="#8b84a8" font-size="11">speed 0.40</text>
+    <line x1="430" y1="228" x2="266" y2="228" stroke="#cfc9e6" stroke-width="6"/>
+    <polygon points="256,228 271,220 271,236" fill="#cfc9e6"/>
     <circle cx="430" cy="228" r="6" fill="#cfc9e6"/>
   </g>
-  <!-- back hills 0.15 -->
+  <!-- back hills 0.22 -->
   <g>
     <text x="40" y="276" fill="#ffffff" font-size="14" font-weight="700">back hills</text>
-    <text x="40" y="294" fill="#8b84a8" font-size="11">speed 0.15</text>
-    <line x1="430" y1="280" x2="352" y2="280" stroke="#5C7CA8" stroke-width="6"/>
-    <polygon points="342,280 357,272 357,288" fill="#5C7CA8"/>
+    <text x="40" y="294" fill="#8b84a8" font-size="11">speed 0.22</text>
+    <line x1="430" y1="280" x2="340" y2="280" stroke="#5C7CA8" stroke-width="6"/>
+    <polygon points="330,280 345,272 345,288" fill="#5C7CA8"/>
     <circle cx="430" cy="280" r="6" fill="#5C7CA8"/>
   </g>
-  <!-- sun/moon 0.08 -->
+  <!-- sun/moon 0.10 -->
   <g>
     <text x="40" y="328" fill="#ffffff" font-size="14" font-weight="700">sun / moon</text>
-    <text x="40" y="346" fill="#8b84a8" font-size="11">speed 0.08</text>
-    <line x1="430" y1="332" x2="388" y2="332" stroke="#FFE08A" stroke-width="6"/>
-    <polygon points="378,332 393,324 393,340" fill="#FFE08A"/>
+    <text x="40" y="346" fill="#8b84a8" font-size="11">speed 0.10</text>
+    <line x1="430" y1="332" x2="389" y2="332" stroke="#FFE08A" stroke-width="6"/>
+    <polygon points="379,332 394,324 394,340" fill="#FFE08A"/>
     <circle cx="430" cy="332" r="6" fill="#FFE08A"/>
   </g>
-  <!-- stars 0.05 -->
+  <!-- stars 0.06 -->
   <g>
     <text x="40" y="380" fill="#ffffff" font-size="14" font-weight="700">stars</text>
-    <text x="40" y="398" fill="#8b84a8" font-size="11">speed 0.05 (farthest)</text>
-    <line x1="430" y1="384" x2="404" y2="384" stroke="#ffffff" stroke-width="6"/>
-    <polygon points="394,384 409,376 409,392" fill="#ffffff"/>
+    <text x="40" y="398" fill="#8b84a8" font-size="11">speed 0.06 (farthest)</text>
+    <line x1="430" y1="384" x2="405" y2="384" stroke="#ffffff" stroke-width="6"/>
+    <polygon points="395,384 410,376 410,392" fill="#ffffff"/>
     <circle cx="430" cy="384" r="6" fill="#ffffff"/>
   </g>
 
   <!-- resting reference -->
   <line x1="430" y1="105" x2="430" y2="392" stroke="#3a3550" stroke-width="2" stroke-dasharray="4 4"/>
-  <text x="438" y="410" fill="#6f6a88" font-size="11">layer x at position = 0</text>
+  <text x="438" y="410" fill="#6f6a88" font-size="11">layer x at pageOffset = 0 (still)</text>
 </svg>
