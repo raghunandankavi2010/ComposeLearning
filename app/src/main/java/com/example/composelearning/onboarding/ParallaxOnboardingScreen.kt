@@ -281,7 +281,7 @@ private fun DrawScope.drawSun(center: Offset, radius: Float) {
     val rays = 12
     repeat(rays) { i ->
         val a = Math.toRadians(i * (360.0 / rays))
-        val c = cos(a).toFloat();
+        val c = cos(a).toFloat()
         val s = sin(a).toFloat()
         drawLine(
             color = sun.copy(alpha = 0.55f),
