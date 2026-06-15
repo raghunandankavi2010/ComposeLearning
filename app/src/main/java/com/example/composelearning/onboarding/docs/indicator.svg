@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="360" viewBox="0 0 760 360" font-family="-apple-system, Segoe UI, Roboto, sans-serif">
+  <rect width="760" height="360" fill="#0f0b1f"/>
+  <text x="380" y="30" fill="#ffffff" font-size="18" font-weight="700" text-anchor="middle">selectedness(i) = clamp(1 &#8722; |position &#8722; i|, 0, 1)</text>
+  <text x="380" y="50" fill="#8b84a8" font-size="13" text-anchor="middle">a tent peaking at each dot; it drives both the dot width (8&#8594;28dp) and color</text>
+
+  <!-- axes -->
+  <line x1="80" y1="250" x2="700" y2="250" stroke="#5a5570" stroke-width="1.5"/>
+  <text x="60" y="90" fill="#cfc9e6" font-size="12" text-anchor="end">1</text>
+  <text x="60" y="254" fill="#cfc9e6" font-size="12" text-anchor="end">0</text>
+
+  <!-- tents (clipped to 0..3) -->
+  <polyline points="80,250 286,90 493,250" fill="none" stroke="#6C5CE7" stroke-width="2.5"/>
+  <polyline points="286,250 493,90 700,250" fill="none" stroke="#00B8A9" stroke-width="2.5"/>
+  <polyline points="80,90 286,250" fill="none" stroke="#6C5CE7" stroke-width="2.5" opacity="0.5"/>
+  <polyline points="493,90 700,250 700,250" fill="none" stroke="#FF6B81" stroke-width="2.5"/>
+  <polyline points="493,250 700,90" fill="none" stroke="#FFA502" stroke-width="2.5" opacity="0.5"/>
+
+  <!-- dot index labels -->
+  <g fill="#cfc9e6" font-size="12" text-anchor="middle">
+    <text x="80" y="272">i=0</text>
+    <text x="286" y="272">i=1</text>
+    <text x="493" y="272">i=2</text>
+    <text x="700" y="272">i=3</text>
+  </g>
+
+  <!-- pointer at position 1.6 -->
+  <line x1="411" y1="70" x2="411" y2="250" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <text x="411" y="66" fill="#ffffff" font-size="12" text-anchor="middle">position = 1.6</text>
+  <circle cx="411" cy="154" r="4" fill="#6C5CE7"/>
+  <text x="430" y="150" fill="#6C5CE7" font-size="11">dot1 = 0.4</text>
+  <circle cx="411" cy="126" r="4" fill="#00B8A9"/>
+  <text x="430" y="120" fill="#00B8A9" font-size="11">dot2 = 0.6</text>
+
+  <!-- rendered dots row -->
+  <text x="80" y="312" fill="#8b84a8" font-size="12">resulting dots:</text>
+  <g>
+    <rect x="300" y="300" width="8"  height="8" rx="4" fill="#ffffff" opacity="0.30"/>
+    <rect x="320" y="300" width="16" height="8" rx="4" fill="#6C5CE7"/>
+    <rect x="348" y="300" width="20" height="8" rx="4" fill="#00B8A9"/>
+    <rect x="380" y="300" width="8"  height="8" rx="4" fill="#ffffff" opacity="0.30"/>
+  </g>
+  <text x="300" y="338" fill="#6f6a88" font-size="11">widths &amp; colors blend between dot1 and dot2 as you drag</text>
+</svg>

@@ -1,54 +1,61 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="760" height="430" viewBox="0 0 760 430" font-family="-apple-system, Segoe UI, Roboto, sans-serif">
   <rect width="760" height="430" fill="#0f0b1f"/>
-  <text x="380" y="30" fill="#ffffff" font-size="18" font-weight="700" text-anchor="middle">Same swipe, different shift per layer  (translationX = &#8722;pageOffset &#215; width &#215; depth)</text>
-  <text x="380" y="52" fill="#8b84a8" font-size="13" text-anchor="middle">shown for pageOffset = +1 (page leaving to the left). Bigger depth &#8594; longer arrow &#8594; feels closer.</text>
+  <text x="380" y="30" fill="#ffffff" font-size="18" font-weight="700" text-anchor="middle">One page of swipe, different shift per layer  (shift = &#8722;position &#215; width &#215; speed)</text>
+  <text x="380" y="52" fill="#8b84a8" font-size="13" text-anchor="middle">arrow length &#8733; speed. Bigger speed &#8594; longer arrow &#8594; feels closer.</text>
 
-  <!-- swipe direction hint -->
   <text x="690" y="95" fill="#6C5CE7" font-size="12" text-anchor="end" font-weight="700">swipe &#8592;</text>
 
-  <!-- rows: label, depth, arrow length = depth*300 -->
-  <!-- icon depth 0.65 -->
+  <!-- rows: arrow length = speed * 520 -->
+  <!-- birds 0.60 -->
   <g>
-    <text x="40" y="120" fill="#ffffff" font-size="14" font-weight="700">icon</text>
-    <text x="40" y="138" fill="#8b84a8" font-size="11">depth 0.65 (foreground)</text>
-    <line x1="430" y1="124" x2="235" y2="124" stroke="#FFA502" stroke-width="6"/>
-    <polygon points="225,124 240,116 240,132" fill="#FFA502"/>
-    <circle cx="430" cy="124" r="6" fill="#FFA502"/>
+    <text x="40" y="120" fill="#ffffff" font-size="14" font-weight="700">birds</text>
+    <text x="40" y="138" fill="#8b84a8" font-size="11">speed 0.60 (closest)</text>
+    <line x1="430" y1="124" x2="118" y2="124" stroke="#2B3147" stroke-width="6"/>
+    <polygon points="108,124 123,116 123,132" fill="#2B3147"/>
+    <circle cx="430" cy="124" r="6" fill="#2B3147"/>
   </g>
-  <!-- title depth 0.45 -->
+  <!-- front hills 0.45 -->
   <g>
-    <text x="40" y="180" fill="#ffffff" font-size="14" font-weight="700">title</text>
-    <text x="40" y="198" fill="#8b84a8" font-size="11">depth 0.45</text>
-    <line x1="430" y1="184" x2="295" y2="184" stroke="#FF6B81" stroke-width="6"/>
-    <polygon points="285,184 300,176 300,192" fill="#FF6B81"/>
-    <circle cx="430" cy="184" r="6" fill="#FF6B81"/>
+    <text x="40" y="172" fill="#ffffff" font-size="14" font-weight="700">front hills</text>
+    <text x="40" y="190" fill="#8b84a8" font-size="11">speed 0.45</text>
+    <line x1="430" y1="176" x2="196" y2="176" stroke="#2F4A39" stroke-width="6"/>
+    <polygon points="186,176 201,168 201,184" fill="#2F4A39"/>
+    <circle cx="430" cy="176" r="6" fill="#2F4A39"/>
   </g>
-  <!-- subtitle depth 0.30 -->
+  <!-- clouds 0.30 -->
   <g>
-    <text x="40" y="240" fill="#ffffff" font-size="14" font-weight="700">subtitle</text>
-    <text x="40" y="258" fill="#8b84a8" font-size="11">depth 0.30</text>
-    <line x1="430" y1="244" x2="340" y2="244" stroke="#00B8A9" stroke-width="6"/>
-    <polygon points="330,244 345,236 345,252" fill="#00B8A9"/>
-    <circle cx="430" cy="244" r="6" fill="#00B8A9"/>
+    <text x="40" y="224" fill="#ffffff" font-size="14" font-weight="700">clouds</text>
+    <text x="40" y="242" fill="#8b84a8" font-size="11">speed 0.30</text>
+    <line x1="430" y1="228" x2="274" y2="228" stroke="#cfc9e6" stroke-width="6"/>
+    <polygon points="264,228 279,220 279,236" fill="#cfc9e6"/>
+    <circle cx="430" cy="228" r="6" fill="#cfc9e6"/>
   </g>
-  <!-- mid blob depth 0.28 -->
+  <!-- back hills 0.15 -->
   <g>
-    <text x="40" y="300" fill="#ffffff" font-size="14" font-weight="700">mid blob</text>
-    <text x="40" y="318" fill="#8b84a8" font-size="11">depth 0.28</text>
-    <line x1="430" y1="304" x2="346" y2="304" stroke="#6C5CE7" stroke-width="6"/>
-    <polygon points="336,304 351,296 351,312" fill="#6C5CE7"/>
-    <circle cx="430" cy="304" r="6" fill="#6C5CE7"/>
+    <text x="40" y="276" fill="#ffffff" font-size="14" font-weight="700">back hills</text>
+    <text x="40" y="294" fill="#8b84a8" font-size="11">speed 0.15</text>
+    <line x1="430" y1="280" x2="352" y2="280" stroke="#5C7CA8" stroke-width="6"/>
+    <polygon points="342,280 357,272 357,288" fill="#5C7CA8"/>
+    <circle cx="430" cy="280" r="6" fill="#5C7CA8"/>
   </g>
-  <!-- far blob depth 0.10 -->
+  <!-- sun/moon 0.08 -->
   <g>
-    <text x="40" y="360" fill="#ffffff" font-size="14" font-weight="700">far blob</text>
-    <text x="40" y="378" fill="#8b84a8" font-size="11">depth 0.10 (background)</text>
-    <line x1="430" y1="364" x2="400" y2="364" stroke="#5a5570" stroke-width="6"/>
-    <polygon points="390,364 405,356 405,372" fill="#5a5570"/>
-    <circle cx="430" cy="364" r="6" fill="#5a5570"/>
+    <text x="40" y="328" fill="#ffffff" font-size="14" font-weight="700">sun / moon</text>
+    <text x="40" y="346" fill="#8b84a8" font-size="11">speed 0.08</text>
+    <line x1="430" y1="332" x2="388" y2="332" stroke="#FFE08A" stroke-width="6"/>
+    <polygon points="378,332 393,324 393,340" fill="#FFE08A"/>
+    <circle cx="430" cy="332" r="6" fill="#FFE08A"/>
+  </g>
+  <!-- stars 0.05 -->
+  <g>
+    <text x="40" y="380" fill="#ffffff" font-size="14" font-weight="700">stars</text>
+    <text x="40" y="398" fill="#8b84a8" font-size="11">speed 0.05 (farthest)</text>
+    <line x1="430" y1="384" x2="404" y2="384" stroke="#ffffff" stroke-width="6"/>
+    <polygon points="394,384 409,376 409,392" fill="#ffffff"/>
+    <circle cx="430" cy="384" r="6" fill="#ffffff"/>
   </g>
 
-  <!-- center reference line (page-centered position) -->
-  <line x1="430" y1="100" x2="430" y2="390" stroke="#3a3550" stroke-width="2" stroke-dasharray="4 4"/>
-  <text x="438" y="408" fill="#6f6a88" font-size="11">layer's resting x (pageOffset = 0)</text>
+  <!-- resting reference -->
+  <line x1="430" y1="105" x2="430" y2="392" stroke="#3a3550" stroke-width="2" stroke-dasharray="4 4"/>
+  <text x="438" y="410" fill="#6f6a88" font-size="11">layer x at position = 0</text>
 </svg>

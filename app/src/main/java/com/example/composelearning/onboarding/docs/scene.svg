@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="420" viewBox="0 0 760 420" font-family="-apple-system, Segoe UI, Roboto, sans-serif">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#243A6B"/>
+      <stop offset="1" stop-color="#F0A368"/>
+    </linearGradient>
+  </defs>
+  <rect width="760" height="420" fill="#0f0b1f"/>
+  <text x="380" y="28" fill="#ffffff" font-size="18" font-weight="700" text-anchor="middle">Anatomy of the sky diorama (back &#8594; front)</text>
+
+  <!-- stage -->
+  <g transform="translate(40,50)">
+    <rect x="0" y="0" width="420" height="320" rx="14" fill="url(#sky)"/>
+    <!-- stars (only conceptual here) -->
+    <g fill="#ffffff" opacity="0.7">
+      <circle cx="60" cy="40" r="2"/><circle cx="150" cy="25" r="2.5"/><circle cx="300" cy="50" r="2"/><circle cx="380" cy="30" r="2"/>
+    </g>
+    <!-- sun -->
+    <circle cx="320" cy="80" r="34" fill="#FFE08A"/>
+    <g stroke="#FFE08A" stroke-width="3" stroke-linecap="round" opacity="0.8">
+      <line x1="320" y1="28" x2="320" y2="14"/><line x1="372" y1="80" x2="386" y2="80"/>
+      <line x1="357" y1="43" x2="367" y2="33"/><line x1="283" y1="43" x2="273" y2="33"/>
+    </g>
+    <!-- back hill -->
+    <path d="M0,210 Q105,160 210,200 T420,195 L420,320 L0,320 Z" fill="#5C7CA8"/>
+    <!-- clouds -->
+    <g fill="#ffffff" opacity="0.9">
+      <circle cx="120" cy="110" r="26"/><circle cx="150" cy="100" r="32"/><circle cx="185" cy="112" r="24"/>
+    </g>
+    <!-- front hill -->
+    <path d="M0,255 Q140,215 280,250 T420,250 L420,320 L0,320 Z" fill="#2F4A39"/>
+    <!-- birds -->
+    <g stroke="#2B3147" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.85">
+      <path d="M250,70 Q262,58 274,70 Q286,58 298,70"/>
+      <path d="M210,120 Q218,112 226,120 Q234,112 242,120"/>
+    </g>
+  </g>
+
+  <!-- legend with speeds -->
+  <g transform="translate(500,70)" font-size="13">
+    <text x="0" y="0" fill="#ffffff" font-weight="700">layer — speed</text>
+    <g fill="#cfc9e6">
+      <circle cx="8" cy="28" r="4" fill="#ffffff"/><text x="24" y="32">stars — 0.05</text>
+      <circle cx="8" cy="58" r="6" fill="#FFE08A"/><text x="24" y="62">sun / moon — 0.08</text>
+      <rect x="2" y="82" width="12" height="12" fill="#5C7CA8"/><text x="24" y="92">back hills — 0.15</text>
+      <circle cx="8" cy="118" r="6" fill="#ffffff"/><text x="24" y="122">clouds — 0.30</text>
+      <rect x="2" y="142" width="12" height="12" fill="#2F4A39"/><text x="24" y="152">front hills — 0.45</text>
+      <path d="M2,180 Q8,174 14,180" stroke="#2B3147" stroke-width="3" fill="none"/><text x="24" y="184">birds — 0.60</text>
+      <rect x="2" y="202" width="12" height="12" fill="#F2A65A"/><text x="24" y="212">text/icon — rides pager</text>
+    </g>
+    <text x="0" y="248" fill="#8b84a8" font-size="11">smaller speed = farther = drifts slower</text>
+  </g>
+</svg>
