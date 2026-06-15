@@ -222,6 +222,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         FeatureGroup.SHADERS_IMAGES
     ),
     AnimationCategory(
+        "AR Glasses (Face Mesh)",
+        "CameraX + ML Kit Face Mesh: tracks your face in real time and superimposes virtual spectacles.",
+        AnimScreen.ArGlasses,
+        FeatureGroup.SHADERS_IMAGES
+    ),
+    AnimationCategory(
         "Blur Effects",
         "Modifier.blur and Haze frosted-glass demos",
         AnimScreen.BlurEffects,

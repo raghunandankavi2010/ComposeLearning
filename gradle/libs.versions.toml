@@ -1,5 +1,6 @@
 [versions]
 agp = "9.2.1"
+edgeToEdgePreview = "0.9.0"
 kotlin = "2.4.0"
 coreKtx = "1.19.0"
 junit = "4.13.2"
@@ -27,9 +28,12 @@ remoteCompose = "1.0.0-alpha12"
 spotless = "8.6.0"
 ktlint = "1.8.0"
 composeRules = "0.6.0"
+camerax = "1.6.1"
+faceMesh = "16.0.0-beta3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+edge-to-edge-preview = { module = "de.drick.compose:edge-to-edge-preview", version.ref = "edgeToEdgePreview" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -75,6 +79,14 @@ remote-core = { group = "androidx.compose.remote", name = "remote-core", version
 remote-creation-core = { group = "androidx.compose.remote", name = "remote-creation-core", version.ref = "remoteCompose" }
 remote-creation-jvm = { group = "androidx.compose.remote", name = "remote-creation-jvm", version.ref = "remoteCompose" }
 remote-player-compose = { group = "androidx.compose.remote", name = "remote-player-compose", version.ref = "remoteCompose" }
+
+# CameraX — preview + ImageAnalysis streaming pipeline
+androidx-camera-core = { group = "androidx.camera", name = "camera-core", version.ref = "camerax" }
+androidx-camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "camerax" }
+androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "camerax" }
+androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "camerax" }
+# ML Kit Face Mesh — 468-point mesh + contours for AR anchoring
+mlkit-face-mesh-detection = { group = "com.google.mlkit", name = "face-mesh-detection", version.ref = "faceMesh" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

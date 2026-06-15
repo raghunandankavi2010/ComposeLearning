@@ -105,6 +105,14 @@ dependencies {
 
     implementation(libs.androidx.graphics.shapes)
     implementation(libs.accompanist.permissions)
+
+    // CameraX pipeline (front-camera streaming via ImageAnalysis)
+    implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
+    // Google ML Kit Face Mesh detection
+    implementation(libs.mlkit.face.mesh.detection)
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
 
@@ -117,5 +125,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation("de.drick.compose:edge-to-edge-preview:0.7.1")
+    implementation(libs.edge.to.edge.preview)
 }
