@@ -20,9 +20,10 @@ accompanist = "0.37.3"
 constraintlayoutCompose = "1.1.1"
 adaptive = "1.2.0"
 credentials = "1.6.0"
-protobuf = "4.35.0"
+protobuf = "4.35.1"
 protobufPlugin = "0.10.0"
-okhttp = "5.3.2"
+okhttp = "5.4.0"
+remoteCompose = "1.0.0-alpha12"
 spotless = "8.6.0"
 ktlint = "1.8.0"
 composeRules = "0.6.0"
@@ -68,6 +69,12 @@ androidx-credentials = { group = "androidx.credentials", name = "credentials", v
 androidx-credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentials" }
 protobuf-java = { group = "com.google.protobuf", name = "protobuf-java", version.ref = "protobuf" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+# RemoteCompose (androidx.compose.remote) — server-driven UI.
+# creation-* run on the JVM server to BUILD documents; player-compose renders them on Android.
+remote-core = { group = "androidx.compose.remote", name = "remote-core", version.ref = "remoteCompose" }
+remote-creation-core = { group = "androidx.compose.remote", name = "remote-creation-core", version.ref = "remoteCompose" }
+remote-creation-jvm = { group = "androidx.compose.remote", name = "remote-creation-jvm", version.ref = "remoteCompose" }
+remote-player-compose = { group = "androidx.compose.remote", name = "remote-player-compose", version.ref = "remoteCompose" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

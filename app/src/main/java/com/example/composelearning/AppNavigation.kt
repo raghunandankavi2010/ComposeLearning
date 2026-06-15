@@ -303,6 +303,8 @@ sealed interface AnimScreen :
 
     @Serializable data object ProtobufDemo : AnimScreen
 
+    @Serializable data object RemoteComposeDemo : AnimScreen
+
     @Serializable data object ParallaxList : AnimScreen
 
     @Serializable data object UniquePathVisualizer : AnimScreen
@@ -522,6 +524,9 @@ fun AppNavigation(
             com.example.composelearning.animcompose.GoogleCallingRoute(onBack = { navigator.goBack() })
         }
         entry<AnimScreen.ProtobufDemo> { ProtobufDemoRoute(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.RemoteComposeDemo> {
+            com.example.composelearning.remotecompose.RemoteComposeRoute(onBack = { navigator.goBack() })
+        }
         entry<AnimScreen.UniquePathVisualizer> { com.example.composelearning.dsa.UniquePathsVisualizer(modifier = Modifier.systemBarsPadding()) }
         entry<AnimScreen.SolarSystem> { SolarSystemSimulation() }
         entry<AnimScreen.GradientHeartFill> { com.example.composelearning.heartfill.GradientHeartFill() }

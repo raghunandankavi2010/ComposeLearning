@@ -89,6 +89,10 @@ dependencies {
     implementation(project(':proto-models'))
     implementation(libs.okhttp)
 
+    // RemoteCompose player: renders server-built document bytes as Compose.
+    implementation(libs.remote.core)
+    implementation(libs.remote.player.compose)
+
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
     implementation(libs.haze)

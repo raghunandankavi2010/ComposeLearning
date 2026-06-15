@@ -576,5 +576,11 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         "Fetch a contact list from a local desktop server encoded as Protocol Buffers; decode it with generated classes. Run ./gradlew :server:run first.",
         AnimScreen.ProtobufDemo,
         FeatureGroup.APP_CLONES
+    ),
+    AnimationCategory(
+        "RemoteCompose (server-driven UI)",
+        "The desktop server BUILDS a RemoteCompose document (androidx.compose.remote) in JVM Kotlin and ships the bytes; the app downloads and plays them — the layout lives on the server. Run ./gradlew :server:run first.",
+        AnimScreen.RemoteComposeDemo,
+        FeatureGroup.APP_CLONES
     )
 )

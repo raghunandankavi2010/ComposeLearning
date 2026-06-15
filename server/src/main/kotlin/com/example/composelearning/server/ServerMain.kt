@@ -55,6 +55,21 @@ fun main() {
         )
     }
 
+    // RemoteCompose: build a UI document on the fly and serve its bytes.
+    // GET /remoteui?variant=N  -> a RemoteCompose document (binary)
+    // Rebuilt per request (the clock + variant change the bytes), so the
+    // Android player renders whatever this server decides — server-driven UI.
+    server.createContext("/remoteui") { exchange ->
+        val variant = exchange.requestURI.query
+            ?.split('&')
+            ?.firstOrNull { it.startsWith("variant=") }
+            ?.substringAfter('=')
+            ?.toIntOrNull()
+            ?: 0
+        val doc = RemoteUiDocument.build(variant)
+        respond(exchange, 200, "application/octet-stream", doc)
+    }
+
     server.createContext("/") { exchange ->
         // Only the exact root path gets the help page; everything else is 404.
         if (exchange.requestURI.path != "/") {
@@ -64,8 +79,9 @@ fun main() {
         val help = buildString {
             appendLine("ComposeLearning protobuf demo server")
             appendLine("------------------------------------")
-            appendLine("GET /contacts       protobuf bytes  (${protoBytes.size} bytes)")
-            appendLine("GET /contacts.json  JSON            (${jsonBytes.size} bytes)")
+            appendLine("GET /contacts        protobuf bytes  (${protoBytes.size} bytes)")
+            appendLine("GET /contacts.json   JSON            (${jsonBytes.size} bytes)")
+            appendLine("GET /remoteui?variant=0..${RemoteUiDocument.variantCount() - 1}  RemoteCompose document (binary)")
             appendLine()
             appendLine("Serving ${contacts.size} contacts.")
             appendLine("Protobuf is ${percentSmaller(protoBytes.size, jsonBytes.size)}% smaller than the JSON here.")
