@@ -318,6 +318,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
 
     // ── Lists, Layouts & Pagers ─────────────────────────────────────────────
     AnimationCategory(
+        "Parallax Onboarding",
+        "Multi-layer onboarding pager — layers drift at different rates for depth, while the background and pill page indicator interpolate their accent color between pages.",
+        AnimScreen.ParallaxOnboarding,
+        FeatureGroup.LISTS_LAYOUTS_PAGERS
+    ),
+    AnimationCategory(
         "Shorts Video Feed",
         "TikTok-style endless VerticalPager feed: one shared ExoPlayer hopping between SurfaceViews, LRU disk cache pre-buffering the next clip.",
         AnimScreen.ShortsFeed,

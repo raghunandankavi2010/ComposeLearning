@@ -317,6 +317,8 @@ sealed interface AnimScreen :
 
     @Serializable data object Disintegration : AnimScreen
 
+    @Serializable data object ParallaxOnboarding : AnimScreen
+
     /** Second-level home screen listing all demos of one [com.example.composelearning.animcompose.FeatureGroup]. */
     @Serializable @Parcelize
     data class Group(val groupId: String) : AnimScreen
@@ -526,6 +528,9 @@ fun AppNavigation(
         entry<AnimScreen.WaveLoadingCircle> { com.example.composelearning.progress.WaveLoadingCircleScreen() }
         entry<AnimScreen.ShortsFeed> { com.example.composelearning.shortsfeed.presentation.ShortsFeedRoute() }
         entry<AnimScreen.Disintegration> { com.example.composelearning.disintegration.DisintegrationScreen() }
+        entry<AnimScreen.ParallaxOnboarding> {
+            com.example.composelearning.onboarding.ParallaxOnboardingScreen(onFinish = { navigator.goBack() })
+        }
         entry<AnimScreen.Group> { key ->
             com.example.composelearning.animcompose.GroupFeaturesScreen(
                 groupId = key.groupId,
