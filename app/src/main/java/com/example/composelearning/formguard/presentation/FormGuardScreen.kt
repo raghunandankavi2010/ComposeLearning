@@ -41,7 +41,6 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.composelearning.formguard.domain.model.PoseFrame
-import com.example.composelearning.formguard.domain.model.PoseLandmark
 import com.example.composelearning.formguard.domain.model.PoseLandmarks
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
@@ -214,6 +213,7 @@ private fun SkeletonOverlay(
             val lm = frame.landmarks[index]
             return Offset(mapper.mapX(lm.x), mapper.mapY(lm.y))
         }
+
         fun visible(index: Int) = frame.landmarks[index].visibility >= MIN_VISIBILITY
 
         for ((from, to) in SKELETON_BONES) {

@@ -27,12 +27,13 @@ android {
 
     buildTypes {
         release {
-            shrinkResources = true
+            shrinkResources = false
             minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
         debug {
+            shrinkResources = false
             minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -47,9 +48,10 @@ android {
         buildConfig = true
     }
 
-    // MediaPipe mmaps its model from assets — it must not be compressed in the APK.
+    // MediaPipe mmaps its models from assets — they must not be compressed in the APK.
     androidResources {
         noCompress += "task"
+        noCompress += "tflite"
     }
 
     packaging {
@@ -125,8 +127,16 @@ dependencies {
     implementation(libs.androidx.camera.view)
     // Google ML Kit Face Mesh detection
     implementation(libs.mlkit.face.mesh.detection)
-    // MediaPipe Pose Landmarker (on-device, GPU) — powers the FormGuard squat coach
-    implementation(libs.mediapipe.tasks.vision)
+    // MediaPipe Pose Landmarker (on-device, GPU) — powers the FormGuard squat coach.
+    // Exclude its bundled protobuf-javalite: the project already ships full protobuf-java
+    // (a superset) via :proto-models, and having both duplicates every com.google.protobuf class.
+    implementation(libs.mediapipe.tasks.vision) {
+        exclude group: 'com.google.protobuf', module: 'protobuf-javalite'
+    }
+    // MediaPipe Tasks Text — on-device language detection
+    implementation(libs.mediapipe.tasks.text) {
+        exclude group: 'com.google.protobuf', module: 'protobuf-javalite'
+    }
     //noinspection LoginCredentials
     implementation(libs.androidx.credentials)
     //noinspection LoginCredentials

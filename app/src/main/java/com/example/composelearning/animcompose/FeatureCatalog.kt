@@ -234,6 +234,18 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         FeatureGroup.APP_CLONES
     ),
     AnimationCategory(
+        "Speak & Detect Language (MediaPipe)",
+        "SpeechRecognizer dictation → MediaPipe Tasks Text language detection. Talk, see the transcript, and get the detected language with confidence.",
+        AnimScreen.SpeechLang,
+        FeatureGroup.APP_CLONES
+    ),
+    AnimationCategory(
+        "On-Device Speech (Indic)",
+        "On-device SpeechRecognizer for 6 Indian languages with dynamic language-pack download, then MediaPipe language detection on the transcript.",
+        AnimScreen.OnDeviceSpeech,
+        FeatureGroup.APP_CLONES
+    ),
+    AnimationCategory(
         "Blur Effects",
         "Modifier.blur and Haze frosted-glass demos",
         AnimScreen.BlurEffects,

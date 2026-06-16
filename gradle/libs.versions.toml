@@ -12,7 +12,7 @@ composeBom = "2026.05.01"
 navigationCompose = "2.9.8"
 navigation3 = "1.1.2"
 serialization = "1.11.0"
-coil = "3.4.0"
+coil = "3.5.0"
 haze = "1.7.2"
 media3 = "1.10.1"
 paging = "3.5.0"
@@ -30,7 +30,8 @@ ktlint = "1.8.0"
 composeRules = "0.6.0"
 camerax = "1.6.1"
 faceMesh = "16.0.0-beta3"
-mediapipeTasksVision = "0.10.20"
+mediapipeTasksVision = "0.10.35"
+mediapipeTasksText = "0.10.35"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -91,6 +92,8 @@ androidx-camera-view = { group = "androidx.camera", name = "camera-view", versio
 mlkit-face-mesh-detection = { group = "com.google.mlkit", name = "face-mesh-detection", version.ref = "faceMesh" }
 # MediaPipe Tasks Vision — on-device Pose Landmarker (33 3D landmarks, GPU delegate)
 mediapipe-tasks-vision = { group = "com.google.mediapipe", name = "tasks-vision", version.ref = "mediapipeTasksVision" }
+# MediaPipe Tasks Text — on-device language detection (language_detector.tflite)
+mediapipe-tasks-text = { group = "com.google.mediapipe", name = "tasks-text", version.ref = "mediapipeTasksText" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
