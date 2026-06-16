@@ -22,11 +22,17 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        resConfigs "en"
     }
 
     buildTypes {
         release {
-            shrinkResources = false
+            shrinkResources = true
+            minifyEnabled = false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
             minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -114,7 +120,9 @@ dependencies {
     implementation(libs.androidx.camera.view)
     // Google ML Kit Face Mesh detection
     implementation(libs.mlkit.face.mesh.detection)
+    //noinspection LoginCredentials
     implementation(libs.androidx.credentials)
+    //noinspection LoginCredentials
     implementation(libs.androidx.credentials.play.services.auth)
 
     testImplementation(libs.junit)
