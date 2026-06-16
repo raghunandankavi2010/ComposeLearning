@@ -79,6 +79,8 @@ class ArGlassesViewModel(
                 }
             }
             ArGlassesIntent.ConsumeError -> _state.update { it.copy(error = null) }
+            is ArGlassesIntent.SelectStyle ->
+                _state.update { it.copy(selectedStyleId = intent.styleId) }
         }
     }
 

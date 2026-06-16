@@ -4,27 +4,32 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import com.example.composelearning.arglasses.domain.model.FaceTransform
 import kotlin.math.cos
+import kotlin.math.roundToInt
 
 /**
- * Renders the virtual spectacles over the tracked face.
+ * Renders the chosen pair of real spectacles ([image]) over the tracked face.
  *
  * Performance: [transformProvider] is invoked **inside the Canvas draw lambda**, so reading
  * the ViewModel's snapshot-state transform happens in the draw phase — each camera frame
  * invalidates drawing only, never recomposition, keeping the UI thread free.
  *
+ * @param image             the spectacles artwork (front-facing, transparent background).
+ * @param colorFilter       optional re-colour for the artwork (the selected style's tint).
  * @param transformProvider supplies the latest [FaceTransform] (in source-image space).
  * @param mirror            true for the front camera (matches the mirrored preview).
  */
 @Composable
 fun GlassesOverlay(
+    image: ImageBitmap,
+    colorFilter: ColorFilter?,
     transformProvider: () -> FaceTransform?,
     mirror: Boolean,
     modifier: Modifier = Modifier,
@@ -47,80 +52,36 @@ fun GlassesOverlay(
             .let { if (mirror) -it else it }
         val yaw = if (mirror) -transform.yawRadians else transform.yawRadians
 
-        drawSpectacles(center, frameWidth, rollDegrees, yaw)
+        drawSpectacles(image, colorFilter, center, frameWidth, rollDegrees, yaw)
     }
 }
 
 /**
- * Draws a stylised pair of glasses centered on [center], rotated by [rollDegrees] about
- * that point, scaled to [frameWidth]. [yaw] applies a subtle horizontal foreshortening so
- * the frame narrows as the head turns.
+ * Draws [image] centered on [center], rotated by [rollDegrees] about that point and scaled
+ * so its width matches [frameWidth]. [yaw] applies a subtle horizontal foreshortening so the
+ * frame narrows as the head turns. Aspect ratio is preserved from the source artwork.
  */
 private fun DrawScope.drawSpectacles(
+    image: ImageBitmap,
+    colorFilter: ColorFilter?,
     center: Offset,
     frameWidth: Float,
     rollDegrees: Float,
     yaw: Float,
 ) {
-    if (frameWidth <= 0f) return
+    if (frameWidth <= 0f || image.width == 0) return
 
-    val frameColor = Color(0xFF1A1A1A)
-    val lensTint = Color(0x331E88E5)
-    val highlight = Color(0xFF4FC3F7)
-
-    // Foreshorten width with yaw (clamped so it never collapses).
-    val effectiveWidth = frameWidth * cos(yaw).coerceIn(0.55f, 1f)
-    val lensHeight = effectiveWidth * 0.32f
-    val lensWidth = effectiveWidth * 0.40f
-    val stroke = (effectiveWidth * 0.035f).coerceAtLeast(2f)
-    val corner = CornerRadius(lensHeight * 0.45f, lensHeight * 0.45f)
-
-    val leftLensCenterX = center.x - effectiveWidth / 2f + lensWidth / 2f
-    val rightLensCenterX = center.x + effectiveWidth / 2f - lensWidth / 2f
+    // Foreshorten width with yaw (clamped so it never collapses); keep the artwork's aspect.
+    val destWidth = frameWidth * cos(yaw).coerceIn(0.55f, 1f)
+    val destHeight = destWidth * image.height / image.width
+    val topLeft = Offset(center.x - destWidth / 2f, center.y - destHeight / 2f)
 
     withTransform({ rotate(rollDegrees, pivot = center) }) {
-        listOf(leftLensCenterX, rightLensCenterX).forEach { lensCenterX ->
-            val topLeft = Offset(lensCenterX - lensWidth / 2f, center.y - lensHeight / 2f)
-            val lensSize = Size(lensWidth, lensHeight)
-            // Tinted lens fill + frame outline.
-            drawRoundRect(color = lensTint, topLeft = topLeft, size = lensSize, cornerRadius = corner)
-            drawRoundRect(
-                color = frameColor,
-                topLeft = topLeft,
-                size = lensSize,
-                cornerRadius = corner,
-                style = Stroke(width = stroke),
-            )
-            // Subtle glare line across the upper-left of each lens.
-            drawLine(
-                color = highlight.copy(alpha = 0.5f),
-                start = Offset(topLeft.x + lensWidth * 0.18f, topLeft.y + lensHeight * 0.30f),
-                end = Offset(topLeft.x + lensWidth * 0.42f, topLeft.y + lensHeight * 0.18f),
-                strokeWidth = stroke * 0.6f,
-            )
-        }
-
-        // Bridge between the inner lens edges.
-        drawLine(
-            color = frameColor,
-            start = Offset(leftLensCenterX + lensWidth / 2f, center.y - lensHeight * 0.15f),
-            end = Offset(rightLensCenterX - lensWidth / 2f, center.y - lensHeight * 0.15f),
-            strokeWidth = stroke,
-        )
-
-        // Temple arms reaching from the outer lens edges toward the ears.
-        val armLength = effectiveWidth * 0.16f
-        drawLine(
-            color = frameColor,
-            start = Offset(leftLensCenterX - lensWidth / 2f, center.y - lensHeight * 0.2f),
-            end = Offset(leftLensCenterX - lensWidth / 2f - armLength, center.y - lensHeight * 0.35f),
-            strokeWidth = stroke,
-        )
-        drawLine(
-            color = frameColor,
-            start = Offset(rightLensCenterX + lensWidth / 2f, center.y - lensHeight * 0.2f),
-            end = Offset(rightLensCenterX + lensWidth / 2f + armLength, center.y - lensHeight * 0.35f),
-            strokeWidth = stroke,
+        drawImage(
+            image = image,
+            dstOffset = IntOffset(topLeft.x.roundToInt(), topLeft.y.roundToInt()),
+            dstSize = IntSize(destWidth.roundToInt(), destHeight.roundToInt()),
+            colorFilter = colorFilter,
         )
     }
 }

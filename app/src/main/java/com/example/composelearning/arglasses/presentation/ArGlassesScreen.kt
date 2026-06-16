@@ -2,12 +2,19 @@ package com.example.composelearning.arglasses.presentation
 
 import android.Manifest
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -19,7 +26,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -76,9 +86,13 @@ fun ArGlassesScreen(
             PermissionStatus.Granted -> {
                 CameraPreview(analyzer = analyzer, modifier = Modifier.fillMaxSize())
 
+                val selectedStyle = GlassesCatalog.byId(state.selectedStyleId)
+
                 if (state.trackingEnabled) {
                     // Front camera → mirror to match the auto-mirrored selfie preview.
                     GlassesOverlay(
+                        image = ImageBitmap.imageResource(selectedStyle.drawableRes),
+                        colorFilter = selectedStyle.tintFilter(),
                         transformProvider = transformProvider,
                         mirror = true,
                         modifier = Modifier.fillMaxSize(),
@@ -93,13 +107,23 @@ fun ArGlassesScreen(
                         .padding(top = 24.dp),
                 )
 
-                TrackingToggle(
-                    enabled = state.trackingEnabled,
-                    onToggle = { onIntent(ArGlassesIntent.ToggleTracking) },
+                Column(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(bottom = 40.dp),
-                )
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    GlassesPicker(
+                        selectedStyleId = state.selectedStyleId,
+                        onSelect = { onIntent(ArGlassesIntent.SelectStyle(it)) },
+                    )
+                    TrackingToggle(
+                        enabled = state.trackingEnabled,
+                        onToggle = { onIntent(ArGlassesIntent.ToggleTracking) },
+                    )
+                }
             }
 
             else -> CameraPermissionRequest(
@@ -129,6 +153,55 @@ private fun StatusChip(
             .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
         Text(text = label, color = Color.White, style = MaterialTheme.typography.labelLarge)
+    }
+}
+
+/**
+ * Horizontal strip of selectable spectacles. Each thumbnail shows the real artwork with its
+ * tint applied, so the swatch matches exactly what gets drawn on the face.
+ */
+@Composable
+private fun GlassesPicker(
+    selectedStyleId: String,
+    onSelect: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    LazyRow(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color(0xAA000000), RoundedCornerShape(24.dp))
+            .padding(horizontal = 12.dp, vertical = 10.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        items(GlassesCatalog.styles, key = { it.id }) { style ->
+            val selected = style.id == selectedStyleId
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Image(
+                    bitmap = ImageBitmap.imageResource(style.drawableRes),
+                    contentDescription = style.name,
+                    colorFilter = style.tintFilter(),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clickable { onSelect(style.id) }
+                        .background(
+                            if (selected) Color(0x33FFFFFF) else Color.Transparent,
+                            RoundedCornerShape(12.dp),
+                        )
+                        .border(
+                            width = if (selected) 2.dp else 0.dp,
+                            color = if (selected) Color(0xFF4FC3F7) else Color.Transparent,
+                            shape = RoundedCornerShape(12.dp),
+                        )
+                        .padding(6.dp),
+                )
+                Text(
+                    text = style.name,
+                    color = if (selected) Color(0xFF4FC3F7) else Color.White,
+                    style = MaterialTheme.typography.labelSmall,
+                )
+            }
+        }
     }
 }
 

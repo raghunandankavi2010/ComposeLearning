@@ -16,6 +16,7 @@ import androidx.compose.runtime.Immutable
 data class ArGlassesUiState(
     val trackingEnabled: Boolean = true,
     val faceDetected: Boolean = false,
+    val selectedStyleId: String = GlassesCatalog.default.id,
     val error: String? = null,
 )
 
@@ -23,4 +24,5 @@ data class ArGlassesUiState(
 sealed interface ArGlassesIntent {
     data object ToggleTracking : ArGlassesIntent
     data object ConsumeError : ArGlassesIntent
+    data class SelectStyle(val styleId: String) : ArGlassesIntent
 }

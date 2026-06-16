@@ -53,7 +53,7 @@ fun CameraPreview(
             val provider = providerFuture.get().also { cameraProvider = it }
 
             val preview = Preview.Builder().build().apply {
-                setSurfaceProvider(previewView.surfaceProvider)
+                surfaceProvider = previewView.surfaceProvider
             }
             val imageAnalysis = ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
