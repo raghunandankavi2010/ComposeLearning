@@ -30,6 +30,7 @@ ktlint = "1.8.0"
 composeRules = "0.6.0"
 camerax = "1.6.1"
 faceMesh = "16.0.0-beta3"
+mediapipeTasksVision = "0.10.20"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -88,6 +89,8 @@ androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycl
 androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "camerax" }
 # ML Kit Face Mesh — 468-point mesh + contours for AR anchoring
 mlkit-face-mesh-detection = { group = "com.google.mlkit", name = "face-mesh-detection", version.ref = "faceMesh" }
+# MediaPipe Tasks Vision — on-device Pose Landmarker (33 3D landmarks, GPU delegate)
+mediapipe-tasks-vision = { group = "com.google.mediapipe", name = "tasks-vision", version.ref = "mediapipeTasksVision" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

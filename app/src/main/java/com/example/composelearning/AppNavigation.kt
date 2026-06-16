@@ -68,6 +68,7 @@ import com.example.composelearning.graphics.BorderProgressBar
 import com.example.composelearning.graphics.DrawScaleOnTouch
 import com.example.composelearning.graphics.SineWaveSample
 import com.example.composelearning.arglasses.presentation.ArGlassesRoute
+import com.example.composelearning.formguard.presentation.FormGuardRoute
 import com.example.composelearning.imagecropper.ImageCropperRoute
 import com.example.composelearning.images.OverlappingImagesScreen
 import com.example.composelearning.images.processing.ImageProcessingScreen
@@ -290,6 +291,8 @@ sealed interface AnimScreen :
     @Serializable data object ImageCropper : AnimScreen
 
     @Serializable data object ArGlasses : AnimScreen
+
+    @Serializable data object FormGuard : AnimScreen
 
     @Serializable data object WalletStack : AnimScreen
 
@@ -523,6 +526,7 @@ fun AppNavigation(
         entry<AnimScreen.RiveoPageCurl> { RiveoScreen() }
         entry<AnimScreen.ImageCropper> { ImageCropperRoute() }
         entry<AnimScreen.ArGlasses> { ArGlassesRoute() }
+        entry<AnimScreen.FormGuard> { FormGuardRoute() }
         entry<AnimScreen.WalletStack> { WalletScreen() }
         entry<AnimScreen.Breathing> { BreathingScreen() }
         entry<AnimScreen.PathMorph> { PathMorphScreen() }

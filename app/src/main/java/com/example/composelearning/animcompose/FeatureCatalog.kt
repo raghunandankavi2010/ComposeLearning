@@ -228,6 +228,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         FeatureGroup.SHADERS_IMAGES
     ),
     AnimationCategory(
+        "FormGuard — Squat Coach (MediaPipe)",
+        "100% offline CameraX + MediaPipe Pose Landmarker: real-time knee-angle tracking, automatic rep counting and a 'knees caving in' warning.",
+        AnimScreen.FormGuard,
+        FeatureGroup.APP_CLONES
+    ),
+    AnimationCategory(
         "Blur Effects",
         "Modifier.blur and Haze frosted-glass demos",
         AnimScreen.BlurEffects,
