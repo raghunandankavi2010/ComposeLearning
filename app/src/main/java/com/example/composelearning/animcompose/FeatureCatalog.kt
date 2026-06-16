@@ -330,6 +330,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
 
     // ── Lists, Layouts & Pagers ─────────────────────────────────────────────
     AnimationCategory(
+        "Adaptive Layouts (multi-pane)",
+        "Four scenarios with material3-adaptive: list-detail pane, supporting pane, adaptive grid, and a WindowSizeClass-driven reflowing detail screen. Built to learn production multi-screen layouts.",
+        AnimScreen.AdaptiveLayouts,
+        FeatureGroup.LISTS_LAYOUTS_PAGERS
+    ),
+    AnimationCategory(
         "Parallax Onboarding",
         "Multi-layer onboarding pager — layers drift at different rates for depth, while the background and pill page indicator interpolate their accent color between pages.",
         AnimScreen.ParallaxOnboarding,
