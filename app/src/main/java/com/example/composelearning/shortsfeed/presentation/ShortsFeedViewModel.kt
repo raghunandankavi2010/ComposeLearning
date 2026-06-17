@@ -106,9 +106,10 @@ class ShortsFeedViewModel(application: Application) : ViewModel() {
         userPaused.value = false // A fresh page always starts playing.
 
         val items = videos.value
-        items.getOrNull(page)?.let(playerManager::play)
-        // Pre-buffer the NEXT clip silently while this one plays.
-        items.getOrNull(page + 1)?.let(playerManager::precacheNext)
+        // The preload manager warms the adjacent window (±N) on its own; we just tell it
+        // which page is now playing and hand the pre-warmed source to the player.
+        playerManager.setItems(items)
+        playerManager.playIndex(page)
 
         if (page >= items.size - LOAD_AHEAD_THRESHOLD) loadNextPage()
     }
@@ -122,6 +123,9 @@ class ShortsFeedViewModel(application: Application) : ViewModel() {
                 val newItems = repository.loadPage(nextPageToLoad)
                 nextPageToLoad++
                 videos.value = videos.value + newItems
+                // Register the freshly appended items so the manager can preload ahead even
+                // before the user reaches them.
+                playerManager.setItems(videos.value)
                 // First page just arrived: the pager already settled on page 0 while
                 // the list was empty, so kick playback off manually.
                 if (wasEmpty) onPageSettled(settledPage)

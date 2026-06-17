@@ -8,23 +8,17 @@ import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.datasource.DataSpec
-import androidx.media3.datasource.cache.CacheWriter
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.exoplayer.source.preload.DefaultPreloadManager
+import androidx.media3.exoplayer.source.preload.TargetPreloadStatusControl
 import com.example.composelearning.shortsfeed.data.VideoItem
-import com.example.composelearning.shortsfeed.player.FeedPlayerManager.Companion.PRECACHE_BYTES
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 /** Playback state exposed to the presentation layer (player internals stay here). */
 data class FeedPlaybackState(
@@ -37,17 +31,25 @@ data class FeedPlaybackState(
 )
 
 /**
- * Owns the ONE [ExoPlayer] instance shared by every page of the feed ("Shared Active
- * Player" strategy) plus the background pre-cache engine for the upcoming item.
+ * Owns the ONE [ExoPlayer] shared by every page of the feed ("Shared Active Player") **plus**
+ * a Media3 [DefaultPreloadManager] that warms upcoming items for instant first frames.
  *
- * Why a single player instead of one per page: each ExoPlayer holds codec instances,
- * audio sessions and renderer threads — per-item players OOM and stutter on fling.
- * The pager only ever has one *audible, visible, settled* page, so one player that
- * hops between SurfaceViews is sufficient; "instant" starts come from the disk cache
- * having pre-warmed the next item's first bytes (see [precacheNext]).
+ * Preloading strategy — Instagram Reels "adjacent" (per the Media3 PreloadManager blog):
+ * the manager prepares the source, selects tracks, and loads the first
+ * [PRELOAD_DURATION_MS] of every item within ±[PRELOAD_WINDOW] of the current page, ranked
+ * by distance from [DefaultPreloadManager.setCurrentPlayingIndex]. Far items return `null`
+ * (not preloaded), capping memory. Playback then reuses the manager's already-warm
+ * [androidx.media3.exoplayer.source.MediaSource] instead of preparing from scratch.
  *
- * Threading: all [Player] calls must happen on the main thread (callers are the
- * ViewModel + composables, so this holds). Only the cache writer runs on IO.
+ * This replaces the previous hand-rolled `CacheWriter` pre-cache: the manager shares the
+ * player's load control / bandwidth meter / renderers (built from the same builder), preloads
+ * multiple items in parallel, and self-prioritizes — far less code, fewer foot-guns.
+ *
+ * The on-disk [VideoFeedCache] is kept as the upstream of the media-source factory, so
+ * preloaded bytes also persist across screen open/close (the manager only holds RAM).
+ *
+ * Threading: all [Player] calls happen on the main thread (ViewModel + composables). The
+ * manager runs its own preload looper internally.
  */
 @androidx.annotation.OptIn(UnstableApi::class)
 class FeedPlayerManager(context: Context) {
@@ -58,10 +60,10 @@ class FeedPlayerManager(context: Context) {
     private val _playbackState = MutableStateFlow(FeedPlaybackState())
     val playbackState: StateFlow<FeedPlaybackState> = _playbackState.asStateFlow()
 
-    private var currentItem: VideoItem? = null
+    /** Feed index -> MediaItem, kept parallel to the items already added to the manager. */
+    private val mediaItems = mutableListOf<MediaItem>()
+    private var currentIndex = -1
 
-    // NOTE: declared before `player` — Kotlin initializes properties top-to-bottom and
-    // the player's init block below registers this listener.
     private val playerListener = object : Player.Listener {
         override fun onPlaybackStateChanged(state: Int) {
             _playbackState.update { it.copy(isBuffering = state == Player.STATE_BUFFERING) }
@@ -85,51 +87,92 @@ class FeedPlayerManager(context: Context) {
         }
     }
 
-    val player: ExoPlayer = ExoPlayer.Builder(appContext)
-        // Route ALL media loads through the cache so playback itself also fills it.
-        .setMediaSourceFactory(DefaultMediaSourceFactory(cacheDataSourceFactory))
-        // Shorts tuning: small back-buffer, modest max buffer. Over-buffering the
-        // current clip steals bandwidth from pre-caching the next one.
-        .setLoadControl(
-            DefaultLoadControl.Builder()
-                .setBufferDurationsMs(
-                    /* minBufferMs = */
-                    5_000,
-                    /* maxBufferMs = */
-                    20_000,
-                    /* bufferForPlaybackMs = */
-                    1_000,
-                    /* bufferForPlaybackAfterRebufferMs = */
-                    2_000
-                )
-                .build()
-        )
-        .setAudioAttributes(
-            AudioAttributes.Builder()
-                .setUsage(C.USAGE_MEDIA)
-                .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
-                .build(),
-            /* handleAudioFocus = */
-            true
-        )
-        .setHandleAudioBecomingNoisy(true)
-        .build()
-        .apply {
-            repeatMode = Player.REPEAT_MODE_ONE // Shorts loop until swiped away.
-            addListener(playerListener)
-        }
+    /**
+     * Decides how much of each item to preload, by distance from the current page. Returns
+     * `null` for items outside the window so the manager evicts/never-loads them.
+     */
+    private inner class AdjacentPreloadControl : TargetPreloadStatusControl<Int> {
+        @Volatile var currentPlayingIndex = 0
 
-    /** Starts (or restarts) playback of [item], replacing whatever was playing. */
-    fun play(item: VideoItem) {
-        if (currentItem?.id == item.id && _playbackState.value.errorMessage == null) {
+        override fun getTargetPreloadStatus(rankingData: Int): TargetPreloadStatusControl.PreloadStatus? {
+            if (abs(rankingData - currentPlayingIndex) > PRELOAD_WINDOW) return null
+            // Prepare + select tracks + load the first PRELOAD_DURATION_MS for an instant start.
+            return DefaultPreloadManager.PreloadStatus.specifiedRangeOf(PRELOAD_DURATION_MS)
+        }
+    }
+
+    private val preloadControl = AdjacentPreloadControl()
+
+    // Route loads through the disk cache; small back-buffer so the current clip doesn't
+    // starve preloading of the next ones.
+    private val loadControl = DefaultLoadControl.Builder()
+        .setBufferDurationsMs(
+            /* minBufferMs = */ 5_000,
+            /* maxBufferMs = */ 20_000,
+            /* bufferForPlaybackMs = */ 1_000,
+            /* bufferForPlaybackAfterRebufferMs = */ 2_000
+        )
+        .build()
+
+    private val preloadManagerBuilder = DefaultPreloadManager.Builder(appContext, preloadControl)
+        .setMediaSourceFactory(DefaultMediaSourceFactory(cacheDataSourceFactory))
+        .setLoadControl(loadControl)
+
+    private val preloadManager: DefaultPreloadManager = preloadManagerBuilder.build()
+
+    /** The single player, built from the SAME builder so it shares the manager's resources. */
+    val player: ExoPlayer = preloadManagerBuilder.buildExoPlayer(
+        ExoPlayer.Builder(appContext)
+            .setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(C.USAGE_MEDIA)
+                    .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
+                    .build(),
+                /* handleAudioFocus = */ true
+            )
+            .setHandleAudioBecomingNoisy(true)
+    ).apply {
+        repeatMode = Player.REPEAT_MODE_ONE // Shorts loop until swiped away.
+        addListener(playerListener)
+    }
+
+    /**
+     * Registers any newly appended [items] with the preload manager (rankingData = feed index)
+     * and re-evaluates the preload window. Idempotent: only items beyond what's already added
+     * are registered, so paging is cheap.
+     */
+    fun setItems(items: List<VideoItem>) {
+        if (items.size <= mediaItems.size) return
+        for (i in mediaItems.size until items.size) {
+            val mediaItem = MediaItem.Builder()
+                .setUri(items[i].videoUrl)
+                .setMediaId(items[i].id)
+                .build()
+            mediaItems += mediaItem
+            preloadManager.add(mediaItem, i) // rankingData = index
+        }
+        preloadManager.invalidate()
+    }
+
+    /** Plays the settled [index], reusing the manager's pre-warmed source for an instant start. */
+    fun playIndex(index: Int) {
+        val mediaItem = mediaItems.getOrNull(index) ?: return
+        if (currentIndex == index && _playbackState.value.errorMessage == null) {
             player.playWhenReady = true
             return
         }
-        currentItem = item
-        _playbackState.update {
-            FeedPlaybackState(activeVideoId = item.id) // Fresh state for the new clip.
-        }
-        player.setMediaItem(MediaItem.fromUri(item.videoUrl))
+        currentIndex = index
+
+        // Tell the manager what's playing so it re-prioritizes the window around `index`.
+        preloadControl.currentPlayingIndex = index
+        preloadManager.setCurrentPlayingIndex(index)
+        preloadManager.invalidate()
+
+        _playbackState.update { FeedPlaybackState(activeVideoId = mediaItem.mediaId) }
+
+        // Prefer the preloaded source; fall back to a fresh one if it wasn't in the window.
+        val source = preloadManager.getMediaSource(mediaItem)
+        if (source != null) player.setMediaSource(source) else player.setMediaItem(mediaItem)
         player.prepare()
         player.playWhenReady = true
     }
@@ -143,9 +186,9 @@ class FeedPlayerManager(context: Context) {
     }
 
     fun retry() {
-        val item = currentItem ?: return
-        currentItem = null // Force a full re-prepare.
-        play(item)
+        val index = currentIndex
+        currentIndex = -1 // Force a full re-prepare of the same item.
+        playIndex(index)
     }
 
     /** 0..1 fraction of the current clip, for the progress hairline. */
@@ -155,59 +198,18 @@ class FeedPlayerManager(context: Context) {
         return (player.currentPosition.toFloat() / duration).coerceIn(0f, 1f)
     }
 
-    // ── Pre-caching ─────────────────────────────────────────────────────────
-
-    private val precacheScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private var precacheJob: Job? = null
-    private var activeCacheWriter: CacheWriter? = null
-
-    /**
-     * Silently warms the disk cache with the first [PRECACHE_BYTES] of [item] so that
-     * when the user swipes to it, prepare() reads the moov atom + first GOPs from disk
-     * instead of the network. Only one pre-cache runs at a time; swiping again cancels
-     * the in-flight write (the partial spans are kept and reused).
-     */
-    fun precacheNext(item: VideoItem) {
-        precacheJob?.cancel()
-        activeCacheWriter?.cancel()
-
-        if (VideoFeedCache.get(appContext).isCached(item.videoUrl, 0, PRECACHE_BYTES)) return
-
-        precacheJob = precacheScope.launch {
-            val dataSpec = DataSpec.Builder()
-                .setUri(item.videoUrl)
-                .setPosition(0)
-                .setLength(PRECACHE_BYTES)
-                .build()
-            val writer = CacheWriter(
-                cacheDataSourceFactory.createDataSource(),
-                dataSpec,
-                /* temporaryBuffer = */
-                null,
-                /* progressListener = */
-                null
-            )
-            activeCacheWriter = writer
-            try {
-                writer.cache()
-            } catch (_: Exception) {
-                // Cancelled or network error — pre-caching is best-effort by design;
-                // playback falls back to streaming and must never be affected.
-            }
-        }
-    }
-
-    /** Releases the player and stops any in-flight pre-cache. Call exactly once. */
+    /** Releases the player and the preload manager (frees all preloaded sources). Call once. */
     fun release() {
-        precacheJob?.cancel()
-        activeCacheWriter?.cancel()
-        precacheScope.cancel()
         player.removeListener(playerListener)
         player.release()
+        preloadManager.release()
     }
 
     companion object {
-        /** ~3s of a 1080p MP4 — enough for instant first frame without hogging bandwidth. */
-        private const val PRECACHE_BYTES = 3L * 1024 * 1024
+        /** Preload items within ±this many pages of the current one (Instagram "adjacent"). */
+        private const val PRELOAD_WINDOW = 2
+
+        /** Load this much of each in-window item — enough for an instant first frame. */
+        private const val PRELOAD_DURATION_MS = 3_000L
     }
 }

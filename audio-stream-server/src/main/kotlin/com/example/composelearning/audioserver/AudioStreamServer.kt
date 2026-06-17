@@ -14,7 +14,6 @@ import java.io.BufferedOutputStream
 import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import kotlin.time.Duration.Companion.seconds
 
 /**
  * Real-time duplex audio streaming server.
@@ -41,9 +40,9 @@ fun main() {
 
     embeddedServer(CIO, port = PORT, host = "0.0.0.0") {
         install(WebSockets) {
-            // Keep idle sockets alive. Ktor 3.x uses kotlin.time.Duration here.
-            pingPeriod = 15.seconds
-            timeout = 30.seconds
+            // Keep idle sockets alive (Long-millis properties on Ktor's WebSocketOptions).
+            pingPeriodMillis = 15_000
+            timeoutMillis = 30_000
             maxFrameSize = Long.MAX_VALUE
         }
         routing {

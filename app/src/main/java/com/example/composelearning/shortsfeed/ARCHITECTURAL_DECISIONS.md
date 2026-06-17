@@ -9,7 +9,7 @@ shortsfeed/
 │   └── VideoFeedRepository.kt    # Endless page generator over public sample MP4s
 ├── player/
 │   ├── VideoFeedCache.kt         # Process-wide SimpleCache (LRU) + CacheDataSource.Factory
-│   └── FeedPlayerManager.kt      # THE shared ExoPlayer + background pre-cache engine
+│   └── FeedPlayerManager.kt      # THE shared ExoPlayer + Media3 DefaultPreloadManager
 └── presentation/
     ├── ShortsFeedViewModel.kt    # UiState / UiEvent contract, paging, playback commands
     └── ShortsFeedScreen.kt       # Route → Screen → Page composables, SurfaceView host
@@ -40,13 +40,12 @@ the fling path, which is exactly where jank is most visible.
 
 **Why not a 2–3 player pool:** a pool's only benefit is a *pre-prepared* next
 item (decoder warm, first GOP decoded), buying ~100–200 ms of first-frame
-latency. Its costs: surface juggling across players, doubled codec pressure,
-audio-focus edge cases, and a much larger state machine. We instead get most of
-that win at the data layer — the next clip's first bytes are already on disk
-(ADR-4), so `prepare()` never touches the network for the moov atom. If product
-metrics later demand instant first frame, `FeedPlayerManager` is the single
-seam where a second, pre-preparing player can be introduced without touching
-the UI or ViewModel.
+latency — at the cost of surface juggling across players, doubled codec
+pressure, audio-focus edge cases, and a much larger state machine. Media3's
+`DefaultPreloadManager` (ADR-4) gives that win *without* a player pool: it
+prepares sources, selects tracks, and pre-loads the first few seconds of the
+adjacent items into RAM using the shared player's resources, then playback
+re-uses the already-warm `MediaSource`. One player, pool-like instant starts.
 
 **Mechanics that make one player safe:**
 - Playback starts only on `pagerState.settledPage` (never mid-fling), so the
@@ -101,33 +100,38 @@ attach vs old page's dispose) is harmless in both orders.
   `snapshotFlow`, read inside `LaunchedEffect` so scroll progress never
   recomposes the screen.
 
-## ADR-4: LRU disk cache + silent pre-buffering of the *next* clip
+## ADR-4: Media3 `DefaultPreloadManager` (in-RAM) over an LRU disk cache
 
-**Decision:** one process-wide `SimpleCache` (256 MB,
-`LeastRecentlyUsedCacheEvictor`) behind a `CacheDataSource.Factory` that is
-shared by *playback and pre-caching* — same cache, same default cache key (the
-URI), so bytes written by either path serve the other.
+Two complementary layers warm the next clip: the **preload manager** holds a few
+seconds of the adjacent items decoded-and-ready in memory, while the **disk
+cache** persists bytes across screen open/close. This replaces the previous
+hand-rolled `CacheWriter` pre-buffer, following Meta's Media3 PreloadManager
+guidance (Instagram Reels / Facebook).
 
-- **Playback path:** `DefaultMediaSourceFactory(cacheDataSourceFactory)` —
-  everything the player streams is also written to disk; re-watching or
-  swiping back is free.
-- **Pre-cache path:** on every page settle, a `CacheWriter` on `Dispatchers.IO`
-  downloads the first 3 MB (≈3 s of 1080p MP4: the moov atom + first GOPs) of
-  the *next* item. One pre-cache in flight at a time; settling on a new page
-  cancels the previous writer (partial spans are kept and reused — `CacheWriter`
-  skips already-cached ranges).
-- **Resilience:** `FLAG_IGNORE_CACHE_ON_ERROR` means a corrupt or contended
-  cache degrades to plain streaming instead of failing playback; pre-cache
-  exceptions are swallowed by design (best-effort).
-- **Singleton, never released:** Media3 throws if two `SimpleCache` instances
-  open the same directory. The cache deliberately lives for the process
-  lifetime (eviction is the LRU's job, not `release()`'s); the OS reclaims the
-  lock on process death.
+**Preload manager (the instant-start win):**
+- Built via `DefaultPreloadManager.Builder(context, control)`; the shared
+  `ExoPlayer` is built from the *same* builder (`buildExoPlayer(...)`) so they
+  share load control, bandwidth meter and renderers — no second player.
+- Items are registered with `add(mediaItem, index)` (rankingData = feed index)
+  as pages are appended.
+- On every settle: `setCurrentPlayingIndex(index)` + `invalidate()`. The
+  `TargetPreloadStatusControl` returns `PreloadStatus.specifiedRangeOf(3 s)` for
+  items within **±2** of the current page (Instagram "adjacent" strategy) and
+  `null` beyond it, so memory is bounded and the window self-prioritizes by
+  distance. Playback calls `getMediaSource(mediaItem)` and hands the *already
+  prepared, tracks-selected, partially-loaded* source to the player.
 
-**LoadControl tuning:** max buffer lowered to 20 s and start-playback threshold
-to 1 s. Default ExoPlayer buffering (50 s) is tuned for long-form; in a shorts
-feed, over-buffering the current clip steals bandwidth from pre-caching the
-next one, which is the more likely next view.
+**Disk cache (persistence + de-dupe):** one process-wide `SimpleCache` (256 MB,
+`LeastRecentlyUsedCacheEvictor`) behind a `CacheDataSource.Factory` that is the
+upstream of the preload manager's `DefaultMediaSourceFactory`. So preloaded *and*
+played bytes land on disk under the same key (the URI); re-watching or swiping
+back is free. `FLAG_IGNORE_CACHE_ON_ERROR` degrades a corrupt/contended cache to
+plain streaming. **Singleton, never released:** Media3 throws if two
+`SimpleCache`s open one directory; eviction is the LRU's job, not `release()`'s.
+
+**LoadControl tuning:** max buffer 20 s, start-playback threshold 1 s (default
+50 s is long-form). The same `LoadControl` is set on the preload builder, so
+over-buffering the current clip never starves preloading of the adjacent ones.
 
 ## ADR-5: Lifecycle & leak prevention — three concentric guards
 
@@ -140,8 +144,9 @@ next one, which is the more likely next view.
    page stops being settled or leaves composition — the player can never render
    into (or hold a reference to) a destroyed surface.
 3. **`ViewModel.onCleared` (Screen level):** popping the route releases the
-   player (codecs, audio session, renderer threads) and cancels the pre-cache
-   scope. This is the guarantee against "ghost audio" after back-navigation.
+   player (codecs, audio session, renderer threads) and the preload manager
+   (all preloaded sources). This is the guarantee against "ghost audio" after
+   back-navigation.
 
 The player lives in the ViewModel (with the *application* context only) so
 playback survives configuration changes for free and ownership matches the
@@ -171,13 +176,18 @@ screen's logical lifetime.
 
 ## Known trade-offs / future work
 
-- **First-frame latency** is cache-fast, not pool-instant (see ADR-1). The seam
-  for a 2-player upgrade is isolated in `FeedPlayerManager`.
+- **First-frame latency** is now preload-instant for in-window pages (ADR-4):
+  the adjacent ±2 items are prepared and partially loaded in RAM. Items reached
+  by a long fling past the window still start from cache/network.
+- **Tuning knobs** live in `FeedPlayerManager`: `PRELOAD_WINDOW` (how many
+  adjacent items) and `PRELOAD_DURATION_MS` (how much of each) trade RAM for
+  instant starts. Meta's app additionally pauses preloading under CPU/I-O load —
+  the seam for that is the `TargetPreloadStatusControl`.
 - **Thumbnails:** the placeholder is a gradient; production would show a server
   -provided first-frame thumbnail (Coil is already in the project's deps).
 - **Sample MP4s are progressive**; a real product would serve HLS/DASH with
-  ABR — only `VideoFeedRepository` URLs and (optionally) pre-cache strategy
-  (`DownloadHelper` per track) would change.
+  ABR — only `VideoFeedRepository` URLs would change (the preload manager works
+  the same for adaptive sources).
 - **`@UnstableApi`:** Media3's cache APIs are marked unstable (as is all of
   `media3-datasource`); usage is opted-in explicitly at the class level. This
   is the officially documented way to use Media3 caching today — there is no
