@@ -23,6 +23,17 @@ android {
             useSupportLibrary = true
         }
         resConfigs "en"
+
+        // Sarvam Language Identification key, read from local.properties (never committed):
+        //   sarvam.api.key=sk_xxx
+        // The on-device script detection works without it; only Hindi-vs-Marathi needs it.
+        def localProps = new Properties()
+        def localPropsFile = rootProject.file("local.properties")
+        if (localPropsFile.exists()) {
+            localPropsFile.withInputStream { localProps.load(it) }
+        }
+        buildConfigField "String", "SARVAM_API_KEY",
+            "\"${localProps.getProperty('sarvam.api.key', '')}\""
     }
 
     buildTypes {
@@ -102,6 +113,8 @@ dependencies {
     // Protobuf demo: shared generated messages + HTTP client to fetch the bytes
     implementation(project(':proto-models'))
     implementation(libs.okhttp)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.kotlinx.serialization)
 
     // RemoteCompose player: renders server-built document bytes as Compose.
     implementation(libs.remote.core)

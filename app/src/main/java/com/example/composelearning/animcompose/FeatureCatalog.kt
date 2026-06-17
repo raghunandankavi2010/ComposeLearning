@@ -246,6 +246,18 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         FeatureGroup.APP_CLONES
     ),
     AnimationCategory(
+        "Sarvam Language ID (offline-first)",
+        "Detects Hindi, Marathi, Gujarati, Telugu, Tamil & Kannada. Resolves script on-device with zero network; only Hindi-vs-Marathi (shared Devanagari) calls the Sarvam cloud text-lid API.",
+        AnimScreen.SarvamLid,
+        FeatureGroup.APP_CLONES
+    ),
+    AnimationCategory(
+        "Sarvam Speech-to-Text (language detect)",
+        "Records a 16kHz WAV clip via AudioRecord, uploads it to Sarvam STT (saaras:v3) over Retrofit/Gson multipart, and shows the transcript plus the detected language with confidence.",
+        AnimScreen.SarvamStt,
+        FeatureGroup.APP_CLONES
+    ),
+    AnimationCategory(
         "Blur Effects",
         "Modifier.blur and Haze frosted-glass demos",
         AnimScreen.BlurEffects,
