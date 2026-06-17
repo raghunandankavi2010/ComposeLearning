@@ -43,7 +43,7 @@ The `* 2` and `0.5` phase-split mean each phase is mapped from its half-window b
 
 #### Visual Math Reference
 
-![Visualization Progress](../../../../../../../../visualization_progress.jpeg)
+![Visualization Progress](./visualization_progress.jpeg)
 
 | Phase | Local $p$ | headDelta | tailDelta | Sweep Angle | Visual Action |
 | :--- | :--- | :--- | :--- | :--- | :--- |
