@@ -1,0 +1,27 @@
+// Ktor server (plain JVM) that accepts a real-time PCM audio stream over a WebSocket
+// and writes it to a .pcm file. Run it with:  ./gradlew :audio-stream-server:run
+plugins {
+    alias(libs.plugins.kotlin.jvm)
+    id 'application'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+application {
+    // AudioStreamServer.kt compiles to the class AudioStreamServerKt.
+    mainClass = 'com.example.composelearning.audioserver.AudioStreamServerKt'
+}
+
+dependencies {
+    implementation libs.ktor.server.core
+    implementation libs.ktor.server.cio          // pure-Kotlin engine, no Netty bloat
+    implementation libs.ktor.server.websockets
+    implementation libs.logback.classic          // SLF4J backend for Ktor logging
+}

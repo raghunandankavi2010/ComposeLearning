@@ -116,6 +116,10 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.kotlinx.serialization)
 
+    // Koin — runtime DI for the audiostream feature
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+
     // RemoteCompose player: renders server-built document bytes as Compose.
     implementation(libs.remote.core)
     implementation(libs.remote.player.compose)
@@ -156,6 +160,7 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
 
     testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

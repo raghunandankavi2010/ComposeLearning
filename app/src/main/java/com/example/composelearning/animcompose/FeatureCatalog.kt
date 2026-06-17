@@ -258,6 +258,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         FeatureGroup.APP_CLONES
     ),
     AnimationCategory(
+        "Real-time Audio Streaming (WebSocket)",
+        "Duplex PCM streaming like AI voice agents: AudioRecord → Coroutine Flow → OkHttp WebSocket → Ktor server writing a .pcm file. Clean Architecture + Koin DI. Run ./gradlew :audio-stream-server:run first.",
+        AnimScreen.AudioStream,
+        FeatureGroup.APP_CLONES
+    ),
+    AnimationCategory(
         "Blur Effects",
         "Modifier.blur and Haze frosted-glass demos",
         AnimScreen.BlurEffects,

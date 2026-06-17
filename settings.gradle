@@ -23,3 +23,4 @@ rootProject.name = "ComposeLearning"
 include ':app'
 include ':proto-models'
 include ':server'
+include ':audio-stream-server'

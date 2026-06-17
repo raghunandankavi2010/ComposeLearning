@@ -71,6 +71,7 @@ import com.example.composelearning.arglasses.presentation.ArGlassesRoute
 import com.example.composelearning.formguard.presentation.FormGuardRoute
 import com.example.composelearning.speechlang.presentation.SpeechLangRoute
 import com.example.composelearning.ondevicespeech.presentation.OnDeviceSpeechRoute
+import com.example.composelearning.audiostream.presentation.AudioStreamRoute
 import com.example.composelearning.sarvamlid.LanguageDetectionRoute
 import com.example.composelearning.sarvamstt.SpeechToTextRoute
 import com.example.composelearning.imagecropper.ImageCropperRoute
@@ -305,6 +306,8 @@ sealed interface AnimScreen :
     @Serializable data object SarvamLid : AnimScreen
 
     @Serializable data object SarvamStt : AnimScreen
+
+    @Serializable data object AudioStream : AnimScreen
 
     @Serializable data object WalletStack : AnimScreen
 
@@ -543,6 +546,7 @@ fun AppNavigation(
         entry<AnimScreen.OnDeviceSpeech> { OnDeviceSpeechRoute() }
         entry<AnimScreen.SarvamLid> { LanguageDetectionRoute(apiKey = BuildConfig.SARVAM_API_KEY) }
         entry<AnimScreen.SarvamStt> { SpeechToTextRoute() }
+        entry<AnimScreen.AudioStream> { AudioStreamRoute() }
         entry<AnimScreen.WalletStack> { WalletScreen() }
         entry<AnimScreen.Breathing> { BreathingScreen() }
         entry<AnimScreen.PathMorph> { PathMorphScreen() }

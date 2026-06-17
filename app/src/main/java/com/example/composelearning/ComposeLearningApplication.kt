@@ -8,15 +8,29 @@ import coil3.SingletonImageLoader
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.request.crossfade
 import coil3.util.DebugLogger
+import com.example.composelearning.audiostream.di.audioStreamModule
 import java.security.cert.X509Certificate
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 import okhttp3.OkHttpClient
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
 
 class ComposeLearningApplication :
     Application(),
     SingletonImageLoader.Factory {
+
+    override fun onCreate() {
+        super.onCreate()
+        startKoin {
+            androidLogger(Level.ERROR)
+            androidContext(this@ComposeLearningApplication)
+            modules(audioStreamModule)
+        }
+    }
 
     override fun newImageLoader(context: PlatformContext): ImageLoader = ImageLoader.Builder(this)
         .components {

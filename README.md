@@ -43,6 +43,7 @@ This project is a living gallery of what's possible with Jetpack Compose, from f
 - **Sort Animations**: 8+ sorting algorithms (Bubble, Quick, Merge, Timsort, …) in real time.
 
 ### 🌐 Networking & Auth
+- **Real-time Audio Streaming**: Duplex PCM streaming like AI voice agents — `AudioRecord` → Coroutine `Flow` → OkHttp WebSocket → a **Ktor** (`:audio-stream-server`) server writing a `.pcm` file. Clean Architecture + **Koin** DI, fully unit-tested with fakes.
 - **Protobuf over HTTP**: Protocol Buffers with OkHttp and generated Kotlin classes (see the `:server` demo).
 - **RemoteCompose**: Server-driven UI where the desktop server builds a RemoteCompose document and the app plays it.
 - **Passkeys (FIDO2)**: Passwordless auth via the Credential Manager API.
@@ -91,6 +92,7 @@ This project is a living gallery of what's possible with Jetpack Compose, from f
 - `:app` — the main Android application; one package per showcase under `com.example.composelearning`.
 - `:proto-models` — shared Kotlin/Java models generated from `.proto` definitions.
 - `:server` — a small Kotlin desktop server for the Protobuf / RemoteCompose demos.
+- `:audio-stream-server` — a Ktor (CIO) WebSocket server that receives the live PCM stream and writes it to a `.pcm` file (`./gradlew :audio-stream-server:run`).
 
 ---
 
@@ -111,6 +113,9 @@ Many features ship a focused write-up (math, architecture, API contract) alongsi
 | Path Morph | [`pathmorph/PathMorph.md`](app/src/main/java/com/example/composelearning/pathmorph/PathMorph.md) |
 | Adaptive Layouts | [`adaptive/README.md`](app/src/main/java/com/example/composelearning/adaptive/README.md) |
 | FormGuard (MediaPipe) | [`formguard/FORMGUARD.md`](app/src/main/java/com/example/composelearning/formguard/FORMGUARD.md) |
+| Real-time Audio Streaming | [`audiostream/AUDIOSTREAM.md`](app/src/main/java/com/example/composelearning/audiostream/AUDIOSTREAM.md) |
+| Sarvam Speech-to-Text | [`sarvamstt/SARVAMSTT.md`](app/src/main/java/com/example/composelearning/sarvamstt/SARVAMSTT.md) |
+| Sarvam Language ID (offline-first) | [`sarvamlid/SARVAMLID.md`](app/src/main/java/com/example/composelearning/sarvamlid/SARVAMLID.md) |
 | Speech → Language | [`speechlang/SPEECHLANG.md`](app/src/main/java/com/example/composelearning/speechlang/SPEECHLANG.md) · [`ondevicespeech/ONDEVICESPEECH.md`](app/src/main/java/com/example/composelearning/ondevicespeech/ONDEVICESPEECH.md) |
 | Protobuf over HTTP | [`protobufdemo/PROTOBUF.md`](app/src/main/java/com/example/composelearning/protobufdemo/PROTOBUF.md) |
 | Passkeys (FIDO2) | [`permissions/PASSKEYS.md`](app/src/main/java/com/example/composelearning/permissions/PASSKEYS.md) |
