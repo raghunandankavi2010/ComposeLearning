@@ -10,7 +10,6 @@ import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.DefaultLoadControl
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.exoplayer.source.preload.DefaultPreloadManager
 import androidx.media3.exoplayer.source.preload.TargetPreloadStatusControl
 import com.example.composelearning.shortsfeed.data.VideoItem
@@ -27,7 +26,7 @@ data class FeedPlaybackState(
     val isBuffering: Boolean = false,
     /** width/height of the decoded video; 0 until the first frame's format is known. */
     val videoAspectRatio: Float = 0f,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
 )
 
 /**
@@ -77,7 +76,7 @@ class FeedPlayerManager(context: Context) {
             val ratio = if (videoSize.height == 0) {
                 0f
             } else {
-                videoSize.width * videoSize.pixelWidthHeightRatio / videoSize.height
+                (videoSize.width * videoSize.pixelWidthHeightRatio) / videoSize.height
             }
             _playbackState.update { it.copy(videoAspectRatio = ratio) }
         }
@@ -91,13 +90,15 @@ class FeedPlayerManager(context: Context) {
      * Decides how much of each item to preload, by distance from the current page. Returns
      * `null` for items outside the window so the manager evicts/never-loads them.
      */
-    private inner class AdjacentPreloadControl : TargetPreloadStatusControl<Int> {
+    private class AdjacentPreloadControl : TargetPreloadStatusControl<Int, DefaultPreloadManager.PreloadStatus> {
         @Volatile var currentPlayingIndex = 0
 
-        override fun getTargetPreloadStatus(rankingData: Int): TargetPreloadStatusControl.PreloadStatus? {
-            if (abs(rankingData - currentPlayingIndex) > PRELOAD_WINDOW) return null
+        override fun getTargetPreloadStatus(rankingData: Int): DefaultPreloadManager.PreloadStatus {
+            if (abs(rankingData - currentPlayingIndex) > PRELOAD_WINDOW) {
+                return DefaultPreloadManager.PreloadStatus.PRELOAD_STATUS_NOT_PRELOADED
+            }
             // Prepare + select tracks + load the first PRELOAD_DURATION_MS for an instant start.
-            return DefaultPreloadManager.PreloadStatus.specifiedRangeOf(PRELOAD_DURATION_MS)
+            return DefaultPreloadManager.PreloadStatus.specifiedRangeLoaded(PRELOAD_DURATION_MS)
         }
     }
 
@@ -115,7 +116,7 @@ class FeedPlayerManager(context: Context) {
         .build()
 
     private val preloadManagerBuilder = DefaultPreloadManager.Builder(appContext, preloadControl)
-        .setMediaSourceFactory(DefaultMediaSourceFactory(cacheDataSourceFactory))
+        .setDataSourceFactory(cacheDataSourceFactory)
         .setLoadControl(loadControl)
 
     private val preloadManager: DefaultPreloadManager = preloadManagerBuilder.build()

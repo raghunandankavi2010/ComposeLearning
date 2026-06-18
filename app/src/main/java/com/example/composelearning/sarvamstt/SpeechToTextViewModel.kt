@@ -86,14 +86,19 @@ class SpeechToTextViewModel @JvmOverloads constructor(
             file = filePart,
             model = SarvamSttApi.MODEL_SAARAS_V3.toRequestBody(textType),
             mode = SarvamSttApi.MODE_TRANSCRIBE.toRequestBody(textType),
+            withNumerals = "true".toRequestBody(textType),
+            numeralFormat = SarvamSttApi.NUMERAL_FORMAT_NATIVE.toRequestBody(textType),
         )
 
         val language = response.languageCode
         if (language.isNullOrBlank()) {
             SpeechUiState.Error("API returned no language. Speak a bit longer and retry.")
         } else {
+            val rawTranscript = response.transcript.orEmpty()
+            val normalizedTranscript = MultiLanguageNumberNormalizer.normalize(rawTranscript, language)
+
             SpeechUiState.Success(
-                transcript = response.transcript.orEmpty(),
+                transcript = normalizedTranscript,
                 languageCode = language,
                 confidence = response.languageProbability,
             )

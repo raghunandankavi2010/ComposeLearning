@@ -14,11 +14,60 @@ AudioRecord ──Flow<ByteArray>──▶ StreamAudioUseCase ──▶ OkHttp W
 - `embeddedServer(CIO)` on port **8080**, route **`/stream`** (`AudioStreamServer.kt`).
 - **Binary** frames → appended to a timestamped `recordings/audio-<ts>.pcm`.
 - **Text `"END"`** → graceful close; socket drop/failure handled in `finally` (flush + close).
-- Concurrent clients each get their own file. Run it:
-  ```bash
-  ./gradlew :audio-stream-server:run
-  # play back:  ffplay -f s16le -ar 16000 -ch_layout mono recordings/audio-<ts>.pcm
-  ```
+- Concurrent clients each get their own file.
+
+See **Running it end-to-end** below for how to start it, drive the client, and find the capture.
+
+## Running it end-to-end
+
+### 1. Start the server (dev machine)
+Run in its **own terminal** — it runs in the foreground and blocks:
+```bash
+./gradlew :audio-stream-server:run
+```
+On startup it prints the port and the **exact output directory**:
+```
+Audio stream server listening on ws://0.0.0.0:8080/stream
+Recordings -> /…/ComposeLearning/audio-stream-server/recordings
+```
+> If Android Studio doesn't list the task, run a **Gradle sync** first (the module was added recently).
+
+### 2. Launch the client (emulator)
+Run the `:app` module, then: home → **App Clones & Real-world → "Real-time Audio Streaming (WebSocket)"** (or search "audio").
+
+> **The record button is a toggle and the *first* tap only handles the mic permission.**
+> - **Tap 1** (permission not granted) → shows the system dialog. *Does not start streaming.*
+> - **Tap 2** (after granting) → opens the WebSocket and starts streaming.
+>
+> Confirm the on-screen status reads **`● Streaming — N KB sent`** (icon becomes ⏹). Tap ⏹ to stop —
+> that sends `"END"` and finalizes the file. A **red error** status means it couldn't reach the
+> server (check you're on the emulator, so the `10.0.2.2` endpoint applies).
+
+### 3. Where is my audio on the server?
+Captures land in the **`recordings/` folder *inside the server module*** — the Gradle `run` task's
+working directory is the module folder, **not** the repo root:
+```
+audio-stream-server/recordings/audio-<yyyyMMdd-HHmmss-SSS>.pcm
+```
+The authoritative path is the `Recordings -> …` line printed at startup. List them with:
+```bash
+ls -lh audio-stream-server/recordings/
+```
+**File lifecycle / what to expect in the server log:**
+- On connect → `▶ client connected — writing to audio-<ts>.pcm` (the file is created, then grows as
+  buffered frames flush).
+- On stop / `END` / disconnect → `✔ saved audio-<ts>.pcm — <bytes> (~Ns)` (final flush + close).
+
+If you see **no `▶ client connected` line and an empty `recordings/`**, the client never connected —
+almost always the missing **second tap** above (status still says *"Tap to start streaming"*).
+
+### 4. Play back a capture
+It's headerless raw PCM, so pass the format explicitly:
+```bash
+ffplay -f s16le -ar 16000 -ch_layout mono audio-stream-server/recordings/audio-<ts>.pcm
+# or convert to WAV:
+ffmpeg -f s16le -ar 16000 -ac 1 -i audio-stream-server/recordings/audio-<ts>.pcm out.wav
+```
 
 ## Client — Clean Architecture (`audiostream/`)
 ```

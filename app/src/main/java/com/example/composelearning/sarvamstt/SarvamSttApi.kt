@@ -63,6 +63,8 @@ interface SarvamSttApi {
         @Part file: MultipartBody.Part,
         @Part("model") model: RequestBody,
         @Part("mode") mode: RequestBody,
+        @Part("with_numerals") withNumerals: RequestBody? = null,
+        @Part("numeral_format") numeralFormat: RequestBody? = null,
     ): TranscriptionResponse
 
     companion object {
@@ -72,7 +74,8 @@ interface SarvamSttApi {
         const val TRANSCRIBE_PATH = "speech-to-text"
 
         const val MODEL_SAARAS_V3 = "saaras:v3"
-        const val MODE_TRANSCRIBE = "transcribe"
+        const val MODE_TRANSCRIBE = "verbatim"
+        const val NUMERAL_FORMAT_NATIVE = "native"
     }
 }
 
