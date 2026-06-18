@@ -78,24 +78,32 @@ object MultiLanguageNumberNormalizer {
         if (transcript.isBlank()) return transcript
 
         val baseLang = languageCode.split("-").first().lowercase()
-        val targetMap = languageMatrices[baseLang] ?: return transcript
+        val targetMap = languageMatrices[baseLang]
 
-        // 1. Tokenize and replace words with numeric strings
-        val tokens = transcript.split(Regex("\\s+"))
-        val processedTokens = tokens.map { token ->
-            targetMap[token] ?: token
+        var processedText = transcript
+
+        // 1. If we have a map for this language, replace spoken words with digits
+        if (targetMap != null) {
+            // Sort by length descending to match longer phrases first (e.g. "twenty five" before "five")
+            val sortedWords = targetMap.keys.sortedByDescending { it.length }
+            for (word in sortedWords) {
+                // Use word boundary to avoid partial matches
+                processedText = processedText.replace(Regex("(?i)\\b$word\\b"), targetMap[word]!!)
+            }
         }
 
-        var processedText = processedTokens.joinToString(" ")
-
-        // 2. Collapse whitespaces between digits (this handles "100 4" -> "1004")
+        // 2. Collapse whitespaces between ANY digits (Latin or already converted)
         processedText = processedText.replace(Regex("(?<=\\d)\\s+(?=\\d)"), "")
 
-        // 3. Convert Latin digits to Native Script digits
+        // 3. Force-convert all Latin digits to Native Script digits if available
         val nativeDigits = nativeDigitMaps[baseLang]
         return if (nativeDigits != null) {
             processedText.map { char ->
-                if (char in '0'..'9') nativeDigits[char - '0'] else char
+                if (char in '0'..'9') {
+                    nativeDigits[char - '0']
+                } else {
+                    char
+                }
             }.joinToString("")
         } else {
             processedText
