@@ -204,6 +204,18 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         FeatureGroup.SHADERS_IMAGES
     ),
     AnimationCategory(
+        "Simple Time Shader",
+        "Sine-driven red channel color oscillation (GLSL port)",
+        AnimScreen.SimpleTimeShader,
+        FeatureGroup.SHADERS_IMAGES
+    ),
+    AnimationCategory(
+        "Shader Ripple",
+        "Touch-driven distortion wave with aspect correction",
+        AnimScreen.ShaderRipple,
+        FeatureGroup.SHADERS_IMAGES
+    ),
+    AnimationCategory(
         "Image Processing (AGSL)",
         "Instagram-style filters rendered as an AGSL RuntimeShader RenderEffect.",
         AnimScreen.ImageProcessing,

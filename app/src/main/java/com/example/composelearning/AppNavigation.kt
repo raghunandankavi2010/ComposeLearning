@@ -339,6 +339,10 @@ sealed interface AnimScreen :
 
     @Serializable data object WaveLoadingCircle : AnimScreen
 
+    @Serializable data object SimpleTimeShader : AnimScreen
+
+    @Serializable data object ShaderRipple : AnimScreen
+
     @Serializable data object ShortsFeed : AnimScreen
 
     @Serializable data object Disintegration : AnimScreen
@@ -565,6 +569,8 @@ fun AppNavigation(
         entry<AnimScreen.SolarSystem> { SolarSystemSimulation() }
         entry<AnimScreen.GradientHeartFill> { com.example.composelearning.heartfill.GradientHeartFill() }
         entry<AnimScreen.WaveLoadingCircle> { com.example.composelearning.progress.WaveLoadingCircleScreen() }
+        entry<AnimScreen.SimpleTimeShader> { com.example.composelearning.shaders.SimpleTimeShaderScreen(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.ShaderRipple> { com.example.composelearning.shaders.ShaderRippleScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.ShortsFeed> { com.example.composelearning.shortsfeed.presentation.ShortsFeedRoute() }
         entry<AnimScreen.Disintegration> { com.example.composelearning.disintegration.DisintegrationScreen() }
         entry<AnimScreen.ParallaxOnboarding> {
