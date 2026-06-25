@@ -127,6 +127,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         AnimScreen.SequentialFadeGridScreen,
         FeatureGroup.FUNDAMENTALS
     ),
+    AnimationCategory(
+        "Recursive Subdivision",
+        "Fractal-like grid subdivision with alternating colors.",
+        AnimScreen.RecursivePattern,
+        FeatureGroup.FUNDAMENTALS
+    ),
 
     // ── Canvas & Graphics ───────────────────────────────────────────────────
     AnimationCategory(

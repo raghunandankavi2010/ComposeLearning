@@ -339,6 +339,8 @@ sealed interface AnimScreen :
 
     @Serializable data object WaveLoadingCircle : AnimScreen
 
+    @Serializable data object RecursivePattern : AnimScreen
+
     @Serializable data object SimpleTimeShader : AnimScreen
 
     @Serializable data object ShaderRipple : AnimScreen
@@ -570,6 +572,7 @@ fun AppNavigation(
         entry<AnimScreen.GradientHeartFill> { com.example.composelearning.heartfill.GradientHeartFill() }
         entry<AnimScreen.WaveLoadingCircle> { com.example.composelearning.progress.WaveLoadingCircleScreen() }
         entry<AnimScreen.SimpleTimeShader> { com.example.composelearning.shaders.SimpleTimeShaderScreen(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.RecursivePattern> { com.example.composelearning.anim.RecursivePatternScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.ShaderRipple> { com.example.composelearning.shaders.ShaderRippleScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.ShortsFeed> { com.example.composelearning.shortsfeed.presentation.ShortsFeedRoute() }
         entry<AnimScreen.Disintegration> { com.example.composelearning.disintegration.DisintegrationScreen() }
