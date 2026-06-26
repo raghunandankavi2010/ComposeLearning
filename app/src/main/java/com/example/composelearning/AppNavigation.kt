@@ -89,6 +89,7 @@ import com.example.composelearning.peritemvm.PerItemViewModelShowcaseScreen
 import com.example.composelearning.permissions.PasskeySample
 import com.example.composelearning.progress.SmoothProgressBarScreen
 import com.example.composelearning.protobufdemo.ProtobufDemoRoute
+import com.example.composelearning.promotions.PromotionalDealRoute
 import com.example.composelearning.riveo.presentation.RiveoScreen
 import com.example.composelearning.shaders.FluidSpringShaderScreen
 import com.example.composelearning.shaders.ShadersHubScreen
@@ -341,6 +342,8 @@ sealed interface AnimScreen :
 
     @Serializable data object RecursivePattern : AnimScreen
 
+    @Serializable data object PromotionalDeal : AnimScreen
+
     @Serializable data object SimpleTimeShader : AnimScreen
 
     @Serializable data object ShaderRipple : AnimScreen
@@ -573,6 +576,7 @@ fun AppNavigation(
         entry<AnimScreen.WaveLoadingCircle> { com.example.composelearning.progress.WaveLoadingCircleScreen() }
         entry<AnimScreen.SimpleTimeShader> { com.example.composelearning.shaders.SimpleTimeShaderScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.RecursivePattern> { com.example.composelearning.anim.RecursivePatternScreen(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.PromotionalDeal> { PromotionalDealRoute(onBack = { navigator.goBack() }) }
         entry<AnimScreen.ShaderRipple> { com.example.composelearning.shaders.ShaderRippleScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.ShortsFeed> { com.example.composelearning.shortsfeed.presentation.ShortsFeedRoute() }
         entry<AnimScreen.Disintegration> { com.example.composelearning.disintegration.DisintegrationScreen() }

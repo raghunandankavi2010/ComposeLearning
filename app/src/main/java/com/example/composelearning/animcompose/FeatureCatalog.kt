@@ -133,6 +133,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         AnimScreen.RecursivePattern,
         FeatureGroup.FUNDAMENTALS
     ),
+    AnimationCategory(
+        "Promotional Deal Timer",
+        "Real-time countdown for marketplace deals with monotonic time, notification sync, and process death resilience.",
+        AnimScreen.PromotionalDeal,
+        FeatureGroup.FUNDAMENTALS
+    ),
 
     // ── Canvas & Graphics ───────────────────────────────────────────────────
     AnimationCategory(

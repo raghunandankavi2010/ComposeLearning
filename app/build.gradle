@@ -135,6 +135,7 @@ dependencies {
     implementation(libs.androidx.paging.compose)
 
     implementation(libs.androidx.graphics.shapes)
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.accompanist.permissions)
 
     // CameraX pipeline (front-camera streaming via ImageAnalysis)
