@@ -170,6 +170,26 @@ flowchart TD
 
 ---
 
+## 5. Test-Verified Robustness
+
+The implementation includes a comprehensive test suite (`DealTimerViewModelTest`) that verifies the
+following critical scenarios:
+
+*   **Immunity to Wall-Clock Tampering**: Once the timer starts, it is pinned to the device's monotonic
+    uptime (`elapsedRealtime`). Tests prove that jumping the system clock forward or backward by
+    hours does not affect the accurate countdown.
+*   **Resilience to Reboot**: On reboot, `elapsedRealtime` resets to zero. The system re-resolves the
+    remaining duration by comparing the persisted absolute `targetEndTimestamp` against the
+    network-synced wall clock, ensuring the timer continues correctly.
+*   **Seamless Configuration Changes**: Using `WhileSubscribed(5000)` ensures that the timer flow
+    survives the brief "gap" during activity rotation (configuration change), providing a
+    flicker-free transition between screens.
+*   **Process Death Recovery**: The `DealStore` (DataStore) ensures that if the OS kills the app
+    process, the same absolute deadline is recovered upon restart, regardless of how long the app
+    was closed.
+
+---
+
 ### Legend
 - **Solid arrow** → runtime data/control flow.
 - **Dashed arrow** → "implemented by" / "stays consistent with" relationship.

@@ -17,6 +17,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Unit tests for [DealTimerViewModel].
@@ -100,7 +101,7 @@ class DealTimerViewModelTest {
         runCurrent()
         assertEquals(10_000L, states.last().remainingMillis)
 
-        advanceTimeBy(3_000L)
+        advanceTimeBy(3_000L.milliseconds)
         runCurrent()
         assertEquals(7_000L, states.last().remainingMillis)
         assertFalse(states.last().isExpired)
@@ -147,12 +148,12 @@ class DealTimerViewModelTest {
 
         // User jumps their device clock far forward/back: must not affect the monotonic countdown.
         time.wallClock = 1_000_000L
-        advanceTimeBy(2_000L)
+        advanceTimeBy(2_000L.milliseconds)
         runCurrent()
         assertEquals(18_000L, states.last().remainingMillis)
 
         time.wallClock = -1_000_000L
-        advanceTimeBy(2_000L)
+        advanceTimeBy(2_000L.milliseconds)
         runCurrent()
         assertEquals(16_000L, states.last().remainingMillis)
 
@@ -176,12 +177,66 @@ class DealTimerViewModelTest {
         runCurrent()
         assertEquals(10_000L, vm.timerState.value.remainingMillis)
 
-        advanceTimeBy(4_000L)
+        advanceTimeBy(4_000L.milliseconds)
         runCurrent()
         assertEquals(6_000L, vm.timerState.value.remainingMillis)
         assertEquals("upstream collected once despite two subscribers", 1, store.saveCount)
 
         a.cancel()
         b.cancel()
+    }
+
+    @Test
+    fun `reboot - timer survives elapsedRealtime resetting to zero if wall clock is correct`() = runTest {
+        val store = FakeDealStore(initial = 50_000L)
+        val time = FakeTimeProvider(wallClock = 20_000L, virtualTime = { testScheduler.currentTime })
+
+        // Before reboot: elapsedRealtime is 100_000
+        time.elapsedBase = 100_000L
+        val vmBefore = DealTimerViewModel(store, initialTargetEndTimestamp = 0L, timeProvider = time)
+        val stateBefore = vmBefore.timerFlow().first()
+        assertEquals(30_000L, stateBefore.remainingMillis) // 50k - 20k
+
+        // Simulate Reboot: elapsedRealtime resets to 0. wallClock remains correct (network sync).
+        time.elapsedBase = 0L
+        val vmAfter = DealTimerViewModel(store, initialTargetEndTimestamp = 0L, timeProvider = time)
+        val stateAfter = vmAfter.timerFlow().first()
+        assertEquals(30_000L, stateAfter.remainingMillis) // Still 30s remaining
+    }
+
+    @Test
+    fun `configuration change - flow keeps ticking within subscription timeout`() = runTest {
+        val store = FakeDealStore()
+        val time = FakeTimeProvider(wallClock = 0L, virtualTime = { testScheduler.currentTime })
+        // Use a short subscription timeout for testing if we wanted, but we use the default 5s
+        val vm = DealTimerViewModel(store, initialTargetEndTimestamp = 20_000L, timeProvider = time)
+
+        // 1. First collection (Activity starts)
+        val states = mutableListOf<DealTimerUiState>()
+        val job1 = launch { vm.timerState.toList(states) }
+        runCurrent()
+        assertEquals(20_000L, states.last().remainingMillis)
+
+        advanceTimeBy(2_000L.milliseconds)
+        runCurrent()
+        assertEquals(18_000L, states.last().remainingMillis)
+
+        // 2. Unsubscribe (Configuration change starts)
+        job1.cancel()
+        runCurrent()
+
+        // 3. Advance time while no one is listening (Rotation in progress)
+        advanceTimeBy(3_000L.milliseconds)
+        runCurrent()
+        // Upstream should still be running because 3s < 5s (WhileSubscribed timeout)
+
+        // 4. Resubscribe (New Activity instance attached)
+        val job2 = launch { vm.timerState.toList(states) }
+        runCurrent()
+
+        // The timer should have kept ticking in the background
+        assertEquals(15_000L, states.last().remainingMillis)
+
+        job2.cancel()
     }
 }

@@ -11,7 +11,7 @@ package com.example.composelearning.promotions
  */
 class FakeTimeProvider(
     var wallClock: Long = 0L,
-    private val elapsedBase: Long = 0L,
+    var elapsedBase: Long = 0L,
     private val virtualTime: () -> Long = { 0L }
 ) : TimeProvider {
     override fun currentTimeMillis(): Long = wallClock
