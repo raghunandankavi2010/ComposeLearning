@@ -66,6 +66,12 @@ android {
     }
 
     packaging {
+        jniLibs {
+            // This ensures native libraries are aligned to 16KB boundaries
+            // and kept uncompressed in the APK so the OS can mmap them directly.
+            // Required for Android 15+ 16KB page size support.
+            useLegacyPackaging = false
+        }
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
@@ -155,6 +161,8 @@ dependencies {
     implementation(libs.mediapipe.tasks.text) {
         exclude group: 'com.google.protobuf', module: 'protobuf-javalite'
     }
+    // TensorFlow Lite — on-device EfficientNet-Lite0 image classifier (photo-quality demo)
+    implementation(libs.tensorflow.lite)
     //noinspection LoginCredentials
     implementation(libs.androidx.credentials)
     //noinspection LoginCredentials
@@ -169,6 +177,4 @@ dependencies {
     debugImplementation(platform(libs.androidx.compose.bom))
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-    implementation(libs.edge.to.edge.preview)
 }

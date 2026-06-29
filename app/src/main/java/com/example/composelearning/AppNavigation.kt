@@ -90,6 +90,7 @@ import com.example.composelearning.permissions.PasskeySample
 import com.example.composelearning.progress.SmoothProgressBarScreen
 import com.example.composelearning.protobufdemo.ProtobufDemoRoute
 import com.example.composelearning.promotions.PromotionalDealRoute
+import com.example.composelearning.photoquality.PhotoQualityRoute
 import com.example.composelearning.riveo.presentation.RiveoScreen
 import com.example.composelearning.shaders.FluidSpringShaderScreen
 import com.example.composelearning.shaders.ShadersHubScreen
@@ -344,6 +345,8 @@ sealed interface AnimScreen :
 
     @Serializable data object PromotionalDeal : AnimScreen
 
+    @Serializable data class PhotoQuality(val initialUri: String? = null) : AnimScreen
+
     @Serializable data object SimpleTimeShader : AnimScreen
 
     @Serializable data object ShaderRipple : AnimScreen
@@ -577,6 +580,12 @@ fun AppNavigation(
         entry<AnimScreen.SimpleTimeShader> { com.example.composelearning.shaders.SimpleTimeShaderScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.RecursivePattern> { com.example.composelearning.anim.RecursivePatternScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.PromotionalDeal> { PromotionalDealRoute(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.PhotoQuality> { key ->
+            PhotoQualityRoute(
+                initialUri = key.initialUri?.let { android.net.Uri.parse(it) },
+                onBack = { navigator.goBack() }
+            )
+        }
         entry<AnimScreen.ShaderRipple> { com.example.composelearning.shaders.ShaderRippleScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.ShortsFeed> { com.example.composelearning.shortsfeed.presentation.ShortsFeedRoute() }
         entry<AnimScreen.Disintegration> { com.example.composelearning.disintegration.DisintegrationScreen() }

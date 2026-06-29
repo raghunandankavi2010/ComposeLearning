@@ -258,6 +258,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         FeatureGroup.APP_CLONES
     ),
     AnimationCategory(
+        "Photo Quality Check (NIMA)",
+        "On-device Google NIMA (technical) TFLite model scores capture quality (blur, noise, exposure) 1–10. Try the bundled samples or score your own photo from the gallery or camera.",
+        AnimScreen.PhotoQuality(),
+        FeatureGroup.APP_CLONES
+    ),
+    AnimationCategory(
         "Speak & Detect Language (MediaPipe)",
         "SpeechRecognizer dictation → MediaPipe Tasks Text language detection. Talk, see the transcript, and get the detected language with confidence.",
         AnimScreen.SpeechLang,

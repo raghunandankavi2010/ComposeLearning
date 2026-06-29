@@ -1,6 +1,5 @@
 [versions]
 agp = "9.2.1"
-edgeToEdgePreview = "0.9.0"
 kotlin = "2.4.0"
 coreKtx = "1.19.0"
 junit = "4.13.2"
@@ -37,11 +36,11 @@ camerax = "1.6.1"
 faceMesh = "16.0.0-beta3"
 mediapipeTasksVision = "0.10.35"
 mediapipeTasksText = "0.10.35"
+tensorflowLite = "2.17.0"
 datastore = "1.2.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-edge-to-edge-preview = { module = "de.drick.compose:edge-to-edge-preview", version.ref = "edgeToEdgePreview" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -116,6 +115,8 @@ mlkit-face-mesh-detection = { group = "com.google.mlkit", name = "face-mesh-dete
 mediapipe-tasks-vision = { group = "com.google.mediapipe", name = "tasks-vision", version.ref = "mediapipeTasksVision" }
 # MediaPipe Tasks Text — on-device language detection (language_detector.tflite)
 mediapipe-tasks-text = { group = "com.google.mediapipe", name = "tasks-text", version.ref = "mediapipeTasksText" }
+# TensorFlow Lite — raw Interpreter for the EfficientNet-Lite0 photo-quality demo
+tensorflow-lite = { group = "org.tensorflow", name = "tensorflow-lite", version.ref = "tensorflowLite" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

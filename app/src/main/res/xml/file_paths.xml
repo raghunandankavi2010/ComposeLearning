@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- captures written by the camera app live in cacheDir/images (see PhotoQualityScreen). -->
+    <cache-path
+        name="captured_images"
+        path="images/" />
+</paths>
