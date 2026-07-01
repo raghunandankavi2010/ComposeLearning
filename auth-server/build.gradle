@@ -1,0 +1,31 @@
+// Ktor server (plain JVM) that demonstrates a JWT-style access-token / refresh-token flow.
+// It is deliberately in-memory and un-persisted — restart it and every session is wiped.
+// Run it with:  ./gradlew :auth-server:run
+plugins {
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.serialization)
+    id 'application'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
+application {
+    // AuthServer.kt compiles to the class AuthServerKt.
+    mainClass = 'com.example.composelearning.authserver.AuthServerKt'
+}
+
+dependencies {
+    implementation libs.ktor.server.core
+    implementation libs.ktor.server.cio                  // pure-Kotlin engine, no Netty bloat
+    implementation libs.ktor.server.content.negotiation  // JSON (de)serialization on routes
+    implementation libs.ktor.server.status.pages         // map exceptions -> HTTP error responses
+    implementation libs.ktor.serialization.kotlinx.json  // kotlinx.serialization content converter
+    implementation libs.logback.classic                  // SLF4J backend for Ktor logging
+}

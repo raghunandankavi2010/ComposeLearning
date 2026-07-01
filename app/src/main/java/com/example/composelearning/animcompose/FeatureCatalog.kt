@@ -300,6 +300,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         FeatureGroup.APP_CLONES
     ),
     AnimationCategory(
+        "Access & Refresh Tokens (Auth flow)",
+        "End-to-end JWT-style auth: login → short-lived access token + refresh token → protected /profile call that silently auto-refreshes on 401 via an OkHttp Authenticator. Clean Architecture + Koin + Retrofit, with a live flow log. Run ./gradlew :auth-server:run first.",
+        AnimScreen.AuthTokenDemo,
+        FeatureGroup.APP_CLONES
+    ),
+    AnimationCategory(
         "Blur Effects",
         "Modifier.blur and Haze frosted-glass demos",
         AnimScreen.BlurEffects,

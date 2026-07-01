@@ -9,6 +9,7 @@ import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import coil3.request.crossfade
 import coil3.util.DebugLogger
 import com.example.composelearning.audiostream.di.audioStreamModule
+import com.example.composelearning.auth.di.authModule
 import java.security.cert.X509Certificate
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
@@ -28,7 +29,7 @@ class ComposeLearningApplication :
         startKoin {
             androidLogger(Level.ERROR)
             androidContext(this@ComposeLearningApplication)
-            modules(audioStreamModule)
+            modules(audioStreamModule, authModule)
         }
     }
 
