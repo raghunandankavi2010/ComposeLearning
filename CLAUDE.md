@@ -25,6 +25,7 @@ Features in `:app` are organized as packages under `app/src/main/java/com/exampl
 ├── charts/             # Line, Bar, Pie, Donut, Candle, Speedometer charts
 ├── cleartodo/          # Clear To-Do pinch-to-create interaction
 ├── clocks/             # Time Range Knob / 24h dial
+├── cropdoctor/         # On-device plant pest/disease detector (TFLite PlantVillage) — gallery/camera → diagnosis + advice (see its CROPDOCTOR.md)
 ├── customlayout/       # Custom Pager and Arc List layouts
 ├── customshapes/       # Ticket shapes and other custom geometry
 ├── dropdown/           # Dropdown menu samples

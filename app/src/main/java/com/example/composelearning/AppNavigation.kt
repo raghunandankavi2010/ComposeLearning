@@ -68,6 +68,7 @@ import com.example.composelearning.graphics.BorderProgressBar
 import com.example.composelearning.graphics.DrawScaleOnTouch
 import com.example.composelearning.graphics.SineWaveSample
 import com.example.composelearning.arglasses.presentation.ArGlassesRoute
+import com.example.composelearning.cropdoctor.presentation.CropDoctorRoute
 import com.example.composelearning.formguard.presentation.FormGuardRoute
 import com.example.composelearning.speechlang.presentation.SpeechLangRoute
 import com.example.composelearning.ondevicespeech.presentation.OnDeviceSpeechRoute
@@ -300,6 +301,8 @@ sealed interface AnimScreen :
     @Serializable data object ArGlasses : AnimScreen
 
     @Serializable data object FormGuard : AnimScreen
+
+    @Serializable data object CropDoctor : AnimScreen
 
     @Serializable data object SpeechLang : AnimScreen
 
@@ -554,6 +557,7 @@ fun AppNavigation(
         entry<AnimScreen.ImageCropper> { ImageCropperRoute() }
         entry<AnimScreen.ArGlasses> { ArGlassesRoute() }
         entry<AnimScreen.FormGuard> { FormGuardRoute() }
+        entry<AnimScreen.CropDoctor> { CropDoctorRoute(onBack = { navigator.goBack() }) }
         entry<AnimScreen.SpeechLang> { SpeechLangRoute() }
         entry<AnimScreen.OnDeviceSpeech> { OnDeviceSpeechRoute() }
         entry<AnimScreen.SarvamLid> { LanguageDetectionRoute(apiKey = BuildConfig.SARVAM_API_KEY) }
