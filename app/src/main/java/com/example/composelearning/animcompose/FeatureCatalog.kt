@@ -166,6 +166,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         FeatureGroup.CANVAS_GRAPHICS
     ),
     AnimationCategory(
+        "Matrix Digital Rain",
+        "Falling glyph columns with glowing near-white heads and exponential phosphor-green tails — per-column depth dimming, glyph flicker and spawn fade-in on native Canvas.",
+        AnimScreen.MatrixRain,
+        FeatureGroup.CANVAS_GRAPHICS
+    ),
+    AnimationCategory(
         "Mesh Gradient",
         "Demo for mesh gradient using compose",
         AnimScreen.MeshGradient,
