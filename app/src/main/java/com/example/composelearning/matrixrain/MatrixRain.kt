@@ -3,7 +3,6 @@ package com.example.composelearning.matrixrain
 import android.graphics.BlurMaskFilter
 import android.graphics.Paint
 import android.graphics.Typeface
-import android.graphics.Color as AndroidColor
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -18,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,12 +39,13 @@ import com.example.composelearning.util.LocalAnimationsEnabled
 import kotlinx.coroutines.isActive
 import kotlin.math.pow
 import kotlin.random.Random
+import android.graphics.Color as AndroidColor
 
 private const val MATRIX_CHARS =
     "0123456789" +
-    "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン" +
-    "ｦｱｳｴｵｶｷｹｺｻｼｽｾｿﾀﾂﾃﾅﾆﾇﾈﾊﾋﾎﾏﾐﾑﾒﾓﾔﾕﾗﾘﾜ" +
-    "=+*<>¦｜╌:."
+        "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン" +
+        "ｦｱｳｴｵｶｷｹｺｻｼｽｾｿﾀﾂﾃﾅﾆﾇﾈﾊﾋﾎﾏﾐﾑﾒﾓﾔﾕﾗﾘﾜ" +
+        "=+*<>¦｜╌:."
 
 /**
  * One vertical stream of glyphs.
@@ -100,7 +101,7 @@ fun MatrixRainBackground(
         }
     }
 
-    var frame by remember { mutableStateOf(0L) }
+    var frame by remember { mutableLongStateOf(0L) }
 
     LaunchedEffect(columns, fontSizePx, animationsEnabled) {
         if (columns.isEmpty() || !animationsEnabled) return@LaunchedEffect
