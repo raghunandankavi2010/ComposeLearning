@@ -367,6 +367,8 @@ sealed interface AnimScreen :
 
     @Serializable data object MatrixRain : AnimScreen
 
+    @Serializable data object ParticleField : AnimScreen
+
     /** Second-level home screen listing all demos of one [com.example.composelearning.animcompose.FeatureGroup]. */
     @Serializable @Parcelize
     data class Group(val groupId: String) : AnimScreen
@@ -607,6 +609,9 @@ fun AppNavigation(
         }
         entry<AnimScreen.MatrixRain> {
             com.example.composelearning.matrixrain.MatrixRainScreen(onBack = { navigator.goBack() })
+        }
+        entry<AnimScreen.ParticleField> {
+            com.example.composelearning.particlefield.ParticleFieldScreen(onBack = { navigator.goBack() })
         }
         entry<AnimScreen.Group> { key ->
             com.example.composelearning.animcompose.GroupFeaturesScreen(

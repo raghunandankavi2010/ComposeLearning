@@ -344,6 +344,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         FeatureGroup.CHARTS_VISUALIZERS
     ),
     AnimationCategory(
+        "Particle Field (steering / morph)",
+        "Port of Flutter's animated_particles: particles sampled from text pixels arrive into the shape, morph between shapes (tap), flee from your finger (drag) and escape off-screen (long-press) — a structure-of-arrays engine drawn in one drawPoints call.",
+        AnimScreen.ParticleField,
+        FeatureGroup.CHARTS_VISUALIZERS
+    ),
+    AnimationCategory(
         "Sort Animations",
         "Tabbed hub: bubble, quick, insertion, selection, shell, merge, heap, and Timsort.",
         AnimScreen.SortAnimation,
