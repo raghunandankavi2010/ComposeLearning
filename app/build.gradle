@@ -86,6 +86,7 @@ kotlin {
 }
 
 dependencies {
+    implementation libs.androidx.compose.ui.graphics
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.constraintlayout.compose)
 

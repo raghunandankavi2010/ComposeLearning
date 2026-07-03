@@ -38,6 +38,7 @@ mediapipeTasksVision = "0.10.35"
 mediapipeTasksText = "0.10.35"
 tensorflowLite = "2.17.0"
 datastore = "1.2.1"
+uiGraphics = "1.11.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -122,6 +123,7 @@ mediapipe-tasks-vision = { group = "com.google.mediapipe", name = "tasks-vision"
 mediapipe-tasks-text = { group = "com.google.mediapipe", name = "tasks-text", version.ref = "mediapipeTasksText" }
 # TensorFlow Lite — raw Interpreter for the EfficientNet-Lite0 photo-quality demo
 tensorflow-lite = { group = "org.tensorflow", name = "tensorflow-lite", version.ref = "tensorflowLite" }
+androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics", version.ref = "uiGraphics" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

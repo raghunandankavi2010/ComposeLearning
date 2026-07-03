@@ -172,6 +172,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         FeatureGroup.CANVAS_GRAPHICS
     ),
     AnimationCategory(
+        "Dotted Text",
+        "Rasterize text and draw it as a grid of points.",
+        AnimScreen.DottedText,
+        FeatureGroup.CANVAS_GRAPHICS
+    ),
+    AnimationCategory(
         "Mesh Gradient",
         "Demo for mesh gradient using compose",
         AnimScreen.MeshGradient,
