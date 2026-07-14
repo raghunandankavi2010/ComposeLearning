@@ -696,5 +696,11 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         "The desktop server BUILDS a RemoteCompose document (androidx.compose.remote) in JVM Kotlin and ships the bytes; the app downloads and plays them — the layout lives on the server. Run ./gradlew :server:run first.",
         AnimScreen.RemoteComposeDemo,
         FeatureGroup.APP_CLONES
+    ),
+    AnimationCategory(
+        "Memory Profiler (Android 16 · ProfilingManager)",
+        "Diagnostics dashboard for the Baklava (API 36) ProfilingManager: live heap metrics, ANR/fully-drawn triggers, on-demand heap dumps and a memory-spike simulator. Requires Android 16+ for triggers.",
+        AnimScreen.MemoryProfiler,
+        FeatureGroup.APP_CLONES
     )
 )

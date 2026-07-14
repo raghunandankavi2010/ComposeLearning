@@ -500,6 +500,9 @@ sealed interface AnimScreen :
     @Serializable
     data object DottedText : AnimScreen
 
+    @Serializable
+    data object MemoryProfiler : AnimScreen
+
     /** Second-level home screen listing all demos of one [com.example.composelearning.animcompose.FeatureGroup]. */
     @Serializable
     @Parcelize
@@ -766,6 +769,9 @@ fun AppNavigation(
         }
         entry<AnimScreen.DottedText> {
             com.example.composelearning.graphics.DottedTextRoute(onBack = { navigator.goBack() })
+        }
+        entry<AnimScreen.MemoryProfiler> {
+            com.example.composelearning.memoryprofiler.presentation.MemoryProfilerRoute(onBack = { navigator.goBack() })
         }
         entry<AnimScreen.Group> { key ->
             com.example.composelearning.animcompose.GroupFeaturesScreen(
