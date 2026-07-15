@@ -3,9 +3,8 @@ package com.example.composelearning.styles
 import android.os.Parcelable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import androidx.navigation3.runtime.EntryProviderBuilder
+import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import androidx.navigation3.runtime.entry
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 
@@ -49,7 +48,7 @@ data object StylesShowcaseKey : NavKey, Parcelable
  * And navigate to it from anywhere via `navigator` (e.g. add it to your home
  * list and push [StylesShowcaseKey] onto the back stack).
  */
-fun EntryProviderBuilder<NavKey>.stylesShowcaseEntry(
+fun EntryProviderScope<NavKey>.stylesShowcaseEntry(
     onBack: () -> Unit,
 ) {
     entry<StylesShowcaseKey> {

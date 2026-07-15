@@ -299,6 +299,7 @@ class MemoryProfilingManager(context: Context) {
                 /* listener = */ null
             )
             Log.d(TAG, "Requested on-demand Java heap dump (origin=$origin)")
+            Unit
         }.onFailure { pendingOrigins.poll() /* roll back on failure to submit */ }
     }
 
