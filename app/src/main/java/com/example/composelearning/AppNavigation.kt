@@ -447,6 +447,12 @@ sealed interface AnimScreen :
     data object ProtobufDemo : AnimScreen
 
     @Serializable
+    data object LanguageSample : AnimScreen
+
+    @Serializable
+    data object GeminiStt : AnimScreen
+
+    @Serializable
     data object RemoteComposeDemo : AnimScreen
 
     @Serializable
@@ -732,6 +738,12 @@ fun AppNavigation(
         entry<AnimScreen.FoldCard> { FoldCardScreen() }
         entry<AnimScreen.IpodWheel> { IpodScreen() }
         entry<AnimScreen.ClearTodo> { ClearScreen() }
+        entry<AnimScreen.LanguageSample> {
+            com.example.composelearning.localization.LanguageSampleScreen(onBack = { navigator.goBack() })
+        }
+        entry<AnimScreen.GeminiStt> {
+            com.example.composelearning.geministt.GeminiSttScreen(onBack = { navigator.goBack() })
+        }
         entry<AnimScreen.GoogleCalling> {
             com.example.composelearning.animcompose.GoogleCallingRoute(onBack = { navigator.goBack() })
         }

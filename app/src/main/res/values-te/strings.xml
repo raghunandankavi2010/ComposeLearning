@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_title">తిరిగి స్వాగతం</string>
+    <string name="input_label">మీ పేరు నమోదు చేయండి</string>
+    <string name="button_submit">కొనసాగించండి</string>
+    <string name="success_message">సెటప్ పూర్తయింది!</string>
+</resources>

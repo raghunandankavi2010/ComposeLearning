@@ -702,5 +702,17 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         "Diagnostics dashboard for the Baklava (API 36) ProfilingManager: live heap metrics, ANR/fully-drawn triggers, on-demand heap dumps and a memory-spike simulator. Requires Android 16+ for triggers.",
         AnimScreen.MemoryProfiler,
         FeatureGroup.APP_CLONES
+    ),
+    AnimationCategory(
+        "Multi-Language Localization",
+        "Dynamic in-app locale switching (English, Hindi, Telugu, Kannada, Marathi, Gujarati) with Material 3 components.",
+        AnimScreen.LanguageSample,
+        FeatureGroup.APP_CLONES
+    ),
+    AnimationCategory(
+        "Gemini Flash STT",
+        "Real-time audio transcription using Firebase AI Logic and Gemini 2.0 Flash.",
+        AnimScreen.GeminiStt,
+        FeatureGroup.APP_CLONES
     )
 )

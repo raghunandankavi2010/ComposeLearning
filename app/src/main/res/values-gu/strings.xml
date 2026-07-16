@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_title">ફરી સ્વાગત છે</string>
+    <string name="input_label">તમારું નામ દાખલ કરો</string>
+    <string name="button_submit">ચાલુ રાખો</string>
+    <string name="success_message">સેટઅપ પૂર્ણ થયું!</string>
+</resources>

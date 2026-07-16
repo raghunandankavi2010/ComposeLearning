@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_title">ಮರಳಿ ಸ್ವಾಗತ</string>
+    <string name="input_label">ನಿಮ್ಮ ಹೆಸರನ್ನು ನಮೂದಿಸಿ</string>
+    <string name="button_submit">ಮುಂದುವರಿಸಿ</string>
+    <string name="success_message">ಸೆಟಪ್ ಪೂರ್ಣಗೊಂಡಿದೆ!</string>
+</resources>

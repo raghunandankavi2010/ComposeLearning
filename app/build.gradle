@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.services)
     id("kotlin-parcelize")
 }
 
@@ -169,6 +170,12 @@ dependencies {
     implementation(libs.androidx.credentials)
     //noinspection LoginCredentials
     implementation(libs.androidx.credentials.play.services.auth)
+
+    // Firebase AI Logic (Gemini API)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.ai)
+    implementation(libs.firebase.appcheck.playintegrity)
+    implementation(libs.firebase.appcheck.debug)
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)

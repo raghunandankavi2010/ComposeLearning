@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "836430297101",
+    "project_id": "composelearning-f43b6",
+    "storage_bucket": "composelearning-f43b6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:836430297101:android:6253f28c90d3fcc4277d44",
+        "android_client_info": {
+          "package_name": "com.example.composelearning"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAnUkb3hap8GLyzW1bGuVncgCmYY00ZyU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

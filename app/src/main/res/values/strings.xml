@@ -5,4 +5,8 @@
     <string name="add_profile_pic">Add Profile</string>
     <string name="remove">Remove</string>
     <string name="selected">Selected</string>
+    <string name="app_title">Welcome back</string>
+    <string name="input_label">Enter your name</string>
+    <string name="button_submit">Continue</string>
+    <string name="success_message">Setup complete!</string>
 </resources>
