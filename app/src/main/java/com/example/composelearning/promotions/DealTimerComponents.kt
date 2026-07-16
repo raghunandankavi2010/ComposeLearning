@@ -40,6 +40,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.composelearning.R
 import com.example.composelearning.ui.theme.ComposeLearningTheme
 import kotlinx.coroutines.launch
@@ -88,13 +91,13 @@ fun PromotionalDealRoute(onBack: () -> Unit) {
     val seedTargetTime = rememberSaveable { System.currentTimeMillis() + 3600000 }
 
     val dealDataStore = remember { DealDataStore(context) }
-    val viewModel: DealTimerViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
-        factory = object : androidx.lifecycle.ViewModelProvider.Factory {
-            override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
-                return DealTimerViewModel(
+    val viewModel: DealTimerViewModel = viewModel(
+        factory = viewModelFactory {
+            initializer {
+                DealTimerViewModel(
                     dealStore = dealDataStore,
                     initialTargetEndTimestamp = seedTargetTime
-                ) as T
+                )
             }
         }
     )
