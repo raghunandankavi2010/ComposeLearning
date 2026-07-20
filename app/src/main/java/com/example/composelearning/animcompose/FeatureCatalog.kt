@@ -190,6 +190,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         FeatureGroup.CANVAS_GRAPHICS
     ),
     AnimationCategory(
+        "3D Dice Roller",
+        "A manually rotatable 3D cube drawn on Canvas with perspective projection and depth sorting.",
+        AnimScreen.ThreeDDiceRoller,
+        FeatureGroup.CANVAS_GRAPHICS
+    ),
+    AnimationCategory(
         "Netflix — Shape redraw",
         "Path + clipPath + gradient sweep. Clean geometry, ~120 LOC. Tap to replay.",
         AnimScreen.NetflixLogo,

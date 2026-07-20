@@ -509,6 +509,9 @@ sealed interface AnimScreen :
     @Serializable
     data object MemoryProfiler : AnimScreen
 
+    @Serializable
+    data object ThreeDDiceRoller : AnimScreen
+
     /** Second-level home screen listing all demos of one [com.example.composelearning.animcompose.FeatureGroup]. */
     @Serializable
     @Parcelize
@@ -784,6 +787,9 @@ fun AppNavigation(
         }
         entry<AnimScreen.MemoryProfiler> {
             com.example.composelearning.memoryprofiler.presentation.MemoryProfilerRoute(onBack = { navigator.goBack() })
+        }
+        entry<AnimScreen.ThreeDDiceRoller> {
+            com.example.composelearning.graphics.ThreeDDiceRoller(onBack = { navigator.goBack() })
         }
         entry<AnimScreen.Group> { key ->
             com.example.composelearning.animcompose.GroupFeaturesScreen(
