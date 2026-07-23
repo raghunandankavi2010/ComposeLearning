@@ -72,10 +72,12 @@ fun ThreeDDiceRoller(onBack: () -> Unit) {
     val pipOffset = diceSize * 0.45f
     val cameraDistance = 1600f
 
-    val ivoryBase = Color(0xFFFFF9E1)
-    val lightWarm = Color(0xFFFFE0B2)
-    val lightCool = Color(0xFFE3F2FD)
-    val ambientColor = Color(0xFF212121)
+    // Natural bone-white dice material: a bright base, a warm mid shadow,
+    // and a deep recess tone used for chamfered edges / ambient occlusion.
+    val diceHighlight = Color(0xFFFFFFFF)
+    val diceBase = Color(0xFFF3ECDC)   // warm ivory (lit)
+    val diceShadow = Color(0xFFBDB39C) // soft warm shadow (unlit)
+    val diceAmbient = Color(0xFF6C6250) // deep recess tone
 
     // 24 vertices: 3 per corner
     val baseVertices = remember {
@@ -158,7 +160,13 @@ fun ThreeDDiceRoller(onBack: () -> Unit) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(Brush.radialGradient(listOf(Color(0xFF333333), Color(0xFF000000))))
+                .background(
+                    Brush.radialGradient(
+                        0.0f to Color(0xFF2B2E36),
+                        0.55f to Color(0xFF15171C),
+                        1.0f to Color(0xFF090A0D)
+                    )
+                )
         ) {
             Canvas(
                 modifier = Modifier
@@ -174,8 +182,10 @@ fun ThreeDDiceRoller(onBack: () -> Unit) {
                     }
             ) {
                 val center = Offset(size.width / 2, size.height / 2) + shakeOffset.value
-                val light1 = normalize(Point3D(-1f, -1.2f, 1.5f)) // Warm Primary
-                val light2 = normalize(Point3D(1.5f, 1.5f, -1f)) // Cool Rim
+                // Single dominant key light from the upper-left toward the viewer,
+                // plus a soft fill from the opposite side so shadows never go pure black.
+                val light1 = normalize(Point3D(-0.6f, -1f, 1.3f)) // key light
+                val light2 = normalize(Point3D(0.7f, 0.5f, 0.4f)) // soft fill
 
                 // --- FLOOR REFLECTION ---
                 drawReflection(baseVertices, allPolygons, angleX.value, angleY.value, scale.value, cameraDistance, center, diceSize)
@@ -210,14 +220,14 @@ fun ThreeDDiceRoller(onBack: () -> Unit) {
                     val normal = calculateNormal(v0, v1, v2)
 
                     if (normal.z < 0) {
-                        val dot1 = max(0f, normal.x * light1.x + normal.y * light1.y + normal.z * light1.z)
-                        val dot2 = max(0f, normal.x * light2.x + normal.y * light2.y + normal.z * light2.z)
+                        val ndl = max(0f, normal.x * light1.x + normal.y * light1.y + normal.z * light1.z)
+                        val fill = max(0f, normal.x * light2.x + normal.y * light2.y + normal.z * light2.z)
+                        val spec = calculateSpecular(normal, light1, Point3D(0f, 0f, -1f), 40f)
 
-                        val spec1 = calculateSpecular(normal, light1, Point3D(0f, 0f, -1f), 32f)
-                        val spec2 = calculateSpecular(normal, light2, Point3D(0f, 0f, -1f), 12f)
-
-                        val diffuseColor = ivoryBase.blend(lightWarm, dot1 * 0.5f).blend(lightCool, dot2 * 0.3f)
-                        val finalFaceColor = lerp(ambientColor, diffuseColor, poly.aoFactor)
+                        // Diffuse: shadow -> base driven by the key light, with a gentle fill lift.
+                        val litColor = lerp(diceShadow, diceBase, (ndl * 0.85f + fill * 0.25f).coerceIn(0f, 1f))
+                        // Ambient occlusion pulls chamfers and edge strips toward the recess tone.
+                        val finalFaceColor = lerp(diceAmbient, litColor, poly.aoFactor)
 
                         val path = Path().apply {
                             val start = projectedPoints[poly.vertexIndices[0]]
@@ -227,8 +237,8 @@ fun ThreeDDiceRoller(onBack: () -> Unit) {
                         }
 
                         drawPath(path, finalFaceColor)
-                        if (spec1 > 0.05f) drawPath(path, Color.White.copy(alpha = spec1 * 0.5f))
-                        if (spec2 > 0.05f) drawPath(path, Color.Cyan.copy(alpha = spec2 * 0.2f))
+                        // A single crisp, neutral highlight keeps the surface reading as matte ivory.
+                        if (spec > 0.04f) drawPath(path, diceHighlight.copy(alpha = (spec * 0.55f).coerceAtMost(0.55f)))
 
                         if (poly.isMainFace && poly.value != null) {
                             renderPips(poly.value, normal, angleX.value, angleY.value, scale.value, diceSize, pipOffset, cameraDistance, center)
@@ -301,13 +311,34 @@ private fun DrawScope.renderPips(
         val rp = rotate3D(Point3D(oriented.x * s, oriented.y * s, oriented.z * s), ax, ay)
         val sc = camDist / (camDist + rp.z)
         val pc = Offset(center.x + rp.x * sc, center.y + rp.y * sc)
-        val r = 14f * sc
+        val r = 15f * sc
 
+        // Recessed, drilled-out pip: a solid dark bowl that is darkest toward the
+        // top-inner edge (in shadow) and slightly lifted at the bottom lip that
+        // catches the light — this sells the concave "engraved" look.
         drawCircle(
-            brush = Brush.radialGradient(0.0f to Color(0xFF111111), 0.7f to Color(0xFF222222), 1.0f to Color.Transparent, center = pc),
+            brush = Brush.radialGradient(
+                0.0f to Color(0xFF2A2622),
+                0.7f to Color(0xFF120F0C),
+                1.0f to Color(0xFF060504),
+                center = pc.copy(y = pc.y + r * 0.28f), // shade origin low -> dark top
+                radius = r * 1.15f
+            ),
             radius = r, center = pc
         )
-        drawCircle(color = Color.White.copy(alpha = 0.12f), radius = r, center = pc.copy(x = pc.x + 1f, y = pc.y + 1f), style = Stroke(width = 1.5f * sc))
+        // Soft top-inner shadow to deepen the cavity.
+        drawCircle(
+            color = Color.Black.copy(alpha = 0.35f),
+            radius = r * 0.72f,
+            center = pc.copy(y = pc.y - r * 0.22f)
+        )
+        // Thin lower rim highlight where the surface bevels into the hole.
+        drawCircle(
+            color = Color.White.copy(alpha = 0.18f),
+            radius = r,
+            center = pc.copy(y = pc.y + 0.8f * sc),
+            style = Stroke(width = 1.2f * sc)
+        )
     }
 }
 
@@ -338,8 +369,6 @@ private fun normalize(p: Point3D): Point3D {
     val l = sqrt(p.x * p.x + p.y * p.y + p.z * p.z)
     return Point3D(p.x / l, p.y / l, p.z / l)
 }
-
-private fun Color.blend(o: Color, f: Float): Color = lerp(this, o, f)
 
 private fun lerp(s: Color, e: Color, f: Float): Color {
     val t = f.coerceIn(0f, 1f)
