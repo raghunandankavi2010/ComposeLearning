@@ -512,6 +512,9 @@ sealed interface AnimScreen :
     @Serializable
     data object ThreeDDiceRoller : AnimScreen
 
+    @Serializable
+    data object CoinFlip : AnimScreen
+
     /** Second-level home screen listing all demos of one [com.example.composelearning.animcompose.FeatureGroup]. */
     @Serializable
     @Parcelize
@@ -790,6 +793,9 @@ fun AppNavigation(
         }
         entry<AnimScreen.ThreeDDiceRoller> {
             com.example.composelearning.graphics.ThreeDDiceRoller(onBack = { navigator.goBack() })
+        }
+        entry<AnimScreen.CoinFlip> {
+            com.example.composelearning.graphics.CoinFlipToss(onBack = { navigator.goBack() })
         }
         entry<AnimScreen.Group> { key ->
             com.example.composelearning.animcompose.GroupFeaturesScreen(

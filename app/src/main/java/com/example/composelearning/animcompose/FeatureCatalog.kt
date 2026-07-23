@@ -196,6 +196,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         FeatureGroup.CANVAS_GRAPHICS
     ),
     AnimationCategory(
+        "3D Coin Flip",
+        "Projectile toss + spin about a horizontal axis: faces turn edge-on then flip, with a rim, reeded edge, ground shadow and landing bounce.",
+        AnimScreen.CoinFlip,
+        FeatureGroup.CANVAS_GRAPHICS
+    ),
+    AnimationCategory(
         "Netflix — Shape redraw",
         "Path + clipPath + gradient sweep. Clean geometry, ~120 LOC. Tap to replay.",
         AnimScreen.NetflixLogo,
