@@ -29,6 +29,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
@@ -72,7 +73,15 @@ fun ElasticDraggableText(
     maxDragDistance: Dp = 140.dp,
     // How far the outermost letters drift horizontally at full pull — the word
     // stretches apart around the grab point instead of the gaps collapsing.
-    maxStretchDistance: Dp = 44.dp
+    maxStretchDistance: Dp = 44.dp,
+    // Sampled left→right across the letters so the word carries one continuous
+    // gradient. Pass a single color for a flat look.
+    colors: List<Color> = listOf(
+        Color(0xFFFF3CAC),
+        Color(0xFF784BA0),
+        Color(0xFF2B86C5),
+        Color(0xFF2CD8D5)
+    )
 ) {
     val chars = remember(text) { text.toList() }
     val n = chars.size
@@ -149,17 +158,17 @@ fun ElasticDraggableText(
         verticalAlignment = Alignment.CenterVertically
     ) {
         chars.forEachIndexed { index, c ->
+            val charFraction = if (n <= 1) 0.5f else index / (n - 1f)
             Text(
                 text = if (c == ' ') " " else c.toString(),
                 style = style,
-                color = MaterialTheme.colorScheme.onBackground,
+                color = sampleGradient(colors, charFraction),
                 modifier = Modifier.graphicsLayer {
                     val ty = offsets[index].value
                     translationY = ty
                     // Horizontal stretch: each letter drifts away from the grab
                     // point (anchorFraction) as the word is pulled, so the gaps
                     // open up instead of collapsing. Springs back via `stretch`.
-                    val charFraction = if (n <= 1) 0.5f else index / (n - 1f)
                     translationX = (charFraction - anchorFraction) * stretch.value * maxStretchPx
                     // Scale tracks displacement: nearer letters get pulled most, so
                     // they pop biggest; the effect eases + bounces back with the offset.
@@ -181,6 +190,14 @@ fun ElasticDraggableText(
 
 private fun lerp(start: Float, stop: Float, fraction: Float): Float =
     start + (stop - start) * fraction.coerceIn(0f, 1f)
+
+/** Samples a color at [t] (0..1) along a multi-stop gradient defined by [colors]. */
+private fun sampleGradient(colors: List<Color>, t: Float): Color {
+    if (colors.size == 1) return colors[0]
+    val scaled = t.coerceIn(0f, 1f) * (colors.size - 1)
+    val i = scaled.toInt().coerceIn(0, colors.size - 2)
+    return androidx.compose.ui.graphics.lerp(colors[i], colors[i + 1], scaled - i)
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
