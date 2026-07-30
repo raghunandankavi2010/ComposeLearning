@@ -635,6 +635,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         AnimScreen.SquigglySlider,
         FeatureGroup.TEXT_TYPOGRAPHY
     ),
+    AnimationCategory(
+        "Elastic Draggable Text",
+        "Jelly text (SwiftUI port): drag the word vertically and every letter chases your finger through a distance-based spring — nearer letters lead, farther ones trail into a wave, then bounce back on release.",
+        AnimScreen.ElasticDraggableText,
+        FeatureGroup.TEXT_TYPOGRAPHY
+    ),
 
     // ── App Clones & Real-world ─────────────────────────────────────────────
     AnimationCategory(

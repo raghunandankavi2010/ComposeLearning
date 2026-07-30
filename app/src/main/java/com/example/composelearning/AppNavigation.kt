@@ -515,6 +515,9 @@ sealed interface AnimScreen :
     @Serializable
     data object CoinFlip : AnimScreen
 
+    @Serializable
+    data object ElasticDraggableText : AnimScreen
+
     /** Second-level home screen listing all demos of one [com.example.composelearning.animcompose.FeatureGroup]. */
     @Serializable
     @Parcelize
@@ -796,6 +799,9 @@ fun AppNavigation(
         }
         entry<AnimScreen.CoinFlip> {
             com.example.composelearning.graphics.CoinFlipToss(onBack = { navigator.goBack() })
+        }
+        entry<AnimScreen.ElasticDraggableText> {
+            com.example.composelearning.textdrag.ElasticDraggableTextScreen(onBack = { navigator.goBack() })
         }
         entry<AnimScreen.Group> { key ->
             com.example.composelearning.animcompose.GroupFeaturesScreen(
