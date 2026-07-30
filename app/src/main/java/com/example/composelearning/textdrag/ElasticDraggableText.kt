@@ -34,6 +34,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.flow.collectLatest
@@ -65,10 +66,20 @@ fun ElasticDraggableText(
     style: TextStyle = TextStyle(
         fontSize = 56.sp,
         fontWeight = FontWeight.Bold
-    )
+    ),
+    // Hard cap on how far the word can be pulled in either direction. The finger
+    // can keep moving past this, but the characters stop travelling.
+    maxDragDistance: Dp = 140.dp,
+    // How far the outermost letters drift horizontally at full pull — the word
+    // stretches apart around the grab point instead of the gaps collapsing.
+    maxStretchDistance: Dp = 44.dp
 ) {
     val chars = remember(text) { text.toList() }
     val n = chars.size
+
+    val density = androidx.compose.ui.platform.LocalDensity.current
+    val maxDragPx = with(density) { maxDragDistance.toPx() }
+    val maxStretchPx = with(density) { maxStretchDistance.toPx() }
 
     // Raw vertical finger displacement, in pixels. 0 = at rest.
     var dragY by remember { mutableFloatStateOf(0f) }
@@ -79,6 +90,15 @@ fun ElasticDraggableText(
 
     // One independent spring-following offset per character.
     val offsets = remember(text) { List(n) { Animatable(0f) } }
+
+    // Overall pull, 0..1, driving the horizontal stretch. Its own spring so the
+    // word rebounds together with the letters on release.
+    val stretch = remember(text) { Animatable(0f) }
+    androidx.compose.runtime.LaunchedEffect(stretch) {
+        snapshotFlow { (abs(dragY) / maxDragPx).coerceIn(0f, 1f) }.collectLatest { pull ->
+            stretch.animateTo(pull, spring(dampingRatio = 0.4f, stiffness = 320f))
+        }
+    }
 
     // Each character chases `dragY` with its own spring. collectLatest cancels the
     // in-flight animation and re-targets from the current position/velocity every
@@ -118,7 +138,8 @@ fun ElasticDraggableText(
                     },
                     onDrag = { change, amount ->
                         change.consume()
-                        dragY += amount.y
+                        // Clamp so the word never travels past the fixed limit.
+                        dragY = (dragY + amount.y).coerceIn(-maxDragPx, maxDragPx)
                     },
                     onDragEnd = { dragY = 0f },
                     onDragCancel = { dragY = 0f }
@@ -133,7 +154,18 @@ fun ElasticDraggableText(
                 style = style,
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.graphicsLayer {
-                    translationY = offsets[index].value
+                    val ty = offsets[index].value
+                    translationY = ty
+                    // Horizontal stretch: each letter drifts away from the grab
+                    // point (anchorFraction) as the word is pulled, so the gaps
+                    // open up instead of collapsing. Springs back via `stretch`.
+                    val charFraction = if (n <= 1) 0.5f else index / (n - 1f)
+                    translationX = (charFraction - anchorFraction) * stretch.value * maxStretchPx
+                    // Scale tracks displacement: nearer letters get pulled most, so
+                    // they pop biggest; the effect eases + bounces back with the offset.
+                    val scale = 1f + (abs(ty) / 550f).coerceIn(0f, 1f) * 0.35f
+                    scaleX = scale
+                    scaleY = scale
                 }
             )
         }
