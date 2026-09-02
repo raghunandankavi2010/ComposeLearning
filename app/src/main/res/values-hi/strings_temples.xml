@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Hindi (hi) translation of the Temple Showcase UI vocabulary. Keys mirror values/strings_temples.xml exactly. -->
+<resources>
+
+    <string name="temples_title">बेंगलुरु के मंदिर</string>
+    <string name="temples_subtitle">व्यावहारिक मार्गदर्शिका: कैसे पहुँचें, कब जाएँ, क्या अपेक्षा करें</string>
+    <string name="tab_discover">खोजें</string>
+    <string name="tab_nearby">मेरे पास</string>
+    <string name="tab_festivals">उत्सव</string>
+    <string name="tab_saved">सहेजे गए</string>
+    <string name="tab_settings">भाषा</string>
+
+    <string name="search_hint">मंदिर, देवता या क्षेत्र खोजें</string>
+    <string name="search_clear">खोज हटाएँ</string>
+    <string name="filter_title">छाँटें</string>
+    <string name="filter_clear">सब हटाएँ</string>
+    <string name="filter_open_now">अभी खुला</string>
+    <string name="filter_wheelchair">व्हीलचेयर सुविधा</string>
+    <string name="filter_metro">मेट्रो के पास</string>
+    <string name="filter_annadana">नि:शुल्क भोजन</string>
+    <string name="filter_area">क्षेत्र</string>
+    <string name="filter_deity">देवता</string>
+    <string name="sort_title">क्रम</string>
+    <string name="sort_name">नाम</string>
+    <string name="sort_distance">दूरी</string>
+    <string name="sort_area">क्षेत्र</string>
+    <string name="result_count">%1$d मंदिर</string>
+
+    <string name="action_navigate">मार्ग बताएँ</string>
+    <string name="action_map">नक्शे पर देखें</string>
+    <string name="action_call">कॉल करें</string>
+    <string name="action_share">साझा करें</string>
+    <string name="action_website">वेबसाइट</string>
+    <string name="action_save">सहेजें</string>
+    <string name="action_unsave">सहेजा गया</string>
+    <string name="action_mark_visited">दर्शन किया</string>
+    <string name="action_visited">दर्शन हो चुका</string>
+    <string name="action_back">वापस</string>
+    <string name="action_add_to_calendar">रिमाइंडर जोड़ें</string>
+    <string name="action_retry">फिर कोशिश करें</string>
+    <string name="action_donate">दान करें</string>
+
+    <string name="section_about">परिचय</string>
+    <string name="section_timings">दर्शन समय</string>
+    <string name="section_rituals">दैनिक पूजा और सेवा</string>
+    <string name="section_festivals">उत्सव</string>
+    <string name="section_reach">कैसे पहुँचें</string>
+    <string name="section_facilities">सुविधाएँ</string>
+    <string name="section_pooja_items">पूजा सामग्री कहाँ मिलेगी</string>
+    <string name="section_eat">भोजन कहाँ करें</string>
+    <string name="section_donate">दान कहाँ करें</string>
+    <string name="section_dress_code">वेशभूषा नियम</string>
+    <string name="section_photos">चित्र</string>
+    <string name="section_visit_tips">जानने योग्य बातें</string>
+
+    <string name="status_open">अभी खुला है</string>
+    <string name="status_closed">अभी बंद है</string>
+    <string name="status_timings_unknown">समय की पुष्टि नहीं</string>
+    <string name="status_closes_at">%1$s बजे बंद होगा</string>
+    <string name="status_closing_soon">%1$d मिनट में बंद</string>
+    <string name="status_opens_at">%1$s बजे खुलेगा</string>
+    <string name="status_opens_on">%1$s को %2$s बजे खुलेगा</string>
+    <string name="status_next_ritual">अगली: %1$s, %2$s बजे</string>
+    <string name="timings_closed_today">आज बंद</string>
+    <string name="timings_all_days">प्रतिदिन</string>
+
+    <string name="label_bus_routes">बीएमटीसी बसें</string>
+    <string name="label_nearest_stop">निकटतम स्टॉप</string>
+    <string name="label_metro">नम्म मेट्रो</string>
+    <string name="label_metro_walk">%1$s स्टेशन, %2$s लाइन — %3$d मिनट पैदल</string>
+    <string name="label_parking">पार्किंग</string>
+    <string name="label_address">पता</string>
+    <string name="label_deity">देवता</string>
+    <string name="label_area">क्षेत्र</string>
+    <string name="label_built">निर्माण</string>
+    <string name="label_distance_away">%1$s दूर</string>
+    <string name="label_busiest_days">सर्वाधिक भीड़</string>
+    <string name="label_data_confidence">जानकारी की विश्वसनीयता</string>
+
+    <string name="nearby_find_pooja_items">आसपास फूल और पूजा की दुकानें खोजें</string>
+    <string name="nearby_find_food">आसपास शाकाहारी भोजन खोजें</string>
+    <string name="nearby_find_parking">आसपास पार्किंग खोजें</string>
+    <string name="nearby_find_atm">आसपास एटीएम खोजें</string>
+    <string name="nearby_maps_note">मंदिर के आसपास की वर्तमान सूची आपके नक्शा ऐप में खुलेगी।</string>
+    <string name="nearby_query_pooja_items">flower and pooja shop</string>
+    <string name="nearby_query_food">pure vegetarian restaurant</string>
+    <string name="nearby_query_parking">parking</string>
+    <string name="nearby_query_atm">ATM</string>
+
+    <string name="location_prompt_title">अपने पास के मंदिर खोजें</string>
+    <string name="location_prompt_body">स्थान की अनुमति दें और यह सूची आपसे दूरी के अनुसार क्रमबद्ध हो जाएगी।</string>
+    <string name="location_grant">स्थान की अनुमति दें</string>
+    <string name="location_locating">आपका स्थान खोजा जा रहा है…</string>
+    <string name="location_denied_title">स्थान की अनुमति अस्वीकृत</string>
+    <string name="location_denied_body">दूरी के अनुसार क्रम के लिए सेटिंग्स में स्थान की अनुमति दें।</string>
+    <string name="location_open_settings">सेटिंग्स खोलें</string>
+    <string name="location_enable">स्थान चालू करें</string>
+    <string name="location_error_unavailable">इस डिवाइस पर कोई उपयोगी स्थान प्रदाता नहीं है।</string>
+    <string name="location_error_disabled">इस डिवाइस पर स्थान बंद है।</string>
+    <string name="location_error_no_fix">स्थान नहीं मिल सका। खुले में जाकर पुन: प्रयास करें।</string>
+    <string name="location_accuracy">लगभग %1$d मीटर तक सटीक</string>
+    <string name="location_stale">आपका अंतिम ज्ञात स्थान उपयोग हो रहा है</string>
+    <string name="location_refresh">स्थान ताज़ा करें</string>
+
+    <string name="empty_no_results">इन फ़िल्टरों से कोई मंदिर मेल नहीं खाता।</string>
+    <string name="empty_no_favourites">अभी कुछ सहेजा नहीं गया। मंदिर पर हृदय चिह्न दबाकर उसे यहाँ रखें।</string>
+    <string name="empty_select_temple">समय, बसें और आसपास की सुविधाएँ देखने के लिए कोई मंदिर चुनें।</string>
+    <string name="error_no_maps_app">इस डिवाइस पर कोई नक्शा ऐप नहीं मिला।</string>
+    <string name="error_no_dialler">इस डिवाइस पर कोई फ़ोन ऐप नहीं मिला।</string>
+    <string name="error_no_browser">इस डिवाइस पर कोई ब्राउज़र नहीं मिला।</string>
+    <string name="error_no_calendar">इस डिवाइस पर कोई कैलेंडर ऐप नहीं मिला।</string>
+
+    <string name="donate_disclaimer">दान केवल मंदिर की हुंडी या आधिकारिक लिंक से करें। यह ऐप कोई भुगतान नहीं लेता और इन लिंक से कुछ नहीं कमाता।</string>
+    <string name="donate_open_link">आधिकारिक पृष्ठ खोलें</string>
+
+    <string name="photo_credit">%1$s · %2$s</string>
+    <string name="photo_credit_full">चित्र: %1$s, लाइसेंस %2$s, विकिमीडिया कॉमन्स से</string>
+    <string name="photo_view_license">लाइसेंस देखें</string>
+    <string name="photo_none">अभी कोई मुक्त लाइसेंस वाला चित्र उपलब्ध नहीं</string>
+
+    <string name="language_picker_title">ऐप की भाषा</string>
+    <string name="language_picker_body">इससे पूरा ऐप बदल जाएगा, मंदिरों के नाम और विवरण सहित। स्क्रीन एक बार पुन: लोड होगी।</string>
+    <string name="language_english">अंग्रेज़ी</string>
+    <string name="language_hindi">हिन्दी</string>
+    <string name="language_kannada">कन्नड़</string>
+    <string name="language_follow_system">सिस्टम की भाषा का पालन करें</string>
+    <string name="language_partial_note">जहाँ अनुवाद उपलब्ध नहीं है, मंदिर विवरण अंग्रेज़ी में दिखेगा।</string>
+
+    <string name="temple_confidence_high">भरोसेमंद स्रोत</string>
+    <string name="temple_confidence_medium">आंशिक रूप से सत्यापित</string>
+    <string name="temple_confidence_low">यात्रा से पहले पुष्टि करें</string>
+    <string name="disclaimer">समय, बस मार्ग और सेवा शुल्क बदलते रहते हैं, विशेषकर उत्सव के दिनों में। लंबी यात्रा से पहले मंदिर से पुष्टि करें।</string>
+
+    <string name="deity_shiva">शिव</string>
+    <string name="deity_vishnu">विष्णु</string>
+    <string name="deity_krishna">कृष्ण</string>
+    <string name="deity_ganesha">गणेश</string>
+    <string name="deity_hanuman">हनुमान</string>
+    <string name="deity_devi">देवी</string>
+    <string name="deity_subramanya">सुब्रमण्य</string>
+    <string name="deity_ayyappa">अय्यप्पा</string>
+    <string name="deity_navagraha">नवग्रह</string>
+    <string name="deity_other">अन्य</string>
+
+    <string name="metro_line_purple">पर्पल</string>
+    <string name="metro_line_green">ग्रीन</string>
+    <string name="metro_line_yellow">येलो</string>
+    <string name="metro_line_pink">पिंक</string>
+    <string name="metro_line_blue">ब्लू</string>
+
+    <string name="facility_wheelchair">व्हीलचेयर सुविधा</string>
+    <string name="facility_restrooms">शौचालय</string>
+    <string name="facility_drinking_water">पीने का पानी</string>
+    <string name="facility_shoe_stand">चप्पल स्टैंड</string>
+    <string name="facility_cloak_room">सामान कक्ष</string>
+    <string name="facility_prasad_counter">प्रसाद काउंटर</string>
+    <string name="facility_annadana">नि:शुल्क भोजन (अन्नदान)</string>
+    <string name="facility_free_parking">नि:शुल्क पार्किंग</string>
+    <string name="facility_paid_parking">सशुल्क पार्किंग</string>
+    <string name="facility_queue_shelter">छायादार कतार</string>
+    <string name="facility_marriage_hall">कल्याण मंडप</string>
+    <string name="facility_bookstore">पुस्तक भंडार</string>
+    <string name="facility_elevator">लिफ्ट</string>
+    <string name="facility_photography_allowed">फोटोग्राफी की अनुमति</string>
+    <string name="facility_no_photography">फोटोग्राफी वर्जित</string>
+
+    <string name="nearby_pooja_items">पूजा सामग्री</string>
+    <string name="nearby_eat">भोजन</string>
+    <string name="nearby_parking">पार्किंग</string>
+    <string name="nearby_atm">एटीएम</string>
+    <string name="nearby_stay">ठहरने की जगह</string>
+
+    <string name="donation_hundi">मंदिर की हुंडी</string>
+    <string name="donation_online">ऑनलाइन दान</string>
+    <string name="donation_seva">सेवा बुक करें</string>
+    <string name="donation_annadana">अन्नदान</string>
+    <string name="donation_trust">मंदिर ट्रस्ट</string>
+
+    <string name="day_monday">सोम</string>
+    <string name="day_tuesday">मंगल</string>
+    <string name="day_wednesday">बुध</string>
+    <string name="day_thursday">गुरु</string>
+    <string name="day_friday">शुक्र</string>
+    <string name="day_saturday">शनि</string>
+    <string name="day_sunday">रवि</string>
+
+    <string name="festivals_subtitle">चंद्र तिथियाँ हर वर्ष बदलती हैं — इन्हें सामान्य अवधि मानें, निश्चित तारीख नहीं।</string>
+    <string name="festivals_at">%1$s में</string>
+
+    <string name="planner_title">मंदिर यात्रा</string>
+    <string name="planner_body">सहेजे गए मंदिर आपके स्थान से निकटतम क्रम में — एक सुबह के लिए तैयार मार्ग।</string>
+    <string name="planner_leg">%1$d · %2$s</string>
+    <string name="planner_total">%1$d पड़ाव, बीच में %2$s की यात्रा</string>
+    <string name="planner_needs_location">सहेजे गए मंदिरों को मार्ग में क्रमबद्ध करने के लिए स्थान की अनुमति दें।</string>
+
+    <string name="credits_photos_body">इस मार्गदर्शिका के सभी %1$d चित्र विकिमीडिया कॉमन्स से मुक्त लाइसेंस के अंतर्गत लिए गए हैं। प्रत्येक चित्र के साथ उसका छायाकार और लाइसेंस दिखाया गया है; पूरी शर्तों के लिए शीर्षक पर टैप करें।</string>
+    <string name="credits_licences">प्रयुक्त लाइसेंस: %1$s</string>
+    <string name="credits_browse_source">स्रोत श्रेणी देखें</string>
+    <string name="credits_data_body">मंदिरों का विवरण विकिपीडिया, विकिडेटा, ओपनस्ट्रीटमैप तथा आधिकारिक मंदिर और ट्रस्ट वेबसाइटों से संकलित है। प्रत्येक मंदिर पृष्ठ पर उसकी जानकारी की विश्वसनीयता दर्शाई गई है। यह ऐप बुकिंग सेवा नहीं है: दान, सेवा और मार्ग सभी मंदिर या आपके अपने ऐप को सौंपे जाते हैं।</string>
+</resources>

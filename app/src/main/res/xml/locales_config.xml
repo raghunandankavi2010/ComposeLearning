@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Declares the app's supported languages to the platform. This is what makes
+  "Settings ▸ Apps ▸ ComposeLearning ▸ Language" appear, and what LocaleManager
+  validates against when the in-app picker calls setApplicationLocales().
+  Keep in sync with resourceConfigurations in app/build.gradle.
+-->
+<locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <locale android:name="en" />
+    <locale android:name="hi" />
+    <locale android:name="kn" />
+</locale-config>

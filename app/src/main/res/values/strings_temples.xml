@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Fixed UI vocabulary for the Temple Showcase feature.
+  Per-temple prose is NOT here: it lives with the data as LocalizedText, because there are
+  hundreds of strings of it and only a translator working on the dataset can maintain them.
+  Kept in its own file so the three translations can be diffed side by side.
+-->
+<resources>
+
+    <!-- ── Screen and navigation ─────────────────────────────────────────── -->
+    <string name="temples_title">Temples of Bengaluru</string>
+    <string name="temples_subtitle">A practical guide: how to get there, when to go, what to expect</string>
+    <string name="tab_discover">Discover</string>
+    <string name="tab_nearby">Near me</string>
+    <string name="tab_festivals">Festivals</string>
+    <string name="tab_saved">Saved</string>
+    <string name="tab_settings">Language</string>
+
+    <!-- ── Search, filter, sort ──────────────────────────────────────────── -->
+    <string name="search_hint">Search temple, deity or area</string>
+    <string name="search_clear">Clear search</string>
+    <string name="filter_title">Filters</string>
+    <string name="filter_clear">Clear all</string>
+    <string name="filter_open_now">Open now</string>
+    <string name="filter_wheelchair">Wheelchair access</string>
+    <string name="filter_metro">Near metro</string>
+    <string name="filter_annadana">Free meals</string>
+    <string name="filter_area">Area</string>
+    <string name="filter_deity">Deity</string>
+    <string name="sort_title">Sort by</string>
+    <string name="sort_name">Name</string>
+    <string name="sort_distance">Distance</string>
+    <string name="sort_area">Area</string>
+    <string name="result_count">%1$d temples</string>
+
+    <!-- ── Actions ───────────────────────────────────────────────────────── -->
+    <string name="action_navigate">Navigate</string>
+    <string name="action_map">Show on map</string>
+    <string name="action_call">Call</string>
+    <string name="action_share">Share</string>
+    <string name="action_website">Website</string>
+    <string name="action_save">Save</string>
+    <string name="action_unsave">Saved</string>
+    <string name="action_mark_visited">Mark as visited</string>
+    <string name="action_visited">Visited</string>
+    <string name="action_back">Back</string>
+    <string name="action_add_to_calendar">Add reminder</string>
+    <string name="action_retry">Retry</string>
+    <string name="action_donate">Donate</string>
+
+    <!-- ── Detail sections ──────────────────────────────────────────────── -->
+    <string name="section_about">About</string>
+    <string name="section_timings">Timings</string>
+    <string name="section_rituals">Daily poojas and sevas</string>
+    <string name="section_festivals">Festivals</string>
+    <string name="section_reach">How to reach</string>
+    <string name="section_facilities">Facilities</string>
+    <string name="section_pooja_items">Where to buy pooja items</string>
+    <string name="section_eat">Where to eat</string>
+    <string name="section_donate">Where to donate</string>
+    <string name="section_dress_code">Dress code</string>
+    <string name="section_photos">Photos</string>
+    <string name="section_visit_tips">Good to know</string>
+
+    <!-- ── Open / closed state ──────────────────────────────────────────── -->
+    <string name="status_open">Open now</string>
+    <string name="status_closed">Closed now</string>
+    <string name="status_timings_unknown">Timings not confirmed</string>
+    <string name="status_closes_at">Closes at %1$s</string>
+    <string name="status_closing_soon">Closes in %1$d min</string>
+    <string name="status_opens_at">Opens at %1$s</string>
+    <string name="status_opens_on">Opens %1$s at %2$s</string>
+    <string name="status_next_ritual">Next: %1$s at %2$s</string>
+    <string name="timings_closed_today">Closed today</string>
+    <string name="timings_all_days">Daily</string>
+
+    <!-- ── Getting there ────────────────────────────────────────────────── -->
+    <string name="label_bus_routes">BMTC buses</string>
+    <string name="label_nearest_stop">Nearest stop</string>
+    <string name="label_metro">Namma Metro</string>
+    <string name="label_metro_walk">%1$s station, %2$s line — %3$d min walk</string>
+    <string name="label_parking">Parking</string>
+    <string name="label_address">Address</string>
+    <string name="label_deity">Deity</string>
+    <string name="label_area">Area</string>
+    <string name="label_built">Built</string>
+    <string name="label_distance_away">%1$s away</string>
+    <string name="label_busiest_days">Busiest on</string>
+    <string name="label_data_confidence">Data confidence</string>
+
+    <!-- ── Nearby hand-off to a maps app ────────────────────────────────── -->
+    <string name="nearby_find_pooja_items">Find flower and pooja shops nearby</string>
+    <string name="nearby_find_food">Find vegetarian food nearby</string>
+    <string name="nearby_find_parking">Find parking nearby</string>
+    <string name="nearby_find_atm">Find an ATM nearby</string>
+    <string name="nearby_maps_note">Opens your maps app with live listings around the temple.</string>
+    <string name="nearby_query_pooja_items">flower and pooja shop</string>
+    <string name="nearby_query_food">pure vegetarian restaurant</string>
+    <string name="nearby_query_parking">parking</string>
+    <string name="nearby_query_atm">ATM</string>
+
+    <!-- ── Location ─────────────────────────────────────────────────────── -->
+    <string name="location_prompt_title">Find temples near you</string>
+    <string name="location_prompt_body">Allow location and this list reorders by how far each temple is from you.</string>
+    <string name="location_grant">Allow location</string>
+    <string name="location_locating">Finding your location…</string>
+    <string name="location_denied_title">Location permission denied</string>
+    <string name="location_denied_body">Grant location in system settings to sort temples by distance.</string>
+    <string name="location_open_settings">Open settings</string>
+    <string name="location_enable">Turn on location</string>
+    <string name="location_error_unavailable">This device has no usable location provider.</string>
+    <string name="location_error_disabled">Location is switched off on this device.</string>
+    <string name="location_error_no_fix">Could not get a location fix. Try again outdoors.</string>
+    <string name="location_accuracy">Accurate to about %1$d m</string>
+    <string name="location_stale">Using your last known location</string>
+    <string name="location_refresh">Refresh location</string>
+
+    <!-- ── Empty states and errors ──────────────────────────────────────── -->
+    <string name="empty_no_results">No temple matches those filters.</string>
+    <string name="empty_no_favourites">Nothing saved yet. Tap the heart on a temple to keep it here.</string>
+    <string name="empty_select_temple">Pick a temple to see timings, buses and what is nearby.</string>
+    <string name="error_no_maps_app">No maps app found on this device.</string>
+    <string name="error_no_dialler">No phone app found on this device.</string>
+    <string name="error_no_browser">No browser found on this device.</string>
+    <string name="error_no_calendar">No calendar app found on this device.</string>
+
+    <!-- ── Donations ────────────────────────────────────────────────────── -->
+    <string name="donate_disclaimer">Donate only through the temple hundi or an official link. This app takes no payments and earns nothing from these links.</string>
+    <string name="donate_open_link">Open official page</string>
+
+    <!-- ── Photos and attribution ───────────────────────────────────────── -->
+    <string name="photo_credit">%1$s · %2$s</string>
+    <string name="photo_credit_full">Photo: %1$s, licensed %2$s via Wikimedia Commons</string>
+    <string name="photo_view_license">View licence</string>
+    <string name="photo_none">No freely licensed photo available yet</string>
+
+    <!-- ── Language picker ──────────────────────────────────────────────── -->
+    <string name="language_picker_title">App language</string>
+    <string name="language_picker_body">Changes the whole app, including temple names and descriptions. The screen reloads once.</string>
+    <string name="language_english">English</string>
+    <string name="language_hindi">Hindi</string>
+    <string name="language_kannada">Kannada</string>
+    <string name="language_follow_system">Follow system language</string>
+    <string name="language_partial_note">Temple descriptions fall back to English where a translation is not available yet.</string>
+
+    <!-- ── Data confidence ──────────────────────────────────────────────── -->
+    <string name="temple_confidence_high">Well sourced</string>
+    <string name="temple_confidence_medium">Partly verified</string>
+    <string name="temple_confidence_low">Verify before travelling</string>
+    <string name="disclaimer">Timings, bus routes and seva prices change often, especially on festival days. Confirm with the temple before a long trip.</string>
+
+    <!-- ── Deities ──────────────────────────────────────────────────────── -->
+    <string name="deity_shiva">Shiva</string>
+    <string name="deity_vishnu">Vishnu</string>
+    <string name="deity_krishna">Krishna</string>
+    <string name="deity_ganesha">Ganesha</string>
+    <string name="deity_hanuman">Hanuman</string>
+    <string name="deity_devi">Devi</string>
+    <string name="deity_subramanya">Subramanya</string>
+    <string name="deity_ayyappa">Ayyappa</string>
+    <string name="deity_navagraha">Navagraha</string>
+    <string name="deity_other">Other</string>
+
+    <!-- ── Metro lines ──────────────────────────────────────────────────── -->
+    <string name="metro_line_purple">Purple</string>
+    <string name="metro_line_green">Green</string>
+    <string name="metro_line_yellow">Yellow</string>
+    <string name="metro_line_pink">Pink</string>
+    <string name="metro_line_blue">Blue</string>
+
+    <!-- ── Facilities ───────────────────────────────────────────────────── -->
+    <string name="facility_wheelchair">Wheelchair access</string>
+    <string name="facility_restrooms">Restrooms</string>
+    <string name="facility_drinking_water">Drinking water</string>
+    <string name="facility_shoe_stand">Shoe stand</string>
+    <string name="facility_cloak_room">Cloak room</string>
+    <string name="facility_prasad_counter">Prasada counter</string>
+    <string name="facility_annadana">Free meals (annadana)</string>
+    <string name="facility_free_parking">Free parking</string>
+    <string name="facility_paid_parking">Paid parking</string>
+    <string name="facility_queue_shelter">Covered queue</string>
+    <string name="facility_marriage_hall">Kalyana mantapa</string>
+    <string name="facility_bookstore">Bookstore</string>
+    <string name="facility_elevator">Lift</string>
+    <string name="facility_photography_allowed">Photography allowed</string>
+    <string name="facility_no_photography">No photography</string>
+
+    <!-- ── Nearby place kinds ───────────────────────────────────────────── -->
+    <string name="nearby_pooja_items">Pooja items</string>
+    <string name="nearby_eat">Food</string>
+    <string name="nearby_parking">Parking</string>
+    <string name="nearby_atm">ATM</string>
+    <string name="nearby_stay">Stay</string>
+
+    <!-- ── Donation kinds ───────────────────────────────────────────────── -->
+    <string name="donation_hundi">Hundi at the temple</string>
+    <string name="donation_online">Online donation</string>
+    <string name="donation_seva">Book a seva</string>
+    <string name="donation_annadana">Annadana (meal donation)</string>
+    <string name="donation_trust">Temple trust</string>
+
+    <!-- ── Day names, short form ────────────────────────────────────────── -->
+    <string name="day_monday">Mon</string>
+    <string name="day_tuesday">Tue</string>
+    <string name="day_wednesday">Wed</string>
+    <string name="day_thursday">Thu</string>
+    <string name="day_friday">Fri</string>
+    <string name="day_saturday">Sat</string>
+    <string name="day_sunday">Sun</string>
+
+    <!-- ── Festivals screen ─────────────────────────────────────────────── -->
+    <string name="festivals_subtitle">Lunar dates shift every year — treat these as the usual window, not a fixed date.</string>
+    <string name="festivals_at">at %1$s</string>
+
+    <!-- ── Trip planner ─────────────────────────────────────────────────── -->
+    <string name="planner_title">Temple trail</string>
+    <string name="planner_body">Saved temples ordered from your location, nearest first — a ready-made route for one morning.</string>
+    <string name="planner_leg">%1$d · %2$s</string>
+    <string name="planner_total">%1$d stops, %2$s of travel between them</string>
+    <string name="planner_needs_location">Allow location to order your saved temples into a route.</string>
+
+    <!-- ── Credits and provenance ───────────────────────────────────────── -->
+    <string name="credits_photos_body">All %1$d photographs in this guide come from Wikimedia Commons under free licences. Each photo names its author and licence in the carousel; tap the caption to open the Commons file page with the full terms.</string>
+    <string name="credits_licences">Licences in use: %1$s</string>
+    <string name="credits_browse_source">Browse the source category</string>
+    <string name="credits_data_body">Temple details were compiled from Wikipedia, Wikidata, OpenStreetMap and official temple and trust websites. Each temple page shows how well sourced its record is. This guide is not a booking service: donations, sevas and directions all hand off to the temple or to your own apps.</string>
+</resources>
