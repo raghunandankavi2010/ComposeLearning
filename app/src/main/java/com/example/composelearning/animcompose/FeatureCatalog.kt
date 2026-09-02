@@ -288,6 +288,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         FeatureGroup.APP_CLONES
     ),
     AnimationCategory(
+        "Temple Showcase — Bengaluru Temple Guide",
+        "Offline guide to Bengaluru's temples in English, Hindi and Kannada: timings and live open/closed status, distance from you, turn-by-turn hand-off to any maps app, BMTC routes and metro, pooja-item shops, eateries, donation channels and a festival calendar.",
+        AnimScreen.TempleShowcase,
+        FeatureGroup.APP_CLONES
+    ),
+    AnimationCategory(
         "Photo Quality Check (NIMA)",
         "On-device Google NIMA (technical) TFLite model scores capture quality (blur, noise, exposure) 1–10. Try the bundled samples or score your own photo from the gallery or camera.",
         AnimScreen.PhotoQuality(),
@@ -365,6 +371,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         "Particle Field (steering / morph)",
         "Port of Flutter's animated_particles: particles sampled from text pixels arrive into the shape, morph between shapes (tap), flee from your finger (drag) and escape off-screen (long-press) — a structure-of-arrays engine drawn in one drawPoints call.",
         AnimScreen.ParticleField,
+        FeatureGroup.CHARTS_VISUALIZERS
+    ),
+    AnimationCategory(
+        "Pet Particles (cat & dog fur)",
+        "A cat and a dog made of a few thousand dots: sampled from a Canvas-drawn portrait, each dot is a damped spring that idles, breathes, blinks and wags — then scatters under your finger and springs home. Drag to ruffle, tap to purr, long-press to shake.",
+        AnimScreen.PetParticles,
         FeatureGroup.CHARTS_VISUALIZERS
     ),
     AnimationCategory(

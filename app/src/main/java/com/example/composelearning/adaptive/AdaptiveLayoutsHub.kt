@@ -80,6 +80,11 @@ enum class AdaptiveDemo(val title: String, val blurb: String) {
         "6 · Adaptive Drawer (Modal ↔ Permanent)",
         "Hand-built drawer: ModalNavigationDrawer with a menu button on phones, swapped for an " +
             "always-docked PermanentNavigationDrawer on expanded width. Same sheet, different container."
+    ),
+    TEMPLE_SHOWCASE(
+        "7 · Temple Showcase (Real Data)",
+        "A comprehensive list-detail example showing temples in Bangalore. " +
+            "Integrates location, timings, reaching info, and facilities into a rich adaptive UI."
     )
 }
 
@@ -128,6 +133,7 @@ fun AdaptiveLayoutsHub(modifier: Modifier = Modifier) {
                 AdaptiveDemo.REFLOWING_DETAIL -> WindowSizeClassDemo(Modifier.fillMaxSize())
                 AdaptiveDemo.NAVIGATION_SUITE -> AdaptiveNavigationSuiteDemo(Modifier.fillMaxSize())
                 AdaptiveDemo.ADAPTIVE_DRAWER -> AdaptiveDrawerDemo(Modifier.fillMaxSize())
+                AdaptiveDemo.TEMPLE_SHOWCASE -> TempleShowcaseDemo(Modifier.fillMaxSize())
             }
         }
     }

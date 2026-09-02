@@ -101,6 +101,7 @@ import com.example.composelearning.solarsystem.SolarSystemSimulation
 import com.example.composelearning.speechlang.presentation.SpeechLangRoute
 import com.example.composelearning.spinningwheel.SpinningWheelRoute
 import com.example.composelearning.tabs.TabsSampleNavigation
+import com.example.composelearning.temples.ui.TempleShowcaseApp
 import com.example.composelearning.textfields.MarqueeText
 import com.example.composelearning.textstyling.SquigglySpanSample
 import com.example.composelearning.tutorial.ui.TutorialScreen
@@ -402,6 +403,9 @@ sealed interface AnimScreen :
     data object CropDoctor : AnimScreen
 
     @Serializable
+    data object TempleShowcase : AnimScreen
+
+    @Serializable
     data object SpeechLang : AnimScreen
 
     @Serializable
@@ -502,6 +506,9 @@ sealed interface AnimScreen :
 
     @Serializable
     data object ParticleField : AnimScreen
+
+    @Serializable
+    data object PetParticles : AnimScreen
 
     @Serializable
     data object DottedText : AnimScreen
@@ -734,6 +741,7 @@ fun AppNavigation(
         entry<AnimScreen.ArGlasses> { ArGlassesRoute() }
         entry<AnimScreen.FormGuard> { FormGuardRoute() }
         entry<AnimScreen.CropDoctor> { CropDoctorRoute(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.TempleShowcase> { TempleShowcaseApp() }
         entry<AnimScreen.SpeechLang> { SpeechLangRoute() }
         entry<AnimScreen.OnDeviceSpeech> { OnDeviceSpeechRoute() }
         entry<AnimScreen.SarvamLid> { LanguageDetectionRoute(apiKey = BuildConfig.SARVAM_API_KEY) }
@@ -787,6 +795,9 @@ fun AppNavigation(
         }
         entry<AnimScreen.ParticleField> {
             com.example.composelearning.particlefield.ParticleFieldScreen(onBack = { navigator.goBack() })
+        }
+        entry<AnimScreen.PetParticles> {
+            com.example.composelearning.petparticles.PetParticlesScreen(onBack = { navigator.goBack() })
         }
         entry<AnimScreen.DottedText> {
             com.example.composelearning.graphics.DottedTextRoute(onBack = { navigator.goBack() })
