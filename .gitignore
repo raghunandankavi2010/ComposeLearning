@@ -93,3 +93,6 @@ __pycache__/
 
 # macOS
 .DS_Store
+
+# Globe asset bake: downloaded Natural Earth source (re-fetched on demand)
+tools/globe/.cache/

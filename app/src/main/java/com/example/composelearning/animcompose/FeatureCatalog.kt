@@ -234,6 +234,15 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
 
     // ── Shaders & Images (AGSL) ─────────────────────────────────────────────
     AnimationCategory(
+        "Country Globe (3D, all 241 countries)",
+        "Orthographic Earth in one AGSL pass: every pixel is inverse-projected to lat/lon, " +
+            "looked up in a baked country-id raster, then edge-detected in screen space for " +
+            "borders. Spin, fling, pinch, tap to identify. Maths in GLOBE.md.",
+        AnimScreen.CountryGlobe,
+        FeatureGroup.SHADERS_IMAGES
+    ),
+
+    AnimationCategory(
         "AGSL Shader Demos",
         "Blur, frosted glass, mesh gradient, shimmer, liquid button, film grain",
         AnimScreen.ShaderDemos,
@@ -567,6 +576,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
     ),
 
     // ── Progress & Buttons ──────────────────────────────────────────────────
+    AnimationCategory(
+        "Pac-Man Loader",
+        "Determinate loader — Pac-Man chomps a horizontal row of pellets from 0% to 100%, with a circular ring variant.",
+        AnimScreen.PacManLoader,
+        FeatureGroup.PROGRESS_BUTTONS
+    ),
     AnimationCategory(
         "SmoothProgressBar (Compose port)",
         "Port of castorflex/SmoothProgressBar — indeterminate horizontal sections sliding with cycling colors.",

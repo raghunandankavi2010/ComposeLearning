@@ -65,6 +65,7 @@ import com.example.composelearning.flight.FlightSeatScreen
 import com.example.composelearning.foldcard.presentation.FoldCardScreen
 import com.example.composelearning.formguard.presentation.FormGuardRoute
 import com.example.composelearning.googlecalendar.ui.GoogleCalendarActivity
+import com.example.composelearning.globe.CountryGlobeRoute
 import com.example.composelearning.gradients.SineWaveMeshGradientScreen
 import com.example.composelearning.graphics.AnimatedBorderButton
 import com.example.composelearning.graphics.AnimatingWatchDial
@@ -87,6 +88,7 @@ import com.example.composelearning.pathmorph.presentation.PathMorphScreen
 import com.example.composelearning.peritemvm.PerItemViewModelShowcaseScreen
 import com.example.composelearning.permissions.PasskeySample
 import com.example.composelearning.photoquality.PhotoQualityRoute
+import com.example.composelearning.progress.PacManLoaderScreen
 import com.example.composelearning.progress.SmoothProgressBarScreen
 import com.example.composelearning.promotions.PromotionalDealRoute
 import com.example.composelearning.protobufdemo.ProtobufDemoRoute
@@ -368,6 +370,12 @@ sealed interface AnimScreen :
 
     @Serializable
     data object SmoothProgress : AnimScreen
+
+    @Serializable
+    data object PacManLoader : AnimScreen
+
+    @Serializable
+    data object CountryGlobe : AnimScreen
 
     @Serializable
     data object FlightSeat : AnimScreen
@@ -724,6 +732,8 @@ fun AppNavigation(
         entry<AnimScreen.ZoomableImage> { ZoomableImageScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.PerItemViewModel> { PerItemViewModelShowcaseScreen() }
         entry<AnimScreen.SmoothProgress> { SmoothProgressBarScreen() }
+        entry<AnimScreen.PacManLoader> { PacManLoaderScreen() }
+        entry<AnimScreen.CountryGlobe> { CountryGlobeRoute() }
         entry<AnimScreen.FlightSeat> { FlightSeatScreen() }
         entry<AnimScreen.FanCarousel> { TopRightFanCarouselScreen() }
         entry<AnimScreen.ArcCarousel> { ArcCarouselScreen(onBack = { navigator.goBack() }) }

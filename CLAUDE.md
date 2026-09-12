@@ -31,6 +31,7 @@ Features in `:app` are organized as packages under `app/src/main/java/com/exampl
 ├── dropdown/           # Dropdown menu samples
 ├── flight/             # Flight seat selection UI
 ├── foldcard/           # 3D folding card animation
+├── globe/              # 3D country globe (AGSL inverse projection) — see its GLOBE.md
 ├── googlecalendar/     # Google Calendar clone with schedule/week views
 ├── gradients/          # Mesh gradient samples
 ├── graphics/           # Shaders, Path progress, Blur effects, Draw scale
@@ -44,7 +45,7 @@ Features in `:app` are organized as packages under `app/src/main/java/com/exampl
 ├── pathmorph/          # SVG Path morphing (Phone silhouettes)
 ├── peritemvm/          # Scoping ViewModels to individual list items
 ├── permissions/        # Passkeys and Accompanist permissions demos
-├── progress/           # Progress bar / circular progress samples
+├── progress/           # Progress bars, circular loaders, Pac-Man dot loader
 ├── riveo/              # Riveo-style page curl (AGSL)
 ├── shaders/            # AGSL Shimmer, Liquid, Spiral, Fluid spring shaders
 ├── shadows/            # Shadow playground (Inner, Drop, Colored)
