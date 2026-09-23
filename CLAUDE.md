@@ -29,6 +29,7 @@ Features in `:app` are organized as packages under `app/src/main/java/com/exampl
 ├── customlayout/       # Custom Pager and Arc List layouts
 ├── customshapes/       # Ticket shapes and other custom geometry
 ├── dropdown/           # Dropdown menu samples
+├── fastimages/         # Swiggy/Blinkit-style fast image grid (CDN variants, Coil tuning, prefetch) — see its FASTIMAGES.md
 ├── flight/             # Flight seat selection UI
 ├── foldcard/           # 3D folding card animation
 ├── globe/              # 3D country globe (AGSL inverse projection) — see its GLOBE.md

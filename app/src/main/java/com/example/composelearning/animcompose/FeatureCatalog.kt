@@ -459,6 +459,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
 
     // ── Lists, Layouts & Pagers ─────────────────────────────────────────────
     AnimationCategory(
+        "Fast Image Feed (Swiggy / Blinkit style)",
+        "How food-delivery apps make a photo grid feel instant: CDN-bucketed WebP thumbnails, a tuned Coil ImageLoader, two-tier scroll-direction prefetching, dominant-colour placeholders and stable grid keys — with a live metrics panel and toggles to turn each trick off.",
+        AnimScreen.FastImageFeed,
+        FeatureGroup.LISTS_LAYOUTS_PAGERS
+    ),
+    AnimationCategory(
         "Adaptive Layouts (multi-pane)",
         "Four scenarios with material3-adaptive: list-detail pane, supporting pane, adaptive grid, and a WindowSizeClass-driven reflowing detail screen. Built to learn production multi-screen layouts.",
         AnimScreen.AdaptiveLayouts,

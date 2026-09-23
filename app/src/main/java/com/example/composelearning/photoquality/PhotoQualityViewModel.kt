@@ -132,24 +132,34 @@ class PhotoQualityViewModel(app: Application) : AndroidViewModel(app) {
     private fun decodeBitmap(uri: Uri): Bitmap {
         val resolver = getApplication<Application>().contentResolver
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            val source = ImageDecoder.createSource(resolver, uri)
-            ImageDecoder.decodeBitmap(source) { decoder, info, _ ->
-                // Software allocator so the classifier can read pixels via getPixels().
-                decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
-                decoder.isMutableRequired = false
-                val sample = calculateInSampleSize(info.size.width, info.size.height, DECODE_TARGET_PX)
-                if (sample > 1) decoder.setTargetSampleSize(sample)
+            try {
+                val source = ImageDecoder.createSource(resolver, uri)
+                ImageDecoder.decodeBitmap(source) { decoder, info, _ ->
+                    // Software allocator so the classifier can read pixels via getPixels().
+                    decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+                    decoder.isMutableRequired = false
+                    val sample = calculateInSampleSize(info.size.width, info.size.height, DECODE_TARGET_PX)
+                    if (sample > 1) decoder.setTargetSampleSize(sample)
+                }
+            } catch (t: Throwable) {
+                // Fallback to BitmapFactory if ImageDecoder fails (e.g. 'unimplemented' native error)
+                decodeBitmapLegacy(uri)
             }
         } else {
-            val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-            resolver.openInputStream(uri).use { BitmapFactory.decodeStream(it, null, bounds) }
-            val opts = BitmapFactory.Options().apply {
-                inSampleSize = calculateInSampleSize(bounds.outWidth, bounds.outHeight, DECODE_TARGET_PX)
-                inPreferredConfig = Bitmap.Config.ARGB_8888
-            }
-            resolver.openInputStream(uri).use { BitmapFactory.decodeStream(it, null, opts) }
-                ?: error("Could not decode image")
+            decodeBitmapLegacy(uri)
         }
+    }
+
+    private fun decodeBitmapLegacy(uri: Uri): Bitmap {
+        val resolver = getApplication<Application>().contentResolver
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        resolver.openInputStream(uri).use { BitmapFactory.decodeStream(it, null, bounds) }
+        val opts = BitmapFactory.Options().apply {
+            inSampleSize = calculateInSampleSize(bounds.outWidth, bounds.outHeight, DECODE_TARGET_PX)
+            inPreferredConfig = Bitmap.Config.ARGB_8888
+        }
+        return resolver.openInputStream(uri).use { BitmapFactory.decodeStream(it, null, opts) }
+            ?: error("Could not decode image")
     }
 
     /**

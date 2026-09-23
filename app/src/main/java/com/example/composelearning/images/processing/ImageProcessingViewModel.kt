@@ -91,17 +91,22 @@ class ImageProcessingViewModel(application: Application) : AndroidViewModel(appl
         val resolver = getApplication<Application>().contentResolver
         val target = 1600
         val raw = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            val source = ImageDecoder.createSource(resolver, uri)
-            ImageDecoder.decodeBitmap(source) { decoder, info, _ ->
-                decoder.isMutableRequired = false
-                decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
-                val w = info.size.width
-                val h = info.size.height
-                val longEdge = maxOf(w, h)
-                if (longEdge > target) {
-                    val scale = target.toFloat() / longEdge
-                    decoder.setTargetSize((w * scale).toInt(), (h * scale).toInt())
+            try {
+                val source = ImageDecoder.createSource(resolver, uri)
+                ImageDecoder.decodeBitmap(source) { decoder, info, _ ->
+                    decoder.isMutableRequired = false
+                    decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+                    val w = info.size.width
+                    val h = info.size.height
+                    val longEdge = maxOf(w, h)
+                    if (longEdge > target) {
+                        val scale = target.toFloat() / longEdge
+                        decoder.setTargetSize((w * scale).toInt(), (h * scale).toInt())
+                    }
                 }
+            } catch (t: Throwable) {
+                // Fallback to BitmapFactory if ImageDecoder fails (e.g. 'unimplemented' native error)
+                decodeBitmapLegacy(uri, target)
             }
         } else {
             @Suppress("DEPRECATION")
@@ -112,6 +117,25 @@ class ImageProcessingViewModel(application: Application) : AndroidViewModel(appl
         } else {
             raw.copy(Bitmap.Config.ARGB_8888, false).also { raw.recycle() }
         }
+    }
+
+    private fun decodeBitmapLegacy(uri: Uri, target: Int): Bitmap {
+        val resolver = getApplication<Application>().contentResolver
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        resolver.openInputStream(uri).use { BitmapFactory.decodeStream(it, null, bounds) }
+
+        val longest = maxOf(bounds.outWidth, bounds.outHeight)
+        var sample = 1
+        while (longest / (sample * 2) >= target) {
+            sample *= 2
+        }
+
+        val opts = BitmapFactory.Options().apply {
+            inSampleSize = sample
+            inPreferredConfig = Bitmap.Config.ARGB_8888
+        }
+        return resolver.openInputStream(uri).use { BitmapFactory.decodeStream(it, null, opts) }
+            ?: error("Could not decode image with BitmapFactory")
     }
 
     private fun decodeResourceScaled(@DrawableRes resId: Int, longEdgeTarget: Int): Bitmap {

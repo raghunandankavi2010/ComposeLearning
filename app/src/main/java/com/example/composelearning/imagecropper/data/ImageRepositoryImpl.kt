@@ -34,12 +34,22 @@ class ImageRepositoryImpl(
     }
 
     override suspend fun load(uri: Uri): Bitmap = withContext(Dispatchers.IO) {
-        val source = ImageDecoder.createSource(appContext.contentResolver, uri)
-        // SOFTWARE allocator => readable, croppable bitmap; ImageDecoder applies EXIF rotation.
-        ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
-            decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
-            decoder.isMutableRequired = false
-        }.toSoftwareArgb()
+        try {
+            val source = ImageDecoder.createSource(appContext.contentResolver, uri)
+            // SOFTWARE allocator => readable, croppable bitmap; ImageDecoder applies EXIF rotation.
+            ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
+                decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+                decoder.isMutableRequired = false
+            }.toSoftwareArgb()
+        } catch (t: Throwable) {
+            // Fallback to BitmapFactory if ImageDecoder fails (e.g. 'unimplemented' native error)
+            val options = BitmapFactory.Options().apply {
+                inPreferredConfig = Bitmap.Config.ARGB_8888
+            }
+            appContext.contentResolver.openInputStream(uri).use { stream ->
+                BitmapFactory.decodeStream(stream, null, options)
+            }?.toSoftwareArgb() ?: error("Could not decode image with BitmapFactory")
+        }
     }
 
     override suspend fun save(bitmap: Bitmap, displayName: String): Uri? = withContext(Dispatchers.IO) {

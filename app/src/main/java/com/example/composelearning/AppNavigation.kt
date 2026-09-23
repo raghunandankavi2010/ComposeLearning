@@ -61,6 +61,7 @@ import com.example.composelearning.clocks.TimeRangeKnobScreen
 import com.example.composelearning.cropdoctor.presentation.CropDoctorRoute
 import com.example.composelearning.customlayout.ArcListSample
 import com.example.composelearning.customlayout.CustomPagerSample
+import com.example.composelearning.fastimages.FastImageFeedRoute
 import com.example.composelearning.flight.FlightSeatScreen
 import com.example.composelearning.foldcard.presentation.FoldCardScreen
 import com.example.composelearning.formguard.presentation.FormGuardRoute
@@ -411,6 +412,9 @@ sealed interface AnimScreen :
     data object CropDoctor : AnimScreen
 
     @Serializable
+    data object FastImageFeed : AnimScreen
+
+    @Serializable
     data object TempleShowcase : AnimScreen
 
     @Serializable
@@ -751,10 +755,11 @@ fun AppNavigation(
         entry<AnimScreen.ArGlasses> { ArGlassesRoute() }
         entry<AnimScreen.FormGuard> { FormGuardRoute() }
         entry<AnimScreen.CropDoctor> { CropDoctorRoute(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.FastImageFeed> { FastImageFeedRoute(onBack = { navigator.goBack() }) }
         entry<AnimScreen.TempleShowcase> { TempleShowcaseApp() }
         entry<AnimScreen.SpeechLang> { SpeechLangRoute() }
         entry<AnimScreen.OnDeviceSpeech> { OnDeviceSpeechRoute() }
-        entry<AnimScreen.SarvamLid> { LanguageDetectionRoute(apiKey = BuildConfig.SARVAM_API_KEY) }
+        //entry<AnimScreen.SarvamLid> { LanguageDetectionRoute(apiKey = BuildConfig.SARVAM_API_KEY) }
         entry<AnimScreen.SarvamStt> { SpeechToTextRoute() }
         entry<AnimScreen.AudioStream> { AudioStreamRoute() }
         entry<AnimScreen.AuthTokenDemo> { AuthRoute() }

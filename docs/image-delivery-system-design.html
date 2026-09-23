@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Image Delivery for Low-Cost Phones — System Design</title>
+<style>
+  @page { size: A4; margin: 15mm 14mm; }
+  :root{
+    --ink:#1f2430; --muted:#5b6472; --line:#c9d1dc;
+    --client:#2f6f9f; --clientbg:#eef3f8;
+    --edge:#7a5195;   --edgebg:#f3eef8;
+    --origin:#ad6a34; --originbg:#f8f2ea;
+    --ok:#2f7a4f;     --okbg:#edf5ef;
+    --bad:#a83a3a;    --badbg:#faeded;
+  }
+  *{box-sizing:border-box}
+  body{
+    font-family:-apple-system,"Helvetica Neue",Arial,sans-serif;
+    color:var(--ink); font-size:10.5pt; line-height:1.5; margin:0;
+    -webkit-print-color-adjust:exact; print-color-adjust:exact;
+  }
+  h1{font-size:21pt;line-height:1.15;margin:0 0 4px}
+  h2{font-size:13.5pt;margin:22px 0 6px;padding-bottom:4px;border-bottom:1.5px solid var(--line)}
+  h3{font-size:11pt;margin:16px 0 4px}
+  p{margin:6px 0}
+  ul,ol{margin:6px 0 6px 18px;padding:0}
+  li{margin:3px 0}
+  code{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:9pt;background:#f1f3f6;padding:1px 3px;border-radius:3px}
+  .sub{color:var(--muted);font-size:11pt;margin:0 0 2px}
+  .thesis{background:var(--clientbg);border-left:3px solid var(--client);padding:9px 12px;margin:14px 0;font-size:10.5pt}
+  table{border-collapse:collapse;width:100%;margin:8px 0;font-size:9.5pt}
+  th,td{border:1px solid var(--line);padding:5px 7px;text-align:left;vertical-align:top}
+  th{background:#f1f3f6;font-weight:600}
+  figure{margin:14px 0;page-break-inside:avoid}
+  figcaption{font-size:9pt;color:var(--muted);margin-top:4px}
+  .note{background:var(--okbg);border-left:3px solid var(--ok);padding:8px 11px;margin:10px 0;font-size:9.5pt}
+  .warn{background:var(--badbg);border-left:3px solid var(--bad);padding:8px 11px;margin:10px 0;font-size:9.5pt}
+  tr{page-break-inside:avoid}
+  h2{break-after:avoid-page}
+  h3{break-after:avoid-page}
+  .tag{display:inline-block;font-size:8pt;padding:1px 6px;border-radius:9px;border:1px solid var(--line);color:var(--muted)}
+  svg{display:block;max-width:100%;height:auto}
+  .yes{color:var(--ok);font-weight:600}
+  .no{color:var(--bad);font-weight:600}
+  .foot{margin-top:24px;padding-top:8px;border-top:1px solid var(--line);font-size:8.5pt;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<h1>Image delivery for low-cost phones</h1>
+<p class="sub">A system-design walkthrough of the <code>fastimages</code> feed — ComposeLearning</p>
+<p><span class="tag">Jetpack Compose</span> <span class="tag">Coil 3</span> <span class="tag">OkHttp 5</span> <span class="tag">India-first constraints</span></p>
+
+<div class="thesis">
+<strong>The thesis.</strong> Showing an image is a UI problem. Showing it fast on a ₹9,000 phone
+on a congested cell is a systems problem, and the answer is not "download a smaller image" —
+it is a <em>decision function</em> that runs on the device, resolves capability into a small
+set of variant parameters, and keeps every cache layer between the phone and the blob store
+shareable. Screen density is the input everyone reaches for first and it is the one that
+misleads you most.
+</div>
+
+<h2>1. The problem and the constraints</h2>
+<p>
+A home-screen grid of ~120 food photos. The user opens the app, sees tiles immediately, and
+flings. What "good" means, in priority order:
+</p>
+<ol>
+  <li><strong>Something is on screen in the first frame.</strong> Never blank, never white, never jumping.</li>
+  <li><strong>Scroll never drops a frame</strong>, including while images arrive and decode.</li>
+  <li><strong>Bytes are proportionate</strong> to what the user can actually see and afford.</li>
+  <li><strong>Degradation is graceful</strong>: slow link, cheap device, Data Saver on, network lost mid-scroll.</li>
+</ol>
+<p>The constraints that make it interesting:</p>
+<table>
+  <tr><th>Constraint</th><th>Consequence</th></tr>
+  <tr><td>Budget phone: 1080×2400 screen, 2–3 GB RAM, 8 slow cores, ~96 MB heap</td>
+      <td>A high-density screen on a device that cannot afford high-density images. <strong>Decode CPU and bitmap memory bind before bandwidth does.</strong> One 1080×1080 ARGB_8888 bitmap is 4.4 MB of heap.</td></tr>
+  <tr><td>Congested cellular: 300–800 kbit/s, 200–600 ms RTT</td>
+      <td>Round trips hurt more than bytes. Anything needing a second request per tile is suspect.</td></tr>
+  <tr><td>Metered data, Data Saver commonly enabled</td>
+      <td>Speculative work is spending someone else's money. It needs an off switch driven by user intent.</td></tr>
+  <tr><td>Tens of thousands of Android SKUs</td>
+      <td>Per-device responses are unshareable. Cache keys must describe <em>bytes</em>, not devices.</td></tr>
+</table>
+
+<h2>2. Architecture</h2>
+
+<figure>
+<svg viewBox="0 0 720 300" role="img" aria-label="End to end image delivery architecture">
+  <defs>
+    <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5b6472"/>
+    </marker>
+  </defs>
+  <!-- device lane -->
+  <rect x="2" y="8" width="330" height="200" rx="8" fill="#eef3f8" stroke="#2f6f9f" stroke-dasharray="4 3"/>
+  <text x="14" y="26" font-size="11" font-weight="700" fill="#2f6f9f">DEVICE</text>
+
+  <rect x="16" y="36" width="140" height="40" rx="6" fill="#fff" stroke="#2f6f9f"/>
+  <text x="86" y="52" font-size="10.5" text-anchor="middle" fill="#1f2430">Catalog response</text>
+  <text x="86" y="66" font-size="8.5" text-anchor="middle" fill="#5b6472">id · aspect · colour · hash</text>
+
+  <rect x="180" y="36" width="140" height="40" rx="6" fill="#fff" stroke="#2f6f9f"/>
+  <text x="250" y="52" font-size="10.5" text-anchor="middle" fill="#1f2430">DeliveryPolicy</text>
+  <text x="250" y="66" font-size="8.5" text-anchor="middle" fill="#5b6472">device × network × intent</text>
+
+  <rect x="180" y="94" width="140" height="34" rx="6" fill="#fff" stroke="#2f6f9f"/>
+  <text x="250" y="115" font-size="10" text-anchor="middle" fill="#1f2430">URL: w · q · fm</text>
+
+  <rect x="16" y="94" width="140" height="34" rx="6" fill="#edf5ef" stroke="#2f7a4f"/>
+  <text x="86" y="109" font-size="10" text-anchor="middle" fill="#1f2430">L1 memory cache</text>
+  <text x="86" y="121" font-size="8" text-anchor="middle" fill="#5b6472">decoded bitmaps · 12–25% heap</text>
+
+  <rect x="16" y="146" width="304" height="34" rx="6" fill="#edf5ef" stroke="#2f7a4f"/>
+  <text x="168" y="161" font-size="10" text-anchor="middle" fill="#1f2430">L2 disk cache — 96 MB, compressed bytes, survives process death</text>
+  <text x="168" y="173" font-size="8" text-anchor="middle" fill="#5b6472">immutable URLs · Cache-Control: max-age=1y, immutable</text>
+
+  <!-- network -->
+  <rect x="356" y="36" width="160" height="60" rx="8" fill="#f3eef8" stroke="#7a5195"/>
+  <text x="436" y="58" font-size="10.5" text-anchor="middle" fill="#1f2430">L3 CDN edge</text>
+  <text x="436" y="72" font-size="8.5" text-anchor="middle" fill="#5b6472">hit rate ∝ bucket discipline</text>
+  <text x="436" y="86" font-size="8.5" text-anchor="middle" fill="#5b6472">shared by all devices</text>
+
+  <rect x="540" y="36" width="172" height="60" rx="8" fill="#f8f2ea" stroke="#ad6a34"/>
+  <text x="626" y="54" font-size="10.5" text-anchor="middle" fill="#1f2430">Transform service</text>
+  <text x="626" y="68" font-size="8.5" text-anchor="middle" fill="#5b6472">imgproxy / Thumbor / imgix</text>
+  <text x="626" y="82" font-size="8.5" text-anchor="middle" fill="#5b6472">L4 derivative cache</text>
+
+  <rect x="540" y="120" width="172" height="44" rx="8" fill="#fff" stroke="#ad6a34"/>
+  <text x="626" y="138" font-size="10.5" text-anchor="middle" fill="#1f2430">Master blob store</text>
+  <text x="626" y="152" font-size="8.5" text-anchor="middle" fill="#5b6472">one high-res original</text>
+
+  <!-- arrows -->
+  <line x1="156" y1="56" x2="178" y2="56" stroke="#5b6472" marker-end="url(#a1)"/>
+  <line x1="250" y1="76" x2="250" y2="92" stroke="#5b6472" marker-end="url(#a1)"/>
+  <line x1="180" y1="111" x2="158" y2="111" stroke="#5b6472" marker-end="url(#a1)"/>
+  <line x1="250" y1="128" x2="250" y2="144" stroke="#5b6472" marker-end="url(#a1)"/>
+  <line x1="320" y1="120" x2="354" y2="80" stroke="#5b6472" marker-end="url(#a1)"/>
+  <line x1="516" y1="66" x2="538" y2="66" stroke="#5b6472" marker-end="url(#a1)"/>
+  <line x1="626" y1="96" x2="626" y2="118" stroke="#5b6472" marker-end="url(#a1)"/>
+
+  <text x="336" y="112" font-size="8" fill="#5b6472">miss</text>
+
+  <!-- key discipline callout -->
+  <rect x="2" y="222" width="710" height="70" rx="8" fill="#fff" stroke="#c9d1dc"/>
+  <text x="14" y="240" font-size="10.5" font-weight="700" fill="#1f2430">One cache key, four layers</text>
+  <text x="14" y="256" font-size="9" fill="#5b6472">seed@320x240#webp-q62 &#8594; L1 · L2 · L3 · L4 all keyed on the same derived variant, never on the device.</text>
+  <text x="14" y="272" font-size="9" fill="#5b6472">9 buckets × 4 qualities × 2 formats = 72 shareable derivatives for the entire device population.</text>
+  <text x="14" y="286" font-size="9" fill="#a83a3a">A prefetch that warms a different key than the tile later requests has a 100% miss rate and still spends the bandwidth.</text>
+</svg>
+<figcaption><strong>Figure 1.</strong> Four cache layers, one key. The client composes the URL; every layer downstream is shared.</figcaption>
+</figure>
+
+<div class="warn">
+<strong>The question interviewers push on:</strong> "why not send the device profile to the server and
+let it decide?" Because the response would then vary per device model. You would need
+<code>Vary</code> headers, and the CDN edge — the layer doing the most work — would fragment across
+tens of thousands of SKUs. Resolving locally turns that population into ~72 shared objects.
+Server-side device detection via User-Agent is a web-era pattern and its cost is exactly this.
+</div>
+
+<h2>3. The decision function</h2>
+<p>Everything reduces to one expression, evaluated on the device:</p>
+<p style="text-align:center;font-family:'SF Mono',Menlo,monospace;font-size:10pt;background:#f1f3f6;padding:8px;border-radius:4px">
+variant = f(layout size, density, device tier, network tier, user intent)
+</p>
+
+<figure>
+<svg viewBox="0 0 720 330" role="img" aria-label="Signals resolving into a delivery profile">
+  <defs>
+    <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5b6472"/>
+    </marker>
+  </defs>
+  <!-- inputs -->
+  <rect x="2" y="14" width="196" height="66" rx="6" fill="#fff" stroke="#2f6f9f"/>
+  <text x="12" y="31" font-size="10" font-weight="700" fill="#2f6f9f">LAYOUT (per surface)</text>
+  <text x="12" y="46" font-size="8.5" fill="#5b6472">cell width in px, measured once</text>
+  <text x="12" y="59" font-size="8.5" fill="#5b6472">aspect ratio from the catalog</text>
+  <text x="12" y="72" font-size="8.5" fill="#5b6472">grid 320px ≠ avatar 160px</text>
+
+  <rect x="2" y="94" width="196" height="76" rx="6" fill="#fff" stroke="#2f6f9f"/>
+  <text x="12" y="111" font-size="10" font-weight="700" fill="#2f6f9f">DEVICE (static)</text>
+  <text x="12" y="126" font-size="8.5" fill="#5b6472">isLowRamDevice · total RAM</text>
+  <text x="12" y="139" font-size="8.5" fill="#5b6472">max heap · cores · API level</text>
+  <text x="12" y="152" font-size="8.5" fill="#5b6472">&#8594; LOW / MID / HIGH</text>
+  <text x="12" y="165" font-size="8.5" fill="#a83a3a">density is NOT capability</text>
+
+  <rect x="2" y="184" width="196" height="76" rx="6" fill="#fff" stroke="#2f6f9f"/>
+  <text x="12" y="201" font-size="10" font-weight="700" fill="#2f6f9f">NETWORK (dynamic)</text>
+  <text x="12" y="216" font-size="8.5" fill="#5b6472">transport · metered</text>
+  <text x="12" y="229" font-size="8.5" fill="#5b6472">measured EWMA kbit/s</text>
+  <text x="12" y="242" font-size="8.5" fill="#5b6472">&#8594; OFFLINE / SLOW / MOD / FAST</text>
+  <text x="12" y="255" font-size="8.5" fill="#5b6472">hysteresis: 10s dwell, +25% to upgrade</text>
+
+  <rect x="2" y="274" width="196" height="46" rx="6" fill="#fff" stroke="#2f6f9f"/>
+  <text x="12" y="291" font-size="10" font-weight="700" fill="#2f6f9f">INTENT</text>
+  <text x="12" y="306" font-size="8.5" fill="#5b6472">Data Saver · in-app lite mode</text>
+  <text x="12" y="317" font-size="8.5" fill="#5b6472">overrides everything below it</text>
+
+  <!-- resolver -->
+  <rect x="248" y="110" width="150" height="120" rx="8" fill="#eef3f8" stroke="#2f6f9f" stroke-width="1.6"/>
+  <text x="323" y="150" font-size="12" font-weight="700" text-anchor="middle" fill="#1f2430">DeliveryPolicy</text>
+  <text x="323" y="168" font-size="9" text-anchor="middle" fill="#5b6472">.resolve()</text>
+  <text x="323" y="190" font-size="8.5" text-anchor="middle" fill="#5b6472">tightest ceiling wins</text>
+  <text x="323" y="204" font-size="8.5" text-anchor="middle" fill="#5b6472">every constant belongs</text>
+  <text x="323" y="216" font-size="8.5" text-anchor="middle" fill="#5b6472">in remote config</text>
+
+  <line x1="198" y1="47"  x2="246" y2="140" stroke="#5b6472" marker-end="url(#a2)"/>
+  <line x1="198" y1="132" x2="246" y2="158" stroke="#5b6472" marker-end="url(#a2)"/>
+  <line x1="198" y1="222" x2="246" y2="184" stroke="#5b6472" marker-end="url(#a2)"/>
+  <line x1="198" y1="297" x2="246" y2="206" stroke="#5b6472" marker-end="url(#a2)"/>
+
+  <!-- outputs -->
+  <rect x="448" y="14" width="264" height="120" rx="6" fill="#f3eef8" stroke="#7a5195"/>
+  <text x="460" y="32" font-size="10" font-weight="700" fill="#7a5195">LEAVES THE DEVICE</text>
+  <text x="460" y="50" font-size="9.5" font-family="monospace" fill="#1f2430">w = min(cell, deviceCap, netCap)</text>
+  <text x="460" y="66" font-size="9.5" font-family="monospace" fill="#1f2430">q = 40 | 50 | 62 | 74</text>
+  <text x="460" y="82" font-size="9.5" font-family="monospace" fill="#1f2430">fm = webp (avif if tier ≥ MID)</text>
+  <text x="460" y="102" font-size="8.5" fill="#5b6472">bucketed &#8594; shareable &#8594; cacheable</text>
+  <text x="460" y="117" font-size="8.5" fill="#5b6472">no model, no UA, no screen size</text>
+
+  <rect x="448" y="148" width="264" height="172" rx="6" fill="#edf5ef" stroke="#2f7a4f"/>
+  <text x="460" y="166" font-size="10" font-weight="700" fill="#2f7a4f">STAYS ON THE DEVICE</text>
+  <text x="460" y="184" font-size="9" fill="#1f2430">memory cache budget — 12 / 20 / 25% of heap</text>
+  <text x="460" y="200" font-size="9" fill="#1f2430">bitmap config — RGB_565 vs hardware</text>
+  <text x="460" y="216" font-size="9" fill="#1f2430">prefetch window — 0+0 … 6+12</text>
+  <text x="460" y="232" font-size="9" fill="#1f2430">timeouts — connect 5s, read 5/8/12s, per call</text>
+  <text x="460" y="252" font-size="8.5" fill="#5b6472">Device half configures the ImageLoader once.</text>
+  <text x="460" y="266" font-size="8.5" fill="#5b6472">Network half only ever touches requests —</text>
+  <text x="460" y="280" font-size="8.5" fill="#5b6472">rebuilding a loader would discard the memory</text>
+  <text x="460" y="294" font-size="8.5" fill="#5b6472">cache, disk handle and connection pool.</text>
+  <text x="460" y="312" font-size="8.5" fill="#2f7a4f">MemoryCache.maxSize is mutable — adapt, don't rebuild.</text>
+
+  <line x1="398" y1="140" x2="446" y2="90"  stroke="#5b6472" marker-end="url(#a2)"/>
+  <line x1="398" y1="200" x2="446" y2="230" stroke="#5b6472" marker-end="url(#a2)"/>
+</svg>
+<figcaption><strong>Figure 2.</strong> Capability is resolved locally. Only three parameters cross the network boundary.</figcaption>
+</figure>
+
+<h3>Why measure throughput yourself</h3>
+<p>
+<code>NetworkCapabilities.getLinkDownstreamBandwidthKbps()</code> is a radio <em>capability hint</em>,
+not a measurement — it will report "LTE, 20 Mbps" on a congested cell delivering 300 kbit/s.
+So throughput comes from <code>okhttp3.EventListener.responseBodyStart/End</code>, which brackets
+<strong>body bytes only</strong>. DNS, TCP, TLS and time-to-first-byte are latency; folding them
+into a bandwidth figure makes a fast link to a distant server look slow.
+</p>
+
+<div class="warn">
+<strong>Tier flapping is a real bug, not a theoretical one.</strong> The tier feeds the URL, so every
+flip changes the cache key and re-downloads the visible screen. Four defences: re-classify on a
+5 s timer rather than per sample; require a 25% margin to move <em>up</em> a tier; enforce a 10 s
+minimum dwell; and publish a rounded kbit/s so the policy never sees jitter that only the debug
+panel should see.
+</div>
+
+<h2>4. One tile's request lifecycle</h2>
+
+<figure>
+<svg viewBox="0 0 720 470" role="img" aria-label="Request lifecycle decision flow for one tile">
+  <defs>
+    <marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5b6472"/>
+    </marker>
+  </defs>
+  <rect x="250" y="6" width="220" height="30" rx="15" fill="#eef3f8" stroke="#2f6f9f"/>
+  <text x="360" y="25" font-size="10" text-anchor="middle" fill="#1f2430">Tile enters composition</text>
+
+  <rect x="230" y="52" width="260" height="42" rx="6" fill="#fff" stroke="#2f6f9f"/>
+  <text x="360" y="69" font-size="10" text-anchor="middle" fill="#1f2430">Paint aspect box + colour + blur hash</text>
+  <text x="360" y="84" font-size="8.5" text-anchor="middle" fill="#2f7a4f">frame 1 · zero network · final size, no layout shift</text>
+
+  <rect x="230" y="110" width="260" height="42" rx="6" fill="#fff" stroke="#2f6f9f"/>
+  <text x="360" y="127" font-size="10" text-anchor="middle" fill="#1f2430">VariantResolver.resolve()</text>
+  <text x="360" y="142" font-size="8.5" text-anchor="middle" fill="#5b6472">richer variant still resident? reuse it</text>
+
+  <polygon points="360,166 470,196 360,226 250,196" fill="#edf5ef" stroke="#2f7a4f"/>
+  <text x="360" y="193" font-size="10" text-anchor="middle" fill="#1f2430">L1 memory hit?</text>
+  <text x="360" y="207" font-size="8" text-anchor="middle" fill="#5b6472">key = seed@WxH#fmt-q</text>
+
+  <rect x="516" y="176" width="196" height="40" rx="6" fill="#edf5ef" stroke="#2f7a4f"/>
+  <text x="614" y="192" font-size="10" text-anchor="middle" fill="#1f2430">Draw. No crossfade.</text>
+  <text x="614" y="206" font-size="8.5" text-anchor="middle" fill="#5b6472">this is what prefetch buys</text>
+
+  <polygon points="360,242 470,272 360,302 250,272" fill="#edf5ef" stroke="#2f7a4f"/>
+  <text x="360" y="272" font-size="10" text-anchor="middle" fill="#1f2430">L2 disk hit?</text>
+  <text x="360" y="286" font-size="8" text-anchor="middle" fill="#5b6472">decode only</text>
+
+  <rect x="516" y="252" width="196" height="40" rx="6" fill="#edf5ef" stroke="#2f7a4f"/>
+  <text x="614" y="268" font-size="10" text-anchor="middle" fill="#1f2430">Decode &#8594; L1 &#8594; draw</text>
+  <text x="614" y="282" font-size="8.5" text-anchor="middle" fill="#5b6472">no bytes on the wire</text>
+
+  <rect x="248" y="318" width="224" height="44" rx="6" fill="#f3eef8" stroke="#7a5195"/>
+  <text x="360" y="335" font-size="10" text-anchor="middle" fill="#1f2430">Fetch · per-call timeout from profile</text>
+  <text x="360" y="350" font-size="8.5" text-anchor="middle" fill="#5b6472">Chain.withReadTimeout, tier-sized</text>
+
+  <polygon points="360,378 470,408 360,438 250,408" fill="#faeded" stroke="#a83a3a"/>
+  <text x="360" y="406" font-size="10" text-anchor="middle" fill="#1f2430">timeout / error?</text>
+  <text x="360" y="420" font-size="8" text-anchor="middle" fill="#5b6472">bounded at 2 steps</text>
+
+  <rect x="8" y="388" width="212" height="44" rx="6" fill="#faeded" stroke="#a83a3a"/>
+  <text x="114" y="405" font-size="10" text-anchor="middle" fill="#1f2430">downgrade one rung, retry</text>
+  <text x="114" y="419" font-size="8.5" text-anchor="middle" fill="#5b6472">smaller w and q, longer budget</text>
+
+  <rect x="516" y="388" width="196" height="44" rx="6" fill="#edf5ef" stroke="#2f7a4f"/>
+  <text x="614" y="405" font-size="10" text-anchor="middle" fill="#1f2430">Decode &#8594; L1 &#8594; crossfade</text>
+  <text x="614" y="419" font-size="8.5" text-anchor="middle" fill="#5b6472">140ms, network arrivals only</text>
+
+  <rect x="8" y="112" width="212" height="76" rx="6" fill="#fff" stroke="#a83a3a" stroke-dasharray="4 3"/>
+  <text x="114" y="130" font-size="10" font-weight="700" text-anchor="middle" fill="#a83a3a">Tile leaves composition</text>
+  <text x="114" y="147" font-size="8.5" text-anchor="middle" fill="#5b6472">AsyncImagePainter is a</text>
+  <text x="114" y="159" font-size="8.5" text-anchor="middle" fill="#5b6472">RememberObserver &#8594; onForgotten</text>
+  <text x="114" y="173" font-size="8.5" text-anchor="middle" fill="#5b6472">request cancelled at any stage</text>
+  <text x="114" y="185" font-size="8.5" text-anchor="middle" fill="#2f7a4f">counted, and should be non-zero</text>
+
+  <line x1="360" y1="36"  x2="360" y2="50"  stroke="#5b6472" marker-end="url(#a3)"/>
+  <line x1="360" y1="94"  x2="360" y2="108" stroke="#5b6472" marker-end="url(#a3)"/>
+  <line x1="360" y1="152" x2="360" y2="164" stroke="#5b6472" marker-end="url(#a3)"/>
+  <line x1="470" y1="196" x2="514" y2="196" stroke="#2f7a4f" marker-end="url(#a3)"/>
+  <text x="482" y="190" font-size="8" fill="#2f7a4f">yes</text>
+  <line x1="360" y1="226" x2="360" y2="240" stroke="#5b6472" marker-end="url(#a3)"/>
+  <text x="366" y="238" font-size="8" fill="#5b6472">no</text>
+  <line x1="470" y1="272" x2="514" y2="272" stroke="#2f7a4f" marker-end="url(#a3)"/>
+  <text x="482" y="266" font-size="8" fill="#2f7a4f">yes</text>
+  <line x1="360" y1="302" x2="360" y2="316" stroke="#5b6472" marker-end="url(#a3)"/>
+  <text x="366" y="314" font-size="8" fill="#5b6472">no</text>
+  <line x1="360" y1="362" x2="360" y2="376" stroke="#5b6472" marker-end="url(#a3)"/>
+  <line x1="250" y1="408" x2="222" y2="408" stroke="#a83a3a" marker-end="url(#a3)"/>
+  <text x="228" y="402" font-size="8" fill="#a83a3a">yes</text>
+  <line x1="470" y1="408" x2="514" y2="408" stroke="#2f7a4f" marker-end="url(#a3)"/>
+  <text x="482" y="402" font-size="8" fill="#2f7a4f">no</text>
+  <path d="M114,388 L114,340 L246,340" fill="none" stroke="#a83a3a" marker-end="url(#a3)"/>
+  <path d="M228,150 L240,150 L240,130" fill="none" stroke="#a83a3a" stroke-dasharray="3 3" marker-end="url(#a3)"/>
+</svg>
+<figcaption><strong>Figure 3.</strong> Three cache tiers before a byte moves; timeout downgrades rather than retries; cancellation can interrupt any stage.</figcaption>
+</figure>
+
+<div class="warn">
+<strong>Calibration beats cleverness — a war story from this very feature.</strong> The first version of
+this ladder used a 1.5 s read budget on a fast link, which is correct for a CDN edge returning a
+pre-warmed derivative in under 200 ms. The demo's backend is not that: it 302-redirects and
+<em>generates</em> the crop, measuring <strong>1.25–1.68 s TTFB from a desktop on fibre under a
+16-request burst</strong>. Every request timed out, downgraded twice, hit the cap and gave up — the
+feed rendered as flat colour rectangles. Two things to say about it:
+<ul style="margin-top:6px">
+<li>A timeout ladder is derived from the <strong>p95 TTFB of your real backend under your own
+concurrency</strong>, and it is the first thing you put behind remote config: a backend regression
+turns an aggressive client budget into a self-inflicted outage.</li>
+<li><strong>A read timeout is not a total call budget.</strong> "Cancel anything over 1.5 s" is
+<code>callTimeout</code> / <code>Call.timeout()</code>; an interceptor can only shape connect, read and write.
+And connect must be sized separately — DNS + TCP + TLS is a fixed cost that does not scale with
+throughput, so folding it into the read budget lets the tighter constraint govern both.</li>
+</ul>
+</div>
+
+<div class="note">
+<strong>Why downgrade instead of retry.</strong> Retrying the same variant on a link that just proved it
+cannot deliver it in time only spends the budget again. Asking for less is the only retry that
+changes the odds. The retry announces itself with a request header so the interceptor grants a
+longer budget — and that header is <strong>stripped before the request leaves the device</strong>, because
+if it reached the CDN it would fragment the edge cache key.
+</div>
+
+<h2>5. Prefetching, and why it is a two-tier bet</h2>
+
+<figure>
+<svg viewBox="0 0 720 250" role="img" aria-label="Scroll direction biased two tier prefetch window">
+  <defs>
+    <marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5b6472"/>
+    </marker>
+  </defs>
+  <text x="8" y="18" font-size="10" font-weight="700" fill="#1f2430">Scrolling down &#8594;</text>
+
+  <rect x="8" y="28" width="120" height="58" rx="5" fill="#f1f3f6" stroke="#c9d1dc"/>
+  <text x="68" y="52" font-size="9" text-anchor="middle" fill="#5b6472">behind the user</text>
+  <text x="68" y="66" font-size="8" text-anchor="middle" fill="#5b6472">nothing spent here</text>
+  <text x="68" y="78" font-size="8" text-anchor="middle" fill="#a83a3a">symmetric prefetch</text>
+
+  <rect x="136" y="28" width="150" height="58" rx="5" fill="#eef3f8" stroke="#2f6f9f" stroke-width="1.6"/>
+  <text x="211" y="50" font-size="9.5" text-anchor="middle" font-weight="700" fill="#1f2430">VIEWPORT</text>
+  <text x="211" y="64" font-size="8" text-anchor="middle" fill="#5b6472">highest priority</text>
+  <text x="211" y="77" font-size="8" text-anchor="middle" fill="#5b6472">never starved by prefetch</text>
+
+  <rect x="294" y="28" width="170" height="58" rx="5" fill="#edf5ef" stroke="#2f7a4f"/>
+  <text x="379" y="46" font-size="9.5" text-anchor="middle" font-weight="700" fill="#1f2430">EAGER · 6 items</text>
+  <text x="379" y="60" font-size="8" text-anchor="middle" fill="#5b6472">full request: disk + decoded bitmap</text>
+  <text x="379" y="73" font-size="8" text-anchor="middle" fill="#5b6472">paints on frame 1, no crossfade</text>
+
+  <rect x="472" y="28" width="240" height="58" rx="5" fill="#f8f2ea" stroke="#ad6a34"/>
+  <text x="592" y="46" font-size="9.5" text-anchor="middle" font-weight="700" fill="#1f2430">DISK ONLY · next 12</text>
+  <text x="592" y="60" font-size="8" text-anchor="middle" fill="#5b6472">BlackholeDecoder + memory cache DISABLED</text>
+  <text x="592" y="73" font-size="8" text-anchor="middle" fill="#5b6472">bytes stored, no bitmap ever allocated</text>
+
+  <line x1="286" y1="100" x2="712" y2="100" stroke="#5b6472" marker-end="url(#a4)"/>
+  <text x="300" y="114" font-size="8" fill="#5b6472">nearest-first ordering · the next row is worth more than the twelfth</text>
+
+  <rect x="8" y="130" width="704" height="52" rx="6" fill="#faeded" stroke="#a83a3a"/>
+  <text x="18" y="148" font-size="10" font-weight="700" fill="#a83a3a">Reverse direction, or fling past</text>
+  <text x="18" y="163" font-size="9" fill="#5b6472">submit() cancels the previous Job &#8594; every in-flight prefetch under it dies. 90 ms settle delay + collectLatest means</text>
+  <text x="18" y="176" font-size="9" fill="#5b6472">a fling that crosses 40 windows only ever queues the one it stopped near, instead of racing 200 cancelled requests.</text>
+
+  <rect x="8" y="192" width="704" height="52" rx="6" fill="#fff" stroke="#c9d1dc"/>
+  <text x="18" y="210" font-size="10" font-weight="700" fill="#1f2430">Window sizes come from the profile, not from constants</text>
+  <text x="18" y="225" font-size="9" fill="#5b6472">FAST 6+12 · MODERATE 4+6 · SLOW 2+0 · OFFLINE 0+0 · Data Saver 0+0 · LOW device tier halves the eager lane (decode CPU, not bytes)</text>
+  <text x="18" y="238" font-size="9" fill="#5b6472">Parallelism capped at 3 eager / 2 disk: prefetches and visible cells share one OkHttp dispatcher.</text>
+</svg>
+<figcaption><strong>Figure 4.</strong> Direction-biased, two-tier, cancellable, and sized by policy.</figcaption>
+</figure>
+
+<h2>6. What is done for performance</h2>
+<table>
+  <tr><th>Layer</th><th>Technique</th><th>Mechanism</th><th>Why it matters</th></tr>
+  <tr><td>Transfer</td><td>Bucketed WebP variants</td><td><code>ImageCdn</code> width ladder + <code>q</code> + <code>.webp</code></td><td>~200 KB master → ~15 KB thumbnail for identical on-screen pixels</td></tr>
+  <tr><td>Transfer</td><td>Per-surface sizing</td><td>grid 320px 4:3 vs avatar 160px 1:1</td><td>Where most of the "our images are huge" problem actually lives</td></tr>
+  <tr><td>Transfer</td><td><code>maxRequestsPerHost = 12</code></td><td>OkHttp <code>Dispatcher</code></td><td>Default is <strong>5 per host</strong>; a CDN is one host, so tile 6 waits on tile 1 while the radio idles</td></tr>
+  <tr><td>Transfer</td><td>Warm connection pool</td><td>8 idle / 5 min keep-alive</td><td>A TLS handshake costs more than a 15 KB WebP</td></tr>
+  <tr><td>Caching</td><td>Immutable content-addressed URLs</td><td><code>max-age=1y, immutable</code></td><td>No invalidation problem, ever</td></tr>
+  <tr><td>Caching</td><td>Shared cache key discipline</td><td><code>VariantResolver</code> is the only producer</td><td>Prefetch and display provably agree; otherwise prefetch is pure waste</td></tr>
+  <tr><td>Caching</td><td>Never downgrade a decoded image</td><td>per-image richest-variant ledger + residency check</td><td>Leaving WiFi must not re-fetch the viewport at lower quality</td></tr>
+  <tr><td>Memory</td><td>Cache budget as a share of heap</td><td>12 / 20 / 25% by tier, <code>maxSize</code> mutable</td><td>25% of a 96 MB heap starves the rest of the app</td></tr>
+  <tr><td>Memory</td><td>Hardware bitmaps by default</td><td>Coil <code>allowHardware</code>, API 26+</td><td>Pixels live outside the Java heap entirely</td></tr>
+  <tr><td>Memory</td><td>Far-prefetch without decoding</td><td><code>BlackholeDecoder</code> + memory cache off</td><td>Bytes cached, zero bitmaps, no eviction of near images</td></tr>
+  <tr><td>Render</td><td>Aspect ratio from the payload</td><td><code>Modifier.aspectRatio(dish.aspectRatio)</code></td><td>Arriving bitmaps never re-trigger layout for the rest of the grid</td></tr>
+  <tr><td>Render</td><td>Placeholder in the catalog response</td><td>dominant colour + 36-char blur hash</td><td>Something on screen in frame 1 with zero extra requests</td></tr>
+  <tr><td>Compose</td><td>Stable keys + <code>contentType</code></td><td><code>key = DishCard::id</code></td><td>Slot reuse instead of subtree rebuild; prepends don't re-bind the world</td></tr>
+  <tr><td>Compose</td><td><code>@Immutable</code> holder for the loader</td><td><code>FeedImageEngine</code></td><td><code>ImageLoader</code> as a bare param makes the tile unskippable — recomposing every scroll frame</td></tr>
+  <tr><td>Compose</td><td>Cell width computed once</td><td><code>LocalWindowInfo.containerSize</code></td><td>Avoids a <code>BoxWithConstraints</code> subcomposition per tile</td></tr>
+  <tr><td>Compose</td><td>Scroll read only in <code>snapshotFlow</code></td><td>inside a coroutine, never in composition</td><td>Reading <code>layoutInfo</code> in a composable body recomposes the screen every frame</td></tr>
+  <tr><td>Compose</td><td>Metrics polled, not pushed</td><td>atomics + 400 ms <code>produceState</code></td><td>Hundreds of events per fling would make the measurement cause the jank</td></tr>
+</table>
+
+<h2>7. What is done to make scrolling smooth — the cancellation story</h2>
+<p>
+Smoothness is mostly about <em>work you refuse to do</em>. Four mechanisms, at four scopes:
+</p>
+<table>
+  <tr><th>Scope</th><th>Trigger</th><th>Mechanism</th><th>Observable as</th></tr>
+  <tr><td>One tile</td><td>tile scrolls out of composition</td><td><code>AsyncImagePainter</code> is a <code>RememberObserver</code>; <code>onForgotten</code> disposes the request</td><td><code>cancelled</code> counter</td></tr>
+  <tr><td>Prefetch window</td><td>direction change / new window</td><td><code>submit()</code> cancels the previous <code>Job</code>; children die with it</td><td>in-flight count drops</td></tr>
+  <tr><td>Fling</td><td>40 windows crossed in 400 ms</td><td>90 ms settle delay + <code>collectLatest</code></td><td>only one window is ever queued</td></tr>
+  <tr><td>Screen</td><td>navigating away</td><td><code>rememberCoroutineScope</code> cancels; loader and caches survive</td><td>no orphaned work, warm return visit</td></tr>
+</table>
+<div class="note">
+<strong>The counter-intuitive metric:</strong> a healthy fling <em>should</em> produce cancellations. Zero
+cancellations during fast scrolling means requests are outliving their views — which is both
+wasted bandwidth and a decode competing with the frame you are trying to draw. The panel
+surfaces <code>cancelled</code> for exactly that reason.
+</div>
+<p>
+The other half of smoothness is bounded concurrency. Prefetches and visible cells share one
+OkHttp dispatcher, and HTTP/2 stream priority is not something OkHttp exposes usefully — so
+priority is enforced structurally instead: 3 parallel eager prefetches, 2 disk-only, nearest
+first, and the window shrinks on slow links and low-tier devices.
+</p>
+
+<h2>8. What is done to track failures</h2>
+<p>
+Instrumentation lives in a Coil <code>EventListener</code> plus an OkHttp <code>EventListener</code>, writing to
+plain atomics that the UI polls. Nothing is pushed into snapshot state.
+</p>
+<table>
+  <tr><th>Signal</th><th>Source</th><th>What it tells you</th></tr>
+  <tr><td>bytes on the wire</td><td>OkHttp <code>responseBodyEnd(call, byteCount)</code></td><td>Exact, unlike <code>Content-Length</code>, which is absent under chunked encoding and lies under compression. Cache hits never reach it.</td></tr>
+  <tr><td>memory / disk / network split</td><td>Coil <code>SuccessResult.dataSource</code></td><td>The headline number: share of displayed images that never touched the network</td></tr>
+  <tr><td>fetch ms, decode ms</td><td><code>fetchStart/End</code>, <code>decodeStart/End</code></td><td>Separates a bandwidth problem from a CPU problem — the distinction that decides what to fix on a low-tier device</td></tr>
+  <tr><td>cancelled</td><td><code>onCancel</code></td><td>Scroll hygiene (see above)</td></tr>
+  <tr><td>downgrades</td><td>timeout fallback path</td><td>How often the aggressive timeout is firing — i.e. whether the budget is calibrated</td></tr>
+  <tr><td>failed</td><td><code>onError</code></td><td>Terminal failures after the ladder bottoms out</td></tr>
+  <tr><td>prefetch completions</td><td><code>Extras.Key</code> tag on the request</td><td>Speculative work kept out of the display statistics — an untagged prefetch inflates your hit rate and hides the truth</td></tr>
+  <tr><td>bitmap cache occupancy</td><td><code>MemoryCache.size / maxSize</code></td><td>Whether the budget is the binding constraint</td></tr>
+</table>
+<p><strong>In production, every one of these is segmented by device tier × network tier.</strong> A global
+p50 hides the users this entire design exists for. The SLIs worth alerting on:</p>
+<ul>
+  <li>image p95 latency, per segment — not a global average</li>
+  <li>cache hit rate per layer: L1 memory, L2 disk, L3 CDN edge</li>
+  <li>bytes per session, and <em>prefetch waste rate</em> (prefetched but never shown)</li>
+  <li>time to first meaningful image on the home screen</li>
+  <li>timeout rate and downgrade rate — a rising downgrade rate means the timeout ladder needs remote-config surgery, not a code change</li>
+</ul>
+
+<h2>9. Trade-offs worth raising unprompted</h2>
+<table>
+  <tr><th>Choice</th><th>The tension</th></tr>
+  <tr><td><strong>AVIF vs WebP</strong></td><td>AVIF is 20–30% smaller <em>and</em> materially slower to decode on weak CPUs. On a low-tier device it can cost more in decode than it saves in transfer. "Fewer bytes" and "faster" are not the same thing. Gate it on tier and A/B test — do not enable it globally because a blog post said it is smaller.</td></tr>
+  <tr><td><strong>HARDWARE vs RGB_565</strong></td><td>Mutually exclusive. Hardware bitmaps keep pixels out of the Java heap but cost ~1 FD each and forbid pixel access; RGB_565 halves heap but is software and wrong wherever alpha exists. Many teams keep hardware everywhere and cap the <em>bucket</em> instead — the lever that cuts transfer and decode at once.</td></tr>
+  <tr><td><strong>BitmapPool / <code>inBitmap</code></strong></td><td class="no">Do not add this. Correct advice in the Glide/Fresco era; obsolete now. ART's generational GC made short-lived bitmap allocation cheap, <code>inBitmap</code> requires software bitmaps (so a pool forces <code>allowHardware(false)</code> — trading the big win for a small one), and hardware bitmaps cannot be pooled at all because their pixels live in graphics memory. Coil removed its pool deliberately.</td></tr>
+  <tr><td><strong>Bucket granularity</strong></td><td>Fewer buckets means a hotter edge cache and a smaller derivative cache, but more over-fetch per device. More buckets is the reverse. It is a cache-efficiency vs byte-efficiency dial, and it belongs in remote config.</td></tr>
+  <tr><td><strong>Prefetch aggressiveness</strong></td><td>Every prefetch is a bet placed with the user's data allowance. Track the waste rate; if it is high you are buying latency with someone else's money.</td></tr>
+  <tr><td><strong>Quality-tiered URLs</strong></td><td>Making quality part of the URL means a network change changes the cache key. That is why the never-downgrade ledger exists — without it, adaptivity actively harms the user who just walked out of WiFi.</td></tr>
+  <tr><td><strong>Timeout aggressiveness</strong></td><td>An aggressive budget converts a slow backend into a failed one, and the retry it triggers makes the congestion worse. Calibrate from measured p95 TTFB, keep it in remote config, and make failure downgrade rather than repeat. Also instrument the downgrade rate — a rising one is the early warning that the budget no longer matches the backend.</td></tr>
+  <tr><td><strong>Separate LQIP request</strong></td><td>Rejected. On a 400 ms-RTT link, a second request per tile doubles round trips before anything is visible. A hash that rides in the catalog JSON is close to free.</td></tr>
+</table>
+
+<h2>10. Implementation map</h2>
+<table>
+  <tr><th>File</th><th>Responsibility</th></tr>
+  <tr><td><code>DevicePolicy.kt</code></td><td>Hardware signals → <code>LOW/MID/HIGH</code> → cache budget, bucket ceiling, bitmap config, AVIF eligibility. Static for the process.</td></tr>
+  <tr><td><code>NetworkMonitor.kt</code></td><td>Transport, metered, Data Saver, and a measured EWMA throughput → tier, with dwell time and upgrade margin to stop flapping.</td></tr>
+  <tr><td><code>DeliveryPolicy.kt</code></td><td>The decision function. <code>DeliveryProfile</code> + the downgrade ladder + the volatile handoff to the network layer.</td></tr>
+  <tr><td><code>ImageCdn.kt</code></td><td>URL and cache-key construction: width ladder, quality, format, and the naive master for comparison.</td></tr>
+  <tr><td><code>VariantResolver.kt</code></td><td>The single producer of variants. Shared by tiles and prefetcher; owns the never-downgrade ledger.</td></tr>
+  <tr><td><code>FeedImageEngine.kt</code></td><td>Tuned <code>ImageLoader</code>, OkHttp dispatcher/pool, transport measurement listener, adaptive per-call timeout interceptor, <code>@Immutable</code> holder.</td></tr>
+  <tr><td><code>ImagePrefetcher.kt</code></td><td>Two-tier, direction-biased, cancellable prefetch with bounded parallelism.</td></tr>
+  <tr><td><code>ImageLoadMetrics.kt</code></td><td>Pipeline instrumentation as atomics; prefetches tagged out of the display stats.</td></tr>
+  <tr><td><code>MicroThumb.kt</code></td><td>Blur-hash placeholder that ships in the catalog payload. BlurHash/ThumbHash stand-in.</td></tr>
+  <tr><td><code>FeedModels.kt</code></td><td>The catalog shape: ids and metadata, <strong>never finished URLs</strong>. Aspect ratio bucketed to two crops.</td></tr>
+  <tr><td><code>FastImageFeedScreen.kt</code></td><td>Grid, tiles, timeout-fallback state, metrics panel.</td></tr>
+  <tr><td><code>DeliveryPolicyPanel.kt</code></td><td>Makes the decision visible and forceable — the only practical way to test the low-end path.</td></tr>
+</table>
+
+<h2>11. Honest scorecard</h2>
+<table>
+  <tr><th>Production concern</th><th>In the sample</th></tr>
+  <tr><td>Bucketed WebP variants, per-surface sizing</td><td class="yes">yes</td></tr>
+  <tr><td>Device tiering → cache budget, bucket cap, bitmap config</td><td class="yes">yes</td></tr>
+  <tr><td>Network tiering with measured throughput + anti-flap</td><td class="yes">yes</td></tr>
+  <tr><td>Data Saver / lite mode honoured</td><td class="yes">yes</td></tr>
+  <tr><td>Blur-hash placeholder in the payload + payload aspect ratio</td><td class="yes">yes</td></tr>
+  <tr><td>Two-tier direction-biased prefetch, decode-free far tier</td><td class="yes">yes</td></tr>
+  <tr><td>Shared cache keys; never downgrade a decoded image</td><td class="yes">yes</td></tr>
+  <tr><td>Adaptive per-call timeouts (connect/read split) → downgrade ladder</td><td class="yes">yes</td></tr>
+  <tr><td>Loader-level debug logging, so a failed load is not silent</td><td class="yes">yes</td></tr>
+  <tr><td>Cancel on detachment, and instrumented</td><td class="yes">yes</td></tr>
+  <tr><td>In-app metrics for bytes, cache split, fetch/decode split</td><td class="yes">yes</td></tr>
+  <tr><td>Remote config over every ladder and cut-off</td><td class="no">no — the one thing you must not ship as constants</td></tr>
+  <tr><td>Telemetry segmented by device × network tier</td><td class="no">no</td></tr>
+  <tr><td>Real BlurHash/ThumbHash with a server-side encoder</td><td class="no">no — synthesised locally, since picsum cannot describe its own photos</td></tr>
+  <tr><td>Progressive JPEG</td><td class="no">no — and <code>BitmapFactory</code> gives no incremental display for free</td></tr>
+  <tr><td>Paging 3, <code>PersistentList</code>, baseline profile</td><td class="no">no</td></tr>
+</table>
+
+<h2>12. If you get 60 seconds to answer</h2>
+<p>
+"We never send the master image and we never send device info. The client measures its cell
+width, classifies the device from RAM and heap and the network from measured throughput, and
+folds those into three URL parameters — width bucket, quality, format. Buckets keep the CDN edge
+and our disk cache shareable across the whole device population. A dominant colour and a
+30-byte blur hash ride in the catalog JSON so the first frame is never empty and the aspect ratio
+is known before any byte arrives. We prefetch two tiers ahead in the direction of travel —
+decoded for the next six, bytes-only for the twelve after that — and cancel the window on
+direction change. On a low-tier device the binding constraint is decode CPU and bitmap memory,
+not bandwidth, so the cache budget is a share of the heap and the prefetch window halves.
+Timeouts are per-call and adaptive; on expiry we ask for a smaller variant rather than retrying
+the same one. And we measure the cache split, the fetch/decode split and the cancellation rate,
+segmented by tier — because a global p50 hides exactly the users this design is for."
+</p>
+
+<p class="foot">
+Generated from <code>app/src/main/java/com/example/composelearning/fastimages/</code> ·
+code-level companion: <code>FASTIMAGES.md</code> in the same package.
+</p>
+
+</body>
+</html>

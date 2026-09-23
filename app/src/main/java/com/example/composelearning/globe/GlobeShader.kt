@@ -27,9 +27,9 @@ uniform float  uBorderPx;    // tap offset for edge detection, in pixels
 uniform float  uGratStep;    // graticule spacing in degrees; 0 disables
 uniform float  uNight;       // 0 = flat lighting, 1 = full day/night model
 uniform float  uBorders;     // 0/1
-uniform float4 uBackground;  // opaque backdrop; the shader composites onto it
-uniform float4 uBorderInk;
-uniform float4 uSelectInk;
+layout(color) uniform half4 uBackground;  // opaque backdrop; the shader composites onto it
+layout(color) uniform half4 uBorderInk;
+layout(color) uniform half4 uSelectInk;
 uniform shader uIndex;       // bound with setInputBuffer: raw ids, no colour conversion
 uniform shader uPalette;     // 256x1 id -> colour
 

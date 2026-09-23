@@ -6,6 +6,8 @@
         android:required="false" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Fast Image Feed: reads transport/metered/Data-Saver state to pick an image variant. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />

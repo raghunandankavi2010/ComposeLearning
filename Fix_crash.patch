@@ -1,0 +1,23 @@
+Subject: [PATCH] Fix crash
+---
+Index: app/src/main/java/com/example/composelearning/globe/GlobeShader.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/composelearning/globe/GlobeShader.kt b/app/src/main/java/com/example/composelearning/globe/GlobeShader.kt
+--- a/app/src/main/java/com/example/composelearning/globe/GlobeShader.kt	(revision 8dc7cf16f5989b32ff0669feb93e7e5d6af829ab)
++++ b/app/src/main/java/com/example/composelearning/globe/GlobeShader.kt	(revision e08e193539d320e33410ca7ec8ca5d0deddca367)
+@@ -27,9 +27,9 @@
+ uniform float  uGratStep;    // graticule spacing in degrees; 0 disables
+ uniform float  uNight;       // 0 = flat lighting, 1 = full day/night model
+ uniform float  uBorders;     // 0/1
+-uniform float4 uBackground;  // opaque backdrop; the shader composites onto it
+-uniform float4 uBorderInk;
+-uniform float4 uSelectInk;
++layout(color) uniform half4 uBackground;  // opaque backdrop; the shader composites onto it
++layout(color) uniform half4 uBorderInk;
++layout(color) uniform half4 uSelectInk;
+ uniform shader uIndex;       // bound with setInputBuffer: raw ids, no colour conversion
+ uniform shader uPalette;     // 256x1 id -> colour
+
