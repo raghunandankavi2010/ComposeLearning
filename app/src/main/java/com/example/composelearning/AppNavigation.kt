@@ -40,6 +40,7 @@ import com.example.composelearning.anim.ButtonAnimationTest
 import com.example.composelearning.anim.ValueBasedAnimationsScreen
 import com.example.composelearning.anim.ZoomableImageScreen
 import com.example.composelearning.animcompose.Navigator
+import com.example.composelearning.animcompose.PiggyBankCoinScreen
 import com.example.composelearning.animcompose.SequentialFadeGrid
 import com.example.composelearning.applerings.presentation.ActivityRingsScreen
 import com.example.composelearning.arglasses.presentation.ArGlassesRoute
@@ -535,6 +536,9 @@ sealed interface AnimScreen :
     data object CoinFlip : AnimScreen
 
     @Serializable
+    data object PiggyBankCoin : AnimScreen
+
+    @Serializable
     data object ElasticDraggableText : AnimScreen
 
     /** Second-level home screen listing all demos of one [com.example.composelearning.animcompose.FeatureGroup]. */
@@ -825,6 +829,9 @@ fun AppNavigation(
         }
         entry<AnimScreen.CoinFlip> {
             com.example.composelearning.graphics.CoinFlipToss(onBack = { navigator.goBack() })
+        }
+        entry<AnimScreen.PiggyBankCoin> {
+            PiggyBankCoinScreen(onBack = { navigator.goBack() })
         }
         entry<AnimScreen.ElasticDraggableText> {
             com.example.composelearning.textdrag.ElasticDraggableTextScreen(onBack = { navigator.goBack() })
