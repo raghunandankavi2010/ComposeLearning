@@ -142,6 +142,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
 
     // ── Canvas & Graphics ───────────────────────────────────────────────────
     AnimationCategory(
+        "Piggy Bank Coin Drop 🐷🪙",
+        "Realistic 3D coin flip physics, parabolic arc trajectory, slot entry clipping, and spring piggy reactions using Canvas.",
+        AnimScreen.PiggyBankCoin,
+        FeatureGroup.CANVAS_GRAPHICS
+    ),
+    AnimationCategory(
         "Canvas Basics Hub",
         "Consolidated fundamental drawing concepts: Math, Drawing primitives, Paths, Bitmaps, Canvas State, and Gestures.",
         AnimScreen.CanvasBasicsHub,
