@@ -66,6 +66,10 @@ import com.example.composelearning.fastimages.FastImageFeedRoute
 import com.example.composelearning.flight.FlightSeatScreen
 import com.example.composelearning.foldcard.presentation.FoldCardScreen
 import com.example.composelearning.formguard.presentation.FormGuardRoute
+import com.example.composelearning.docintel.presentation.DocIntelScreen
+import com.example.composelearning.gesturenexus.presentation.GestureNexusScreen
+import com.example.composelearning.physiolens.presentation.PhysioLensScreen
+import com.example.composelearning.visionguard.presentation.VisionGuardScreen
 import com.example.composelearning.googlecalendar.ui.GoogleCalendarActivity
 import com.example.composelearning.globe.CountryGlobeRoute
 import com.example.composelearning.gradients.SineWaveMeshGradientScreen
@@ -112,6 +116,7 @@ import com.example.composelearning.tutorial.ui.TutorialScreen
 import com.example.composelearning.wallet.presentation.WalletScreen
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
+import androidx.core.net.toUri
 
 @Serializable
 @Parcelize
@@ -408,6 +413,18 @@ sealed interface AnimScreen :
 
     @Serializable
     data object FormGuard : AnimScreen
+
+    @Serializable
+    data object PhysioLens : AnimScreen
+
+    @Serializable
+    data object DocIntel : AnimScreen
+
+    @Serializable
+    data object VisionGuard : AnimScreen
+
+    @Serializable
+    data object GestureNexus : AnimScreen
 
     @Serializable
     data object CropDoctor : AnimScreen
@@ -758,6 +775,10 @@ fun AppNavigation(
         entry<AnimScreen.ImageCropper> { ImageCropperRoute() }
         entry<AnimScreen.ArGlasses> { ArGlassesRoute() }
         entry<AnimScreen.FormGuard> { FormGuardRoute() }
+        entry<AnimScreen.PhysioLens> { PhysioLensScreen(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.DocIntel> { DocIntelScreen(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.VisionGuard> { VisionGuardScreen(onBack = { navigator.goBack() }) }
+        entry<AnimScreen.GestureNexus> { GestureNexusScreen(onBack = { navigator.goBack() }) }
         entry<AnimScreen.CropDoctor> { CropDoctorRoute(onBack = { navigator.goBack() }) }
         entry<AnimScreen.FastImageFeed> { FastImageFeedRoute(onBack = { navigator.goBack() }) }
         entry<AnimScreen.TempleShowcase> { TempleShowcaseApp() }
@@ -796,7 +817,7 @@ fun AppNavigation(
         entry<AnimScreen.PromotionalDeal> { PromotionalDealRoute(onBack = { navigator.goBack() }) }
         entry<AnimScreen.PhotoQuality> { key ->
             PhotoQualityRoute(
-                initialUri = key.initialUri?.let { android.net.Uri.parse(it) },
+                initialUri = key.initialUri?.let { it.toUri() },
                 onBack = { navigator.goBack() }
             )
         }

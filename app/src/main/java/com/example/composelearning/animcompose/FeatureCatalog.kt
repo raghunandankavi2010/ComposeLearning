@@ -297,6 +297,30 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         FeatureGroup.APP_CLONES
     ),
     AnimationCategory(
+        "PhysioLens AI — Kinetic Strain & Biomechanics",
+        "On-device physics engine calculating real moment arms, joint torque vectors, L4/L5 lumbar disc shear load, live muscle strain heatmaps, and recovery AI advice.",
+        AnimScreen.PhysioLens,
+        FeatureGroup.APP_CLONES
+    ),
+    AnimationCategory(
+        "AR Spatial Document Intelligence (DocIntel)",
+        "Augmented reality document scanner: spatial text block bounding boxes, live field translation, receipt total extraction, and local natural language document Q&A.",
+        AnimScreen.DocIntel,
+        FeatureGroup.APP_CLONES
+    ),
+    AnimationCategory(
+        "VisionGuard AI — Spatial Hazard & Radar",
+        "Tactical 2D Sonar Radar: pinhole geometry depth estimation, object approach velocity, collision hazard threat scoring, and spatial TTS voice alerts.",
+        AnimScreen.VisionGuard,
+        FeatureGroup.APP_CLONES
+    ),
+    AnimationCategory(
+        "GestureNexus AI — 3D Air Canvas & Sign Synthesizer",
+        "21 3D hand landmark tracking: draw glowing paths in mid-air with your fingertip, pinch to scale/erase, and synthesize ASL sign language into spoken voice.",
+        AnimScreen.GestureNexus,
+        FeatureGroup.APP_CLONES
+    ),
+    AnimationCategory(
         "Crop Doctor — Plant Disease Detector (TFLite)",
         "100% offline on-device TFLite classifier (PlantVillage, 38 classes / 14 crops). Snap or pick a leaf photo and get the likely pest/disease plus plain-language treatment steps for farmers.",
         AnimScreen.CropDoctor,
