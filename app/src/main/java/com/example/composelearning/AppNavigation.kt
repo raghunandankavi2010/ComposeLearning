@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
@@ -62,16 +63,14 @@ import com.example.composelearning.clocks.TimeRangeKnobScreen
 import com.example.composelearning.cropdoctor.presentation.CropDoctorRoute
 import com.example.composelearning.customlayout.ArcListSample
 import com.example.composelearning.customlayout.CustomPagerSample
+import com.example.composelearning.docintel.presentation.DocIntelScreen
 import com.example.composelearning.fastimages.FastImageFeedRoute
 import com.example.composelearning.flight.FlightSeatScreen
 import com.example.composelearning.foldcard.presentation.FoldCardScreen
 import com.example.composelearning.formguard.presentation.FormGuardRoute
-import com.example.composelearning.docintel.presentation.DocIntelScreen
 import com.example.composelearning.gesturenexus.presentation.GestureNexusScreen
-import com.example.composelearning.physiolens.presentation.PhysioLensScreen
-import com.example.composelearning.visionguard.presentation.VisionGuardScreen
-import com.example.composelearning.googlecalendar.ui.GoogleCalendarActivity
 import com.example.composelearning.globe.CountryGlobeRoute
+import com.example.composelearning.googlecalendar.ui.GoogleCalendarActivity
 import com.example.composelearning.gradients.SineWaveMeshGradientScreen
 import com.example.composelearning.graphics.AnimatedBorderButton
 import com.example.composelearning.graphics.AnimatingWatchDial
@@ -94,12 +93,13 @@ import com.example.composelearning.pathmorph.presentation.PathMorphScreen
 import com.example.composelearning.peritemvm.PerItemViewModelShowcaseScreen
 import com.example.composelearning.permissions.PasskeySample
 import com.example.composelearning.photoquality.PhotoQualityRoute
+import com.example.composelearning.physiolens.presentation.PhysioLensScreen
+import com.example.composelearning.pingpong.PingPongGameScreen
 import com.example.composelearning.progress.PacManLoaderScreen
 import com.example.composelearning.progress.SmoothProgressBarScreen
 import com.example.composelearning.promotions.PromotionalDealRoute
 import com.example.composelearning.protobufdemo.ProtobufDemoRoute
 import com.example.composelearning.riveo.presentation.RiveoScreen
-import com.example.composelearning.sarvamlid.LanguageDetectionRoute
 import com.example.composelearning.sarvamstt.SpeechToTextRoute
 import com.example.composelearning.shaders.FluidSpringShaderScreen
 import com.example.composelearning.shaders.ShadersHubScreen
@@ -113,10 +113,10 @@ import com.example.composelearning.temples.ui.TempleShowcaseApp
 import com.example.composelearning.textfields.MarqueeText
 import com.example.composelearning.textstyling.SquigglySpanSample
 import com.example.composelearning.tutorial.ui.TutorialScreen
+import com.example.composelearning.visionguard.presentation.VisionGuardScreen
 import com.example.composelearning.wallet.presentation.WalletScreen
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
-import androidx.core.net.toUri
 
 @Serializable
 @Parcelize
@@ -558,6 +558,9 @@ sealed interface AnimScreen :
     @Serializable
     data object ElasticDraggableText : AnimScreen
 
+    @Serializable
+    data object PingPongGame : AnimScreen
+
     /** Second-level home screen listing all demos of one [com.example.composelearning.animcompose.FeatureGroup]. */
     @Serializable
     @Parcelize
@@ -856,6 +859,9 @@ fun AppNavigation(
         }
         entry<AnimScreen.ElasticDraggableText> {
             com.example.composelearning.textdrag.ElasticDraggableTextScreen(onBack = { navigator.goBack() })
+        }
+        entry<AnimScreen.PingPongGame> {
+            PingPongGameScreen(onBack = { navigator.goBack() })
         }
         entry<AnimScreen.Group> { key ->
             com.example.composelearning.animcompose.GroupFeaturesScreen(

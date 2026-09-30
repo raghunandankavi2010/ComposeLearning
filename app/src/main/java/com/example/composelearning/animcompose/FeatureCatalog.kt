@@ -469,6 +469,12 @@ val FeatureCatalog: List<AnimationCategory> = listOf(
         FeatureGroup.GESTURES_TOUCH
     ),
     AnimationCategory(
+        "🏓 Cyber Ping Pong",
+        "Classic Arcade Ping Pong against an AI game engine with time-scaling difficulty, power-ups, and particle hit effects.",
+        AnimScreen.PingPongGame,
+        FeatureGroup.GESTURES_TOUCH
+    ),
+    AnimationCategory(
         "Draggable Side Sheet",
         "Panel that pulls out from the right side of the screen",
         AnimScreen.DraggableSheet,
